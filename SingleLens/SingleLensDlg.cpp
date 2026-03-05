@@ -593,87 +593,6 @@ void CCME8000Dlg::Set_CurrentState(int nState)
 	KillTimer(TIMER_BUZZER_FLKR);
 //	KillTimer(TIMER_LAMP_FLKR);
 
-	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-	DY_DATA_12 *pDY12 = g_objAJinAXL.Get_pDY12();
-
-	// Start, Stop, Reset SW
-	switch (nState) {
-	case STATE_NONE:
-		pDY12->oStartLamp1 = pDY12->oStartLamp2 = FALSE;
-		pDY12->oStopLamp1  = pDY12->oStopLamp2 = FALSE;
-		pDY12->oResetLamp1 = pDY12->oResetLamp2 = FALSE;
-		break;
-	case STATE_INIT:
-		pDY12->oStartLamp1 = pDY12->oStartLamp2 = TRUE;
-		pDY12->oStopLamp1  = pDY12->oStopLamp2 = TRUE;
-		pDY12->oResetLamp1 = pDY12->oResetLamp2 = FALSE;
-		break;
-	case STATE_RUN:
-		pDY12->oStartLamp1 = pDY12->oStartLamp2 = TRUE;
-		pDY12->oStopLamp1  = pDY12->oStopLamp2 = FALSE;
-		pDY12->oResetLamp1 = pDY12->oResetLamp2 = FALSE;
-		break;
-	case STATE_STOP:
-		pDY12->oStartLamp1 = pDY12->oStartLamp2 = FALSE;
-		pDY12->oStopLamp1  = pDY12->oStopLamp2 = TRUE;
-		pDY12->oResetLamp1 = pDY12->oResetLamp2 = FALSE;
-		break;
-	case STATE_ALARM:
-	case STATE_ERROR:
-	case STATE_LOTEND:
-	case STATE_SHIPTRAY:
-	case STATE_CAPTRAY:
-		pDY12->oStartLamp1 = pDY12->oStartLamp2 = FALSE;
-		pDY12->oStopLamp1  = pDY12->oStopLamp2 = FALSE;
-		pDY12->oResetLamp1 = pDY12->oResetLamp2 = TRUE;
-		break;
-	}
-	g_objAJinAXL.Write_Output(12);
-	Set_LotStateTime();
-	// Tower
-	m_bTowerOn = TRUE;
-	pDY12->oTowerGreen = pEquipData->bTower[nState][0];
-	pDY12->oTowerYellow = pEquipData->bTower[nState][1];
-	pDY12->oTowerRed = pEquipData->bTower[nState][2];
-
-	// Tower Flicker
-	if (pEquipData->bTower[nState][3]) SetTimer(TIMER_TOWER_FLKR, 500, NULL);
-
-	// Buzzer
-	if (nState == STATE_ALARM || nState == STATE_ERROR ||
-		nState == STATE_LOTEND || nState == STATE_CAPTRAY || nState == STATE_SHIPTRAY) {
-		m_bBuzzerOn = TRUE;
-#ifndef DRY_RUN_TEST	// 시끄러워서 막음
-		EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-// temp
-// 		if (gData.bEmptyFull) {
-// 			pDY12->oBuzzerBit0 = TRUE;	//pEquipData->bBuzzer[1][0];
-// 			pDY12->oBuzzerBit1 = TRUE;	//pEquipData->bBuzzer[1][1];
-// 			pDY12->oBuzzerBit2 = FALSE;	//pEquipData->bBuzzer[1][2];
-// 			pDY12->oBuzzerBit3 = FALSE;	//pEquipData->bBuzzer[1][3];
-// 			pDY12->oBuzzerBit4 = FALSE;	//pEquipData->bBuzzer[1][4];
-// 		} else {
-			pDY12->oBuzzerBit0 = pEquipData->bBuzzer[nState - STATE_ALARM][0];
-			pDY12->oBuzzerBit1 = pEquipData->bBuzzer[nState - STATE_ALARM][1];
-			pDY12->oBuzzerBit2 = pEquipData->bBuzzer[nState - STATE_ALARM][2];
-			pDY12->oBuzzerBit3 = pEquipData->bBuzzer[nState - STATE_ALARM][3];
-			pDY12->oBuzzerBit4 = pEquipData->bBuzzer[nState - STATE_ALARM][4];
-//		}
-#endif
-		// Buzzer Flicker
-		if (pEquipData->bBuzzer[nState - STATE_ALARM][5]) SetTimer(TIMER_BUZZER_FLKR, 500, NULL);
-	}
-	g_objAJinAXL.Write_Output(12);
-
-	// Load/Unload Lamp
-	if (nState == STATE_RUN) {
-		SetTimer(TIMER_LOAD1_LAMP_FLKR, 500, NULL);
-		SetTimer(TIMER_LOAD2_LAMP_FLKR, 500, NULL);
-		SetTimer(TIMER_NG_LAMP_FLKR, 500, NULL);
-		SetTimer(TIMER_GOOD_LAMP_FLKR, 500, NULL);
-		SetTimer(TIMER_EMPTY_LAMP_FLKR, 500, NULL);
-	}
-
 	theApp.Set_MainState(nState);
 	g_dlgWork.Set_State(nState);
 }
@@ -685,164 +604,47 @@ void CCME8000Dlg::Set_InsideLight()
 
 void CCME8000Dlg::Set_TowerFlicker(BOOL bEnable)
 {
-	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-	DY_DATA_12 *pDY12 = g_objAJinAXL.Get_pDY12();
-
-	if (m_bTowerOn || !bEnable) {
-		m_bTowerOn = FALSE;
-		pDY12->oTowerGreen = FALSE;
-		pDY12->oTowerYellow = FALSE;
-		pDY12->oTowerRed = FALSE;
-		if (!bEnable) KillTimer(TIMER_TOWER_FLKR);
-
-	} else {
-		m_bTowerOn = TRUE;
-		int nState = theApp.Get_MainState();
-		pDY12->oTowerGreen = pEquipData->bTower[nState][0];
-		pDY12->oTowerYellow = pEquipData->bTower[nState][1];
-		pDY12->oTowerRed = pEquipData->bTower[nState][2];
-	}
-	g_objAJinAXL.Write_Output(12);
+	
 }
 
 void CCME8000Dlg::Set_BuzzerFlicker(BOOL bEnable)
 {
-	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-	DY_DATA_12 *pDY12 = g_objAJinAXL.Get_pDY12();
-
-	if (m_bBuzzerOn || !bEnable) {
-		m_bBuzzerOn = FALSE;
-		pDY12->oBuzzerBit0 = FALSE;
-		pDY12->oBuzzerBit1 = FALSE;
-		pDY12->oBuzzerBit2 = FALSE;
-		pDY12->oBuzzerBit3 = FALSE;
-		pDY12->oBuzzerBit4 = FALSE;
-		if (!bEnable) KillTimer(TIMER_BUZZER_FLKR);
-
-	} else {
-		m_bBuzzerOn = TRUE;
-#ifndef DRY_RUN_TEST	// 시끄러워서 막음
-		int nState = theApp.Get_MainState();
-		pDY12->oBuzzerBit0 = pEquipData->bBuzzer[nState-STATE_ALARM][0];
-		pDY12->oBuzzerBit1 = pEquipData->bBuzzer[nState-STATE_ALARM][1];
-		pDY12->oBuzzerBit2 = pEquipData->bBuzzer[nState-STATE_ALARM][2];
-		pDY12->oBuzzerBit3 = pEquipData->bBuzzer[nState-STATE_ALARM][3];
-		pDY12->oBuzzerBit4 = pEquipData->bBuzzer[nState-STATE_ALARM][4];
-#endif
-	}
-	g_objAJinAXL.Write_Output(12);
+	
 }
 
 void CCME8000Dlg::Set_LampFlicker_Load1(BOOL bEnable)
 {
-	DY_DATA_12 *pDY12 = g_objAJinAXL.Get_pDY12();
-
-	if (m_bLampOnLoad1 || !bEnable) {
-		m_bLampOnLoad1 = FALSE;
-		pDY12->oLoad1Lamp = FALSE;
-//		if (!bEnable) KillTimer(TIMER_LOAD1_LAMP_FLKR);
-
-	} else {
-		m_bLampOnLoad1 = TRUE;
-		pDY12->oLoad1Lamp = TRUE;
-	}
-	g_objAJinAXL.Write_Output(12);
+	
 }
 
 void CCME8000Dlg::Set_LampFlicker_Load2(BOOL bEnable)
 {
-	DY_DATA_12 *pDY12 = g_objAJinAXL.Get_pDY12();
-
-	if (m_bLampOnLoad2 || !bEnable) {
-		m_bLampOnLoad2 = FALSE;
-		pDY12->oLoad2Lamp = FALSE;
-//		if (!bEnable) KillTimer(TIMER_LOAD2_LAMP_FLKR);
-
-	} else {
-		m_bLampOnLoad2 = TRUE;
-		pDY12->oLoad2Lamp = TRUE;
-	}
-	g_objAJinAXL.Write_Output(12);
+	
 }
 
 void CCME8000Dlg::Set_LampFlicker_Load3(BOOL bEnable)
 {
-	DY_DATA_12 *pDY12 = g_objAJinAXL.Get_pDY12();
-
-	if (m_bLampOnLoad3 || !bEnable) {
-		m_bLampOnLoad3 = FALSE;
-		pDY12->oLoad3Lamp = FALSE;
-//		if (!bEnable) KillTimer(TIMER_LOAD2_LAMP_FLKR);
-
-	} else {
-		m_bLampOnLoad3 = TRUE;
-		pDY12->oLoad3Lamp = TRUE;
-	}
-	g_objAJinAXL.Write_Output(12);
+	
 }
 
 void CCME8000Dlg::Set_LampFlicker_Cap1(BOOL bEnable)
 {
-	DY_DATA_12 *pDY12 = g_objAJinAXL.Get_pDY12();
-
-	if (m_bLampOnCap1 || !bEnable) {
-		m_bLampOnCap1 = FALSE;
-		pDY12->oCap1Lamp = FALSE;
-//		if (!bEnable) KillTimer(TIMER_NG_LAMP_FLKR);
-
-	} else {
-		m_bLampOnCap1 = TRUE;
-		pDY12->oCap1Lamp = TRUE;
-	}
-	g_objAJinAXL.Write_Output(12);
+	
 }
 
 void CCME8000Dlg::Set_LampFlicker_Cap2(BOOL bEnable)
 {
-	DY_DATA_12 *pDY12 = g_objAJinAXL.Get_pDY12();
-
-	if (m_bLampOnCap2 || !bEnable) {
-		m_bLampOnCap2 = FALSE;
-		pDY12->oCap2Lamp = FALSE;
-//		if (!bEnable) KillTimer(TIMER_NG_LAMP_FLKR);
-
-	} else {
-		m_bLampOnCap2 = TRUE;
-		pDY12->oCap2Lamp = TRUE;
-	}
-	g_objAJinAXL.Write_Output(12);
+	
 }
 
 void CCME8000Dlg::Set_LampFlicker_Unload1(BOOL bEnable)
 {
-	DY_DATA_12 *pDY12 = g_objAJinAXL.Get_pDY12();
-
-	if (m_bLampOnUnload1 || !bEnable) {
-		m_bLampOnUnload1 = FALSE;
-		pDY12->oUnload1Lamp = FALSE;
-//		if (!bEnable) KillTimer(TIMER_GOOD_LAMP_FLKR);
-
-	} else {
-		m_bLampOnUnload1 = TRUE;
-		pDY12->oUnload1Lamp = TRUE;
-	}
-	g_objAJinAXL.Write_Output(12);
+	
 }
 
 void CCME8000Dlg::Set_LampFlicker_Unload2(BOOL bEnable)
 {
-	DY_DATA_12 *pDY12 = g_objAJinAXL.Get_pDY12();
-
-	if (m_bLampOnUnload2 || !bEnable) {
-		m_bLampOnUnload2 = FALSE;
-		pDY12->oUnload2Lamp = FALSE;
-//		if (!bEnable) KillTimer(TIMER_GOOD_LAMP_FLKR);
-
-	} else {
-		m_bLampOnUnload2 = TRUE;
-		pDY12->oUnload2Lamp = TRUE;
-	}
-	g_objAJinAXL.Write_Output(12);
+	
 }
 
 void CCME8000Dlg::Enable_ModeButton(BOOL bEnable)
@@ -872,13 +674,13 @@ void CCME8000Dlg::Display_DateTime()
 	CString strTime = datetime.Format("%H:%M:%S");
 	m_stcMainTime.SetWindowText(strTime);
 
-	DY_DATA_12 *pDY12 = g_objAJinAXL.Get_pDY12();
+	/*DY_DATA_12 *pDY12 = g_objAJinAXL.Get_pDY12();
 	COLORREF crTowerR = (pDY12->oTowerRed ? RGB(0xFF, 0x00, 0x00) : RGB(0xF0, 0xF0, 0xF0));
 	COLORREF crTowerY = (pDY12->oTowerYellow ? RGB(0xFF, 0xFF, 0x00) : RGB(0xF0, 0xF0, 0xF0));
 	COLORREF crTowerG = (pDY12->oTowerGreen ? RGB(0x00, 0xFF, 0x00) : RGB(0xF0, 0xF0, 0xF0));
 	m_stcMainTower[0].Set_Color(COLOR_DEFAULT, crTowerR);
 	m_stcMainTower[1].Set_Color(COLOR_DEFAULT, crTowerY);
-	m_stcMainTower[2].Set_Color(COLOR_DEFAULT, crTowerG);
+	m_stcMainTower[2].Set_Color(COLOR_DEFAULT, crTowerG);*/
 
 	static int nUphClear = 0;
 	if (datetime.GetHour() == 7) {	// 클리어
@@ -925,9 +727,9 @@ void CCME8000Dlg::Exit_System(int nExitNo)
 	g_objInspector.Set_StatusUpdate(0);
 	g_objAviHandler.Set_StatusUpdate(0);
 
-	DY_DATA_13 *pDY13 = g_objAJinAXL.Get_pDY13();
+	/*DY_DATA_13 *pDY13 = g_objAJinAXL.Get_pDY13();
 	pDY13->oInsideLight = FALSE;
-	g_objAJinAXL.Write_Output(13);
+	g_objAJinAXL.Write_Output(13);*/
 
 	g_objBarcodeLot.Terminate();
 	g_objLoadCell.Terminate();

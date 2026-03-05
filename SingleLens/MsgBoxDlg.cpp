@@ -107,9 +107,9 @@ void CMsgBoxDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	KillTimer(0);
 
-	DX_DATA_12 *pDX12 = g_objAJinAXL.Get_pDX12();
+	//DX_DATA_12 *pDX12 = g_objAJinAXL.Get_pDX12();
 
-	if (pDX12->iUnload2Sw) { EndDialog(IDOK); return; }
+	//if (pDX12->iUnload2Sw) { EndDialog(IDOK); return; }
 
 	SetTimer(0, 100, NULL);
 	CDialogEx::OnTimer(nIDEvent);

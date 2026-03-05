@@ -254,15 +254,7 @@ void CSetupMotionTabDlg::OnBtnHomeClick(UINT nID)
 	int ID = nID - IDC_BTN_HOME_0;
 	int nStartAx = m_nMotionTab * 8;
 
-	if (nStartAx + ID == 4 || nStartAx + ID == 6) {	// Load Stage1/2 X Axis Tray 유무 확인
-		DX_DATA_04 *pDX04 = g_objAJinAXL.Get_pDX04();
-		if (pDX04->iLoadStage1Exist || pDX04->iLoadStage2Exist) {
-			AfxMessageBox("Load Stage1/2번에 Tray가 있습니다. Tray 제거 후 진행하세요."); return;
-		}
-	}
-
-	if (Check_Interlock(nStartAx + ID) == FALSE) return;
-
+	
 	g_objAJinAXL.Home_Search(nStartAx + ID);
 
 	m_strLog.Format("[Setup Motion] Homing - %s", g_objAJinAXL.Get_AxisName(nStartAx + ID));

@@ -143,7 +143,7 @@ void CInitialDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	KillTimer(0);
 
-	DX_DATA_12 *pDX12 = g_objAJinAXL.Get_pDX12();
+	/*DX_DATA_12 *pDX12 = g_objAJinAXL.Get_pDX12();
 
 	if (pDX12->iStartSw && !m_rdoInitStart.GetCheck()) {
 		g_objLogFile.Save_HandlerLog("[Initial Mode] START S/W Push");
@@ -152,7 +152,7 @@ void CInitialDlg::OnTimer(UINT_PTR nIDEvent)
 	} else if (pDX12->iStopSw && !m_rdoInitStop.GetCheck()) {
 		g_objLogFile.Save_HandlerLog("[Initial Mode] STOP S/W Push");
 		m_rdoInitStop.SetCheck(TRUE);
-	}
+	}*/
 
 	Display_Status();
 
@@ -255,17 +255,9 @@ void CInitialDlg::Display_Status()
 		g_objAJinAXL.Get_HomeDone(i) ? m_ledAxisHom[i].On() : m_ledAxisHom[i].Off();
 	}
 
-	DX_DATA_12 *pDX12 = g_objAJinAXL.Get_pDX12();
-	DX_DATA_13 *pDX13 = g_objAJinAXL.Get_pDX13();
+	
 
-	m_ledMainAir[0].Set_On(pDX12->iMainAir1);
-	m_ledMainAir[1].Set_On(pDX12->iMainAir2);
-
-	m_ledEmgSw[0].Set_On(pDX12->iEmgSw1);
-	m_ledEmgSw[1].Set_On(pDX12->iEmgSw2);
-	m_ledEmgSw[2].Set_On(pDX12->iEmgSw3);
-
-	for (int i = 0; i < 13; i++) m_ledDoorOpen[i].Set_On((pDX13->nValue >> i) & 1);
+	
 
 	BOOL bOk = g_objSequenceInit.Get_InitComplete();
 	m_ledInitialOK.Set_On(bOk);

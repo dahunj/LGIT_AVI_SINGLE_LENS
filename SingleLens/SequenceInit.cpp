@@ -22,31 +22,13 @@ CSequenceInit::CSequenceInit()
 	m_pDX01 = g_objAJinAXL.Get_pDX01();
 	m_pDX02 = g_objAJinAXL.Get_pDX02();
 	m_pDX03 = g_objAJinAXL.Get_pDX03();
-	m_pDX04 = g_objAJinAXL.Get_pDX04();
-	m_pDX05 = g_objAJinAXL.Get_pDX05();
-	m_pDX06 = g_objAJinAXL.Get_pDX06();
-	m_pDX07 = g_objAJinAXL.Get_pDX07();
-	m_pDX08 = g_objAJinAXL.Get_pDX08();
-	m_pDX09 = g_objAJinAXL.Get_pDX09();
-	m_pDX10 = g_objAJinAXL.Get_pDX10();
-	m_pDX11 = g_objAJinAXL.Get_pDX11();
-	m_pDX12 = g_objAJinAXL.Get_pDX12();
-	m_pDX13 = g_objAJinAXL.Get_pDX13();
+
 
 	m_pDY00 = g_objAJinAXL.Get_pDY00();
 	m_pDY01 = g_objAJinAXL.Get_pDY01();
 	m_pDY02 = g_objAJinAXL.Get_pDY02();
 	m_pDY03 = g_objAJinAXL.Get_pDY03();
-	m_pDY04 = g_objAJinAXL.Get_pDY04();
-	m_pDY05 = g_objAJinAXL.Get_pDY05();
-	m_pDY06 = g_objAJinAXL.Get_pDY06();
-	m_pDY07 = g_objAJinAXL.Get_pDY07();
-	m_pDY08 = g_objAJinAXL.Get_pDY08();
-	m_pDY09 = g_objAJinAXL.Get_pDY09();
-	m_pDY10 = g_objAJinAXL.Get_pDY10();
-	m_pDY11 = g_objAJinAXL.Get_pDY11();
-	m_pDY12 = g_objAJinAXL.Get_pDY12();
-	m_pDY13 = g_objAJinAXL.Get_pDY13();
+
 
 	m_pEquipData = g_objDataManager.Get_pEquipData();
 	m_pMoveData = g_objDataManager.Get_pMoveData();

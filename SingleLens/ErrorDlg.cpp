@@ -149,101 +149,12 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		strErrMsg = INI.Get_String("ERROR", strErrNo, "");
 
 		CString strErrPick = "";
-		if (m_nErrNo == 3406 || m_nErrNo == 3407 || m_nErrNo == 3411 || m_nErrNo == 3412 || m_nErrNo == 3416) {
-			strErrPick = g_objCommon.Get_LoadPickerCheckErr();
-		}
-
-		if(m_nErrNo == 3506){
-			strErrPick = g_objCommon.Get_LoadIndexVacOnCheckErr();
-		}
-
-		if(m_nErrNo == 3508){
-			strErrPick = g_objCommon.Get_LoadIndexVacOffCheckErr();
-		}
-
-		if(m_nErrNo == 4006){
-			strErrPick = g_objCommon.Get_CapPickerVacOnCheckErr();
-			strErrPick += g_objCommon.Get_CapPickerUpCheckErr();
-		}
-
-		if(m_nErrNo == 4015 || m_nErrNo == 4016){
-			strErrPick = g_objCommon.Get_CapPickerVacOffCheckErr();
-		}
-
-		if(m_nErrNo == 4017 || m_nErrNo == 4020){
-			strErrPick = g_objCommon.Get_CapPickerUpCheckErr();
-		}
-
-		if(m_nErrNo == 4201 || m_nErrNo == 4202)
-		{
-			strErrPick = g_objCommon.Get_AssyPickerUpCheckErr();
-		}
-
-		if(m_nErrNo == 4203)
-		{
-			strErrPick = g_objCommon.Get_AssyPickerDownCheckErr(0);
-		}
-
-		if(m_nErrNo == 4205)
-		{
-			strErrPick = g_objCommon.Get_AssyPickerVacOnCheckErr();
-			strErrPick += g_objCommon.Get_AssyPickerUpCheckErr();
-		}
-		if(m_nErrNo == 4225)
-		{
-			strErrPick = g_objCommon.Get_AssyPickerDownCheckErr(1);
-		}
-		if(m_nErrNo == 4228)
-		{
-			strErrPick = g_objCommon.Get_AssyPickerUpCheckErr();
-			strErrPick += g_objCommon.Get_AssyPickerVacOffCheckErr();
-		}
-
-		if (m_nErrNo == 4229) {
-			strErrPick = g_objCommon.Get_AssyPickerTiltErr();
-			strErrPick += g_objCommon.Get_AssyPickerUpCheckErr();
-			strErrPick += g_objCommon.Get_AssyPickerVacOffCheckErr();
-		}
-
-		if(m_nErrNo == 4236 || m_nErrNo == 4237)
-		{
-			strErrPick = g_objCommon.Get_AssyPickerUpCheckErr();
-		}
-
-		if(m_nErrNo == 4251 || m_nErrNo == 4255 || m_nErrNo == 4256)
-		{
-			strErrPick = g_objCommon.Get_AssyPickerGoodDownCheckErr();
-		}
-
-		if(m_nErrNo == 4262 || m_nErrNo == 4265 || m_nErrNo == 4266)
-		{
-			strErrPick = g_objCommon.Get_AssyPickerDownCheckErr();
-		}
-		if(m_nErrNo == 4274 || m_nErrNo == 4275)
-		{
-			strErrPick = g_objCommon.Get_AssyPickerUpCheckErr();
-		}
-
-		if(m_nErrNo == 4402 )
-		{
-			strErrPick = g_objCommon.Get_UnloadPickerDownCheckErr();
-		}
-
-		if(m_nErrNo == 4405  || m_nErrNo == 4410)
-		{
-			strErrPick = g_objCommon.Get_UnloadPickerUpCheckErr();
-			strErrPick += g_objCommon.Get_UnloadPickerVacOnCheckErr();
-		}
-		if(m_nErrNo == 4406 )
-		{
-			strErrPick = g_objCommon.Get_UnloadPickerVacOnCheckErr();
-		}
-
-		if(m_nErrNo == 4415  || m_nErrNo == 4416)
+		
+	/*	if(m_nErrNo == 4415  || m_nErrNo == 4416)
 		{
 			strErrPick = g_objCommon.Get_UnloadPickerUpCheckErr();
 			strErrPick += g_objCommon.Get_UnloadPickerVacOffCheckErr();
-		}
+		}*/
 		
 
 		
@@ -322,29 +233,29 @@ void CErrorDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	KillTimer(0);
 
-	DX_DATA_12 *pDX12 = g_objAJinAXL.Get_pDX12();
-	DX_DATA_13 *pDX13 = g_objAJinAXL.Get_pDX13();
+	//DX_DATA_12 *pDX12 = g_objAJinAXL.Get_pDX12();
+	//DX_DATA_13 *pDX13 = g_objAJinAXL.Get_pDX13();
 
-	if (pDX12->iResetSw) {
-		OnBnClickedBtnErrOk();
-		return;
-	}
+	//if (pDX12->iResetSw) {
+	//	OnBnClickedBtnErrOk();
+	//	return;
+	//}
 
-	if (m_nBackColorLoop == 1) {
-		for (int i = 0; i < 4; i++) m_stcErrBack[i].Set_Color(COLOR_DEFAULT, RGB(0x00, 0x00, 0xFF));
-	} else if (m_nBackColorLoop == 6) {
-		for (int i = 0; i < 4; i++) m_stcErrBack[i].Set_Color(COLOR_DEFAULT, RGB(0xFF, 0xFF, 0x00));
-	} else if (m_nBackColorLoop == 10) m_nBackColorLoop = 0;
-	m_nBackColorLoop++;
+	//if (m_nBackColorLoop == 1) {
+	//	for (int i = 0; i < 4; i++) m_stcErrBack[i].Set_Color(COLOR_DEFAULT, RGB(0x00, 0x00, 0xFF));
+	//} else if (m_nBackColorLoop == 6) {
+	//	for (int i = 0; i < 4; i++) m_stcErrBack[i].Set_Color(COLOR_DEFAULT, RGB(0xFF, 0xFF, 0x00));
+	//} else if (m_nBackColorLoop == 10) m_nBackColorLoop = 0;
+	//m_nBackColorLoop++;
 
-	m_ledMainAir[0].Set_On(pDX12->iMainAir1);
-	m_ledMainAir[1].Set_On(pDX12->iMainAir2);
+	//m_ledMainAir[0].Set_On(pDX12->iMainAir1);
+	//m_ledMainAir[1].Set_On(pDX12->iMainAir2);
 
-	m_ledEmgSw[0].Set_On(pDX12->iEmgSw1);
-	m_ledEmgSw[1].Set_On(pDX12->iEmgSw2);
-	m_ledEmgSw[2].Set_On(pDX12->iEmgSw3);
+	//m_ledEmgSw[0].Set_On(pDX12->iEmgSw1);
+	//m_ledEmgSw[1].Set_On(pDX12->iEmgSw2);
+	//m_ledEmgSw[2].Set_On(pDX12->iEmgSw3);
 
-	for (int i = 0; i < 13; i++) m_ledDoorOpen[i].Set_On((pDX13->nValue >> (i + 18)) & 1);
+	//for (int i = 0; i < 13; i++) m_ledDoorOpen[i].Set_On((pDX13->nValue >> (i + 18)) & 1);
 
 	SetTimer(0, 100, NULL);
 	CDialogEx::OnTimer(nIDEvent);

@@ -903,7 +903,7 @@ void CLogFile::Save_Interlock(int nType)
 			strSave2.Format("A2,OK,,");
 
 		
-		DX_DATA_13 *pDX13 = g_objAJinAXL.Get_pDX13();
+	/*	DX_DATA_13 *pDX13 = g_objAJinAXL.Get_pDX13();
 		if (!pDX13->iDoor01Open) strDoor[0] = "Close"; else strDoor[0] = "Open";
 		if (!pDX13->iDoor02Open) strDoor[1] = "Close"; else strDoor[1] = "Open";
 		if (!pDX13->iDoor03Open) strDoor[2] = "Close"; else strDoor[2] = "Open";
@@ -918,7 +918,7 @@ void CLogFile::Save_Interlock(int nType)
 		if (!pDX13->iDoor12Open) strDoor[11] = "Close"; else strDoor[11] = "Open";
 		if (!pDX13->iDoor13Open) strDoor[12] = "Close"; else strDoor[12] = "Open";
 		strSave3.Format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", strDoor[0], strDoor[1], strDoor[2], strDoor[3], strDoor[4], strDoor[5], strDoor[6], strDoor[7], strDoor[8], strDoor[9], strDoor[10], strDoor[11], strDoor[12]);
-		strSave4 = "-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-";
+		strSave4 = "-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-";*/
 
 		strSave.Format("%s,%s,%s,%s\r\n", strSave1, strSave2, strSave3, strSave4);
 		file.Write(strSave, strSave.GetLength());
