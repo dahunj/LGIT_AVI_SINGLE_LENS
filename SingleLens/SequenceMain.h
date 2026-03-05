@@ -96,8 +96,8 @@ private:
 	BOOL			MZElevCaseRun();		//  2. (Error : 3400)
 	BOOL			TrayPickerRun();		//  3. (Error : 3700)
 	BOOL			LensCleanerRun();		//  4. (Error : 4000)
-	BOOL			TopInspectRun();		//  5. (Error : 4300)
-	BOOL			BtmInspectRun();		//  6. (Error : 4600)
+	BOOL			TopInspectorRun();		//  5. (Error : 4300)
+	BOOL			BtmInspectorRun();		//  6. (Error : 4600)
 	BOOL			MarkerRun();			//  7. (Error : 4900)
 	BOOL			IndexTableRun();		//  8. (Error : 5200)  
 

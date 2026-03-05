@@ -16,7 +16,7 @@ public:
 	enum { IDD = IDD_SETUP_MOVE_TAB1_DLG };
 	CGroupCS	m_Group[10];
 	CLabelCS	m_Label[35];
-	CStaticCS	m_stcTrayPickerX[3];
+	/*CStaticCS	m_stcTrayPickerX[3];
 	CStaticCS	m_stcTrayPickerZ[3];
 	CStaticCS	m_stcTrayPickerR[2];
 	CStaticCS	m_stcLoadStage1X[4];
@@ -25,7 +25,7 @@ public:
 	CStaticCS	m_stcLoadStage2Z[5];
 	CStaticCS	m_stcLoadPickerY[3];
 	CStaticCS	m_stcLoadPickerZ[4];
-	CStaticCS	m_stcLoadPickerP[2];
+	CStaticCS	m_stcLoadPickerP[2];*/
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
@@ -34,7 +34,7 @@ protected:
 	virtual BOOL OnInitDialog();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
-	afx_msg void OnStcTrayPickerXClick(UINT nID);
+	/*afx_msg void OnStcTrayPickerXClick(UINT nID);
 	afx_msg void OnStcTrayPickerZClick(UINT nID);
 	afx_msg void OnStcTrayPickerRClick(UINT nID);
 	afx_msg void OnStcLoadStage1XClick(UINT nID);
@@ -43,7 +43,7 @@ protected:
 	afx_msg void OnStcLoadStage2ZClick(UINT nID);
 	afx_msg void OnStcLoadPickerYClick(UINT nID);
 	afx_msg void OnStcLoadPickerZClick(UINT nID);
-	afx_msg void OnStcLoadPickerPClick(UINT nID);
+	afx_msg void OnStcLoadPickerPClick(UINT nID);*/
 
 private:
 	void Initial_Controls();

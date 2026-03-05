@@ -148,6 +148,7 @@
     <ClInclude Include="AlarmDlg.h" />
     <ClInclude Include="AviHandler.h" />
     <ClInclude Include="BarcodeLot.h" />
+    <ClInclude Include="MoveDataIdx.h" />
     <ClInclude Include="SequenceMain.h" />
     <ClInclude Include="SingleLens.h" />
     <ClInclude Include="SingleLensDlg.h" />

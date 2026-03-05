@@ -16,7 +16,7 @@ public:
 	enum { IDD = IDD_MANUAL_UNLOAD_DLG };
 	CGroupCS	m_Group[16];
 	CLabelCS	m_Label[10];
-	CStaticCS	m_stcAxisPos[10];
+	/*CStaticCS	m_stcAxisPos[10];
 	CButtonCS	m_btnTransStageX[2];
 	CButtonCS	m_btnTransStageZ[3];
 	CButtonCS	m_btnTransStageT[2];
@@ -38,7 +38,7 @@ public:
 	CButtonCS	m_btnUnloadPort1Io[4];
 	CLedCS		m_ledUnloadPort1Io[10];
 	CButtonCS	m_btnUnloadPort2Io[4];
-	CLedCS		m_ledUnloadPort2Io[10];
+	CLedCS		m_ledUnloadPort2Io[10];*/
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
@@ -47,22 +47,22 @@ protected:
 	virtual BOOL OnInitDialog();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
-	afx_msg void OnBtnTransStageXClick(UINT nID);
-	afx_msg void OnBtnTransStageZClick(UINT nID);
-	afx_msg void OnBtnTransStageTClick(UINT nID);
-	afx_msg void OnBtnTransStageIoClick(UINT nID);
-	afx_msg void OnBtnUnloadPickerXClick(UINT nID);
-	afx_msg void OnBtnUnloadPickerZClick(UINT nID);
-	afx_msg void OnBtnUnloadPickerPClick(UINT nID);
-	afx_msg void OnBtnUnloadPickerIoClick(UINT nID);
-	afx_msg void OnBtnUnloadStage1YClick(UINT nID);
-	afx_msg void OnBtnUnloadStage1ZClick(UINT nID);
-	afx_msg void OnBtnUnloadStage1IoClick(UINT nID);
-	afx_msg void OnBtnUnloadStage2YClick(UINT nID);
-	afx_msg void OnBtnUnloadStage2ZClick(UINT nID);
-	afx_msg void OnBtnUnloadStage2IoClick(UINT nID);
-	afx_msg void OnBtnUnloadPort1IoClick(UINT nID);
-	afx_msg void OnBtnUnloadPort2IoClick(UINT nID);
+	//afx_msg void OnBtnTransStageXClick(UINT nID);
+	//afx_msg void OnBtnTransStageZClick(UINT nID);
+	//afx_msg void OnBtnTransStageTClick(UINT nID);
+	//afx_msg void OnBtnTransStageIoClick(UINT nID);
+	//afx_msg void OnBtnUnloadPickerXClick(UINT nID);
+	//afx_msg void OnBtnUnloadPickerZClick(UINT nID);
+	//afx_msg void OnBtnUnloadPickerPClick(UINT nID);
+	//afx_msg void OnBtnUnloadPickerIoClick(UINT nID);
+	//afx_msg void OnBtnUnloadStage1YClick(UINT nID);
+	//afx_msg void OnBtnUnloadStage1ZClick(UINT nID);
+	//afx_msg void OnBtnUnloadStage1IoClick(UINT nID);
+	//afx_msg void OnBtnUnloadStage2YClick(UINT nID);
+	//afx_msg void OnBtnUnloadStage2ZClick(UINT nID);
+	//afx_msg void OnBtnUnloadStage2IoClick(UINT nID);
+	//afx_msg void OnBtnUnloadPort1IoClick(UINT nID);
+	//afx_msg void OnBtnUnloadPort2IoClick(UINT nID);
 
 private:
 	CString m_strLog;

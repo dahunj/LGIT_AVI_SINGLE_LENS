@@ -16,20 +16,20 @@ public:
 	enum { IDD = IDD_SETUP_MOVE_TAB2_DLG };
 	CGroupCS	m_Group[14];
 	CLabelCS	m_Label[62];
-	CStaticCS	m_stcMainIndexR[1];			
-	CStaticCS	m_stcVisionCmX[2];	
-	CStaticCS	m_stcCapStage1X[3];		
-	CStaticCS	m_stcCapStage1Z[4];
-	CStaticCS	m_stcCapStage2X[3];		
-	CStaticCS	m_stcCapStage2Z[4];		
-	CStaticCS	m_stcCapPickerY[13];		
-	CStaticCS	m_stcCapPickerZ[4];		
-	CStaticCS	m_stcCapPickerP[2];		
-	CStaticCS	m_stcCapBufferY[4];		
-	CStaticCS	m_stcVisionCapY[1];	
-	CStaticCS	m_stcAssyPickerX[7];		
-	CStaticCS	m_stcAssyPickerY[7];		
-	CStaticCS	m_stcAssyPickerZ[7];		
+	//CStaticCS	m_stcMainIndexR[1];			
+	//CStaticCS	m_stcVisionCmX[2];	
+	//CStaticCS	m_stcCapStage1X[3];		
+	//CStaticCS	m_stcCapStage1Z[4];
+	//CStaticCS	m_stcCapStage2X[3];		
+	//CStaticCS	m_stcCapStage2Z[4];		
+	//CStaticCS	m_stcCapPickerY[13];		
+	//CStaticCS	m_stcCapPickerZ[4];		
+	//CStaticCS	m_stcCapPickerP[2];		
+	//CStaticCS	m_stcCapBufferY[4];		
+	//CStaticCS	m_stcVisionCapY[1];	
+	//CStaticCS	m_stcAssyPickerX[7];		
+	//CStaticCS	m_stcAssyPickerY[7];		
+	//CStaticCS	m_stcAssyPickerZ[7];		
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
@@ -38,7 +38,7 @@ protected:
 	virtual BOOL OnInitDialog();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
-	afx_msg void OnStcMainIndexRlick(UINT nID);
+	/*afx_msg void OnStcMainIndexRlick(UINT nID);
 	afx_msg void OnStcVisionCmXClick(UINT nID);
 	afx_msg void OnStcCapStage1XClick(UINT nID);
 	afx_msg void OnStcCapStage1ZClick(UINT nID);
@@ -52,7 +52,7 @@ protected:
 	afx_msg void OnStcAssyPickerXClick(UINT nID);
 	afx_msg void OnStcAssyPickerYClick(UINT nID);
 	afx_msg void OnStcAssyPickerZClick(UINT nID);
-
+	*/
 private:
 	void Initial_Controls();
 	void Display_MoveData();

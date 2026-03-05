@@ -49,29 +49,27 @@ private:
 	EQUIP_DATA	*m_pEquipData;
 	MOVE_DATA	*m_pMoveData;
 
-	int			m_niMainInitCase;		//  0. (Error : 1000)
-	int			m_niLoadPickCase;		//  1. (Error : 1100)
-	int			m_niLoadStageCase;		//  2. (Error : 1200)
-	int			m_niMainIndexCase;		//  3. (Error : 1300)
-	int			m_niAssyPickCase;		//  4. (Error : 1400)
-	int			m_niCapPickCase;		//  5. (Error : 1500)
-	int			m_niCapBufferCase; 		//  6. (Error : 1600)
-	int			m_niCapStageCase;		//  7. (Error : 1700)
-	int			m_niTransStageCase;		//  8. (Error : 1800)
-	int			m_niUnloadPickCase;		//  9. (Error : 1900)
-	int			m_niUnloadStageCase;	// 10. (Error : 2000)
+	int			m_niMainInitCase;			//  0. (Error : 1000)
+	int			m_niConveyorCase;			//  1. (Error : 1100)
+	int			m_niMZElevCase;				//  2. (Error : 1200)
+	int			m_niFeederCase;				//  3. (Error : 1300)
+	int			m_niTrayPickerCase;			//  4. (Error : 1400)
+	int			m_niTopInspectorCase;		//  5. (Error : 1500)
+	int			m_niBtmInspectorCase; 		//  6. (Error : 1600)
+	int			m_niMarkerCase;				//  7. (Error : 1700)
+	int			m_niIndexTableCase;			//  8. (Error : 1800)
+
 
 	CLoopTimer	m_tiMainInitLoop;		//  0. (Error : 1000)
-	CLoopTimer	m_tiLoadPickLoop;		//  1. (Error : 1100)
-	CLoopTimer	m_tiLoadStageLoop;		//  2. (Error : 1200)
-	CLoopTimer	m_tiMainIndexLoop;		//  3. (Error : 1300)
-	CLoopTimer	m_tiAssyPickLoop;		//  4. (Error : 1400)
-	CLoopTimer	m_tiCapPickLoop;		//  5. (Error : 1500)
-	CLoopTimer	m_tiCapBufferLoop;		//  6. (Error : 1600)
-	CLoopTimer	m_tiCapStageLoop; 		//  7. (Error : 1700)
-	CLoopTimer	m_tiTransStageLoop;		//  8. (Error : 1800)
-	CLoopTimer	m_tiUnloadPickLoop;		//  9. (Error : 1900)
-	CLoopTimer	m_tiUnloadStageLoop;	// 10. (Error : 2000)
+	CLoopTimer	m_tiConveyorLoop;		//  1. (Error : 1100)
+	CLoopTimer	m_tiMZElevLoop;			//  2. (Error : 1200)
+	CLoopTimer	m_tiFeederLoop;			//  3. (Error : 1300)
+	CLoopTimer	m_tiTrayPickerLoop;		//  4. (Error : 1400)
+	CLoopTimer	m_tiTopInspectorLoop;	//  5. (Error : 1500)
+	CLoopTimer	m_tiBtmInspectorLoop;	//  6. (Error : 1600)
+	CLoopTimer	m_tiMarkerLoop;			//  7. (Error : 1700)
+	CLoopTimer	m_tiIndexTableLoop;		//  8. (Error : 1800)
+
 
 	BOOL		m_bInitComplete;
 	
@@ -82,17 +80,15 @@ protected:
 
 private:
 	BOOL Initial_MainInit();			//  0. (Error : 1000)
-	BOOL Initial_LoadPicker();			//  1. (Error : 1100)
-	BOOL Initial_LoadStage();			//  2. (Error : 1200)
-	BOOL Initial_MainIndex();			//  3. (Error : 1300)
-	BOOL Initial_AssyPicker();			//  4. (Error : 1400)
-	BOOL Initial_CapPicker();			//  5. (Error : 1500)
-	BOOL Initial_CapBuffer();			//  6. (Error : 1600)
-	BOOL Initial_CapStage();			//  7. (Error : 1700)
-	BOOL Initial_TransStage();			//  8. (Error : 1800)
-	BOOL Initial_UnloadPicker();		//  9. (Error : 1900)
-	BOOL Initial_UnloadStage();			// 10. (Error : 2000)
-
+	BOOL Initial_Conveyor();			//  1. (Error : 1100)
+	BOOL Initial_MZ_Elevator();			//  2. (Error : 1200)	
+	BOOL Initial_Feeder();				//  3. (Error : 1300)
+	BOOL Initial_TrayPicker();			//  4. (Error : 1400)
+	BOOL Initial_TopInspector();		//  5. (Error : 1500)
+	BOOL Initial_BtmInspector();		//  6. (Error : 1600)
+	BOOL Initial_Marker();				//  7. (Error : 1700)
+	BOOL Initial_IndexTable();			//  8. (Error : 1800)
+	
 	BOOL Initial_Simulation();
 
 public:

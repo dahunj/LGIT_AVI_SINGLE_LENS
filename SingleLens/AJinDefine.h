@@ -4,43 +4,26 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // Motion Axis
-const int AXIS_COUNT = 35;		// Motion Module
+const int AXIS_COUNT = 16;		// Motion Module
 
-const int AX_TRAY_PICKER_X		= 0;
-const int AX_TRAY_PICKER_Z		= 1;
-const int AX_TRAY_PICKER_R		= 2;
-const int AX_NO_AXIS			= 3;
-const int AX_LOAD_STAGE1_X		= 4;
-const int AX_LOAD_STAGE1_Z		= 5;
-const int AX_LOAD_STAGE2_X		= 6;
-const int AX_LOAD_STAGE2_Z		= 7;
-const int AX_LOAD_PICKER_Y		= 8;
-const int AX_LOAD_PICKER_Z		= 9;
-const int AX_LOAD_PICKER_P		= 10;
-const int AX_MAIN_INDEX_R		= 11;
-const int AX_VISION_CM_X		= 12;
-const int AX_CAP_STAGE1_X		= 13;
-const int AX_CAP_STAGE1_Z		= 14;
-const int AX_CAP_STAGE2_X		= 15;
-const int AX_CAP_STAGE2_Z		= 16;
-const int AX_CAP_PICKER_Y		= 17;
-const int AX_CAP_PICKER_Z		= 18;
-const int AX_CAP_PICKER_P		= 19;
-const int AX_CAP_BUFFER_Y		= 20;
-const int AX_VISION_CAP_Y		= 21;
-const int AX_ASSY_PICKER_X		= 22;
-const int AX_ASSY_PICKER_Y		= 23;
-const int AX_ASSY_PICKER_Z		= 24;
-const int AX_TRANS_STAGE_X		= 25;
-const int AX_TRANS_STAGE_Z		= 26;
-const int AX_TRANS_STAGE_T		= 27;
-const int AX_UNLOAD_PICKER_X	= 28;
-const int AX_UNLOAD_PICKER_Z	= 29;
-const int AX_UNLOAD_PICKER_P	= 30;
-const int AX_UNLOAD_STAGE1_Y	= 31;
-const int AX_UNLOAD_STAGE1_Z	= 32;
-const int AX_UNLOAD_STAGE2_Y	= 33;
-const int AX_UNLOAD_STAGE2_Z	= 34;
+const int AX_CONVEYOR_X			= 0;
+const int AX_MZ_ELEV_Z			= 1;
+const int AX_FEEDER_X			= 2;
+const int AX_FEEDER_Y			= 3;
+const int AX_TRAY_PICKER_Y		= 4;
+const int AX_TRAY_PICKER_Z		= 5;
+const int AX_TOP_INSPECT_X		= 6;
+const int AX_TOP_INSPECT_Y		= 7;
+const int AX_TOP_INSPECT_Z		= 8;
+const int AX_BTM_INSPECT_X		= 9;
+const int AX_BTM_INSPECT_Y		= 10;
+const int AX_BTM_INSPECT_Z		= 11;
+const int AX_MARKER_X			= 12;
+const int AX_MARKER_Y			= 13;
+const int AX_MARKER_Z			= 14;	
+const int AX_INDEX_TABLE_R		= 15;
+
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // Motion Status

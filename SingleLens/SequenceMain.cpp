@@ -68,12 +68,12 @@ BOOL CSequenceMain::LensCleanerRun()
 	return TRUE;
 }
 
-BOOL CSequenceMain::TopInspectRun()
+BOOL CSequenceMain::TopInspectorRun()
 {
 	return TRUE;
 }
 
-BOOL CSequenceMain::BtmInspectRun()
+BOOL CSequenceMain::BtmInspectorRun()
 {
 	return TRUE;
 }

@@ -16,7 +16,7 @@ public:
 	enum { IDD = IDD_MANUAL_CAP_DLG };
 	CGroupCS	m_Group[14];
 	CLabelCS	m_Label[8];
-	CStaticCS	m_stcAxisPos[8];
+	/*CStaticCS	m_stcAxisPos[8];
 	CButtonCS	m_btnCapPort1Io[4];
 	CLedCS		m_ledCapPort1Io[10];
 	CButtonCS	m_btnCapPort2Io[4];
@@ -36,7 +36,7 @@ public:
 	CLedCS		m_ledCapPickerIo[24];
 	CButtonCS	m_btnCapBufferY[6];
 	CButtonCS	m_btnCapBufferIo[18];
-	CLedCS		m_ledCapBufferIo[4];
+	CLedCS		m_ledCapBufferIo[4];*/
 
 	
 protected:
@@ -46,20 +46,20 @@ protected:
 	virtual BOOL OnInitDialog();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
-	afx_msg void OnBtnCapPort1IoClick(UINT nID);
-	afx_msg void OnBtnCapPort2IoClick(UINT nID);
-	afx_msg void OnBtnCapStage1XClick(UINT nID);
-	afx_msg void OnBtnCapStage1ZClick(UINT nID);
-	afx_msg void OnBtnCapStage1IoClick(UINT nID);
-	afx_msg void OnBtnCapStage2XClick(UINT nID);
-	afx_msg void OnBtnCapStage2ZClick(UINT nID);
-	afx_msg void OnBtnCapStage2IoClick(UINT nID);
-	afx_msg void OnBtnCapPickerYClick(UINT nID);
-	afx_msg void OnBtnCapPickerZClick(UINT nID);
-	afx_msg void OnBtnCapPickerPClick(UINT nID);
-	afx_msg void OnBtnCapPickerIoClick(UINT nID);
-	afx_msg void OnBtnCapBufferYClick(UINT nID);
-	afx_msg void OnBtnCapBufferIoClick(UINT nID);
+	//afx_msg void OnBtnCapPort1IoClick(UINT nID);
+	//afx_msg void OnBtnCapPort2IoClick(UINT nID);
+	//afx_msg void OnBtnCapStage1XClick(UINT nID);
+	//afx_msg void OnBtnCapStage1ZClick(UINT nID);
+	//afx_msg void OnBtnCapStage1IoClick(UINT nID);
+	//afx_msg void OnBtnCapStage2XClick(UINT nID);
+	//afx_msg void OnBtnCapStage2ZClick(UINT nID);
+	//afx_msg void OnBtnCapStage2IoClick(UINT nID);
+	//afx_msg void OnBtnCapPickerYClick(UINT nID);
+	//afx_msg void OnBtnCapPickerZClick(UINT nID);
+	//afx_msg void OnBtnCapPickerPClick(UINT nID);
+	//afx_msg void OnBtnCapPickerIoClick(UINT nID);
+	//afx_msg void OnBtnCapBufferYClick(UINT nID);
+	//afx_msg void OnBtnCapBufferIoClick(UINT nID);
 
 private:
 	CString m_strLog;
