@@ -254,56 +254,56 @@ typedef union tag_DX_DATA_03 {
 typedef union tag_DY_DATA_00 {
 	DWORD nValue;
 	struct {
-		DWORD oTrayPickerGrip12Close : 1;	// Y0000
-		DWORD oTrayPickerGrip12Open : 1;	// Y0001
+		DWORD oLoadCVCW : 1;				// Y0000
+		DWORD oLoadCVCCW : 1;				// Y0001
 		DWORD o0002 : 1;					// Y0002
 		DWORD o0003 : 1;					// Y0003
-		DWORD oTrayPickerGrip34Close : 1;	// Y0004
-		DWORD oTrayPickerGrip34Open : 1;	// Y0005
-		DWORD o0006 : 1;					// Y0006
-		DWORD o0007 : 1;					// Y0007
-		DWORD o0008 : 1;					// Y0008
-		DWORD o0009 : 1;					// Y0009
-		DWORD o0010 : 1;					// Y0010
-		DWORD o0011 : 1;					// Y0011
-		DWORD o0012 : 1;					// Y0012
-		DWORD o0013 : 1;					// Y0013
-		DWORD o0014 : 1;					// Y0014
-		DWORD o0015 : 1;					// Y0015
-		DWORD oLoadPort1SlideLock : 1;		// Y0016
-		DWORD oLoadPort1SlideUnlock : 1;	// Y0017
+		DWORD o0004 : 1;					// Y0004
+		DWORD o0005 : 1;					// Y0005
+		DWORD oLoadCVStopperUp : 1;			// Y0006
+		DWORD oLoadCVStopperDown : 1;		// Y0007
+		DWORD oMZElevCVCW : 1;				// Y0008
+		DWORD oMZElevCVCCW : 1;				// Y0009
+		DWORD oMZElevLoadStopperIn : 1;		// Y0010
+		DWORD oMZElevLoadStopperOut : 1;	// Y0011
+		DWORD oMZElevLoadStopperUp : 1;		// Y0012
+		DWORD oMZElevLoadStopperDown : 1;	// Y0013
+		DWORD oMZElevLoadStopperUp : 1;		// Y0014
+		DWORD oMZElevLoadStopperDown : 1;	// Y0015
+		DWORD oUnloadCVCW : 1;				// Y0016
+		DWORD oUnloadCVCCW : 1;				// Y0017
 		DWORD o0018 : 1;					// Y0018
 		DWORD o0019 : 1;					// Y0019
 		DWORD o0020 : 1;					// Y0020
 		DWORD o0021 : 1;					// Y0021
-		DWORD o0022 : 1;					// Y0022
-		DWORD o0023 : 1;					// Y0023
-		DWORD oLoadPort1SupportIn : 1;		// Y0024
-		DWORD oLoadPort1SupportOut : 1;		// Y0025
+		DWORD oUnloadCVStopperUp : 1;					// Y0022
+		DWORD oUnloadCVStopperDown : 1;					// Y0023
+		DWORD o0024 : 1;		// Y0024
+		DWORD o0025 : 1;		// Y0025
 		DWORD o0026 : 1;					// Y0026
 		DWORD o0027 : 1;					// Y0027
-		DWORD o0028 : 1;					// Y0028
-		DWORD o0029 : 1;					// Y0029
-		DWORD o0030 : 1;					// Y0030
-		DWORD o0031 : 1;					// Y0031
+		DWORD oMZLoadSW1 : 1;					// Y0028
+		DWORD oMZLoadSW2 : 1;					// Y0029
+		DWORD oMZUnloadSW1 : 1;					// Y0030
+		DWORD oMZUnloadSW2 : 1;					// Y0031
 	};
 } DY_DATA_00;		// Digital Output 00
 
 typedef union tag_DY_DATA_01 {
 	DWORD nValue;
 	struct {
-		DWORD oLoadPort2SlideLock : 1;		// Y0100
-		DWORD oLoadPort2SlideUnlock : 1;	// Y0101
+		DWORD oFeederGripOpen : 1;		// Y0100
+		DWORD oFeederGripClose : 1;	// Y0101
 		DWORD o0102 : 1;					// Y0102
 		DWORD o0103 : 1;					// Y0103
 		DWORD o0104 : 1;					// Y0104
 		DWORD o0105 : 1;					// Y0105
 		DWORD o0106 : 1;					// Y0106
 		DWORD o0107 : 1;					// Y0107
-		DWORD oLoadPort2SupportIn : 1;		// Y0108
-		DWORD oLoadPort2SupportOut : 1;		// Y0109
-		DWORD o0110 : 1;					// Y0110
-		DWORD o0111 : 1;					// Y0111
+		DWORD oTrayPickerMasterIn : 1;					// Y0108
+		DWORD oTrayPickerMasterOut : 1;					// Y0109
+		DWORD oTrayPickerSlaveIn : 1;					// Y0110
+		DWORD oTrayPickerSlaveOut : 1;					// Y0111
 		DWORD o0112 : 1;					// Y0112
 		DWORD o0113 : 1;					// Y0113
 		DWORD o0114 : 1;					// Y0114
