@@ -137,19 +137,19 @@ typedef union tag_DX_DATA_00 {
 typedef union tag_DX_DATA_01 {
 	DWORD nValue;
 	struct {
-		DWORD iFeederGripOpen : 1;			// X0100
-		DWORD iFeederGripClose : 1;			// X0101
+		DWORD iFeederGripOpen :1;			// X0100
+		DWORD iFeederGripClose :1;			// X0101
 		DWORD iFeederCarrierOnCheck : 1;	// X0102
 		DWORD i0103 : 1;					// X0103
 		DWORD iFeederRailCheckFront : 1;	// X0104
 		DWORD iFeederRailCheckRear : 1;		// X0105
-		DWORD iFeederCarrierExistInMZ : 1;					// X0106
+		DWORD iFeederMZCarrierExist : 1;	// X0106
 		DWORD i0107 : 1;					// X0107
 		DWORD iTrayPickerMasterIn : 1;		// X0108
-		DWORD iTrayPickerMasterOut : 1;	// X0109
+		DWORD iTrayPickerMasterOut : 1;		// X0109
 		DWORD iTrayPickerSlaveIn : 1;		// X0110
-		DWORD iTrayPickerSlaveOut : 1;	// X0111
-		DWORD iTrayPickerExist : 1;					// X0112
+		DWORD iTrayPickerSlaveOut : 1;		// X0111
+		DWORD iTrayPickerExist : 1;			// X0112
 		DWORD iTrayPickerExistEmitter : 1;					// X0113
 		DWORD i0114 : 1;					// X0114
 		DWORD i0115 : 1;					// X0115
@@ -268,8 +268,8 @@ typedef union tag_DY_DATA_00 {
 		DWORD oMZElevLoadStopperOut : 1;	// Y0011
 		DWORD oMZElevLoadStopperUp : 1;		// Y0012
 		DWORD oMZElevLoadStopperDown : 1;	// Y0013
-		DWORD oMZElevLoadStopperUp : 1;		// Y0014
-		DWORD oMZElevLoadStopperDown : 1;	// Y0015
+		DWORD oMZElevUnloadStopperUp : 1;		// Y0014
+		DWORD oMZElevUnloadStopperDown : 1;	// Y0015
 		DWORD oUnloadCVCW : 1;				// Y0016
 		DWORD oUnloadCVCCW : 1;				// Y0017
 		DWORD o0018 : 1;					// Y0018
@@ -300,62 +300,62 @@ typedef union tag_DY_DATA_01 {
 		DWORD o0105 : 1;					// Y0105
 		DWORD o0106 : 1;					// Y0106
 		DWORD o0107 : 1;					// Y0107
-		DWORD oTrayPickerMasterIn : 1;					// Y0108
-		DWORD oTrayPickerMasterOut : 1;					// Y0109
-		DWORD oTrayPickerSlaveIn : 1;					// Y0110
-		DWORD oTrayPickerSlaveOut : 1;					// Y0111
+		DWORD oTrayPickerMasterIn : 1;		// Y0108
+		DWORD oTrayPickerMasterOut : 1;		// Y0109
+		DWORD oTrayPickerSlaveIn : 1;		// Y0110
+		DWORD oTrayPickerSlaveOut : 1;		// Y0111
 		DWORD o0112 : 1;					// Y0112
 		DWORD o0113 : 1;					// Y0113
 		DWORD o0114 : 1;					// Y0114
 		DWORD o0115 : 1;					// Y0115
-		DWORD oLoadPort3SlideLock : 1;		// Y0116
-		DWORD oLoadPort3SlideUnlock : 1;	// Y0117
+		DWORD o0116 : 1;					// Y0116
+		DWORD o0117 : 1;					// Y0117
 		DWORD o0118 : 1;					// Y0118
 		DWORD o0119 : 1;					// Y0119
-		DWORD o0120 : 1;					// Y0120
-		DWORD o0121 : 1;					// Y0121
-		DWORD o0122 : 1;					// Y0122
-		DWORD o0123 : 1;					// Y0123
-		DWORD o0124 : 1;					// Y0124
-		DWORD o0125 : 1;					// Y0125
-		DWORD o0126 : 1;					// Y0126
-		DWORD o0127 : 1;					// Y0127
-		DWORD o0128 : 1;					// Y0128
-		DWORD o0129 : 1;					// Y0129
-		DWORD o0130 : 1;					// Y0130
-		DWORD o0131 : 1;					// Y0131
+		DWORD oIndexLoadAlignIn : 1;		// Y0120
+		DWORD oIndexLoadAlignOut : 1;		// Y0121
+		DWORD oIndexCleanerAlignIn : 1;		// Y0122
+		DWORD oIndexCleanerAlignOut : 1;	// Y0123
+		DWORD oIndexTopAlignIn : 1;			// Y0124
+		DWORD oIndexTopAlignOut : 1;		// Y0125
+		DWORD oIndexEmptyAlignIn : 1;		// Y0126
+		DWORD oIndexEmptyAlignOut : 1;		// Y0127
+		DWORD oIndexBtmAlignIn : 1;			// Y0128
+		DWORD oIndexBtmtyAlignOut : 1;		// Y0129
+		DWORD oIndexMarkerAlignIn : 1;		// Y0130
+		DWORD oIndexMarkerAlignOut : 1;		// Y0131
 	};
 } DY_DATA_01;		// Digital Output 01
 
 typedef union tag_DY_DATA_02 {
 	DWORD nValue;
 	struct {
-		DWORD oCapPort1SlideLock : 1;		// Y0200
-		DWORD oCapPort1SlideUnlock : 1;		// Y0201
-		DWORD o0202 : 1;					// Y0202
-		DWORD o0203 : 1;					// Y0203
-		DWORD o0204 : 1;					// Y0204
-		DWORD o0205 : 1;					// Y0205
+		DWORD oLensCleannerTopDown :1;		// Y0200
+		DWORD oLensCleannerTopUp :1;		// Y0201
+		DWORD oLensCleannerTopForward :1;					// Y0202
+		DWORD oLensCleannerTopBackward :1;					// Y0203
+		DWORD oLensCleannerTopBlow :1;					// Y0204
+		DWORD oLensCleannerTopSuction :		1;					// Y0205
 		DWORD o0206 : 1;					// Y0206
 		DWORD o0207 : 1;					// Y0207
-		DWORD oCapPort1SupportIn : 1;		// Y0208
-		DWORD oCapPort1SupportOut : 1;		// Y0209
-		DWORD o0210 : 1;					// Y0210
-		DWORD o0211 : 1;					// Y0211
-		DWORD o0212 : 1;					// Y0212
-		DWORD o0213 : 1;					// Y0213
+		DWORD oLensCleannerBtmDown : 1;		// Y0208
+		DWORD oLensCleannerBtmUp : 1;		// Y0209
+		DWORD oLensCleannerBtmForward : 1;					// Y0210
+		DWORD oLensCleannerBtmBackward : 1;					// Y0211
+		DWORD oLensCleannerBtmBlow : 1;					// Y0212
+		DWORD oLensCleannerBtmSuction : 1;					// Y0213
 		DWORD o0214 : 1;					// Y0214
 		DWORD o0215 : 1;					// Y0215
-		DWORD oCapPort2SlideLock : 1;		// Y0216
-		DWORD oCapPort2SlideUnlock : 1;		// Y0217
+		DWORD o0216 : 1;					// Y0216
+		DWORD o0217 : 1;					// Y0217
 		DWORD o0218 : 1;					// Y0218
 		DWORD o0219 : 1;					// Y0219
 		DWORD o0220 : 1;					// Y0220
 		DWORD o0221 : 1;					// Y0221
 		DWORD o0222 : 1;					// Y0222
 		DWORD o0223 : 1;					// Y0223
-		DWORD oCapPort2SupportIn : 1;		// Y0224
-		DWORD oCapPort2SupportOut : 1;		// Y0225
+		DWORD o0224 : 1;					// Y0224
+		DWORD o0225 : 1;					// Y0225
 		DWORD o0226 : 1;					// Y0226
 		DWORD o0227 : 1;					// Y0227
 		DWORD o0228 : 1;					// Y0228
@@ -368,34 +368,34 @@ typedef union tag_DY_DATA_02 {
 typedef union tag_DY_DATA_03 {
 	DWORD nValue;
 	struct {
-		DWORD oUnloadPort1SlideLock : 1;	// Y0300
-		DWORD oUnloadPort1SlideUnlock : 1;	// Y0301
-		DWORD o0302 : 1;					// Y0302
-		DWORD o0303 : 1;					// Y0303
-		DWORD o0304 : 1;					// Y0304
-		DWORD o0305 : 1;					// Y0305
-		DWORD o0306 : 1;					// Y0306
-		DWORD o0307 : 1;					// Y0307
-		DWORD oUnloadPort1SupportIn : 1;	// Y0308
-		DWORD oUnloadPort1SupportOut : 1;	// Y0309
-		DWORD o0310 : 1;					// Y0310
+		DWORD oTowerGreen : 1;	// Y0300
+		DWORD oTowerYellow : 1;	// Y0301
+		DWORD oTowerRed : 1;					// Y0302
+		DWORD oBuzzerBit0 : 1;					// Y0303
+		DWORD oBuzzerBit1 : 1;					// Y0304
+		DWORD oBuzzerBit2 : 1;					// Y0305
+		DWORD oBuzzerBit3 : 1;					// Y0306
+		DWORD oBuzzerBit4 : 1;					// Y0307
+		DWORD oInsideLight : 1;				// Y0308
+		DWORD oSafetyReset : 1;				// Y0309
+		DWORD oModeSelect : 1;					// Y0310
 		DWORD o0311 : 1;					// Y0311
-		DWORD o0312 : 1;					// Y0312
-		DWORD o0313 : 1;					// Y0313
-		DWORD o0314 : 1;					// Y0314
-		DWORD o0315 : 1;					// Y0315
-		DWORD oUnloadPort2SlideLock : 1;	// Y0316
-		DWORD oUnloadPort2SlideUnlock : 1;	// Y0317
+		DWORD oStartLampGreenFront : 1;					// Y0312
+		DWORD oStartLampGreenRear : 1;					// Y0313
+		DWORD oStopLampRedFront : 1;					// Y0314
+		DWORD oStopLampRedRear : 1;					// Y0315
+		DWORD oResetLampYellowFront : 1;	// Y0316
+		DWORD oResetLampYellowRear : 1;	// Y0317
 		DWORD o0318 : 1;					// Y0318
 		DWORD o0319 : 1;					// Y0319
-		DWORD o0320 : 1;					// Y0320
-		DWORD o0321 : 1;					// Y0321
-		DWORD o0322 : 1;					// Y0322
-		DWORD o0323 : 1;					// Y0323
-		DWORD oUnloadPort2SupportIn : 1;	// Y0324
-		DWORD oUnloadPort2SupportOut : 1;	// Y0325
-		DWORD o0326 : 1;					// Y0326
-		DWORD o0327 : 1;					// Y0327
+		DWORD oDoor01UnlockFront1 : 1;					// Y0320
+		DWORD oDoor01UnlockFront2 : 1;					// Y0321
+		DWORD oDoor01UnlockRight1 : 1;					// Y0322
+		DWORD oDoor01UnlockRight2 : 1;					// Y0323
+		DWORD oDoor01UnlockRear1 : 1;	// Y0324
+		DWORD oDoor01UnlockRear2 : 1;	// Y0325
+		DWORD oDoor01UnlockLeft1 : 1;					// Y0326
+		DWORD oDoor01UnlockLeft2 : 1;					// Y0327
 		DWORD o0328 : 1;					// Y0328
 		DWORD o0329 : 1;					// Y0329
 		DWORD o0330 : 1;					// Y0330

@@ -477,41 +477,7 @@ void CCommon::Locking_MainDoor(BOOL bLock, BOOL bAuto)
 
 void CCommon::Locking_PortSlide(BOOL bLock, int nPart)
 {
-	if (nPart == 0 || nPart == 1) {
-		DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
-		pDY00->oLoadPort1SlideLock = bLock; pDY00->oLoadPort1SlideUnlock = !bLock;
-		g_objAJinAXL.Write_Output(0);
-	}
-	if (nPart == 0 || nPart == 2) {
-		DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
-		pDY01->oLoadPort2SlideLock = bLock; pDY01->oLoadPort2SlideUnlock = !bLock;
-		g_objAJinAXL.Write_Output(1);
-	}
-	if (nPart == 0 || nPart == 3) {
-		DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
-		pDY01->oLoadPort3SlideLock = bLock; pDY01->oLoadPort3SlideUnlock = !bLock;
-		g_objAJinAXL.Write_Output(1);
-	}
-	if (nPart == 0 || nPart == 4) {
-		DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
-		pDY02->oCapPort1SlideLock = bLock; pDY02->oCapPort1SlideUnlock = !bLock;
-		g_objAJinAXL.Write_Output(2);
-	}
-	if (nPart == 0 || nPart == 5) {
-		DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
-		pDY02->oCapPort2SlideLock = bLock; pDY02->oCapPort2SlideUnlock = !bLock;
-		g_objAJinAXL.Write_Output(2);
-	}
-	if (nPart == 0 || nPart == 6) {
-		DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
-		pDY03->oUnloadPort1SlideLock = bLock; pDY03->oUnloadPort1SlideUnlock = !bLock;
-		g_objAJinAXL.Write_Output(3);
-	}
-	if (nPart == 0 || nPart == 7) {
-		DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
-		pDY03->oUnloadPort2SlideLock = bLock; pDY03->oUnloadPort2SlideUnlock = !bLock;
-		g_objAJinAXL.Write_Output(3);
-	}
+	
 }
 
 /////////////////////////////////////////////////////////////////////////////

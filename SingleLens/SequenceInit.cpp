@@ -165,6 +165,50 @@ UINT CSequenceInit::Thread_Initial(LPVOID lpVoid)
 // 0. (Error : 1000)
 BOOL CSequenceInit::Initial_MainInit()
 {
+	switch (m_niMainInitCase)
+	{
+	case 0:		// Wait
+		return TRUE;
+
+	case 1:		// Initial Start
+		g_objLogFile.Save_HandlerLog("[Initial Sequence] MainInit Start");
+		gLot.sLotID[0] = gLot.sLotID[1] = "";
+		m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
+		break;	
+
+	// Load
+	case 2:		
+		if (!m_pDX00->iMZElevMZExist1 && !m_pDX00->iMZElevMZExist2) 
+		{
+			m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 3:		
+		if (!m_pDX01->iTrayPickerExist) 
+		{
+			m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
+		}
+		break;
+
+	case 4:		
+		if (!m_pDX01->iFeederCarrierOnCheck)
+		{
+			m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 5:		
+		if (!m_pDX01->iFeederRailCheckFront && !m_pDX01->iFeederRailCheckRear ) 
+		{
+			m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 6:		
+		if (!m_pDX01->iFeederMZCarrierExist) 
+		{
+			m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
+		}
+		break;
+	}
 	return TRUE;
 }
 
@@ -180,6 +224,31 @@ BOOL CSequenceInit::Initial_Conveyor()
 // 2. (Error : 1200)
 BOOL CSequenceInit::Initial_MZ_Elevator()
 {
+	switch (m_niMZElevCase)
+	{
+	case 0:
+		return TRUE;
+	case 1:
+		if (!m_pDX00->iMZElevMZExist1 && !m_pDX00->iMZElevMZExist2) 
+		{
+			m_niMZElevCase++; m_tiMZElevLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 2:		
+		if (g_objCommon.Check_Position(AX_FEEDER_Y,0) && m_niFeederCase > 3) 
+		{
+			m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
+		}
+		break;
+	}
+
+	//g_objAJinAXL.Set_EncoderType(AX_NG_STAGE1_Z, 0);	// Inc
+	//g_objAJinAXL.Set_EncoderType(AX_NG_STAGE2_Z, 0);	// Inc
+	//g_objAJinAXL.Set_EncoderType(AX_NG_STAGE1_Z, 1);	// Abs
+	//g_objAJinAXL.Set_EncoderType(AX_NG_STAGE2_Z, 1);	// Abs
+
+
+
 	return TRUE;
 }
 
@@ -188,6 +257,24 @@ BOOL CSequenceInit::Initial_MZ_Elevator()
 // 3. (Error : 1300)
 BOOL CSequenceInit::Initial_Feeder()
 {
+	switch (m_niMZElevCase)
+	{
+	case 0:
+		return TRUE;
+	case 1:
+		if (!m_pDX00->iMZElevMZExist1 && !m_pDX00->iMZElevMZExist2) 
+		{
+			m_niMZElevCase++; m_tiMZElevLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 2:		
+		if (g_objCommon.Check_Position(AX_FEEDER_Y,0) && m_niFeederCase > 3) 
+		{
+			m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
+		}
+		break;
+	}
+
 	return TRUE;
 }
 
@@ -195,6 +282,22 @@ BOOL CSequenceInit::Initial_Feeder()
 // 4. (Error : 1400)
 BOOL CSequenceInit::Initial_TrayPicker()
 {
+	switch (m_niMainInitCase)
+	{
+	case 3:		// Tray Picker Slave Out 
+		if (!m_pDX01->iTrayPickerSlaveIn && m_pDX01->iTrayPickerSlaveOut) 
+		{
+			m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 4:		// Tray Picker Master Out 
+		if (!m_pDX01->iTrayPickerMasterIn && m_pDX01->iTrayPickerMasterOut) 
+		{
+			m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
+		}
+		break;
+	}
+
 	return TRUE;
 }
 
