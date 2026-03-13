@@ -4,32 +4,23 @@
 
 #define AUTO_COUNT			16
 
-#define AUTO_TRAY_PICKER	0
-#define AUTO_LOAD_STAGE1	1
-#define AUTO_LOAD_STAGE2	2
-#define AUTO_LOAD_PICKER	3
-#define AUTO_MAIN_INDEX		4
-#define AUTO_VISION_CM		5
-#define AUTO_VISION_CAP		6
-#define AUTO_CAP_STAGE1		7
-#define AUTO_CAP_STAGE2		8
-#define AUTO_CAP_PICKER		9
-#define AUTO_CAP_BUFFER		10
-#define AUTO_ASSY_PICKER	11
-#define AUTO_TRANS_STAGE	12
-#define AUTO_UNLOAD_PICKER	13
-#define AUTO_UNLOAD_STAGE1	14
-#define AUTO_UNLOAD_STAGE2	15
+#define AUTO_CONVEYOR	0
+#define AUTO_MZ_ElEVATOR	1
+#define AUTO_FEEDER	2
+#define AUTO_TRAY_PICKER	3
+#define AUTO_LENS_CLEANER	4
+#define AUTO_TOP_INSPECT	5
+#define AUTO_BTM_INSPECT	6
+#define AUTO_MARKER		7
+#define AUTO_INDEX_TABLE		8
 
-#define ASSY_LOAD_CELL		1
-#define UNLOAD_LOAD_CELL	2
 
 // Module Tracking
-#define LOAD_STAGE		0	// Stage No 저장. 1 or 2
-#define LOAD_PICK		1	// Picker Jig 번호 저장. 1~6
-#define INDEX_LOAD_NO	2	// Index Loading 할때 번호 저장. 1~8
-#define INDEX_LOAD_JIG	3	// Index Load Jig 번호 저장. 1~5
-#define UNLOAD_PICK		4	// Picker Jig 번호 저장. 1~6
+#define LOAD_STAGE        0   
+#define LOAD_PICK        1    
+#define INDEX_LOAD_NO    2    
+#define INDEX_LOAD_JIG    3   
+#define UNLOAD_PICK        4  
 
 // CCommon
 

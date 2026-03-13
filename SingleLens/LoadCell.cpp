@@ -115,23 +115,7 @@ void CLoadCell::Terminate()
 
 void CLoadCell::Get_Weight(int nNo)
 {
-	if (nNo == ASSY_LOAD_CELL && !m_bAssyConnected) return;
-	if (nNo == UNLOAD_LOAD_CELL && !m_bUnloadConnected) return;
-
-	BYTE bySend[BARCODE_BUFFER_MAX] = { 0 };
-
-	bySend[0] = 0x02;	//stx
-	bySend[1] = 0x30;	//0
-	bySend[2] = 0x31;	//1
-	bySend[3] = 0x52;	//R
-	bySend[4] = 0x43;	//C
-	bySend[5] = 0x57;	//W
-	bySend[6] = 0x54;	//T
-	bySend[7] = 0x03;	//etx
-
-	if (nNo == ASSY_LOAD_CELL)   m_AssyPort.Write_Byte(bySend, 8);
-	if (nNo == UNLOAD_LOAD_CELL) m_UnloadPort.Write_Byte(bySend, 8);
-	gData.bLoadCellComplete = FALSE;
+	
 }
 
 ///////////////////////////////////////////////////////////////////////////////

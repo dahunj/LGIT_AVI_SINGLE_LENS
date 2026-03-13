@@ -113,7 +113,194 @@ typedef struct
 	CString	sRecipe;		// Recipe Item
 	CString sVendor;		// Cap Vendor 
 		
-	
+
+	int        nStatus;
+
+	int        nCmMaxCount;    // ?? ??????? ??? CM ????
+	int        nCapMaxCount;
+	int        nShipMaxCount;
+
+	int        nTrayUseCount[2];    // ????? ????? Tray ????
+	int        nCmUseCount[2];        // ????? ????? CM ????
+
+	CString sCapLotID;
+	int        nCapTrayLoad;
+	int        nCapTrayMax;
+
+	CString sShipLotID;
+	int        nShipTrayLoad;
+	int        nShipTrayMax;
+
+	int        nLPNo;                    // Load ?? Port No
+	int        nLoadTrayCount[2];
+	int        nCapTrayCount;
+	int        nULPNo;                    // Unload Port No
+
+
+	// Infomation 
+	int        InfoMZ_Load[10];
+	int        InfoMZ_Unload[10];
+
+
+
+
+
+	BOOL    IndexDone[3];                // 0:Load, 1:Assembly 2:Trans
+	int        InfoLoadTray[LT_Y][LT_X];    // Load Tray ???? ??? (0:Not Use, 9:Use)
+	int        InfoCapTray[CT_Y][CT_X];    // Cap Tray ???? ??? (0:Not Use, 9:Use)
+	int        STY;                        // Ship Tray ???¥ì? (R53B:7, R54B:7)
+	int        InfoShipTray[ST_Y][ST_X];    // Ship Tray ???? ??? (0:Not Use, 1:Exist)
+	int        InfoNgTray[ST_Y][ST_X];        // NG Tray ???? ??? (0:Empty, 2:NG)
+
+	int        InfoIndex[3][PICK];            // Index ???? ??? 0: ????    (0:Not Use, 1:Exist)
+	int        InfoCapBuffer[PICK];        // Cap Buffer ???? ??? 0:???    (0:Not Use, 9:Use)
+	int        InfoTransStage[PICK];        // Trans Stage ???? ??? 0:????    (0:Not Use, 1:Exist)
+
+	int        InfoLoadPick[PICK];        // 0:????
+	int        InfoCapPick[PICK];        // 0:???
+	int        InfoAssyPick[PICK];        // 0:???
+	int        InfoUnloadPick[PICK];    // 0:???????? 0 
+
+	int        nCapTNoCapPicker[PICK];        // Cap Picker Cap Tray No.
+	int        nCapTNoCapBuffer[PICK];        // Cap Buffer Cap Tray No.
+	int        nCapTNoAssyPicker[PICK];    // Assy Picker Cap Tray No.
+
+	int        nCapNoCapPicker[PICK];        // Cap Picker CapNo.
+	int        nCapNoCapBuffer[PICK];        // Cap Buffer CapNo.
+	int        nCapNoAssyPicker[PICK];        // Assy Picker CapNo.
+
+	int        nPNoAviPort;            // Inline Mode ??? Avi Port No.
+	int        nTNoAviPort;            // Inline Mode ??? Avi Port No.
+	int        nPNoTrayPick;            //
+	int        nPNoLoadPort;            //
+	int        nPNoLoadTray[2];        // 0: stage1, 1: stage2, Load Tray Port No (1, 2)
+	int        nPNoLoadPick;            // Load Picker Port No (1, 2)
+	int        nPNoIndex[3];            // Index Port No (1, 2)
+	int        nPNoTransStage;            // Trans Stage Port No (1, 2)
+	int        nPNoUnloadPick;            // Unload Picker Port No (1, 2)
+	int        nPNoUnloadTray;            // Unload Tray Port No (1, 2)
+	int        nPNoUnloadPort;            // Unload Port Port No (1, 2)
+
+	int        nTNoTrayPick;            // Tray Picker Tray No (1 ~ 25)
+	int        nTNoLoadPort;            // Load Port Tray No (1 ~ 25)    //AVI ?????????? ????.
+	int        nTNoLoadTray[2];        // 0: stage1 , 1: stage2, Load Stage Tray No (1 ~ 25)
+	int        nTNoLoadPick[PICK];        // Load Picker Tray No (1 ~ 25)
+	int        nTNoIndex[3][PICK];        // Index Tray No (1 ~ 25)
+	int        nTNoTransStage[PICK];    // Trans Stage Tray No (1 ~ 25)
+	int        nTNoUnloadPick[PICK];    // Unload Picker Tray No (1 ~ 25)
+	int        nTNoUnloadTray;            // Unload Stage Tray No(1 ~ 25)
+
+	int        nCNoLoadPick[PICK];        // Load Picker CM No
+	int        nCNoIndex[3][PICK];        // Index CM No
+	int        nCNoTransStage[PICK];    // Trans Stage CM No
+	int        nCNoUnloadPick[PICK];    // Load Index CM No
+
+	BOOL    bScanDone[2];            // 0:CM Align, 1:Cap Align
+	int        nInspCmNo[2][2];        // 0:CM Align, 1:Cap Align, 0:CmNo1, 1:CmNo2
+	// Port ???? ?????????.
+	int        nInspectInfo[2][50][12];    // ????? (0:Empty, 1:Good, 2:NG, 3:NoResult, 7:Request, 8:NG, 9:Init)
+
+	int        nCapInspectInfo[2][50][28];    // Cap Align ????? (0:Empty, 1:Good, 2:Normal)
+
+	BOOL    bCycleStop;                // Run ????? ???? (???? ???)
+
+	BOOL    bUnloadTrayLotEnd[2];
+	BOOL    bLoadPort3Wait;            // Load Port3 ???? ?????? ???
+	BOOL    bCapPort1Wait;            // Cap Port1 ???? ?????? ???
+	BOOL    bCapPort2Wait;            // Cap Port2 ???? ?????? ???
+	BOOL    bUnloadPort1Wait;        // Unload Port1 ???? ?????? ???
+	BOOL    bUnloadPort2Wait;        // Unload Port2 ???? ?????? ???
+
+	BOOL    bLoadLampOn[2];            // Load Port Lamp ?????? ?????? Lot End??? ???????? ??????.
+
+	BOOL    bFirstLotStart;
+
+	BOOL    bLotEndBeep;            // NG Full ????? ?????? LotEnd ??????? Skip ???? ?????.
+
+	int        nCmInspPickNo1;
+	int        nCmInspPickNo2;
+	int        nCapInspPickNo1;
+	int        nCapInspPickNo2;
+
+	BOOL    bAviTrayLoad;
+	int        nCmCntAviPort;
+	int        nCmCntTrayPick;
+	int        nCmCntLoadPort;
+	int        nCmCntLoadStage[2];
+	int        nLastTrayNo[2];
+
+	BOOL    bLoadCellComplete;
+	double    dLoadCell[2];
+	double    dAssyLoadCell[PICK];
+	double    dUnloadLoadCell[PICK];
+
+	double    dAssyPickOffsetX[PICK];        // 0:???
+	double    dAssyPickOffsetY[PICK];        // 0:???
+	double    dAssyPickCapSizeX[PICK];    // 0:???
+	double    dAssyPickCapSizeY[PICK];    // 0:???
+
+	double    dIndexOffsetX[4][PICK];        // 0:???
+	double    dIndexOffsetY[4][PICK];        // 0:???
+	double    dIndexCmSizeX[4][PICK];        // 0:???
+	double    dIndexCmSizeY[4][PICK];        // 0:???
+
+	double    dAlignDiffX[PICK];            // ????? - ©§??? = ?????
+	double    dAlignDiffY[PICK];            // ????? - ©§??? = ?????
+
+	BOOL    bCapDirSkip;        // NG ????? ???? Skip ????? ??????.
+	BOOL    bCapDirRetry;        // NG ??? ?? ??? ????? ?? ??? ???.
+	BOOL    bCmAlignSkip;        // NG ????? ???? Skip ????? ??????.
+
+	BOOL    bCapAlignNg[PICK];    // ??? ?????? Picker Check
+
+	////////////////////////////////////////////////////////////////////////////////////////////
+	// Cap LAS Log ????
+	CString sCIDCapStage[2];            // Cap Stage Cap ID
+	CString sCIDCapPicker[PICK];
+	CString sCIDCapBuffer[PICK];
+	CString sCIDAssyPicker[PICK];
+	CString sCIDIndex[3][PICK];            // 0: Load, 1: Assy, 2: Unload ?????¡Æ? 1, 2 ????? ???
+	CString sCIDTransStage[PICK];
+	CString sCIDUnloadPicker[PICK];
+
+	CString sCapAttachStart[50][12];    // Cap Attach ??? ???? : Tray, Cm ?????? ?????????.
+	CString sCapAttachEnd[50][12];        // Cap Attach ??? ??? : Tray, Cm ?????? ?????????.
+
+	int        nINoTransStage;            // Index No
+	int        nINoUnloadPicker;        // Index No
+
+	int        nLNoUnloadPicker;
+	DWORD    dwCmTactStart[50][12];    // Trans Stage PickUp
+	////////////////////////////////////////////////////////////////////////////////////////////
+	int        nCmJigNo[2][50][12][5];    // CM Jig ???? [Port][Tray][CM][Unit] => Unit 0:LoadStage, 1:LoadPicker, 2:IndexLoadNo, 3:IndexLoadJigNo, 4:UnloadPicker
+
+	DWORD    dwMStopStartTime;        // ????? ???? ???, Stop ???or????? ?????? ??? ???????? 
+	DWORD    dwMStopEndTime;
+	DWORD    dwMStopProcTime;
+
+	CString sAlarmTime[3];
+	CString sAlarmList[3];
+
+	CString    sComName;
+	int        nDoorLockTime;
+	DWORD    dwDoorStartTime;
+
+	int        nInsCmScanLineCnt;
+	int        nInsCmScanCntVolatile;
+
+	int        nInspectCmLotCount;
+	DWORD    dwRunTimeNow;
+	DWORD    dwRunTimeAccumulated;
+
+
+	BOOL        bInspectCmThisLotVSkip; // ???????? ??????? ???? ???? ?????????? ???? ???? 
+	int            nInspectCmCheckTime;
+	CString        sInspectCmLotIDPrevious;
+	CString        sInspectCmLotIDLater;
+	BOOL        bReload[1]; // Vision ?????? Reload (load complete ????)
+
+	DWORD        dwInspectSkipTime;
+
 
 } GLOVAL_DATA;
 
@@ -223,26 +410,10 @@ extern GLOVAL_MES	gMes;
 extern GLOBAL_DOORLOCK gDoorLock;
 extern GLOVAL_PART		gPart;
 
-
-const int UNLOADSTAGE1_Z_MOVEDOWN				= 0;
-const int UNLOADSTAGE1_Z_MOVEUP					= 1;
-const int UNLOADSTAGE1_Z_LOADSUPPORTUP			= 2;
-const int UNLOADSTAGE1_Z_LOADSUPPORTDOWN		= 3;
-const int UNLOADSTAGE1_Z_UNLOADSUPPORTUP		= 4;
-const int UNLOADSTAGE1_Z_UNLOADSUPPORTDOWN		= 5;
-
-const int UNLOADSTAGE2_Z_MOVEDOWN				= 0;
-const int UNLOADSTAGE2_Z_MOVEUP					= 1;
-const int UNLOADSTAGE2_Z_LOADSUPPORTUP			= 2;
-const int UNLOADSTAGE2_Z_LOADSUPPORTDOWN		= 3;
-const int UNLOADSTAGE2_Z_UNLOADSUPPORTUP		= 4;
-const int UNLOADSTAGE2_Z_UNLOADSUPPORTDOWN		= 5;
-
-
-
-const int UNLOADSTAGE1_Y_WORKPOS = 1;
-
-#define UL_STG1_Z_MOVE_DOWN 0
-#define UL_STG1_Z_MOVE_UP 1
-
-#define UL_STG1_Y_WORK_POS 1
+struct Feeder_Y
+{
+	enum dtName
+	{
+		Ready = 0,
+	};
+};

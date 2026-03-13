@@ -98,13 +98,7 @@ void CWorkInfoDlg::OnTimer(UINT_PTR nIDEvent)
 
 void CWorkInfoDlg::Display_Status()
 {
-	for (int i = 0; i < PICK; i++) gData.InfoLoadPick[i] > 0 ?   m_ledLoadPickInfo[i].On()	 : m_ledLoadPickInfo[i].Off();
-	for (int i = 0; i < PICK; i++) gData.InfoCapPick[i]	> 0 ?    m_ledCapPickInfo[i].On()	 : m_ledCapPickInfo[i].Off();
-	for (int i = 0; i < PICK; i++) gData.InfoAssyPick[i] > 0 ?   m_ledAssyPickInfo[i].On()	 : m_ledAssyPickInfo[i].Off();
-	for (int i = 0; i < PICK; i++) gData.InfoUnloadPick[i] > 0 ? m_ledUnloadPickInfo[i].On() : m_ledUnloadPickInfo[i].Off();
-	for (int i = 0; i < PICK; i++) gData.InfoCapBuffer[i] > 0 ?  m_ledCapBufferInfo[i].On()	 : m_ledCapBufferInfo[i].Off();
-	for (int i = 0; i < PICK; i++) gData.InfoTransStage[i] > 0 ? m_ledTransStageInfo[i].On() : m_ledTransStageInfo[i].Off();
-	for (int i = 0; i < 2; i++) m_ledVisScanDone[i].Set_On(gData.bScanDone[i]);
+	
 }
 
 ///////////////////////////////////////////////////////////////////////////////

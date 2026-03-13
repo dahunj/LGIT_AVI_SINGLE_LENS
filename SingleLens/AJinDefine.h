@@ -139,11 +139,11 @@ typedef union tag_DX_DATA_01 {
 	struct {
 		DWORD iFeederGripOpen :1;			// X0100
 		DWORD iFeederGripClose :1;			// X0101
-		DWORD iFeederCarrierOnCheck : 1;	// X0102
+		DWORD iFeederCoatJigCheck : 1;	// X0102
 		DWORD i0103 : 1;					// X0103
-		DWORD iFeederRailCheckFront : 1;	// X0104
-		DWORD iFeederRailCheckRear : 1;		// X0105
-		DWORD iFeederMZCarrierExist : 1;	// X0106
+		DWORD iRailCheckFront : 1;	// X0104
+		DWORD iRailCheckRear : 1;		// X0105
+		DWORD iMZCoatJigExist : 1;	// X0106
 		DWORD i0107 : 1;					// X0107
 		DWORD iTrayPickerMasterIn : 1;		// X0108
 		DWORD iTrayPickerMasterOut : 1;		// X0109
