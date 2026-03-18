@@ -73,7 +73,7 @@ void CAlarmDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {
 	CDialogEx::OnShowWindow(bShow, nStatus);
 
-	CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	if (bShow) {
 		CString strLog;
 		strLog.Format("[Alarm Mode] %s", m_strMsg);
@@ -108,7 +108,7 @@ HBRUSH CAlarmDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 void CAlarmDlg::OnBnClickedBtnAlmBuzzOff()
 {
-	CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	pMainDlg->Set_BuzzerFlicker(FALSE);
 }
 

@@ -128,7 +128,7 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {
 	CDialogEx::OnShowWindow(bShow, nStatus);
 
-	CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	if (bShow) {
 		BringWindowToTop();	// 화면 위로...
 
@@ -263,7 +263,7 @@ void CErrorDlg::OnTimer(UINT_PTR nIDEvent)
 
 void CErrorDlg::OnBnClickedBtnErrBuzzOff()
 {
-	CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	pMainDlg->Set_BuzzerFlicker(FALSE);
 }
 
@@ -300,7 +300,7 @@ void CErrorDlg::OnBnClickedBtnErrOk()
 void CErrorDlg::OnBnClickedBtnErrSystemExit()
 {
 	if (g_objCommon.Show_MsgBox(2, "Do you want to exit the program?") != IDOK) return;
-	CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	pMainDlg->Exit_System(EXIT_SYSTEM_AJIN);
 }
 
@@ -332,7 +332,7 @@ void CErrorDlg::OnBnClickedBtnErrToManual()
 		ShowWindow(SW_HIDE);
 
 		g_dlgManual.Set_ManualPos(nManualPos);
-		CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+		CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 		pMainDlg->Set_CurrentMode(MODE_MANUAL);
 
 		strLog.Format("[Error Mode] Manual button push - Pos[%d]", nManualPos);

@@ -312,18 +312,18 @@ typedef union tag_DY_DATA_01 {
 		DWORD o0117 : 1;					// Y0117
 		DWORD o0118 : 1;					// Y0118
 		DWORD o0119 : 1;					// Y0119
-		DWORD oIndexLoadAlignIn : 1;		// Y0120
-		DWORD oIndexLoadAlignOut : 1;		// Y0121
-		DWORD oIndexCleanerAlignIn : 1;		// Y0122
-		DWORD oIndexCleanerAlignOut : 1;	// Y0123
-		DWORD oIndexTopAlignIn : 1;			// Y0124
-		DWORD oIndexTopAlignOut : 1;		// Y0125
-		DWORD oIndexEmptyAlignIn : 1;		// Y0126
-		DWORD oIndexEmptyAlignOut : 1;		// Y0127
-		DWORD oIndexBtmAlignIn : 1;			// Y0128
-		DWORD oIndexBtmtyAlignOut : 1;		// Y0129
-		DWORD oIndexMarkerAlignIn : 1;		// Y0130
-		DWORD oIndexMarkerAlignOut : 1;		// Y0131
+		DWORD oIndexTInOutAlignIn : 1;		// Y0120
+		DWORD oIndexTInOutAlignOut : 1;		// Y0121
+		DWORD oIndexTCleanerAlignIn : 1;		// Y0122
+		DWORD oIndexTCleanerAlignOut : 1;	// Y0123
+		DWORD oIndexTTopAlignIn : 1;			// Y0124
+		DWORD oIndexTTopAlignOut : 1;		// Y0125
+		DWORD oIndexTEmptyAlignIn : 1;		// Y0126
+		DWORD oIndexTEmptyAlignOut : 1;		// Y0127
+		DWORD oIndexTBtmAlignIn : 1;			// Y0128
+		DWORD oIndexTBtmAlignOut : 1;		// Y0129
+		DWORD oIndexTMarkerAlignIn : 1;		// Y0130
+		DWORD oIndexTMarkerAlignOut : 1;		// Y0131
 	};
 } DY_DATA_01;		// Digital Output 01
 

@@ -79,7 +79,7 @@ BOOL CCME8000App::InitInstance()
 
 	InstallCrashHandler();
 
-	CCME8000Dlg dlg;
+	CSingleLensDlg dlg;
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)

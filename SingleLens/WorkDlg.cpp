@@ -344,10 +344,13 @@ void CWorkDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 
 void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 {
-	//KillTimer(0);
+	KillTimer(0);
+	 
+	
+	
 	//KillTimer(1);
 	//
-	//CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+	//CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	//EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
 	//if( nIDEvent == 1)
@@ -653,7 +656,7 @@ void CWorkDlg::OnBnClickedMesCancel()
 void CWorkDlg::OnBnClickedRdoWorkStart()
 {
 	g_objLogFile.Save_HandlerLog("[Work Mode] START button push");
-	CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 
 	pMainDlg->Set_LotErrorLog("START", 903, "Start");
 }
@@ -662,7 +665,7 @@ void CWorkDlg::OnBnClickedRdoWorkStop()
 {
 	g_objLogFile.Save_HandlerLog("[Work Mode] STOP button push");
 	MachineStopLog("STOP_BUTTON_PUSH");
-	CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 
 	pMainDlg->Set_LotErrorLog("STOP", 904, "Stop");
 }
@@ -805,7 +808,7 @@ void CWorkDlg::Initial_Grid(CGridCS *pGrid, int nRows, int nCols, int nNoDir)
 
 void CWorkDlg::Check_Lamp()
 {
-	CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00(); DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01(); DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
@@ -1346,7 +1349,7 @@ LRESULT CWorkDlg::OnVisionResult(WPARAM wParam, LPARAM lParam)
 
 LRESULT CWorkDlg::OnLotStartEnd(WPARAM wParam, LPARAM lParam)
 {
-	CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	int nNo = lParam;
 	if (wParam == 1) {
 		pMainDlg->Set_LotErrorLog("LOT START", 901, "Lot Start", nNo);

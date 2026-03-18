@@ -156,7 +156,7 @@ void CInitialDlg::OnTimer(UINT_PTR nIDEvent)
 
 	Display_Status();
 
-	CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 
 	if (m_rdoInitStart.GetCheck()) {
 		if (!m_bInitialRunning) {	// First Start

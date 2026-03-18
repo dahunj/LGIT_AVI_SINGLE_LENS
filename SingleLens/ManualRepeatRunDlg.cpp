@@ -136,7 +136,7 @@ void CManualRepeatRunDlg::OnBnClickedChkRepeatRun()
 {
 	CString strText, strTemp;
 
-	CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 
 	m_cboPicker.EnableWindow(!m_chkRepeatRun.GetCheck());
 	m_cboPickNum.EnableWindow(!m_chkRepeatRun.GetCheck());

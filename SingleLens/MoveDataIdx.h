@@ -120,7 +120,7 @@ struct Btm_Inspector_Z
 
 
 
-struct Btm_Marker_X
+struct Marker_X
 {
 	enum dtName
 	{
@@ -130,7 +130,7 @@ struct Btm_Marker_X
 
 
 
-struct Btm_Marker_Y
+struct Marker_Y
 {
 	enum dtName
 	{
@@ -140,7 +140,7 @@ struct Btm_Marker_Y
 
 
 
-struct Btm_Marker_Z
+struct Marker_Z
 {
 	enum dtName
 	{

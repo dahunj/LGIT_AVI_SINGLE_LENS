@@ -18,12 +18,12 @@
 #define EXIT_SYSTEM_BARCODE	2
 #define EXIT_SYSTEM_MODEL	3
 
-// CCME8000Dlg 대화 상자
-class CCME8000Dlg : public CDialogEx
+// CSingleLensDlg 대화 상자
+class CSingleLensDlg : public CDialogEx
 {
 // 생성입니다.
 public:
-	CCME8000Dlg(CWnd* pParent = NULL);	// 표준 생성자입니다.
+	CSingleLensDlg(CWnd* pParent = NULL);	// 표준 생성자입니다.
 
 // 대화 상자 데이터입니다.
 	enum { IDD = IDD_CME8000_DIALOG };

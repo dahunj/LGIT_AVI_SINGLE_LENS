@@ -111,16 +111,7 @@ void CAJinAXL::Read_Input()
 	AxdiReadInportDword( 1, 0, &m_DX01.nValue);
 	AxdiReadInportDword( 2, 0, &m_DX02.nValue);
 	AxdiReadInportDword( 3, 0, &m_DX03.nValue);
-	AxdiReadInportDword( 4, 0, &m_DX04.nValue);
-	AxdiReadInportDword( 5, 0, &m_DX05.nValue);
-	AxdiReadInportDword( 6, 0, &m_DX06.nValue);
-	AxdiReadInportDword( 7, 0, &m_DX07.nValue);
-	AxdiReadInportDword( 8, 0, &m_DX08.nValue);
-	AxdiReadInportDword( 9, 0, &m_DX09.nValue);
-	AxdiReadInportDword(10, 0, &m_DX10.nValue);
-	AxdiReadInportDword(11, 0, &m_DX11.nValue);
-	AxdiReadInportDword(12, 0, &m_DX12.nValue);
-	AxdiReadInportDword(13, 0, &m_DX13.nValue);
+	
 #endif
 }
 
@@ -131,16 +122,7 @@ void CAJinAXL::Read_Output()
 	AxdoReadOutportDword(15, 0, &m_DY01.nValue);
 	AxdoReadOutportDword(16, 0, &m_DY02.nValue);
 	AxdoReadOutportDword(17, 0, &m_DY03.nValue);
-	AxdoReadOutportDword(18, 0, &m_DY04.nValue);
-	AxdoReadOutportDword(19, 0, &m_DY05.nValue);
-	AxdoReadOutportDword(20, 0, &m_DY06.nValue);
-	AxdoReadOutportDword(21, 0, &m_DY07.nValue);
-	AxdoReadOutportDword(22, 0, &m_DY08.nValue);
-	AxdoReadOutportDword(23, 0, &m_DY09.nValue);
-	AxdoReadOutportDword(24, 0, &m_DY10.nValue);
-	AxdoReadOutportDword(25, 0, &m_DY11.nValue);
-	AxdoReadOutportDword(26, 0, &m_DY12.nValue);
-	AxdoReadOutportDword(27, 0, &m_DY13.nValue);
+
 #endif
 }
 
@@ -151,16 +133,7 @@ void CAJinAXL::Write_Output(int nModule)
 	if (nModule ==  1) AxdoWriteOutportDword(15, 0, m_DY01.nValue);
 	if (nModule ==  2) AxdoWriteOutportDword(16, 0, m_DY02.nValue);
 	if (nModule ==  3) AxdoWriteOutportDword(17, 0, m_DY03.nValue);
-	if (nModule ==  4) AxdoWriteOutportDword(18, 0, m_DY04.nValue);
-	if (nModule ==  5) AxdoWriteOutportDword(19, 0, m_DY05.nValue);
-	if (nModule ==  6) AxdoWriteOutportDword(20, 0, m_DY06.nValue);
-	if (nModule ==  7) AxdoWriteOutportDword(21, 0, m_DY07.nValue);
-	if (nModule ==  8) AxdoWriteOutportDword(22, 0, m_DY08.nValue);
-	if (nModule ==  9) AxdoWriteOutportDword(23, 0, m_DY09.nValue);
-	if (nModule == 10) AxdoWriteOutportDword(24, 0, m_DY10.nValue);
-	if (nModule == 11) AxdoWriteOutportDword(25, 0, m_DY11.nValue);
-	if (nModule == 12) AxdoWriteOutportDword(26, 0, m_DY12.nValue);
-	if (nModule == 13) AxdoWriteOutportDword(27, 0, m_DY13.nValue);
+
 #else
 	Sim_SetOutToIn(nModule);
 #endif

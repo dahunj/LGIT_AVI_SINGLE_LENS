@@ -53,6 +53,8 @@
 #include "CSClientSocket.h"
 #include "CSGrid.h"
 
+#include "MoveDataIdx.h"
+
 #include <math.h>
 
 #include <dbghelp.h>
@@ -410,10 +412,3 @@ extern GLOVAL_MES	gMes;
 extern GLOBAL_DOORLOCK gDoorLock;
 extern GLOVAL_PART		gPart;
 
-struct Feeder_Y
-{
-	enum dtName
-	{
-		Ready = 0,
-	};
-};

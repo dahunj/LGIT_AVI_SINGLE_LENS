@@ -209,7 +209,7 @@ BOOL CDataManager::Read_EquipData()
 
 
 
-	CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	pMainDlg->Display_EquipName();
 
 	return TRUE;

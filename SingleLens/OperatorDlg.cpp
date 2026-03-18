@@ -301,13 +301,13 @@ void COperatorDlg::OnBnClickedBtnOperCycleStop()
 void COperatorDlg::OnBnClickedBtnOperInitial()
 {
 	ShowWindow(SW_HIDE);
-	CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	pMainDlg->Set_CurrentMode(MODE_INITIAL);
 }
 
 void COperatorDlg::OnBnClickedBtnOperWork()
 {
-	CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 #ifdef DRY_RUN_TEST
 	ShowWindow(SW_HIDE);
 	g_dlgSetup.Set_LoginUser(2);	// SI
@@ -320,13 +320,13 @@ void COperatorDlg::OnBnClickedBtnOperWork()
 	pMainDlg->Set_CurrentMode(MODE_WORK);
 #endif
 // 	ShowWindow(SW_HIDE);
-// 	CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+// 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 // 	pMainDlg->Set_CurrentMode(MODE_WORK);
 }
 
 void COperatorDlg::OnBnClickedBtnOperManual()
 {
-	CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 #ifdef DRY_RUN_TEST
 	ShowWindow(SW_HIDE);
 	g_dlgSetup.Set_LoginUser(2);	// SI
@@ -340,13 +340,13 @@ void COperatorDlg::OnBnClickedBtnOperManual()
 #endif
 
 // 	ShowWindow(SW_HIDE);
-// 	CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+// 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 // 	pMainDlg->Set_CurrentMode(MODE_MANUAL);
 }
 
 void COperatorDlg::OnBnClickedBtnOperSetup()
 {
-	CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 #ifdef DRY_RUN_TEST
 	ShowWindow(SW_HIDE);
 	g_dlgSetup.Set_LoginUser(2);	// SI
@@ -377,7 +377,7 @@ void COperatorDlg::OnBnClickedBtnOperExit()
 	sLog.Format("[Operator] Program Exit button push....  LotID[%s] OperID[%s]", gData.sLotID[nNo], gData.sOperID);
 	g_objLogFile.Save_HandlerLog(sLog);
 
-	CCME8000Dlg *pMainDlg = (CCME8000Dlg*)AfxGetApp()->GetMainWnd();
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	pMainDlg->Exit_System(EXIT_SYSTEM_NONE);
 }
 

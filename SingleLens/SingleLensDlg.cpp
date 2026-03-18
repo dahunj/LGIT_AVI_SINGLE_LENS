@@ -36,15 +36,15 @@
 #define new DEBUG_NEW
 #endif
 
-// CCME8000Dlg 대화 상자
+// CSingleLensDlg 대화 상자
 
-CCME8000Dlg::CCME8000Dlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CCME8000Dlg::IDD, pParent)
+CSingleLensDlg::CSingleLensDlg(CWnd* pParent /*=NULL*/)
+	: CDialogEx(CSingleLensDlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
-void CCME8000Dlg::DoDataExchange(CDataExchange* pDX)
+void CSingleLensDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_IMG_LG_LOGO, m_imgLgLogo);
@@ -69,29 +69,29 @@ void CCME8000Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BTN_MAIN_ALARM, m_btnMainAlarm);
 }
 
-BEGIN_MESSAGE_MAP(CCME8000Dlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CSingleLensDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_WM_DESTROY()
 	ON_WM_SHOWWINDOW()
 	ON_WM_TIMER()
-	ON_BN_CLICKED(IDC_BTN_MAIN_OPERATOR, &CCME8000Dlg::OnBnClickedBtnMainOperator)
-	ON_BN_CLICKED(IDC_RDO_MAIN_PARAM, &CCME8000Dlg::OnBnClickedRdoMainParam)
-	ON_BN_CLICKED(IDC_RDO_MAIN_WORK, &CCME8000Dlg::OnBnClickedRdoMainWork)
-	ON_BN_CLICKED(IDC_RDO_MAIN_MANUAL, &CCME8000Dlg::OnBnClickedRdoMainManual)
-	ON_BN_CLICKED(IDC_RDO_MAIN_SETUP, &CCME8000Dlg::OnBnClickedRdoMainSetup)
-	ON_BN_CLICKED(IDC_RDO_MAIN_PROHIBIT, &CCME8000Dlg::OnBnClickedRdoMainProhibit)
-	ON_BN_CLICKED(IDC_BTN_MAIN_MONITOR, &CCME8000Dlg::OnBnClickedBtnMainMonitor)
-	ON_BN_CLICKED(IDC_BTN_MAIN_IO, &CCME8000Dlg::OnBnClickedBtnMainIO)
-	ON_BN_CLICKED(IDC_BTN_MAIN_ALARM, &CCME8000Dlg::OnBnClickedBtnMainAlarm)
-	ON_BN_CLICKED(IDC_BTN_MAIN_EXIT, &CCME8000Dlg::OnBnClickedBtnMainExit)
-	ON_STN_CLICKED(IDC_STC_MAIN_VER, &CCME8000Dlg::OnStnClickedStcMainVer)
-	ON_STN_DBLCLK(IDC_STC_MAIN_EQUIP, &CCME8000Dlg::OnDblclkStcMainEquip)
+	ON_BN_CLICKED(IDC_BTN_MAIN_OPERATOR, &CSingleLensDlg::OnBnClickedBtnMainOperator)
+	ON_BN_CLICKED(IDC_RDO_MAIN_PARAM, &CSingleLensDlg::OnBnClickedRdoMainParam)
+	ON_BN_CLICKED(IDC_RDO_MAIN_WORK, &CSingleLensDlg::OnBnClickedRdoMainWork)
+	ON_BN_CLICKED(IDC_RDO_MAIN_MANUAL, &CSingleLensDlg::OnBnClickedRdoMainManual)
+	ON_BN_CLICKED(IDC_RDO_MAIN_SETUP, &CSingleLensDlg::OnBnClickedRdoMainSetup)
+	ON_BN_CLICKED(IDC_RDO_MAIN_PROHIBIT, &CSingleLensDlg::OnBnClickedRdoMainProhibit)
+	ON_BN_CLICKED(IDC_BTN_MAIN_MONITOR, &CSingleLensDlg::OnBnClickedBtnMainMonitor)
+	ON_BN_CLICKED(IDC_BTN_MAIN_IO, &CSingleLensDlg::OnBnClickedBtnMainIO)
+	ON_BN_CLICKED(IDC_BTN_MAIN_ALARM, &CSingleLensDlg::OnBnClickedBtnMainAlarm)
+	ON_BN_CLICKED(IDC_BTN_MAIN_EXIT, &CSingleLensDlg::OnBnClickedBtnMainExit)
+	ON_STN_CLICKED(IDC_STC_MAIN_VER, &CSingleLensDlg::OnStnClickedStcMainVer)
+	ON_STN_DBLCLK(IDC_STC_MAIN_EQUIP, &CSingleLensDlg::OnDblclkStcMainEquip)
 END_MESSAGE_MAP()
 
-// CCME8000Dlg 메시지 처리기
+// CSingleLensDlg 메시지 처리기
 
-void CCME8000Dlg::Initial_Controls() 
+void CSingleLensDlg::Initial_Controls() 
 {
 	m_bmpLgLogo.LoadBitmap(IDB_LGINNOTEK_LOGO);
 	m_imgLgLogo.SetBitmap(m_bmpLgLogo);
@@ -122,7 +122,7 @@ void CCME8000Dlg::Initial_Controls()
 	m_btnMainExit.Init_Ctrl("Segoe UI", 14, TRUE, COLOR_DEFAULT, COLOR_DEFAULT, 0, 0);
 }
 
-BOOL CCME8000Dlg::OnInitDialog()
+BOOL CSingleLensDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -179,7 +179,7 @@ BOOL CCME8000Dlg::OnInitDialog()
 //  아래 코드가 필요합니다. 문서/뷰 모델을 사용하는 MFC 응용 프로그램의 경우에는
 //  프레임워크에서 이 작업을 자동으로 수행합니다.
 
-void CCME8000Dlg::OnPaint()
+void CSingleLensDlg::OnPaint()
 {
 	if (IsIconic())
 	{
@@ -206,12 +206,12 @@ void CCME8000Dlg::OnPaint()
 
 // 사용자가 최소화된 창을 끄는 동안에 커서가 표시되도록 시스템에서
 //  이 함수를 호출합니다.
-HCURSOR CCME8000Dlg::OnQueryDragIcon()
+HCURSOR CSingleLensDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-BOOL CCME8000Dlg::PreTranslateMessage(MSG* pMsg)
+BOOL CSingleLensDlg::PreTranslateMessage(MSG* pMsg)
 {
 	if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE))
 		return TRUE;
@@ -219,7 +219,7 @@ BOOL CCME8000Dlg::PreTranslateMessage(MSG* pMsg)
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
-void CCME8000Dlg::OnDestroy()
+void CSingleLensDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
 	
@@ -242,7 +242,7 @@ void CCME8000Dlg::OnDestroy()
 		
 }
 
-void CCME8000Dlg::OnShowWindow(BOOL bShow, UINT nStatus)
+void CSingleLensDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {
 	CDialogEx::OnShowWindow(bShow, nStatus);
 
@@ -301,7 +301,7 @@ void CCME8000Dlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	g_dlgWork.MachineStopLog("PROGRAM_BEGIN");
 }
 
-void CCME8000Dlg::OnTimer(UINT_PTR nIDEvent)
+void CSingleLensDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	switch (nIDEvent) {
 	case TIMER_DATE_TIME:
@@ -331,7 +331,7 @@ void CCME8000Dlg::OnTimer(UINT_PTR nIDEvent)
 	CDialogEx::OnTimer(nIDEvent);
 }
 
-void CCME8000Dlg::OnBnClickedBtnMainOperator()
+void CSingleLensDlg::OnBnClickedBtnMainOperator()
 {
 	int nMode = theApp.Get_MainMode();
 	if (nMode == MODE_OPERATOR) {
@@ -348,7 +348,7 @@ void CCME8000Dlg::OnBnClickedBtnMainOperator()
 	else Set_CurrentMode(MODE_OPERATOR);
 }
 
-void CCME8000Dlg::OnBnClickedRdoMainParam()
+void CSingleLensDlg::OnBnClickedRdoMainParam()
 {
 #ifdef DRY_RUN_TEST
 	g_dlgSetup.Set_LoginUser(2);	// SI
@@ -371,17 +371,17 @@ void CCME8000Dlg::OnBnClickedRdoMainParam()
 #endif
 }
 
-void CCME8000Dlg::OnBnClickedRdoMainWork()
+void CSingleLensDlg::OnBnClickedRdoMainWork()
 {
 	Set_CurrentMode(MODE_WORK);
 }
 
-void CCME8000Dlg::OnBnClickedRdoMainManual()
+void CSingleLensDlg::OnBnClickedRdoMainManual()
 {
 	Set_CurrentMode(MODE_MANUAL);
 }
 
-void CCME8000Dlg::OnBnClickedRdoMainSetup()
+void CSingleLensDlg::OnBnClickedRdoMainSetup()
 {
 #ifdef DRY_RUN_TEST
 	g_dlgSetup.Set_LoginUser(2);	// SI
@@ -404,12 +404,12 @@ void CCME8000Dlg::OnBnClickedRdoMainSetup()
 #endif
 }
 
-void CCME8000Dlg::OnBnClickedRdoMainProhibit()
+void CSingleLensDlg::OnBnClickedRdoMainProhibit()
 {
 	Set_CurrentMode(MODE_PROHIBIT);
 }
 
-void CCME8000Dlg::OnBnClickedBtnMainMonitor()
+void CSingleLensDlg::OnBnClickedBtnMainMonitor()
 {
 	theApp.bIoMode = FALSE;
 	theApp.bAlarmMode = FALSE;
@@ -417,7 +417,7 @@ void CCME8000Dlg::OnBnClickedBtnMainMonitor()
 	else g_dlgMonitor.ShowWindow(SW_SHOW);	
 }
 
-void CCME8000Dlg::OnBnClickedBtnMainIO()
+void CSingleLensDlg::OnBnClickedBtnMainIO()
 {
 	theApp.bIoMode = TRUE;
 	theApp.bAlarmMode = FALSE;
@@ -425,7 +425,7 @@ void CCME8000Dlg::OnBnClickedBtnMainIO()
 	g_dlgMonitor.ShowWindow(SW_SHOW);	
 }
 
-void CCME8000Dlg::OnBnClickedBtnMainAlarm()
+void CSingleLensDlg::OnBnClickedBtnMainAlarm()
 {
 	theApp.bIoMode = FALSE;
 	theApp.bAlarmMode = TRUE;
@@ -433,13 +433,13 @@ void CCME8000Dlg::OnBnClickedBtnMainAlarm()
 	g_dlgMonitor.ShowWindow(SW_SHOW);	
 }
 
-void CCME8000Dlg::OnBnClickedBtnMainExit()
+void CSingleLensDlg::OnBnClickedBtnMainExit()
 {
 	if (g_objCommon.Show_MsgBox(2, "Do you want to exit the program?") != IDOK) return;
 	Exit_System(EXIT_SYSTEM_NONE);
 }
 
-void CCME8000Dlg::OnStnClickedStcMainVer()
+void CSingleLensDlg::OnStnClickedStcMainVer()
 {
 	if (g_dlgVersion.IsWindowVisible()) {
 		g_dlgVersion.ShowWindow(FALSE);
@@ -453,7 +453,7 @@ void CCME8000Dlg::OnStnClickedStcMainVer()
 	}
 }
 
-void CCME8000Dlg::OnDblclkStcMainEquip()
+void CSingleLensDlg::OnDblclkStcMainEquip()
 {
 	CWnd *pDeskTopWnd = GetDesktopWindow();
 	if (!pDeskTopWnd) return;
@@ -487,7 +487,7 @@ void CCME8000Dlg::OnDblclkStcMainEquip()
 /////////////////////////////////////////////////////////////////////////////
 // User Functions
 
-void CCME8000Dlg::Hide_ModeWindows(int nMode, int nPreMode)
+void CSingleLensDlg::Hide_ModeWindows(int nMode, int nPreMode)
 {
 	m_rdoMainParm.Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
 	m_rdoMainWork.Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
@@ -520,7 +520,7 @@ void CCME8000Dlg::Hide_ModeWindows(int nMode, int nPreMode)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void CCME8000Dlg::Set_CurrentMode(int nMode)
+void CSingleLensDlg::Set_CurrentMode(int nMode)
 {
 	int nPreMode = theApp.Get_MainMode();
 	gData.nStatus = nPreMode;
@@ -587,7 +587,7 @@ void CCME8000Dlg::Set_CurrentMode(int nMode)
 	theApp.Set_MainMode(nMode);
 }
 
-void CCME8000Dlg::Set_CurrentState(int nState)
+void CSingleLensDlg::Set_CurrentState(int nState)
 {
 	KillTimer(TIMER_TOWER_FLKR);
 	KillTimer(TIMER_BUZZER_FLKR);
@@ -597,57 +597,57 @@ void CCME8000Dlg::Set_CurrentState(int nState)
 	g_dlgWork.Set_State(nState);
 }
 
-void CCME8000Dlg::Set_InsideLight()
+void CSingleLensDlg::Set_InsideLight()
 {
 	
 }
 
-void CCME8000Dlg::Set_TowerFlicker(BOOL bEnable)
+void CSingleLensDlg::Set_TowerFlicker(BOOL bEnable)
 {
 	
 }
 
-void CCME8000Dlg::Set_BuzzerFlicker(BOOL bEnable)
+void CSingleLensDlg::Set_BuzzerFlicker(BOOL bEnable)
 {
 	
 }
 
-void CCME8000Dlg::Set_LampFlicker_Load1(BOOL bEnable)
+void CSingleLensDlg::Set_LampFlicker_Load1(BOOL bEnable)
 {
 	
 }
 
-void CCME8000Dlg::Set_LampFlicker_Load2(BOOL bEnable)
+void CSingleLensDlg::Set_LampFlicker_Load2(BOOL bEnable)
 {
 	
 }
 
-void CCME8000Dlg::Set_LampFlicker_Load3(BOOL bEnable)
+void CSingleLensDlg::Set_LampFlicker_Load3(BOOL bEnable)
 {
 	
 }
 
-void CCME8000Dlg::Set_LampFlicker_Cap1(BOOL bEnable)
+void CSingleLensDlg::Set_LampFlicker_Cap1(BOOL bEnable)
 {
 	
 }
 
-void CCME8000Dlg::Set_LampFlicker_Cap2(BOOL bEnable)
+void CSingleLensDlg::Set_LampFlicker_Cap2(BOOL bEnable)
 {
 	
 }
 
-void CCME8000Dlg::Set_LampFlicker_Unload1(BOOL bEnable)
+void CSingleLensDlg::Set_LampFlicker_Unload1(BOOL bEnable)
 {
 	
 }
 
-void CCME8000Dlg::Set_LampFlicker_Unload2(BOOL bEnable)
+void CSingleLensDlg::Set_LampFlicker_Unload2(BOOL bEnable)
 {
 	
 }
 
-void CCME8000Dlg::Enable_ModeButton(BOOL bEnable)
+void CSingleLensDlg::Enable_ModeButton(BOOL bEnable)
 {
 	m_btnMainOperator.EnableWindow(bEnable);
 	m_rdoMainWork.EnableWindow(bEnable);
@@ -657,14 +657,14 @@ void CCME8000Dlg::Enable_ModeButton(BOOL bEnable)
 	m_rdoMainParm.EnableWindow(bEnable);
 }
 
-void CCME8000Dlg::Display_EquipName()
+void CSingleLensDlg::Display_EquipName()
 {
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	CString strText = pEquipData->sEquipName + " ( " + gData.sRecipe + " )";
 	m_stcMainEquip.SetWindowText(strText);
 }
 
-void CCME8000Dlg::Display_DateTime()
+void CSingleLensDlg::Display_DateTime()
 {
 	CTime datetime = CTime::GetCurrentTime();
 
@@ -697,7 +697,7 @@ void CCME8000Dlg::Display_DateTime()
 	}
 }
 
-void CCME8000Dlg::Exit_System(int nExitNo)
+void CSingleLensDlg::Exit_System(int nExitNo)
 {
 	if (nExitNo == EXIT_SYSTEM_AJIN) g_objCommon.Show_MsgBox(1, "Fail to motion initialization.");
 	if (nExitNo == EXIT_SYSTEM_BARCODE) g_objCommon.Show_MsgBox(1, "Fail to barcode initialization.");
@@ -740,7 +740,7 @@ void CCME8000Dlg::Exit_System(int nExitNo)
 	EndDialog(IDOK);
 }
 
-void CCME8000Dlg::Global_Initial()
+void CSingleLensDlg::Global_Initial()
 {
 	gUph.dTaktTime = 0.0;
 	for (int i = 0; i < 24; i++) for (int j = 0; j < 50; j++) gUph.dTakt[i][j] = 0.0;
@@ -748,13 +748,13 @@ void CCME8000Dlg::Global_Initial()
 	for (int i = 0; i < 2; i++) gUph.nCmCount[i] = 0;
 }
 
-void CCME8000Dlg::Set_EquipRunStart()
+void CSingleLensDlg::Set_EquipRunStart()
 {
 	m_dwEquipRunStart = GetTickCount();
 	g_objLogFile.Save_HandlerLog("[Equipment Run Time] Start Run Time");
 }
 
-void CCME8000Dlg::Save_EquipRunTime()
+void CSingleLensDlg::Save_EquipRunTime()
 {
 	if (m_dwEquipRunStart == 0) return;
 
@@ -780,7 +780,7 @@ void CCME8000Dlg::Save_EquipRunTime()
 	m_dwEquipRunStart = 0;
 }
 
-void CCME8000Dlg::Clear_EquipRunTime()
+void CSingleLensDlg::Clear_EquipRunTime()
 {
 	CString strTemp;
 	strTemp = "\\System\\EquipData.ini";
@@ -792,7 +792,7 @@ void CCME8000Dlg::Clear_EquipRunTime()
 	g_objLogFile.Save_HandlerLog("[Equipment Run Time] Clear Run Time");
 }
 
-void CCME8000Dlg::Save_EquipCappingCnt()
+void CSingleLensDlg::Save_EquipCappingCnt()
 {
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
@@ -809,7 +809,7 @@ void CCME8000Dlg::Save_EquipCappingCnt()
 	g_objLogFile.Save_HandlerLog(strLog);
 }
 
-void CCME8000Dlg::Set_LotErrorLog(CString sEvent, int nErrCode, CString sMessage, int nPNo)
+void CSingleLensDlg::Set_LotErrorLog(CString sEvent, int nErrCode, CString sMessage, int nPNo)
 {
 	CString strModel, strAction, strLog;
 	int nNo = nPNo-1;
@@ -834,7 +834,7 @@ void CCME8000Dlg::Set_LotErrorLog(CString sEvent, int nErrCode, CString sMessage
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void CCME8000Dlg::Set_LotStateTime()
+void CSingleLensDlg::Set_LotStateTime()
 {
 	// 	if (!g_objSequenceMain.Get_IsAutoRun())return;
 	if (m_dwSetTimer == 0) { m_dwSetTimer = GetTickCount(); return; }
@@ -856,7 +856,7 @@ void CCME8000Dlg::Set_LotStateTime()
 }
 
 
-void CCME8000Dlg::Set_DoorLock()
+void CSingleLensDlg::Set_DoorLock()
 {
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	if (pEquipData->bUseDoorLock) return;
