@@ -4,6 +4,11 @@
 
 // CInspector
 
+const int VISION_ALL	= 0;	// PC1, PC2, PC3, PC4, PC5
+const int VISION_PC1	= 1;	// Top Camera1, Btm Camera1
+const int VISION_PC2	= 2;	// Top Camera2, Btm Camera2
+
+
 class CInspector : public CWnd
 {
 	DECLARE_DYNAMIC(CInspector)

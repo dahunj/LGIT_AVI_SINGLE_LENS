@@ -2,18 +2,18 @@
 //
 #pragma once
 
-#define AUTO_COUNT			16
+#define AUTO_COUNT			10
 
-#define AUTO_CONVEYOR	0
-#define AUTO_MZ_ElEVATOR	1
-#define AUTO_FEEDER	2
-#define AUTO_TRAY_PICKER	3
-#define AUTO_LENS_CLEANER	4
-#define AUTO_TOP_INSPECT	5
-#define AUTO_BTM_INSPECT	6
-#define AUTO_MARKER		7
+#define AUTO_LD_CONVEYOR		0
+#define AUTO_MZ_ELEVATOR		1
+#define AUTO_FEEDER				2
+#define AUTO_TRAY_PICKER		3
+#define AUTO_LENS_CLEANER		4
+#define AUTO_TOP_INSPECT		5
+#define AUTO_BTM_INSPECT		6
+#define AUTO_MARKER				7
 #define AUTO_INDEX_TABLE		8
-
+#define AUTO_UL_CONVEYOR		9
 
 // Module Tracking
 #define LOAD_STAGE        0   

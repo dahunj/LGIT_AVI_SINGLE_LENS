@@ -124,8 +124,8 @@ typedef union tag_DX_DATA_00 {
 		DWORD iUnloadCVStopperUp	: 1;		// X0022
 		DWORD iUnloadCVStopperDown	: 1;		// X0023
 		DWORD i0024 : 1;						// X0024
-		DWORD i0025 : 1;						// X0025
-		DWORD i0026 : 1;						// X0026
+		DWORD iMZElevExistLeft : 1;			// X0025 - 임시 부여 
+		DWORD iMZElevExistRight : 1;			// X0026 - 임시 부여 
 		DWORD i0027 : 1;						// X0027
 		DWORD iMZLoadSW1 : 1;					// X0028
 		DWORD iMZLoadSW2 : 1;					// X0029

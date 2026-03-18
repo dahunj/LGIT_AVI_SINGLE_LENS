@@ -346,107 +346,84 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	KillTimer(0);
 	 
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	
+	DX_DATA_03 *pDX03 = g_objAJinAXL.Get_pDX03();
+
+	if (pDX03->iStartSW && !m_rdoWorkStart.GetCheck()) 
+	{
+		g_objLogFile.Save_HandlerLog("[Work Mode] START S/W push");
+		m_rdoWorkStart.SetCheck(TRUE);
+		pMainDlg->Set_LotErrorLog("START", 903, "Start");
+		SetTimer(0, 100, NULL);
+		
+		return;
+	} 
+	else if (pDX03->iStopSW && !m_rdoWorkStop.GetCheck()) 
+	{
+		g_objLogFile.Save_HandlerLog("[Work Mode] STOP S/W push");
+		MachineStopLog("STOP_BUTTON_PUSH");
+		m_rdoWorkStop.SetCheck(TRUE);
+		pMainDlg->Set_LotErrorLog("STOP", 904, "Stop");
+		
+		
+		return;
+	}
+
+	Display_Status();
+
+
+	if (m_rdoWorkStart.GetCheck()) {
+		if (!m_bAutoRunning) {		// First AutoRun
+			if (!g_objSequenceInit.Get_InitComplete()) { g_objCommon.Show_Error(50); SetTimer(0, 100, NULL); return; }
+
+			if (!Work_Start()) { m_rdoWorkStop.SetCheck(TRUE); SetTimer(0, 100, NULL); return; }
+
+			m_bAutoRunning = TRUE;
+			if (gData.bCycleStop && !m_bCycleStopRun) m_bCycleStopRun = TRUE;
+
+			//if (gAlm.bBegin) g_objMesAgent.Reset_AlarmLog();
+			//g_objMesAgent.Set_EquipState(1, 0, 0);		// Run
+
+			g_objCommon.Locking_MainDoor(TRUE);
+			pMainDlg->Enable_ModeButton(FALSE);
+			pMainDlg->Set_CurrentState(STATE_RUN);
+
+			g_objSequenceMain.Begin_MainRunThread();
+			//g_objInspector.Set_StatusUpdate(VISION_ALL, 2);
+
+		} else {	// Auto Running
+			if (!g_objSequenceMain.Is_MainThreadRun()) {
+				g_objLogFile.Save_HandlerLog("[Work Mode] Auto STOP");
+				pMainDlg->Set_CurrentState(STATE_STOP);
+			}
+		}
+
+	} else if (m_rdoWorkStop.GetCheck()) {
+		if (m_bAutoRunning) {	// First AutoStop
+			m_bAutoRunning = FALSE;
+			
+			g_objSequenceMain.End_MainRunThread();
+
+			int nState = theApp.Get_MainState();
+			if (nState != STATE_ALARM && nState != STATE_ERROR) pMainDlg->Set_CurrentState(STATE_STOP);
+			//g_objInspector.Set_StatusUpdate(VISION_ALL, 1);
+
+			m_rdoWorkStart.Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
+			m_rdoWorkStop.Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
+
+			pMainDlg->Enable_ModeButton(TRUE);
+			g_objCommon.Locking_MainDoor(FALSE);
+
+		} else {	// Stop
+			int nState = theApp.Get_MainState();
+			if (nState != STATE_ERROR) g_objCommon.Check_MainEmgAir();	// Emg & Main Air
+		}
+	}
 	
-	//KillTimer(1);
-	//
-	//CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
-	//EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-
-	//if( nIDEvent == 1)
-	//{
-	//	g_objAviHandler.Set_ConnectRequest();
-	//	if (pEquipData->bUseVisionCmAlign) g_objInspector.Set_StatusRequest();
-	//}
-	//DX_DATA_12 *pDX12 = g_objAJinAXL.Get_pDX12();
-	//
-	//if (pDX12->iStartSw && !m_rdoWorkStart.GetCheck()) 
-	//{
-	//	g_objLogFile.Save_HandlerLog("[Work Mode] START S/W push");
-	//	m_rdoWorkStart.SetCheck(TRUE);
-	//	pMainDlg->Set_LotErrorLog("START", 903, "Start");
-	//	SetTimer(0, 100, NULL);
-	//	//SetTimer(1, 5000, NULL);
-	//	return;
-	//} 
-	//else if (pDX12->iStopSw && !m_rdoWorkStop.GetCheck()) 
-	//{
-	//	g_objLogFile.Save_HandlerLog("[Work Mode] STOP S/W push");
-	//	MachineStopLog("STOP_BUTTON_PUSH");
-	//	m_rdoWorkStop.SetCheck(TRUE);
-	//	pMainDlg->Set_LotErrorLog("STOP", 904, "Stop");
-	//	SetTimer(0, 100, NULL);
-	//	//SetTimer(1, 5000, NULL);
-	//	return;
-	//}
-
-	//if (pDX12->iResetSw) g_objCommon.Show_Alarm("", STATE_ALARM, FALSE);	// Alarm Off
-
-	//Check_Lamp();	// Load1/2, NG, Good Port Lamp Switch
-	//Display_Status();
-
-	//if (m_rdoWorkStart.GetCheck()) {
-	//	if (!m_bAutoRunning) {	// First AutoRun
-	//		if (!g_objSequenceInit.Get_InitComplete()) { g_objCommon.Show_Error(40); SetTimer(0, 100, NULL); return; }
-
-	//		if (!Work_Start()) { m_rdoWorkStop.SetCheck(TRUE); SetTimer(0, 100, NULL); return; }
-
-	//		m_bAutoRunning = TRUE;
-
-	//	
-	//		/*if (!bLoad1)					g_objCommon.Locking_PortSlide(TRUE, 1);
-	//		if (!bLoad2)					g_objCommon.Locking_PortSlide(TRUE, 2);
-	//		if (!gData.bLoadPort3Wait)		g_objCommon.Locking_PortSlide(TRUE, 3);
-	//		if (!gData.bCapPort1Wait)		g_objCommon.Locking_PortSlide(TRUE, 4);
-	//		if (!gData.bCapPort2Wait)		g_objCommon.Locking_PortSlide(TRUE, 5);
-	//		if (!gData.bUnloadPort1Wait)	g_objCommon.Locking_PortSlide(TRUE, 6);
-	//		if (!gData.bUnloadPort2Wait)	g_objCommon.Locking_PortSlide(TRUE, 7);*/
-	//				
-	//		g_objCommon.Locking_MainDoor(TRUE, TRUE);
-	//		pMainDlg->Enable_ModeButton(FALSE);
-	//		if (gAlm.bBegin) Reset_AlarmLog();
-	//		pMainDlg->Set_CurrentState(STATE_RUN);
-
-	//		//g_objSequenceMain.Begin_MainRunThread();
-	//		pMainDlg->Set_EquipRunStart();
-	//		MachineStopLog("RUN_START");
-
-	//	} else {				// Auto Running
-	//		/*if (!g_objSequenceMain.Is_MainThreadRun()) {
-	//		g_objLogFile.Save_HandlerLog("[Work Mode] Auto STOP");
-	//		pMainDlg->Set_CurrentState(STATE_STOP);
-	//		}*/
-	//	}
-
-	//} else if (m_rdoWorkStop.GetCheck()) {
-	//	if (m_bAutoRunning) {	// First AutoStop
-	//		m_bAutoRunning = FALSE;
-
-	//		//g_objSequenceMain.End_MainRunThread();
-
-	//		int nState = theApp.Get_MainState();
-	//		if (nState != STATE_ALARM && nState != STATE_ERROR) pMainDlg->Set_CurrentState(STATE_STOP);
-
-	//		m_rdoWorkStart.Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
-	//		m_rdoWorkStop.Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
-
-	//		pMainDlg->Enable_ModeButton(TRUE);
-	//		g_objCommon.Locking_MainDoor(FALSE);
-	//		g_objCommon.Locking_PortSlide(FALSE);
-
-	//		pMainDlg->Save_EquipRunTime();
-	//		g_objCommon.Save_MotionPos();
-
-	//	} else {				// Stop
-	//		int nState = theApp.Get_MainState();
-	//		if (nState != STATE_ERROR) g_objCommon.Check_MainEmgAir();
-	//	}
-	//}
-
-	//SetTimer(0, 100, NULL);
-	//SetTimer(1, 5000, NULL);
-
-
+	SetTimer(0, 100, NULL);
+	
 	CDialogEx::OnTimer(nIDEvent);
 }
 

@@ -9,15 +9,15 @@
 #endif
 
 
-// CCME8000App
+// CSingleLensApp
 
-BEGIN_MESSAGE_MAP(CCME8000App, CWinApp)
+BEGIN_MESSAGE_MAP(CSingleLensApp, CWinApp)
 	ON_COMMAND(ID_HELP, &CWinApp::OnHelp)
 END_MESSAGE_MAP()
 
 
-// CCME8000App 생성
-CCME8000App::CCME8000App()
+// CSingleLensApp 생성
+CSingleLensApp::CSingleLensApp()
 {
 	// 다시 시작 관리자 지원
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;
@@ -26,11 +26,11 @@ CCME8000App::CCME8000App()
 	// InitInstance에 모든 중요한 초기화 작업을 배치합니다.
 }
 
-// 유일한 CCME8000App 개체입니다.
-CCME8000App theApp;
+// 유일한 CSingleLensApp 개체입니다.
+CSingleLensApp theApp;
 
-// CCME8000App 초기화
-BOOL CCME8000App::InitInstance()
+// CSingleLensApp 초기화
+BOOL CSingleLensApp::InitInstance()
 {
 	// 응용 프로그램 매니페스트가 ComCtl32.dll 버전 6 이상을 사용하여 비주얼 스타일을
 	// 사용하도록 지정하는 경우, Windows XP 상에서 반드시 InitCommonControlsEx()가 필요합니다.
@@ -105,7 +105,7 @@ BOOL CCME8000App::InitInstance()
 	return FALSE;
 }
 
-void CCME8000App::DoEvents()
+void CSingleLensApp::DoEvents()
 {
 	MSG msg;
 	if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
@@ -114,7 +114,7 @@ void CCME8000App::DoEvents()
 	}
 }
 
-void CCME8000App::uSleep(int msec)
+void CSingleLensApp::uSleep(int msec)
 {
 	DWORD dwStart = GetTickCount();
 	int dwTerm = 0;
@@ -127,7 +127,7 @@ void CCME8000App::uSleep(int msec)
 
 
 
-void CCME8000App::InstallCrashHandler()
+void CSingleLensApp::InstallCrashHandler()
 {
 	SetUnhandledExceptionFilter(MyUnhandledExceptionFilter);
 

@@ -136,7 +136,11 @@ private:
 
 
 	CBitmap	m_bmpEquipment;
+
 	BOOL	m_bAutoRunning;
+	BOOL	m_bCycleStopRun;
+
+
 	int		m_nGroupNo;
 
 	int		m_nBuffChange;

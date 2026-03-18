@@ -29,13 +29,13 @@
 #define STATE_CAPTRAY		7
 #define STATE_SHIPTRAY		8
 
-// CCME8000App:
+// CSingleLensApp:
 // 이 클래스의 구현에 대해서는 SingleLens.cpp을 참조하십시오.
 //
-class CCME8000App : public CWinApp
+class CSingleLensApp : public CWinApp
 {
 public:
-	CCME8000App();
+	CSingleLensApp();
 
 // 재정의입니다.
 public:
@@ -66,7 +66,7 @@ public:
 };
 
 
-extern CCME8000App theApp;
+extern CSingleLensApp theApp;
 
 static void Create_Folder(CString sPath)
 {
