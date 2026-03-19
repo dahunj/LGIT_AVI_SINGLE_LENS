@@ -245,7 +245,7 @@ BOOL CSequenceMain::LoadConveyorRun()
 	}
 
 
-	// 8. (Error : 3100)
+	// 1. (Error : 3100)
 	if (m_nLoadConveyorLoop.Over_LoopTime()) 
 	{		
 		g_objCommon.Show_Error(3100 + m_nLoadConveyorCase);
@@ -255,6 +255,7 @@ BOOL CSequenceMain::LoadConveyorRun()
 	return TRUE;
 }
 
+//  2. (Error : 3400)
 BOOL CSequenceMain::MZElevRun()
 {
 	//Suppose MZ on Right of Elev
@@ -338,12 +339,12 @@ BOOL CSequenceMain::MZElevRun()
 	case 102:
 		if(g_objCommon.Check_Position(AX_FEEDER_X, Feeder_X::MZRight))
 		{
-			g_objCommon.Move_Position(AX_FEEDER_Y Feeder_Y::Sensor);
+			g_objCommon.Move_Position(AX_FEEDER_Y, Feeder_Y::Sensing);
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 103:
-		if(g_objCommon.Check_Position(AX_FEEDER_Y, Feeder_Y::Sensor))
+		if(g_objCommon.Check_Position(AX_FEEDER_Y, Feeder_Y::Sensing))
 		{
 			if(m_pDX01->iFeederCoatJigCheck)
 			{
@@ -352,57 +353,170 @@ BOOL CSequenceMain::MZElevRun()
 			}
 			else
 			{
-				g_objAJinAXL.Move_Relative(AX_MZ_ELEV_Z,  m_pEquipData->dMZPitchZ*(1.0)); 				
+				g_objAJinAXL.Move_Relative(AX_MZ_ELEV_Z,  m_pEquipData->dMZPitchZ*(1.0)); 
+				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 			}
 		}
 		break;
+	case 104:
+		break;
 	case 110:
-
-
+		if(g_objCommon.Check_Position(AX_FEEDER_Y, Feeder_Y::JigRight))
+		{
+			m_pDY01->oFeederGripClose = TRUE; m_pDY01->oFeederGripOpen = FALSE;
+			g_objAJinAXL.Write_Output(1);
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 111:
+		if(m_pDX01->iFeederGripClose && !m_pDX01->iFeederGripOpen)
+		{
+			g_objCommon.Move_Position(AX_FEEDER_Y, Feeder_Y::Rail);
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 112:
+		if(g_objCommon.Check_Position(AX_FEEDER_Y, Feeder_Y::Rail))
+		{
+			g_objCommon.Move_Position(AX_FEEDER_X, Feeder_X::Rail);
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 113:
+		if(g_objCommon.Check_Position(AX_FEEDER_X, Feeder_X::Rail))
+		{
+			m_pDY01->oFeederGripClose = FALSE; m_pDY01->oFeederGripOpen = TRUE;
+			g_objAJinAXL.Write_Output(1);
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 114:
+		if(m_pDX01->iFeederGripOpen && !m_pDX01->iFeederGripClose)
+		{
+			g_objCommon.Move_Position(AX_FEEDER_Y, Feeder_Y::Ready);
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 115:
+		if(g_objCommon.Check_Position(AX_FEEDER_Y, Feeder_Y::Ready))
+		{
+			g_objCommon.Move_Position(AX_FEEDER_X, Feeder_X::Ready);
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 116:
+		if(g_objCommon.Check_Position(AX_FEEDER_X, Feeder_X::Ready))
+		{
+			m_nTrayPickerCase = 1; // Tray Picker load Start 
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+		}
+		break;
 	}
 
-
+	// 2. (Error : 3400)
+	if (m_nMZElevLoop.Over_LoopTime()) 
+	{		
+		g_objCommon.Show_Error(3400 + m_nMZElevCase);
+		return FALSE;
+	}
 
 	return TRUE;
 }
-
+// 3. (Error : 3700)
 BOOL CSequenceMain::FeederRun()
 {
+
+	// 3. (Error : 3700)
+	if (m_nFeederLoop.Over_LoopTime()) 
+	{		
+		g_objCommon.Show_Error(3700 + m_nFeederCase);
+		return FALSE;
+	}
+
 	return TRUE;
 }
-
+// 4. (Error : 4000)
 BOOL CSequenceMain::TrayPickerRun()
 {
+	// 4. (Error : 4000)
+	if (m_nTrayPickerLoop.Over_LoopTime()) 
+	{		
+		g_objCommon.Show_Error(4000 + m_nTrayPickerCase);
+		return FALSE;
+	}
 	return TRUE;
 }
 
+// 5. (Error : 4300)
 BOOL CSequenceMain::LensCleanerRun()
 {
+
+
+	// 5. (Error : 4300)
+	if (m_nLensCleanerLoop.Over_LoopTime()) 
+	{		
+		g_objCommon.Show_Error(4300 + m_nLensCleanerCase);
+		return FALSE;
+	}
 	return TRUE;
 }
 
+// 6. (Error : 4600)
 BOOL CSequenceMain::TopInspectorRun()
 {
+	// 6. (Error : 4600)
+	if (m_nTopInspectLoop.Over_LoopTime()) 
+	{		
+		g_objCommon.Show_Error(4600 + m_nTopInspectCase);
+		return FALSE;
+	}
 	return TRUE;
 }
 
+// 7. (Error : 4900)
 BOOL CSequenceMain::BtmInspectorRun()
 {
+	// 7. (Error : 4900)
+	if (m_nBtmInspectLoop.Over_LoopTime()) 
+	{		
+		g_objCommon.Show_Error(4900 + m_nBtmInspectCase);
+		return FALSE;
+	}
 	return TRUE;
 }
 
+// 8. (Error : 5200)
 BOOL CSequenceMain::MarkerRun()
 {
+	// 8. (Error : 5200)
+	if (m_nMarkerLoop.Over_LoopTime()) 
+	{		
+		g_objCommon.Show_Error(5200 + m_nMarkerCase);
+		return FALSE;
+	}
 	return TRUE;
 }
 
+// 9. (Error : 5500)
 BOOL CSequenceMain::IndexTRun()
 {
+	// 9. (Error : 5500)
+	if (m_nIndexTLoop.Over_LoopTime()) 
+	{		
+		g_objCommon.Show_Error(5500 + m_nIndexTCase);
+		return FALSE;
+	}
 	return TRUE;
 }
 
 BOOL CSequenceMain::UnloadConveyorRun()
 {
+	// 10. (Error : 5800)
+	if (m_nUnloadConveyorLoop.Over_LoopTime()) 
+	{		
+		g_objCommon.Show_Error(5800 + m_nUnloadConveyorCase);
+		return FALSE;
+	}
 	return TRUE;
 }
 

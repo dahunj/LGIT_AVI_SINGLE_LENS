@@ -30,6 +30,7 @@ struct Feeder_X
 		Ready = 0,
 		MZRight = 1,
 		MZLeft = 2,
+		Rail = 3,
 	};
 };
 
@@ -39,9 +40,10 @@ struct Feeder_Y
 	enum dtName
 	{
 		Ready = 0,
-		Sensor = 1,
+		Sensing = 1,
 		JigRight = 2,
 		JigLeft = 3,
+		Rail = 4,
 	};
 };
 

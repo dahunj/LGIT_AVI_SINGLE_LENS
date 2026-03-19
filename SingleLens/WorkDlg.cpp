@@ -53,23 +53,7 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 
 
 	//old 
-	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_LBL_CAP_LOT_0 + i, m_lblCapLot[i]);
-	DDX_Control(pDX, IDC_STC_CAP_LOT_ID_R, m_stcCapLotIdR);
-	DDX_Control(pDX, IDC_STC_CAP_TRAY_COUNT_R, m_stcCapTrayCountR);
-	DDX_Control(pDX, IDC_STC_CAP_CM_COUNT_R, m_stcCapCmCountR);
-	DDX_Control(pDX, IDC_STC_CAP_LOT_ID_S, m_stcCapLotIdS);
-	DDX_Control(pDX, IDC_STC_CAP_TRAY_COUNT_S, m_stcCapTrayCountS);
-	DDX_Control(pDX, IDC_STC_CAP_CM_COUNT_S, m_stcCapCmCountS);
-	DDX_Control(pDX, IDC_BTN_CAP_CLEAR, m_btnCapClear);
 
-	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_LBL_SHIP_LOT_0 + i, m_lblShipLot[i]);
-	DDX_Control(pDX, IDC_STC_SHIP_LOT_ID_R, m_stcShipLotIdR);
-	DDX_Control(pDX, IDC_STC_SHIP_TRAY_COUNT_R, m_stcShipTrayCountR);
-	DDX_Control(pDX, IDC_STC_SHIP_CM_COUNT_R, m_stcShipCmCountR);
-	DDX_Control(pDX, IDC_STC_SHIP_LOT_ID_S, m_stcShipLotIdS);
-	DDX_Control(pDX, IDC_STC_SHIP_TRAY_COUNT_S, m_stcShipTrayCountS);
-	DDX_Control(pDX, IDC_STC_SHIP_CM_COUNT_S, m_stcShipCmCountS);
-	DDX_Control(pDX, IDC_BTN_SHIP_CLEAR, m_btnShipClear);
 
 	DDX_Control(pDX, IDC_BTN_MES_CANCEL, m_btnMesCancel);
 	DDX_Control(pDX, IDC_IMG_EQUIPMENT, m_imgEquipment);
@@ -113,7 +97,7 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_STC_UPH_0 + i, m_stcUph[i]);
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_STC_DAY_0 + i, m_stcDay[i]);
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_LED_VISION_STATUS_0 + i, m_ledVisionStatus[i]);
-	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_STC_VISION_RESULT_0 + i, m_stcVisionResult[i]);
+
 
 }
 
@@ -133,12 +117,9 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_STN_CLICKED(IDC_LBL_LOT_3, &CWorkDlg::OnStnClickedLblLot3)
 	
 
-	ON_STN_CLICKED(IDC_STC_CAP_LOT_ID_S, &CWorkDlg::OnStnClickedCapLotIdS)
-	ON_STN_CLICKED(IDC_STC_CAP_TRAY_COUNT_S, &CWorkDlg::OnStnClickedCapTrayCountS)
-	ON_BN_CLICKED(IDC_BTN_CAP_CLEAR, &CWorkDlg::OnBnClickedCapClear)
-	ON_STN_CLICKED(IDC_STC_SHIP_LOT_ID_S, &CWorkDlg::OnStnClickedShipLotIdS)
-	ON_STN_CLICKED(IDC_STC_SHIP_TRAY_COUNT_S, &CWorkDlg::OnStnClickedShipTrayCountS)
-	ON_BN_CLICKED(IDC_BTN_SHIP_CLEAR, &CWorkDlg::OnBnClickedShipClear)
+	
+
+	
 	ON_BN_CLICKED(IDC_RDO_WORK_START, &CWorkDlg::OnBnClickedRdoWorkStart)
 	ON_BN_CLICKED(IDC_RDO_WORK_STOP, &CWorkDlg::OnBnClickedRdoWorkStop)
 	ON_BN_CLICKED(IDC_CHK_CYCLE_STOP, &CWorkDlg::OnBnClickedChkCycleStop)
@@ -150,7 +131,7 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_MESSAGE(UM_RESET_CYCLE_STOP, &CWorkDlg::OnResetCycleStop)
 	ON_MESSAGE(UM_LOT_START_END, &CWorkDlg::OnLotStartEnd)
 	ON_MESSAGE(UM_UPDATE_UPH, &CWorkDlg::OnUpdateUph)
-	ON_MESSAGE(UM_VISION_RESULT, &CWorkDlg::OnVisionResult)
+
 	ON_MESSAGE(UM_INDEX_TACK, &CWorkDlg::OnIndexTack)
 	ON_MESSAGE(UM_SHOW_MSG, &CWorkDlg::OnShowMsg)
 	ON_BN_CLICKED(IDC_BUTTON1, &CWorkDlg::OnBnClickedButton1)
@@ -158,8 +139,8 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_MES_CANCEL, &CWorkDlg::OnBnClickedMesCancel)
 	
 	
-	ON_STN_CLICKED(IDC_LBL_CAP_LOT_0, &CWorkDlg::OnStnClickedLblCapLot0)
-	ON_STN_CLICKED(IDC_LBL_SHIP_LOT_0, &CWorkDlg::OnStnClickedLblShipLot0)
+
+	
 
 	
 END_MESSAGE_MAP()
@@ -180,22 +161,9 @@ void CWorkDlg::Initial_Controls()
 
 	
 
-	for (int i = 0; i < 3; i++) m_lblCapLot[i].Init_Ctrl("바탕", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x20, 0x20, 0x80));
-	m_stcCapLotIdR.Init_Ctrl("Arial", 10, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
-	m_stcCapTrayCountR.Init_Ctrl("바탕", 12, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
-	m_stcCapCmCountR.Init_Ctrl("바탕", 12, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
-	m_stcCapLotIdS.Init_Ctrl("Arial", 10, TRUE, COLOR_DEFAULT, RGB(0x80, 0xF0, 0xF0));
-	m_stcCapTrayCountS.Init_Ctrl("바탕", 12, TRUE, COLOR_DEFAULT, RGB(0x80, 0xF0, 0xF0));
-	m_stcCapCmCountS.Init_Ctrl("바탕", 12, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
 
-	for (int i = 0; i < 3; i++) m_lblShipLot[i].Init_Ctrl("바탕", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x20, 0x20, 0x80));
-	m_stcShipLotIdR.Init_Ctrl("Arial", 10, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
-	m_stcShipTrayCountR.Init_Ctrl("바탕", 12, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
-	m_stcShipCmCountR.Init_Ctrl("바탕", 12, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
-	m_stcShipLotIdS.Init_Ctrl("Arial", 10, TRUE, COLOR_DEFAULT, RGB(0x80, 0xF0, 0xF0));
-	m_stcShipTrayCountS.Init_Ctrl("바탕", 12, TRUE, COLOR_DEFAULT, RGB(0x80, 0xF0, 0xF0));
-	m_stcShipCmCountS.Init_Ctrl("바탕", 12, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
 
+	
 	m_bmpEquipment.LoadBitmap(IDB_EQUIP_WORK);
 	m_imgEquipment.SetBitmap(m_bmpEquipment);
 	m_picUphBack.Init_Ctrl(COLOR_DEFAULT, COLOR_DEFAULT);
@@ -233,7 +201,7 @@ void CWorkDlg::Initial_Controls()
 	for (int i = 0; i < 4; i++) m_stcUph[i].Init_Ctrl("Arial", 9, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x40, 0x40));
 	for (int i = 0; i < 2; i++) m_stcDay[i].Init_Ctrl("Arial", 9, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x40, 0x40));
 	for (int i = 0; i < 2; i++) m_ledVisionStatus[i].Init_Ctrl("Arial", 10, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em16);
-	for (int i = 0; i < 4; i++) m_stcVisionResult[i].Init_Ctrl("바탕", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00));
+	
 	
 }
 
@@ -258,25 +226,11 @@ BOOL CWorkDlg::OnInitDialog()
 	m_rdoWorkStop.SetCheck(TRUE);
 	m_rdoWorkStop.Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
 
-	m_bCapLotIdInput = FALSE;
-	m_bShipLotIdInput = FALSE;
+
 
 #ifndef AJIN_BOARD_USE
-	m_stcShipTrayCountR.SetWindowText("99");
-	m_stcShipLotIdR.SetWindowText("5PKQFFFGGGGRT/5555/DDDDGGGGHHHH");
-	m_stcShipCmCountR.SetWindowText("5555");
 
-	m_stcCapTrayCountR.SetWindowText("99");
-	m_stcCapLotIdR.SetWindowText("3CPPGGGGFFFF/5555/DDDDGGGGHHHH");
-	m_stcCapCmCountR.SetWindowText("5555");
 
-	m_stcShipTrayCountS.SetWindowText("99");
-	m_stcShipLotIdS.SetWindowText("5PKQOOOOKKKK/5555/DDDDGGGGHHHH");
-	m_stcShipCmCountS.SetWindowText("5555");
-
-	m_stcCapTrayCountS.SetWindowText("99");
-	m_stcCapLotIdS.SetWindowText("3CPPGGGGDDDD/5555/DDDDGGGGHHHH");
-	m_stcCapCmCountS.SetWindowText("5555");
 
 #else
 	m_BtnCapSW1.ShowWindow(FALSE);
@@ -662,8 +616,7 @@ void CWorkDlg::OnStnClickedLblLot0()
 	m_Group[1].Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
 	m_Group[6].Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
 	m_Group[9].Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
-	m_bCapLotIdInput = FALSE;
-	m_bShipLotIdInput = FALSE;
+
 }
 
 void CWorkDlg::OnStnClickedLblLot3()
@@ -674,176 +627,15 @@ void CWorkDlg::OnStnClickedLblLot3()
 	m_Group[1].Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
 	m_Group[6].Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
 	m_Group[9].Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
-	m_bCapLotIdInput = FALSE;
-	m_bShipLotIdInput = FALSE;
-}
-
-void CWorkDlg::OnStnClickedLblCapLot0()
-{
-	m_Group[0].Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
-	m_Group[1].Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
-	m_Group[6].Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
-	m_Group[9].Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
-	m_bCapLotIdInput = TRUE;
-	m_bShipLotIdInput = FALSE;
-}
-
-void CWorkDlg::OnStnClickedLblShipLot0()
-{
-	m_Group[0].Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
-	m_Group[1].Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
-	m_Group[6].Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
-	m_Group[9].Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
-	m_bCapLotIdInput = FALSE;
-	m_bShipLotIdInput = TRUE;
+	
 }
 
 
-void CWorkDlg::OnStnClickedCapLotIdS()
-{
-	CString strKey;
-	if (g_objCommon.Show_KeyPad(strKey) != IDOK) return;
-
-	int nCapCnt = Check_CapShipLotID(1, strKey);
-	if (nCapCnt < 1) return;
-
-	m_stcCapLotIdS.SetWindowText(strKey);
-}
-
-void CWorkDlg::OnStnClickedCapTrayCountS()
-{
-	CString strOld, strNew, strValue;
-
-	m_stcCapTrayCountS.GetWindowText(strOld);
-	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
-
-	if (atoi(strNew) > 100) return;
-	gData.nCapTrayMax = atoi(strNew);
 
 
 
-	strValue.Format("%d", gData.nCapTrayMax);
-	m_stcCapTrayCountS.SetWindowText(strValue);
-
-	strValue.Format("%d", gData.nCapTrayMax * gData.nCapMaxCount);
-	m_stcCapCmCountS.SetWindowText(strValue);
-}
-
-void CWorkDlg::OnBnClickedCapClear()
-{
-	if (g_objCommon.Show_MsgBox(2, "Cap Lot 정보를 초기화 하시겠습니까?") != IDOK) return;
-
-	m_stcCapLotIdR.SetWindowText("");
-	m_stcCapCmCountR.SetWindowText("");
-	m_stcCapTrayCountR.SetWindowText("");
-
-	m_stcCapLotIdS.SetWindowText("");
-	m_stcCapCmCountS.SetWindowText("");
-	m_stcCapTrayCountS.SetWindowText("");
-
-	gData.sCapLotID.Empty();
-	gData.nCapTrayLoad = 0;
-	gData.nCapTrayMax = 0;
-}
-
-void CWorkDlg::OnStnClickedShipLotIdS()
-{
-	CString strKey;
-	if (g_objCommon.Show_KeyPad(strKey) != IDOK) return;
-
-	int nCapCnt = Check_CapShipLotID(2, strKey);
-	if (nCapCnt < 1) return;
-
-	m_stcShipLotIdS.SetWindowText(strKey);
-}
-
-void CWorkDlg::OnStnClickedShipTrayCountS()
-{
-	CString strOld, strNew, strValue;
-
-	m_stcShipTrayCountS.GetWindowText(strOld);
-	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
-
-	if (atoi(strNew) > 100) return;
-	gData.nShipTrayMax = atoi(strNew);
 
 
-
-	strValue.Format("%d", gData.nShipTrayMax);
-	m_stcShipTrayCountS.SetWindowText(strValue);
-
-	strValue.Format("%d", gData.nShipTrayMax * gData.nShipMaxCount);
-	m_stcShipCmCountS.SetWindowText(strValue);
-}
-
-void CWorkDlg::OnBnClickedShipClear()
-{
-	if (g_objCommon.Show_MsgBox(2, "Ship Lot 정보를 초기화 하시겠습니까?") != IDOK) return;
-
-	m_stcShipLotIdR.SetWindowText("");
-	m_stcShipCmCountR.SetWindowText("");
-	m_stcShipTrayCountR.SetWindowText("");
-
-	m_stcShipLotIdS.SetWindowText("");
-	m_stcShipCmCountS.SetWindowText("");
-	m_stcShipTrayCountS.SetWindowText("");
-
-	gData.sShipLotID.Empty();
-	gData.nShipTrayLoad = 0;
-	gData.nShipTrayMax = 0;
-}
-
-
-int CWorkDlg::Check_CapShipLotID(int nType, CString sBarID)
-{
-	char chSep = '/';
-	CString sPart, sLotId, sCnt, sTemp;
-
-	AfxExtractSubString(sPart, sBarID, 0, chSep);	sPart.Trim();
-	AfxExtractSubString(sCnt, sBarID, 1, chSep);	sCnt.Trim();
-	AfxExtractSubString(sLotId, sBarID, 2, chSep);	sLotId.Trim();
-	int nCount = atoi(sCnt);
-
-	//'/' 구분 바코드 자릿수 체크 
-	if(sPart.GetLength() < 10) { // 바코드 part number 자릿수 10 이하 체크 
-		sTemp.Format("Part number를 체크해 주십시오\nPart number(%s)/수량/LotID", sPart);
-		g_objCommon.Show_MsgBox(1, sTemp);
-		return 0;
-	}
-	if (g_objCommon.Check_CapShipPartNo(nType, sPart) == FALSE) {
-		if (nType == 1) sTemp.Format("Cap Parts가 아닙니다. 확인해 주세요.\nPart number(%s)", sPart);
-		if (nType == 2) sTemp.Format("Ship Parts가 아닙니다. 확인해 주세요.\nPart number(%s)", sPart);
-		g_objCommon.Show_MsgBox(1, sTemp);
-		return 0;
-	}
-
-	if(sCnt.GetLength() < 2) { // 모듈 수량 자릿수 2 이하 체크 
-		sTemp.Format("수량을 체크해 주십시오\nPart number/수량(%s)/LotID", sCnt);
-		g_objCommon.Show_MsgBox(1, sTemp);
-		return 0;
-	}
-	if(nCount < 1) {
-		sTemp.Format("수량을 체크해 주십시오\nPart number/수량(%d)/LotID", nCount);
-		g_objCommon.Show_MsgBox(1, sTemp);
-		return 0;
-	}
-	if(sLotId.GetLength() < 11) { // 모듈 수량 자릿수 12 이하 체크 
-		sTemp.Format("Lot ID를 체크해 주십시오\nPart number/수량/LotID(%s)", sLotId);
-		g_objCommon.Show_MsgBox(1, sTemp);
-		return 0;
-	}
-
-	if (nType == 1) {	//Cap만 중복체크
-		BOOL ret = g_objLogFile.Check_BarcodeLog(sBarID);
-		if(!ret){
-			sTemp.Format("2주 내에 같은 바코드를 사용하였습니다.체크 바랍니다.\n(%s)", sBarID);
-			g_objCommon.Show_MsgBox(1, sTemp);
-			return 0;
-		}
-	}
-
-	return nCount;
-}
 
 void CWorkDlg::OnBnClickedMesCancel()
 {
@@ -1189,105 +981,6 @@ void CWorkDlg::Set_LotInfo(int nPx)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void CWorkDlg::Get_CapLotId()
-{
-	CString strTemp;
-	m_stcCapLotIdS.GetWindowText(strTemp);
-	gData.sCapLotID = strTemp;
-}
-
-void CWorkDlg::Get_ShipLotId()
-{
-	CString strTemp;
-	m_stcShipLotIdS.GetWindowText(strTemp);
-	gData.sShipLotID = strTemp;
-}
-
-void CWorkDlg::Change_CapLotId()
-{
-	CString strTemp;
-
-	m_stcCapLotIdS.GetWindowText(strTemp);
-	m_stcCapLotIdR.SetWindowText(strTemp);
-	m_stcCapLotIdS.SetWindowText("");
-	gData.sCapLotID = strTemp;
-
-	m_stcCapCmCountS.GetWindowText(strTemp);
-	m_stcCapCmCountR.SetWindowText(strTemp);
-	m_stcCapCmCountS.SetWindowText("0");
-
-	m_stcCapTrayCountS.GetWindowText(strTemp);
-	m_stcCapTrayCountR.SetWindowText(strTemp);
-	m_stcCapTrayCountS.SetWindowText("0");
-
-	gData.nCapTrayLoad = 0;
-	gData.nCapTrayMax = atoi(strTemp);
-}
-
-void CWorkDlg::Change_ShipLotId()
-{
-	CString strTemp;
-
-	m_stcShipLotIdS.GetWindowText(strTemp);
-	m_stcShipLotIdR.SetWindowText(strTemp);
-	m_stcShipLotIdS.SetWindowText("");
-	gData.sShipLotID = strTemp;
-
-	m_stcShipCmCountS.GetWindowText(strTemp);
-	m_stcShipCmCountR.SetWindowText(strTemp);
-	m_stcShipCmCountS.SetWindowText("0");
-
-	m_stcShipTrayCountS.GetWindowText(strTemp);
-	m_stcShipTrayCountR.SetWindowText(strTemp);
-	m_stcShipTrayCountS.SetWindowText("0");
-
-	gData.nShipTrayLoad = 0;
-	gData.nShipTrayMax = atoi(strTemp);
-}
-
-BOOL CWorkDlg::Check_CapLotId()
-{
-	// 자동입력 취소 (2024.01.10)
-// 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-// 	CString strCnt;
-// 
-// 	strCnt.Format("%d", 100 * gData.nCapMaxCount);
-// 	if (!pEquipData->bUseMES || !pEquipData->bUseMesCapReg) m_stcCapLotIdS.SetWindowText("CAP-LOT-ID");
-// 	if (!pEquipData->bUseMES || !pEquipData->bUseMesCapReg) m_stcCapTrayCountS.SetWindowText("100");
-// 	if (!pEquipData->bUseMES || !pEquipData->bUseMesCapReg) m_stcCapCmCountS.SetWindowText(strCnt);
-
-	CString strRead;
-
-	m_stcCapLotIdS.GetWindowText(strRead);		// Lot ID
-	if (strRead.GetLength() < 2) return FALSE;
-
-	m_stcCapTrayCountS.GetWindowText(strRead);	// Tray 수량
-	if (strRead.GetLength() < 1 || atoi(strRead) < 1) return FALSE;
-
-	return TRUE;
-}
-
-BOOL CWorkDlg::Check_ShipLotId()
-{
-	// 자동입력 취소 (2024.01.10)
-// 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-// 	CString strCnt;
-// 
-// 	strCnt.Format("%d", 100 * gData.nShipMaxCount);
-// 	if (!pEquipData->bUseMES || !pEquipData->bUseMesShipReg) m_stcShipLotIdS.SetWindowText("SHIP-LOT-ID");
-// 	if (!pEquipData->bUseMES || !pEquipData->bUseMesShipReg) m_stcShipTrayCountS.SetWindowText("100");
-// 	if (!pEquipData->bUseMES || !pEquipData->bUseMesShipReg) m_stcShipCmCountS.SetWindowText(strCnt);
-
-	CString strRead;
-
-	m_stcShipLotIdS.GetWindowText(strRead);
-	if (strRead.GetLength() < 2) return FALSE;
-
-	m_stcShipTrayCountS.GetWindowText(strRead);
-	if (strRead.GetLength() < 1 || atoi(strRead) < 1) return FALSE;
-
-	return TRUE;
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Message
@@ -1379,53 +1072,7 @@ LRESULT CWorkDlg::OnUpdateBarcode(WPARAM wParam, LPARAM lParam)
 
 	if (sBarcode.GetLength() < 2) return 0;
 
-	int nType = 0;
-	if		(m_bCapLotIdInput)  nType = 1;
-	else if (m_bShipLotIdInput) nType = 2;
-	else						return 0;
-	int nCapCnt = Check_CapShipLotID(nType, sBarcode);
-	if (nCapCnt < 1) return 0;
-
-	if (m_bCapLotIdInput) {
-		m_stcCapLotIdS.GetWindowText(strTemp);
-		if (strTemp == sBarcode) return 0;
-
-		char chSep = '/';
-		CString strPart, strCount, strLotId;
-		AfxExtractSubString(strPart, sBarcode, 0, chSep);  strPart.Trim();
-		AfxExtractSubString(strCount, sBarcode, 1, chSep); strCount.Trim();
-		AfxExtractSubString(strLotId, sBarcode, 2, chSep); strLotId.Trim();
-
-		gData.sCapLotID = sBarcode;
-		m_stcCapLotIdS.SetWindowText(sBarcode);
-
-		int nCmCnt = atoi(strCount);
-		strTemp.Format("%d", nCmCnt); m_stcCapCmCountS.SetWindowText(strTemp);
-
-		gData.nCapTrayMax = nCmCnt / gData.nCapMaxCount;
-		if (nCmCnt % gData.nCapMaxCount) gData.nCapTrayMax++;
-		strTemp.Format("%d", gData.nCapTrayMax); m_stcCapTrayCountS.SetWindowText(strTemp);
-
-	} else if (m_bShipLotIdInput) {
-		m_stcShipLotIdS.GetWindowText(strTemp);
-		if (strTemp == sBarcode) return 0;
-
-		char chSep = '/';
-		CString strPart, strCount, strLotId;
-		AfxExtractSubString(strPart, sBarcode, 0, chSep);  strPart.Trim();
-		AfxExtractSubString(strCount, sBarcode, 1, chSep); strCount.Trim();
-		AfxExtractSubString(strLotId, sBarcode, 2, chSep); strLotId.Trim();
-
-		gData.sShipLotID = sBarcode;
-		m_stcShipLotIdS.SetWindowText(sBarcode);
-
-		gData.nShipTrayMax = atoi(strCount);
-		strTemp.Format("%d", gData.nShipTrayMax); m_stcShipTrayCountS.SetWindowText(strTemp);
-
-		int nCmCnt = gData.nShipTrayMax * gData.nShipMaxCount;
-		strTemp.Format("%d", nCmCnt); m_stcShipCmCountS.SetWindowText(strTemp);
-	}
-
+		
 	return 0;
 }
 
@@ -1526,30 +1173,6 @@ LRESULT CWorkDlg::OnUpdateUph(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-LRESULT CWorkDlg::OnVisionResult(WPARAM wParam, LPARAM lParam)
-{
-	CString strText;
-	int nTotal = gLot.nCmCount[0];
-
-	if (wParam == 1 || wParam == 0) {
-		strText.Format("%d", nTotal);	m_stcVisionResult[0].SetWindowText(strText);
-
-		m_stcVisionResult[2].Init_Ctrl("바탕", 11, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));
-		m_stcVisionResult[3].Init_Ctrl("바탕", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00));
-		m_stcVisionResult[2].SetWindowText(gLot.sLotID[0]);
-		m_stcVisionResult[3].SetWindowText(gLot.sLotID[1]);	
-	}
-	if (wParam == 2 || wParam == 0) {
-		nTotal = gLot.nCmCount[1];
-		strText.Format("%d", nTotal);	m_stcVisionResult[1].SetWindowText(strText);
-
-		m_stcVisionResult[2].Init_Ctrl("바탕", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00));
-		m_stcVisionResult[3].Init_Ctrl("바탕", 11, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));
-		m_stcVisionResult[2].SetWindowText(gLot.sLotID[0]);
-		m_stcVisionResult[3].SetWindowText(gLot.sLotID[1]);
-	}
-	return 0;
-}
 
 LRESULT CWorkDlg::OnLotStartEnd(WPARAM wParam, LPARAM lParam)
 {

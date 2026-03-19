@@ -42,24 +42,7 @@ public:
 	CGroupCS		m_grpLot[2];
 	CLabelCS		m_lblLot[6];
 
-
-	CLabelCS		m_lblCapLot[3];
-	CStaticCS		m_stcCapLotIdR;
-	CStaticCS		m_stcCapTrayCountR;
-	CStaticCS		m_stcCapCmCountR;
-	CStaticCS		m_stcCapLotIdS;
-	CStaticCS		m_stcCapTrayCountS;
-	CStaticCS		m_stcCapCmCountS;
-	CButtonCS		m_btnCapClear;
-
-	CLabelCS		m_lblShipLot[3];
-	CStaticCS		m_stcShipLotIdR;
-	CStaticCS		m_stcShipTrayCountR;
-	CStaticCS		m_stcShipCmCountR;
-	CStaticCS		m_stcShipLotIdS;
-	CStaticCS		m_stcShipTrayCountS;
-	CStaticCS		m_stcShipCmCountS;
-	CButtonCS		m_btnShipClear;
+	
 
 	CPictureCS		m_imgEquipment;
 	CPictureCS		m_picUphBack;
@@ -96,7 +79,7 @@ public:
 	CStaticCS		m_stcUph[4];
 	CStaticCS		m_stcDay[2];
 	CLedCS			m_ledVisionStatus[2];
-	CStaticCS		m_stcVisionResult[4];
+	
 	CButtonCS		m_btnMesCancel;
 
 
@@ -120,17 +103,11 @@ protected:
 
 	afx_msg void OnStnClickedLblLot0();
 	afx_msg void OnStnClickedLblLot3();
-	afx_msg void OnStnClickedLblCapLot0();
-	afx_msg void OnStnClickedLblShipLot0();
-
-	afx_msg void OnStnClickedCapLotIdS();
-	afx_msg void OnStnClickedCapTrayCountS();
-	afx_msg void OnBnClickedCapClear();
-	afx_msg void OnStnClickedShipLotIdS();
-	afx_msg void OnStnClickedShipTrayCountS();
-	afx_msg void OnBnClickedShipClear();
+	
 	afx_msg void OnBnClickedRdoWorkStart();
 	afx_msg void OnBnClickedRdoWorkStop();
+
+
 	afx_msg void OnBnClickedChkCycleStop();
 	afx_msg void OnBnClickedChkMesUse();
 	afx_msg LRESULT OnUpdateModel(WPARAM wParam, LPARAM lParam);
@@ -139,7 +116,7 @@ protected:
 	afx_msg LRESULT OnUpdateLoadCell(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnResetCycleStop(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUpdateUph(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnVisionResult(WPARAM wParam, LPARAM lParam);
+	
 	afx_msg LRESULT OnLotStartEnd(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnIndexTack(WPARAM wParam, LPARAM lParam);	//AHN
 	afx_msg LRESULT OnShowMsg(WPARAM wParam, LPARAM lParam);
@@ -168,8 +145,6 @@ private:
 	BOOL	m_bCapSw2On;
 	BOOL	m_bUnloadSw1On;
 
-	BOOL	m_bCapLotIdInput;
-	BOOL	m_bShipLotIdInput;
 
 private:
 	BOOL Work_Start();
@@ -188,14 +163,7 @@ public:
 	void Get_LotInfo(int nPx);
 	void Set_LotInfo(int nPx);
 
-	void Get_CapLotId();
-	void Get_ShipLotId();
-	void Change_CapLotId();
-	void Change_ShipLotId();
-	BOOL Check_CapLotId();
-	BOOL Check_ShipLotId();
-
-	int  Check_CapShipLotID(int nType, CString sBarID);
+	
 
 
 	void MachineStopLog(CString sType, CString sMsg="");

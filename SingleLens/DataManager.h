@@ -5,6 +5,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Equip Data
 typedef struct tag_EQUIP_DATA {
+	
+	double dMZPitchZ;
+	
+	
+	
+/////////////////////	
 	CString sEquipName;
 	CString sModel;
 	int		nLotBarcodePort;
