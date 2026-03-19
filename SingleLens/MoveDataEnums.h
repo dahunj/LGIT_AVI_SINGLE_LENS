@@ -54,6 +54,7 @@ struct Tray_Picker_Y
 	enum dtName
 	{
 		Ready = 0,
+		Load = 1,
 	};
 };
 
@@ -64,6 +65,7 @@ struct Tray_Picker_Z
 	enum dtName
 	{
 		Ready = 0,
+		Load = 1, 
 	};
 };
 

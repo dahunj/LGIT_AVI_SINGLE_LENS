@@ -53,7 +53,7 @@
 #include "CSClientSocket.h"
 #include "CSGrid.h"
 
-#include "MoveDataIdx.h"
+#include "MoveDataEnums.h"
 
 #include <math.h>
 

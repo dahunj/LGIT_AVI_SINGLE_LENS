@@ -438,6 +438,27 @@ BOOL CSequenceMain::FeederRun()
 // 4. (Error : 4000)
 BOOL CSequenceMain::TrayPickerRun()
 {
+	switch(m_nMZElevCase)
+	{
+	case 0:
+		return TRUE;
+	case 1:
+		if(g_objCommon.Check_Position(AX_TRAY_PICKER_Y, Tray_Picker_Y::Load))
+		{
+			g_objCommon.Move_Position(AX_TRAY_PICKER_Z, Tray_Picker_Z::Load);
+			m_nTrayPickerCase++; m_nTrayPickerLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 2:
+		if(g_objCommon.Check_Position(AX_TRAY_PICKER_Z, Tray_Picker_Z::Load))
+		{
+			m_pDY01->oTrayPickerMasterIn = TRUE; m_pDY01->oTrayPickerMasterOut = FALSE;
+
+			m_nTrayPickerCase++; m_nTrayPickerLoop.Set_LoopTime(5000);
+		}
+		break;
+	}
+
 	// 4. (Error : 4000)
 	if (m_nTrayPickerLoop.Over_LoopTime()) 
 	{		
@@ -522,7 +543,6 @@ BOOL CSequenceMain::UnloadConveyorRun()
 
 void CSequenceMain::Begin_MainRunThread()
 {
-
 	if (m_nLoadConveyorCase == 0)	m_nLoadConveyorCase = 1;
 	if (m_nMZElevCase == 0)			m_nMZElevCase = 1;
 	if (m_nFeederCase == 0)			m_nFeederCase = 1;
