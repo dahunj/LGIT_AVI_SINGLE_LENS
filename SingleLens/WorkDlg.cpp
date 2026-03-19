@@ -40,7 +40,19 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_LABEL_0 + i, m_Label[i]);	
 	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_LBL_LOT_0 + i, m_lblLot[i]);*/
 
+	//new 
+	for (int i = 0; i < 60; i++) DDX_Control(pDX, IDC_STC_MZ_LOTID_0 + i, m_stcLotId[i]);
+	for (int i = 0; i < 60; i++) DDX_Control(pDX, IDC_STC_MZ_LENS_CNT_0+ i, m_stcLensCnt[i]);
 
+
+
+
+
+
+
+
+
+	//old 
 	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_LBL_CAP_LOT_0 + i, m_lblCapLot[i]);
 	DDX_Control(pDX, IDC_STC_CAP_LOT_ID_R, m_stcCapLotIdR);
 	DDX_Control(pDX, IDC_STC_CAP_TRAY_COUNT_R, m_stcCapTrayCountR);
@@ -109,6 +121,14 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_WM_DESTROY()
 	ON_WM_SHOWWINDOW()
 	ON_WM_TIMER()
+
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MZ_LOTID_0, IDC_STC_MZ_LOTID_59, OnStcLotIdClick)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MZ_LENS_CNT_0, IDC_STC_MZ_LENS_CNT_59, OnStcLensCountClick)
+
+
+
+
+	//old 
 	ON_STN_CLICKED(IDC_LBL_LOT_0, &CWorkDlg::OnStnClickedLblLot0)
 	ON_STN_CLICKED(IDC_LBL_LOT_3, &CWorkDlg::OnStnClickedLblLot3)
 	
@@ -426,6 +446,213 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 	
 	CDialogEx::OnTimer(nIDEvent);
 }
+
+
+
+/////////////////
+
+void CWorkDlg::OnStcLotIdClick(UINT nID)
+{
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	if (pEquipData->bUseMES) {
+		AfxMessageBox(_T("MES사용시 Lot정보 수정할 수 없습니다."));
+		return;
+	}
+
+	int ID = nID - IDC_STC_MZ_LOTID_0;
+
+	if (m_rdoWorkStart.GetCheck()) 
+	{
+		if (gData.nLanguage == 0) g_objCommon.Show_MsgBox(1, "장비 Stop 상태에서 진행이 가능합니다.....");
+		else					  g_objCommon.Show_MsgBox(1, "You can proceed with the equipment stopped.");
+		return;
+	}
+
+	CString strKey, strNew, strMsg;
+	if (g_objCommon.Show_KeyPad(strKey) != IDOK) return;
+	if (strKey.Find("_") >= 0) {
+		if (gData.nLanguage == 0) strMsg.Format("[%s] Lot ID ( _ ) 입력불가...", strKey);
+		else					  strMsg.Format("[%s] Lot ID Unable to endter(_)...", strKey);
+		g_objCommon.Show_MsgBox(1, strMsg);
+		return;
+	}
+
+	m_stcLotId[ID].SetWindowText(strKey);
+
+	strNew.Format("[Work Mode] Lot ID Input(%d-%s)", ID, strKey);
+	g_objLogFile.Save_HandlerLog(strNew);
+
+	//OnStcCmsCountSClick(IDC_STC_CMS_COUNT_S_0+ID);	//2018.9.11+
+}
+
+
+
+
+void CWorkDlg::OnStcLensCountClick(UINT nID)
+{
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	if (pEquipData->bUseMES) {
+		AfxMessageBox(_T("MES사용시 Lot정보 수정할 수 없습니다."));
+		return;
+	}
+
+	int ID = nID - IDC_STC_MZ_LENS_CNT_0;
+
+	if (m_rdoWorkStart.GetCheck()) {
+		if (gData.nLanguage == 0) g_objCommon.Show_MsgBox(1, "장비 Stop 상태에서 진행이 가능합니다.....");
+		else					  g_objCommon.Show_MsgBox(1, "You can proceed with the equipment stopped.");
+		return;
+	}
+
+	CString strOld, strNew, strValue;
+
+	m_stcLensCnt[ID].GetWindowText(strOld);
+	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
+
+	int nCmCnt = atoi(strNew);
+	if (nCmCnt < 1 || nCmCnt > ZIG_MAX) {
+		m_stcLensCnt[ID].SetWindowText("");
+		if (gData.nLanguage == 0) AfxMessageBox(_T("Zig당 Lens수량은 200개이상 입력할수 없습니다.........."));
+		else					  AfxMessageBox(_T("Lens quantity per Zig cannot be entered more than 200."));
+		return;
+	}
+	strValue.Format("%d", nCmCnt);
+	m_stcLensCnt[ID].SetWindowText(strValue);
+
+	if (LotID_Check()==FALSE) return;
+
+	strNew.Format("[Work Mode] Module Count Input(%d-%d-%d)", ID, nCmCnt);
+	g_objLogFile.Save_HandlerLog(strNew);
+}
+
+
+
+BOOL CWorkDlg::LotID_Check()
+{
+	int nLensCnt, nLotCnt;
+	CString strMsg, strTemp, strTemp2, sLog;
+
+	nLotCnt = 0;
+	for(int i=0; i<60; i++)
+	{
+		m_stcLotId[i].GetWindowText(strTemp);
+		m_stcLensCnt[i].GetWindowText(strTemp2);
+		nLensCnt = atoi(strTemp2);
+
+		// Input Error Check
+		if (nLensCnt > 200)
+		{
+			if (gData.nLanguage == 0) strMsg.Format("[%d] Check Lens 수량 (Max:200)....................", i+1);
+			else					  strMsg.Format("[%d] Check Lens Quantity ....................", i+1);
+			g_objCommon.Show_MsgBox(1, strMsg);
+			return FALSE;
+		}
+		if (nLensCnt > 0)
+		{
+			if (strTemp.GetLength() < 1) 
+			{
+				if (gData.nLanguage == 0) strMsg.Format("[%d] Check Lens ID, 수량 ....................", i+1);
+				else					  strMsg.Format("[%d] Check Lens ID, Quantity ....................", i+1);
+				g_objCommon.Show_MsgBox(1, strMsg);
+				return FALSE;
+			}
+		}
+		else
+		{
+			if (strTemp.GetLength() > 0)
+			{
+				if (gData.nLanguage == 0) strMsg.Format("[%d] Check Lot ID, 수량 ....................", i+1);
+				else					  strMsg.Format("[%d] Check Lot ID, Quantity ....................", i+1);
+				g_objCommon.Show_MsgBox(1, strMsg);
+				return FALSE;
+			}
+		}
+
+		if (nLensCnt > 0)
+		{
+			gLot.sLotID[i] = strTemp;
+			gLot.nLensCnt[i] = nLensCnt;
+			nLotCnt++;
+			if (gLot.nLotStatus[i] == 3) gLot.bEmptyLot[i] = FALSE;
+
+			sLog.Format("[Work Mode] LotID_Copy] (%d-%s)", i+1, gLot.sLotID[i]);
+			g_objLogFile.Save_HandlerLog(sLog);
+		} else {
+			sLog.Format("[Work Mode] LotID_Delete] (%d-%s)", i+1, gLot.sLotID[i]);
+			g_objLogFile.Save_HandlerLog(sLog);
+
+			gLot.nLensCnt[i] = gLot.nGoodCount[i] = gLot.nNgCount[i] = gLot.nLotStatus[i] = 0;// = gLot.nSkipCount[i] = 0;
+			gLot.sLotID[i] = "";
+		}
+	}
+
+	//EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	//if (pEquipData->bUseMES) {
+	//	if (nLotCnt > 0 &&   gLot.nJobStatus == 0) {
+	//		g_objCommon.Show_MsgBox(1, "MES사용시 Lot 정보를 입력하지 마세요.....");
+	//		return FALSE;
+	//	}
+	//	return TRUE;
+	//} else {
+	//	if (nLotCnt < 1 && !g_objSequenceMain.Get_IsAutoRun()) {
+	//		g_objCommon.Show_MsgBox(1, "Lot 정보를 입력해야 합니다.....");
+	//		return FALSE;
+	//	}
+	//}
+
+	if (nLotCnt < 1 && ! g_objSequenceMain.Get_IsAutoRun()) 
+	{
+		g_objCommon.Show_MsgBox(1, "Lot 정보를 입력해야 합니다.....");
+		return FALSE;
+	}
+
+	for(int i=0; i < 60; i++) 
+	{
+		for(int j=0; j < 60; j++) 
+		{
+			if (i != j && gLot.sLotID[i].GetLength() > 0 && gLot.sLotID[i] == gLot.sLotID[j]) 
+			{
+				gLot.nCmCount[j] = 0;
+				if (gData.nLanguage == 0) strMsg.Format("[%d-%d]에 동일 Lot ID가 있습니다........", i+1, j+1);
+				else					  strMsg.Format("[%d-%d] has the same Lot ID........", i+1, j+1);
+				g_objCommon.Show_MsgBox(1, strMsg);
+				return FALSE;
+			}
+		}
+	}
+/*
+	if (gLot.nCmCount[1] > 0 || gLot.nCmCount[2] > 0) {
+		if (gLot.nCmCount[0] < 1) {
+			gLot.nCmCount[1] = gLot.nCmCount[2] = 0;
+			g_objCommon.Show_MsgBox(1, "[1] Lot ID는 첫번째부터 입력해야 합니다.....");
+			return FALSE;
+		}
+	}
+	if (gLot.nCmCount[2] > 0) {
+		if (gLot.nCmCount[1] < 1) {
+			gLot.nCmCount[2] = 0;
+			g_objCommon.Show_MsgBox(1, "[2] Lot ID는 순서되로 입력해야 합니다.....");
+			return FALSE;
+		}
+	}
+	if (gLot.nCmCount[4] > 0 || gLot.nCmCount[5] > 0) {
+		if (gLot.nCmCount[3] < 1) {
+			gLot.nCmCount[4] = gLot.nCmCount[5] = 0;
+			g_objCommon.Show_MsgBox(1, "[4] Lot ID는 첫번째부터 입력해야 합니다.....");
+			return FALSE;
+		}
+	}
+	if (gLot.nCmCount[5] > 0) {
+		if (gLot.nCmCount[4] < 1) {
+			gLot.nCmCount[5] = 0;
+			g_objCommon.Show_MsgBox(1, "[5] Lot ID는 순서되로 입력해야 합니다.....");
+			return FALSE;
+		}
+	}
+*/
+	return TRUE;
+}
+
 
 void CWorkDlg::OnStnClickedLblLot0()
 {
@@ -1362,6 +1589,8 @@ void CWorkDlg::Change_Model()
 	g_dlgOperator.Change_Model();
 }
 
+
+
 ///////////////////////////////////////////////////////////////////////////////
 
 void CWorkDlg::OnBnClickedButton1()
@@ -1371,3 +1600,4 @@ void CWorkDlg::OnBnClickedButton1()
 void CWorkDlg::OnBnClickedButton2()
 {
 }
+

@@ -28,12 +28,19 @@ public:
 
 // 대화 상자 데이터입니다.
 	enum { IDD = IDD_WORK_DLG };
+
+	//new 
+	CStaticCS		m_stcLotId[60];
+	CStaticCS		m_stcLensCnt[60];
+
+
+
+	//old 
+
 	CGroupCS		m_Group[10];
 	CLabelCS		m_Label[7];
 	CGroupCS		m_grpLot[2];
 	CLabelCS		m_lblLot[6];
-
-	
 
 
 	CLabelCS		m_lblCapLot[3];
@@ -103,6 +110,14 @@ protected:
 	afx_msg void OnDestroy();
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+
+	//new 
+	afx_msg void OnStcLotIdClick(UINT nID);
+	afx_msg void OnStcLensCountClick(UINT nID);
+
+	BOOL	LotID_Check();
+	//old 
+
 	afx_msg void OnStnClickedLblLot0();
 	afx_msg void OnStnClickedLblLot3();
 	afx_msg void OnStnClickedLblCapLot0();

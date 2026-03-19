@@ -16,6 +16,9 @@ struct MZ_Elev_Z
 	enum dtName
 	{
 		Ready = 0,
+		Bottom = 1,
+		Top = 2,
+		JigPitch = 3, 
 	};
 };
 
@@ -25,6 +28,8 @@ struct Feeder_X
 	enum dtName
 	{
 		Ready = 0,
+		MZRight = 1,
+		MZLeft = 2,
 	};
 };
 
@@ -34,6 +39,9 @@ struct Feeder_Y
 	enum dtName
 	{
 		Ready = 0,
+		Sensor = 1,
+		JigRight = 2,
+		JigLeft = 3,
 	};
 };
 

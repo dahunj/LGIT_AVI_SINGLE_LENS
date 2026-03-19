@@ -96,7 +96,9 @@
 //Magazine Slot MAX Number 
 const int SLOT_NO_MAX = 10;
 
-//Tray Slot No
+const int ZIG_MAX = 500;
+
+//Zig X-Y
 const int TRAY_X = 4, TRAY_Y = 8;
 
 
@@ -110,13 +112,29 @@ extern CString gsCurrentDir;	// 현재 프로젝트 폴더
 
 typedef struct
 {
+	//new 
+	
+	int     nStatus;
+	int		nLanguage;
+
+	int		nMZCnt;
+
+	int		nLensUseCnt[60];
+	int		nLensMaxCnt;
+
+
+
+
+	//old 
+
+
+
 	CString	sLotID[2];
 	CString	sOperID;		// Operator
 	CString	sRecipe;		// Recipe Item
 	CString sVendor;		// Cap Vendor 
-		
 
-	int        nStatus;
+
 
 	int        nCmMaxCount;    // ?? ??????? ??? CM ????
 	int        nCapMaxCount;
@@ -306,8 +324,23 @@ typedef struct
 
 } GLOVAL_DATA;
 
-typedef struct {
-	CString	sLotID[2];
+typedef struct 
+{
+	CString sLotID[60];
+
+	int nMZRunningCnt;
+
+	int nLensCnt[60];
+	int	nLotStatus[60];	//0:Wait, 1, 2:Run, 3:Lot_End
+
+	BOOL bEmptyLot[60];
+
+
+
+
+	///////////old 
+
+	
 	CString sStartTime[2];
 	CString sEndTime[2];
 	DWORD	dwLotStart[2];

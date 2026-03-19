@@ -217,31 +217,28 @@ BOOL CSequenceMain::LoadConveyorRun()
 		m_pDY00->oMZElevLoadStopperUp = TRUE; m_pDY00->oMZElevUnloadStopperDown = FALSE;
 		break;
 	case 5:
-
-
-
 		if(m_pDX00->iMZElevExistLeft)
 		{
 			nMZCnt--;			
 		}
 		break;
 
-	case 2:
-		m_pDY00->oLoadCVStopperUp = FALSE; m_pDY00->oLoadCVStopperDown = TRUE;
-		g_objAJinAXL.Write_Output(0);
+	//case 2:
+	//	m_pDY00->oLoadCVStopperUp = FALSE; m_pDY00->oLoadCVStopperDown = TRUE;
+	//	g_objAJinAXL.Write_Output(0);
 
-		if(!m_pDX00->iLoadCVStopperUp && m_pDX00->iLoadCVStopperDown)
-		{
-				
-		}
-		break;
-	case 2:
-		if(m_pDX00->iMZElevExistRight)
-		{
-			m_pDY00->oLoadCVCCW = FALSE; m_pDY00->oLoadCVCW = FALSE;
-			g_objAJinAXL.Write_Output(0);
-			m_nLoadConveyorCase++; m_nLoadConveyorLoop.Set_LoopTime(5000);
-		}
+	//	if(!m_pDX00->iLoadCVStopperUp && m_pDX00->iLoadCVStopperDown)
+	//	{
+	//			
+	//	}
+	//	break;
+	//case 2:
+	//	if(m_pDX00->iMZElevExistRight)
+	//	{
+	//		m_pDY00->oLoadCVCCW = FALSE; m_pDY00->oLoadCVCW = FALSE;
+	//		g_objAJinAXL.Write_Output(0);
+	//		m_nLoadConveyorCase++; m_nLoadConveyorLoop.Set_LoopTime(5000);
+	//	}
 
 
 
@@ -260,6 +257,112 @@ BOOL CSequenceMain::LoadConveyorRun()
 
 BOOL CSequenceMain::MZElevRun()
 {
+	//Suppose MZ on Right of Elev
+	switch(m_nMZElevCase)
+	{
+	case 0:
+		return TRUE;
+	case 1:
+		if(m_pDX00->iMZElevExistRight && m_pDX00->iMZElevExistLeft)
+		{
+			m_nMZElevCase = 10; m_nMZElevLoop.Set_LoopTime(5000);	
+		}
+		else if(m_pDX00->iMZElevExistRight && ! m_pDX00->iMZElevExistLeft)
+		{
+			m_nMZElevCase = 30; m_nMZElevLoop.Set_LoopTime(5000);	
+		}
+		else if(!m_pDX00->iMZElevExistRight && m_pDX00->iMZElevExistLeft)
+		{
+			m_nMZElevCase = 50; m_nMZElevLoop.Set_LoopTime(5000);	
+		}
+		else  
+		{
+			// empty
+			m_nMZElevCase = 70; m_nMZElevLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 70:
+		//CW 회전하려면 CCW도 True 로 해야함 
+		m_pDY00->oLoadCVCCW = TRUE; m_pDY00->oLoadCVCW = TRUE;
+		m_pDY00->oMZElevCVCCW = TRUE; m_pDY00->oMZElevCVCW = TRUE;
+		g_objAJinAXL.Write_Output(0);
+		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+		break;
+	case 71:
+		if(m_pDX00->iMZElevExistRight)
+		{
+			m_pDY00->oLoadCVCCW = FALSE; m_pDY00->oLoadCVCW = FALSE;
+			m_pDY00->oMZElevCVCCW = FALSE; m_pDY00->oMZElevCVCW = FALSE;
+			g_objAJinAXL.Write_Output(0);
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 72:
+		if(m_pDX00->iMZElevExistRight)
+		{
+			//m_pDY00->oMZElevAlignRightUp = TRUE; m_pDY00->oMZElevAlignRightDown = FALSE;
+			//m_pDY00->oMZElevAlignRightIn = TRUE; m_pDY00->oMZElevAlignRightOut = FALSE;
+			g_objAJinAXL.Write_Output(0);
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 73:
+		//CCW는 CCW만 TRUE
+		if(gLot.nMZRunningCnt > 1)
+		{
+			m_pDY00->oLoadCVCCW = TRUE; m_pDY00->oLoadCVCW = FALSE;
+			m_pDY00->oMZElevCVCCW = TRUE; m_pDY00->oMZElevCVCW = FALSE;
+			g_objAJinAXL.Write_Output(0);
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+		}
+		else // MZ = 1 
+		{
+			m_nMZElevCase = 100; m_nMZElevLoop.Set_LoopTime(5000);
+		}		
+		break;
+	case 100:		
+		if(g_objCommon.Check_Position(AX_FEEDER_Y, Feeder_Y::Ready))
+		{
+			//아래 부터 검사 
+			g_objCommon.Move_Position(AX_MZ_ELEV_Z, MZ_Elev_Z::Bottom);
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+		}		
+		break;
+	case 101:
+		if(g_objCommon.Check_Position(AX_MZ_ELEV_Z, MZ_Elev_Z::Bottom))
+		{
+			g_objCommon.Move_Position(AX_FEEDER_X, Feeder_X::MZRight);
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 102:
+		if(g_objCommon.Check_Position(AX_FEEDER_X, Feeder_X::MZRight))
+		{
+			g_objCommon.Move_Position(AX_FEEDER_Y Feeder_Y::Sensor);
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 103:
+		if(g_objCommon.Check_Position(AX_FEEDER_Y, Feeder_Y::Sensor))
+		{
+			if(m_pDX01->iFeederCoatJigCheck)
+			{
+				g_objCommon.Move_Position(AX_FEEDER_Y, Feeder_Y::JigRight);
+				m_nMZElevCase = 110; m_nMZElevLoop.Set_LoopTime(5000);
+			}
+			else
+			{
+				g_objAJinAXL.Move_Relative(AX_MZ_ELEV_Z,  m_pEquipData->dMZPitchZ*(1.0)); 				
+			}
+		}
+		break;
+	case 110:
+
+
+	}
+
+
+
 	return TRUE;
 }
 
