@@ -56,6 +56,8 @@
 #include "MoveDataEnums.h"
 
 #include <math.h>
+#include <iostream>
+#include <vector>
 
 #include <dbghelp.h>
 #include <stdio.h>
@@ -99,7 +101,7 @@ const int SLOT_NO_MAX = 10;
 const int ZIG_MAX = 500;
 
 //Zig X-Y
-const int TRAY_X = 4, TRAY_Y = 8;
+const int ZIG_X = 4, ZIG_Y = 8;
 
 
 // R53B (VR-L) : LoadTray(3x4), CapTray(4x7),  ShipTray(3x7),  Picker(4) => AllPicker(1,2,3,4)
@@ -121,8 +123,20 @@ typedef struct
 
 	int		nLensUseCnt[60];
 	int		nLensMaxCnt;
+	
+	BOOL	bIndexDone[6]; //0: Load , 1: Clean, 2: Top, 3:empty, 4:btm, 5: Mark
 
 
+	int		nZigX;
+	int		nZigY;
+
+	// Infomation 
+	int	nInfoZigPicker[ZIG_X][ZIG_Y];
+	int nInfoIndexT[6][ZIG_X][ZIG_Y]; // 0:Empty,1:Good, 2:NG, 3:Top Ready, 4: Top Done, 5: Btm Ready, 6 : Btm Done,  9:Init 
+	std::vector<int> nInfoMark[ZIG_X][ZIG_Y];
+
+	int nInfoMZLoad[10];
+	int nInfoMZUnload[10];
 
 
 	//old 
@@ -136,9 +150,7 @@ typedef struct
 
 
 
-	int        nCmMaxCount;    // ?? ??????? ??? CM ????
-	int        nCapMaxCount;
-	int        nShipMaxCount;
+	
 
 	int        nTrayUseCount[2];    // ????? ????? Tray ????
 	int        nCmUseCount[2];        // ????? ????? CM ????
@@ -157,22 +169,10 @@ typedef struct
 	int        nULPNo;                    // Unload Port No
 
 
-	// Infomation 
-	int        InfoMZ_Load[10];
-	int        InfoMZ_Unload[10];
+	
 
 
-
-
-
-	BOOL    IndexDone[3];                // 0:Load, 1:Assembly 2:Trans
-	int        InfoLoadTray[LT_Y][LT_X];    // Load Tray ???? ??? (0:Not Use, 9:Use)
-	int        InfoCapTray[CT_Y][CT_X];    // Cap Tray ???? ??? (0:Not Use, 9:Use)
-	int        STY;                        // Ship Tray ???¥ì? (R53B:7, R54B:7)
-	int        InfoShipTray[ST_Y][ST_X];    // Ship Tray ???? ??? (0:Not Use, 1:Exist)
-	int        InfoNgTray[ST_Y][ST_X];        // NG Tray ???? ??? (0:Empty, 2:NG)
-
-	int        InfoIndex[3][PICK];            // Index ???? ??? 0: ????    (0:Not Use, 1:Exist)
+	//old 
 	int        InfoCapBuffer[PICK];        // Cap Buffer ???? ??? 0:???    (0:Not Use, 9:Use)
 	int        InfoTransStage[PICK];        // Trans Stage ???? ??? 0:????    (0:Not Use, 1:Exist)
 
@@ -445,3 +445,22 @@ extern GLOVAL_MES	gMes;
 extern GLOBAL_DOORLOCK gDoorLock;
 extern GLOVAL_PART		gPart;
 
+
+
+
+struct LensState
+{
+	enum eName
+	{
+		// 0:Empty,1:Good, 2:NG, 3:Top Ready, 4: Top Done, 5: Btm Ready, 6 : Btm Done,  9:Init 
+		nothing = 0,
+		Good = 1,
+		NG = 2,
+		TopReady = 3,
+		TopDone = 4,
+		BtmReady = 5,
+		BtmDone = 6,
+		Init = 9,
+
+	};
+};

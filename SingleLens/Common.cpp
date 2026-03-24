@@ -620,3 +620,295 @@ BOOL CCommon::Check_CapShipPartNo(int nType, CString sPartNo)	//1:Cap, 2:Ship
 	}
 	return FALSE;
 }
+
+
+//////////////////////////////
+void CCommon::Set_IndexLoadAlignIn()
+{
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+
+	pDY01->oIndexTInOutAlignIn = TRUE;
+	pDY01->oIndexTInOutAlignOut = FALSE;
+	g_objAJinAXL.Write_Output(1);
+
+}
+
+void CCommon::Set_IndexLoadAlignOut()
+{
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+
+	pDY01->oIndexTInOutAlignIn = FALSE;
+	pDY01->oIndexTInOutAlignOut = TRUE;
+	g_objAJinAXL.Write_Output(1);
+
+}
+
+void CCommon::Set_IndexCleanAlignIn()
+{
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+
+	pDY01->oIndexTCleanerAlignIn = TRUE;
+	pDY01->oIndexTCleanerAlignOut = FALSE;
+	g_objAJinAXL.Write_Output(1);
+
+}
+
+void CCommon::Set_IndexCleanAlignOut()
+{
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+
+	pDY01->oIndexTCleanerAlignIn = FALSE;
+	pDY01->oIndexTCleanerAlignOut = TRUE;
+	g_objAJinAXL.Write_Output(1);
+
+}
+
+void CCommon::Set_IndexTopAlignIn()
+{
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+
+	pDY01->oIndexTInOutAlignIn = TRUE;
+	pDY01->oIndexTInOutAlignOut = FALSE;
+	g_objAJinAXL.Write_Output(1);
+
+}
+
+void CCommon::Set_IndexTopAlignOut()
+{
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+
+	pDY01->oIndexTInOutAlignIn = FALSE;
+	pDY01->oIndexTInOutAlignOut = TRUE;
+	g_objAJinAXL.Write_Output(1);
+
+}
+
+void CCommon::Set_IndexBtmAlignIn()
+{
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+
+	pDY01->oIndexTInOutAlignIn = TRUE;
+	pDY01->oIndexTInOutAlignOut = FALSE;
+	g_objAJinAXL.Write_Output(1);
+
+}
+
+void CCommon::Set_IndexBtmAlignOut()
+{
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+
+	pDY01->oIndexTInOutAlignIn = FALSE;
+	pDY01->oIndexTInOutAlignOut = TRUE;
+	g_objAJinAXL.Write_Output(1);
+
+}
+
+void CCommon::Set_IndexMarkAlignIn()
+{
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+
+	pDY01->oIndexTInOutAlignIn = TRUE;
+	pDY01->oIndexTInOutAlignOut = FALSE;
+	g_objAJinAXL.Write_Output(1);
+
+}
+
+void CCommon::Set_IndexMarkAlignOut()
+{
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+
+	pDY01->oIndexTInOutAlignIn = FALSE;
+	pDY01->oIndexTInOutAlignOut = TRUE;
+	g_objAJinAXL.Write_Output(1);
+
+}
+
+
+//---------------Get--------------
+
+BOOL CCommon::Get_IndexLoadAlignIn()
+{
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+		
+	if(pDX01->iIndexTInOutAlignIn && !pDX01->iIndexTInOutAlignOut)
+	{
+		return TRUE;
+	}
+	return FALSE;	
+}
+
+BOOL CCommon::Get_IndexLoadAlignOut()
+{
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+	if(!pDX01->iIndexTInOutAlignIn && pDX01->iIndexTInOutAlignOut)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+
+BOOL CCommon::Get_IndexCleanAlignIn()
+{
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+	if(pDX01->iIndexTCleanerAlignIn && !pDX01->iIndexTCleanerAlignOut)
+	{
+		return TRUE;
+	}
+	return FALSE;
+
+}
+
+BOOL CCommon::Get_IndexCleanAlignOut()
+{
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+	if(!pDX01->iIndexTCleanerAlignIn && pDX01->iIndexTCleanerAlignOut)
+	{
+		return TRUE;
+	}
+	return FALSE;
+
+}
+
+BOOL CCommon::Get_IndexTopAlignIn()
+{
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+	if(pDX01->iIndexTTopAlignIn && !pDX01->iIndexTTopAlignOut)
+	{
+		return TRUE;
+	}
+	return FALSE;
+
+}
+
+BOOL CCommon::Get_IndexTopAlignOut()
+{
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+	if(pDX01->iIndexTTopAlignIn && !pDX01->iIndexTTopAlignOut)
+	{
+		return TRUE;
+	}
+	return FALSE;
+
+}
+
+BOOL CCommon::Get_IndexBtmAlignIn()
+{
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+	if(pDX01->iIndexTBtmAlignIn && !pDX01->iIndexTBtmAlignOut)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+
+BOOL CCommon::Get_IndexBtmAlignOut()
+{
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+	if(pDX01->iIndexTBtmAlignIn && !pDX01->iIndexTBtmAlignOut)
+	{
+		return TRUE;
+	}
+	return FALSE;
+
+}
+
+BOOL CCommon::Get_IndexMarkAlignIn()
+{
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+	if(pDX01->iIndexTMarkAlignIn && !pDX01->iIndexTMarkAlignOut)
+	{
+		return TRUE;
+	}
+	return FALSE;
+
+}
+
+BOOL CCommon::Get_IndexMarkAlignOut()
+{
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+	if(pDX01->iIndexTMarkAlignIn && !pDX01->iIndexTMarkAlignOut)
+	{
+		return TRUE;
+	}
+	return FALSE;
+
+}
+
+void CCommon::Set_CleanerClose()
+{
+	DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
+	pDY02->oLensCleannerTopDown = TRUE; pDY02->oLensCleannerTopUp = FALSE;
+	pDY02->oLensCleannerBtmUp = TRUE; pDY02->oLensCleannerBtmDown = FALSE;
+	g_objAJinAXL.Write_Output(2);
+}
+
+void CCommon::Set_CleanerOpen()
+{
+	DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
+	pDY02->oLensCleannerTopDown = FALSE; pDY02->oLensCleannerTopUp = TRUE;
+	pDY02->oLensCleannerBtmUp = FALSE; pDY02->oLensCleannerBtmDown = TRUE;
+	g_objAJinAXL.Write_Output(2);
+}
+
+BOOL CCommon::Get_CleanerClose()
+{
+	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
+
+	if(pDX02->iLensCleanerDown && !pDX02->iLensCleanerUp)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+
+BOOL CCommon::Get_CleanerOpen()
+{
+	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
+	if(!pDX02->iLensCleanerDown && pDX02->iLensCleanerUp)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+
+
+
+
+//////////////////////////////////////////////////////////////////////////
+void CCommon::Set_CleanerForward()
+{
+	DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
+	pDY02->oLensCleannerTopForward = TRUE; pDY02->oLensCleannerTopBackward = FALSE;
+	pDY02->oLensCleannerBtmForward = TRUE; pDY02->oLensCleannerBtmBackward = FALSE;
+	g_objAJinAXL.Write_Output(2);
+}
+
+void CCommon::Set_CleanerBackward()
+{
+	DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
+	pDY02->oLensCleannerTopForward = FALSE; pDY02->oLensCleannerTopBackward = TRUE;
+	pDY02->oLensCleannerBtmForward = FALSE; pDY02->oLensCleannerBtmBackward = TRUE;
+	g_objAJinAXL.Write_Output(2);
+}
+
+BOOL CCommon::Get_CleanerForwardDone()
+{
+	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
+
+	if(pDX02->iLensCleanerForward && !pDX02->iLensCleanerBackward)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+
+BOOL CCommon::Get_CleanerBackwardDone()
+{
+	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
+	if(!pDX02->iLensCleanerForward && pDX02->iLensCleanerBackward)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+

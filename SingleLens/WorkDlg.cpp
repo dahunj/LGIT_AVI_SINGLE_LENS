@@ -832,7 +832,7 @@ void CWorkDlg::Display_Status()
 // 	if (g_objMesAgent.Is_HostOnline()) { m_stcMesOnline.Set_Text("Online"); m_stcMesOnline.Set_Color(RGB(0x00, 0x00, 0x00), RGB(0x00, 0xFF, 0x00)); }
 // 	else { m_stcMesOnline.Set_Text("Offline"); m_stcMesOnline.Set_Color(RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00)); }
 
-	for (int i = 0; i < 3; i++) m_ledIndexDone[i].Set_On(gData.IndexDone[i]);
+	
 
 	//DX_DATA_11 *pDX11 = g_objAJinAXL.Get_pDX11();
 	//int nIndexPos = pDX11->iIndexPosition0 + (pDX11->iIndexPosition1 << 1);
@@ -997,69 +997,6 @@ LRESULT CWorkDlg::OnUpdateTrayInfo(WPARAM nTray, LPARAM lParam)
 	CString strText;
 	int nNo = (int)lParam;
 
-	if (nTray == 0 || nTray == 1) {		// Load Tray
-		strText.Format("%d", gData.nTNoLoadTray[nNo]);
-		m_stcLoadTrayCount.SetWindowText(strText);
-
-		for (int i = 0; i < LT_Y; i++) {
-			for (int j = 0; j < LT_X; j++) {
-				if		(gData.InfoLoadTray[i][j] == 9) m_grdLoadTray.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0x00));	// Reserve
-				else if (gData.InfoLoadTray[i][j] == 0) m_grdLoadTray.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
-				else									m_grdLoadTray.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
-			}
-		}
-		g_dlgOperator.Update_TrayInfo(nTray);
-	}
-	if (nTray == 0 || nTray == 2) {		// Cap Tray
-		strText.Format("%d", gData.nCapTrayCount);
-		m_stcCapTrayCount.SetWindowText(strText);
-
-		for (int i = 0; i < CT_Y; i++) {
-			for (int j = 0; j < CT_X; j++) {
-				if		(gData.InfoCapTray[i][j] == 9) m_grdCapTray.Set_CellBackClr(i, j, RGB(0x00, 0xFF, 0xFF));	// Reserve
-				else if (gData.InfoCapTray[i][j] == 0) m_grdCapTray.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
-				else								   m_grdCapTray.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
-			}
-		}
-		g_dlgOperator.Update_TrayInfo(nTray, nNo);
-	}
-
-	
-
-	if (nTray == 0 || nTray == 3) {		// NG Tray
-		strText.Format("%d", gData.nTNoUnloadTray);
-		m_stcShipTrayCount.SetWindowText(strText);
-
-		for (int i = 0; i < gData.STY; i++) {
-			for (int j = 0; j < ST_X; j++) {
-				if		(gData.InfoShipTray[i][j] >  1) m_grdShipTray.Set_CellBackClr(i, j, RGB(0x70, 0x70, 0x70));	// Not Use
-				else if	(gData.InfoShipTray[i][j] == 1) m_grdShipTray.Set_CellBackClr(i, j, RGB(0x00, 0xFF, 0x00));	// Good
-				else if (gData.InfoShipTray[i][j] == 0) m_grdShipTray.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
-				else									m_grdShipTray.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
-			}
-		}
-		g_dlgOperator.Update_TrayInfo(nTray, nNo);
-	}
-
-
-	if (nTray == 0 || nTray == 4)  // Unload Tray
-	{		
-		strText.Format("%d", gData.nTNoUnloadTray);
-		m_stcNGTrayCount.SetWindowText(strText);
-
-		for (int i = 0; i < gData.STY; i++) 
-		{
-			for (int j = 0; j < ST_X; j++)
-			{
-				if		(gData.InfoNgTray[i][j] >  1) m_grdNGTray.Set_CellBackClr(i, j, RGB(0x70, 0x70, 0x70));	// Not Use
-				else if	(gData.InfoNgTray[i][j] == 1) m_grdNGTray.Set_CellBackClr(i, j, RGB(0x00, 0xFF, 0x00));	// Good
-				else if (gData.InfoNgTray[i][j] == 0) m_grdNGTray.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
-				else									m_grdNGTray.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
-			}
-		}
-		g_dlgOperator.Update_TrayInfo(nTray, nNo);
-	}
-
 	return 0;
 }
 
@@ -1196,20 +1133,20 @@ LRESULT CWorkDlg::OnIndexTack(WPARAM wParam, LPARAM lParam)
 LRESULT CWorkDlg::OnShowMsg(WPARAM wParam, LPARAM lParam)
 {
 	//g_dlgWork.PostMessage(UM_LOT_END_MSG, NULL, NULL);
-	if(wParam == 1) g_objCommon.Show_MsgBox(1, "NG Tray Full 상태입니다.\nNG Tray 교체 해주십시오.");
-	else if(wParam == 2) g_objCommon.Show_MsgBox(1, "현재 Lot이 종료 되었습니다. Tray 배출 해주십시오.");
-	else if(wParam == 3) g_objCommon.Show_Alarm("Cap Tray 정보 입력 해주십시오.", STATE_CAPTRAY);
-	else if(wParam == 4) g_objCommon.Show_Alarm("Cap Tray 투입 해주십시오.", STATE_CAPTRAY);
-	else if(wParam == 5) g_objCommon.Show_Alarm("Ship Tray 투입 해주십시오.", STATE_SHIPTRAY);
-	else 	g_objCommon.Show_MsgBox(1, "Lot의 마지막 트레이 작업 중입니다.\n배출 준비 해주십시오.");
+	//if(wParam == 1) g_objCommon.Show_MsgBox(1, "NG Tray Full 상태입니다.\nNG Tray 교체 해주십시오.");
+	//else if(wParam == 2) g_objCommon.Show_MsgBox(1, "현재 Lot이 종료 되었습니다. Tray 배출 해주십시오.");
+	//else if(wParam == 3) g_objCommon.Show_Alarm("Cap Tray 정보 입력 해주십시오.", STATE_CAPTRAY);
+	//else if(wParam == 4) g_objCommon.Show_Alarm("Cap Tray 투입 해주십시오.", STATE_CAPTRAY);
+	//else if(wParam == 5) g_objCommon.Show_Alarm("Ship Tray 투입 해주십시오.", STATE_SHIPTRAY);
+	//else 	g_objCommon.Show_MsgBox(1, "Lot의 마지막 트레이 작업 중입니다.\n배출 준비 해주십시오.");
 
 	return 0;
 }
 
 void CWorkDlg::Change_Model()
 {
-	Initial_Grid(&m_grdShipTray, gData.STY, ST_X);
-	g_dlgOperator.Change_Model();
+
+
 }
 
 

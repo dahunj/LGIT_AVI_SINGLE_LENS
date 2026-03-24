@@ -6,7 +6,12 @@
 // Equip Data
 typedef struct tag_EQUIP_DATA {
 	
-	double dMZPitchZ;
+	double	dMZPitchLeftZ;
+	double	dMZPitchRightZ;
+	BOOL	bUseCleaner;
+	BOOL	bUseTopVision;
+	BOOL	bUseBtmVision;
+	BOOL	bUseMark;
 	
 	
 	

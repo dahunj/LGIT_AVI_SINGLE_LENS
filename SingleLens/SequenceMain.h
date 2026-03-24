@@ -126,11 +126,19 @@ public:
 
 	//Conveyor 
 	int Check_MZSensors();
+	BOOL Check_IndexDone();
+
+	BOOL Check_ZigPickerEmpty();
+	BOOL Check_IndexEmpty(int nPos);
 
 
+	void Set_IndexEnd();
 
 
+	//////////////////////////////////////////////////////////////////////////
+	BOOL Select_TopScanPos(int &nTopPosX, int &nTopPosY);
 
+	void Init_TopZig();
 
 };
 

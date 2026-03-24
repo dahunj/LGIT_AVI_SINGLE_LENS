@@ -112,9 +112,7 @@ void COperatorDlg::Initial_Controls()
 	//New 
 	Initial_Grid(&m_grdOperMZLoad, SLOT_NO_MAX, 1);
 	Initial_Grid(&m_grdOperMZUnload, SLOT_NO_MAX, 1);
-	Initial_Grid(&m_grdOperTrayTop, TRAY_Y, TRAY_X);
-	Initial_Grid(&m_grdOperTrayBtm, TRAY_Y, TRAY_X);
-	Initial_Grid(&m_grdOperTrayMark, TRAY_Y, TRAY_X);
+
 	
 	//Old
 	/*m_stcOperLoadTray.Init_Ctrl("Segoe UI", 12, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xFF, 0xFF, 0xFF));
@@ -491,15 +489,15 @@ void COperatorDlg::Update_TrayInfo(int nTray, int nNo)
 
 		for (int j = 0; j < SLOT_NO_MAX; j++)
 		{
-			if		(gData.InfoMZ_Load[j] == 9) m_grdOperMZLoad.Set_CellBackClr(0, j, RGB(0x00, 0xFF, 0xFF));	// Reserve
-			else if (gData.InfoMZ_Load[j] == 0) m_grdOperMZLoad.Set_CellBackClr(0, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
+			if		(gData.nInfoMZLoad[j] == 9) m_grdOperMZLoad.Set_CellBackClr(0, j, RGB(0x00, 0xFF, 0xFF));	// Reserve
+			else if (gData.nInfoMZLoad[j] == 0) m_grdOperMZLoad.Set_CellBackClr(0, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
 			else									m_grdOperMZLoad.Set_CellBackClr(0, j, RGB(0x80, 0x80, 0x80));	// Error
 		}
 
 		for (int j = 0; j < SLOT_NO_MAX; j++)
 		{
-			if		(gData.InfoMZ_Unload[j] == 9) m_grdOperMZUnload.Set_CellBackClr(0, j, RGB(0x00, 0xFF, 0xFF));	// Reserve
-			else if (gData.InfoMZ_Unload[j] == 0) m_grdOperMZUnload.Set_CellBackClr(0, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
+			if		(gData.nInfoMZUnload[j] == 9) m_grdOperMZUnload.Set_CellBackClr(0, j, RGB(0x00, 0xFF, 0xFF));	// Reserve
+			else if (gData.nInfoMZUnload[j] == 0) m_grdOperMZUnload.Set_CellBackClr(0, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
 			else									m_grdOperMZUnload.Set_CellBackClr(0, j, RGB(0x80, 0x80, 0x80));	// Error
 		}
 

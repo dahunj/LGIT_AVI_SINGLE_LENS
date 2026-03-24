@@ -170,3 +170,17 @@ struct Btm_Index_Table_R
 	};
 };
 
+
+struct IndexT
+{
+	enum JobName
+	{
+		Load = 0,
+		Clean = 1,
+		Top = 2,
+		None= 3,
+		Btm = 4,
+		Mark = 5,
+	};
+
+};

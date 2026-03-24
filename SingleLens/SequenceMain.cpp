@@ -353,7 +353,7 @@ BOOL CSequenceMain::MZElevRun()
 			}
 			else
 			{
-				g_objAJinAXL.Move_Relative(AX_MZ_ELEV_Z,  m_pEquipData->dMZPitchZ*(1.0)); 
+				g_objAJinAXL.Move_Relative(AX_MZ_ELEV_Z,  m_pEquipData->dMZPitchRightZ*(1.0)); 
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 			}
 		}
@@ -457,6 +457,8 @@ BOOL CSequenceMain::TrayPickerRun()
 			m_nTrayPickerCase++; m_nTrayPickerLoop.Set_LoopTime(5000);
 		}
 		break;
+	case 3:
+		break;
 	}
 
 	// 4. (Error : 4000)
@@ -471,6 +473,46 @@ BOOL CSequenceMain::TrayPickerRun()
 // 5. (Error : 4300)
 BOOL CSequenceMain::LensCleanerRun()
 {
+	switch(m_nLensCleanerCase)
+	{
+	case 0:
+		if(!gData.bIndexDone[IndexT::Clean]) m_nLensCleanerCase = 1;
+		return TRUE;
+	case 1:
+		g_objCommon.Set_CleanerClose();
+		m_nLensCleanerCase++; m_nLensCleanerLoop.Set_LoopTime(5000);
+		break;
+	case 2:
+		if(g_objCommon.Get_CleanerClose())
+		{
+			g_objCommon.Set_CleanerForward();
+			m_nLensCleanerCase++; m_nLensCleanerLoop.Set_LoopTime(5000);
+		}		
+		break;
+	case 3:
+		if(g_objCommon.Get_CleanerForwardDone())
+		{
+
+			g_objCommon.Set_CleanerOpen();
+			m_nLensCleanerCase++; m_nLensCleanerLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 4:
+		if(g_objCommon.Get_CleanerOpen())
+		{
+			g_objCommon.Set_CleanerBackward();
+			m_nLensCleanerCase++; m_nLensCleanerLoop.Set_LoopTime(5000);
+		}
+	case 5:
+		if(g_objCommon.Get_CleanerBackwardDone())
+		{
+			gData.bIndexDone[IndexT::Clean] = TRUE;
+			m_nLensCleanerCase = 0; m_nLensCleanerLoop.Set_LoopTime(5000);
+			
+			
+		}
+		break;
+	}
 
 
 	// 5. (Error : 4300)
@@ -485,6 +527,33 @@ BOOL CSequenceMain::LensCleanerRun()
 // 6. (Error : 4600)
 BOOL CSequenceMain::TopInspectorRun()
 {
+	switch(m_nTopInspectCase)
+	{
+	case 0:
+		return TRUE;
+	case 1:
+		if(g_objCommon.Check_Position(AX_TOP_INSPECTOR_Z, Top_Inspector_Z::Ready))
+		{
+			if(m_pEquipData->bUseTopVision)
+			{
+				Init_TopZig();
+				m_nTopInspectCase++; m_nTopInspectLoop.Set_LoopTime(5000);
+			}
+		}
+		break;
+	case 2:
+		break;
+	case 3:
+		break;
+	case 4:
+		break;
+	case 2:
+		break;
+	case 2:
+		break;
+
+	}
+
 	// 6. (Error : 4600)
 	if (m_nTopInspectLoop.Over_LoopTime()) 
 	{		
@@ -497,6 +566,20 @@ BOOL CSequenceMain::TopInspectorRun()
 // 7. (Error : 4900)
 BOOL CSequenceMain::BtmInspectorRun()
 {
+	switch(m_nTopInspectCase)
+	{
+	case 0:
+		return TRUE;
+	case 1:
+		if(g_objCommon.Check_Position(AX_TRAY_PICKER_Y, Tray_Picker_Y::Load))
+		{
+			g_objCommon.Move_Position(AX_TRAY_PICKER_Z, Tray_Picker_Z::Load);
+			m_nBtmInspectCase++; m_nBtmInspectLoop.Set_LoopTime(5000);
+		}
+		break;
+
+	}
+
 	// 7. (Error : 4900)
 	if (m_nBtmInspectLoop.Over_LoopTime()) 
 	{		
@@ -509,6 +592,21 @@ BOOL CSequenceMain::BtmInspectorRun()
 // 8. (Error : 5200)
 BOOL CSequenceMain::MarkerRun()
 {
+	switch(m_nMarkerCase)
+	{
+	case 0:
+		return TRUE;
+	case 1:
+		if(g_objCommon.Check_Position(AX_TRAY_PICKER_Y, Tray_Picker_Y::Load))
+		{
+			g_objCommon.Move_Position(AX_TRAY_PICKER_Z, Tray_Picker_Z::Load);
+			m_nMarkerCase++; m_nMarkerLoop.Set_LoopTime(5000);
+		}
+		break;
+
+	}
+
+
 	// 8. (Error : 5200)
 	if (m_nMarkerLoop.Over_LoopTime()) 
 	{		
@@ -521,6 +619,92 @@ BOOL CSequenceMain::MarkerRun()
 // 9. (Error : 5500)
 BOOL CSequenceMain::IndexTRun()
 {
+	switch(m_nIndexTCase)
+	{
+	case 0:
+		if (Check_IndexEmpty(-1) && Check_ZigPickerEmpty()) return TRUE;
+
+		if(m_nTrayPickerCase > 4 && m_nTrayPickerCase <= 14)
+		{
+			m_nIndexTCase++; m_nIndexTLoop.Set_LoopTime(5000);
+		}
+
+		/*if(gData.bIndexDone[IndexT::Load] && g_objCommon.Get_IndexLoadAlignOut())
+		{
+			g_objCommon.Set_IndexLoadAlignIn();
+		}*/		
+		return TRUE;
+	case 1:
+		g_objCommon.Set_IndexLoadAlignOut();
+	 	m_nIndexTCase++; m_nIndexTLoop.Set_LoopTime(5000);
+		break;
+	case 2:
+		if(g_objCommon.Get_IndexLoadAlignOut())
+		{
+			m_nIndexTCase = 5; m_nIndexTLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 5:
+		//Zig Picker Working 
+		return TRUE;
+	case 6:
+		if(g_objCommon.Get_IndexLoadAlignIn()) //Set at ZigPicker Run 
+		{
+			m_nIndexTCase = 10;m_nIndexTLoop.Set_LoopTime(5000);
+		}
+	case 10:
+		if(Check_IndexDone() && g_objCommon.Get_IndexLoadAlignIn()
+			&& g_objCommon.Get_IndexCleanAlignIn()
+			&& g_objCommon.Get_IndexTopAlignIn()
+			&& g_objCommon.Get_IndexBtmAlignIn()
+			&& g_objCommon.Get_IndexMarkAlignIn())
+		{
+			if (Check_IndexEmpty(-1)) 
+			{ 
+				m_nIndexTCase = 0;
+				return TRUE;
+			}
+
+			if ((g_objAJinAXL.Get_Position(AX_TRAY_PICKER_Y) <= 200.0 && g_objCommon.Check_Position(AX_TRAY_PICKER_Z, Tray_Picker_Z::Ready)) 
+				&& g_objCommon.Get_CleanerOpen()
+				&& g_objCommon.Check_Position(AX_TOP_INSPECTOR_Z, Top_Inspector_Z::Ready)
+				&& g_objCommon.Check_Position(AX_BTM_INSPECTOR_Z, Btm_Inspector_Z::Ready)
+				&& g_objCommon.Check_Position(AX_MARKER_Z, Marker_Z::Ready))				 
+			{
+				g_objAJinAXL.Move_Relative(AX_INDEX_TABLE_R, m_pMoveData->dMainIndexR[0]);
+				m_nIndexTCase++; m_nIndexTLoop.Set_LoopTime(10000);
+			}
+
+		}
+		return TRUE;
+	case 11:
+		if (g_objAJinAXL.Is_MoveDone(AX_INDEX_TABLE_R, m_pMoveData->dMainIndexR[0])) {
+			
+			Set_IndexEnd();
+			m_nIndexTCase = 0; m_nIndexTLoop.Set_LoopTime(5000);
+		}
+		break;
+
+		// Lot End Home
+	case 50:		// Index R Home
+
+		if ((g_objAJinAXL.Get_Position(AX_TRAY_PICKER_Y) <= 200.0 && g_objCommon.Check_Position(AX_TRAY_PICKER_Z, Tray_Picker_Z::Ready)) 
+			&& g_objCommon.Get_CleanerOpen()
+			&& g_objCommon.Check_Position(AX_TOP_INSPECTOR_Z, Top_Inspector_Z::Ready)
+			&& g_objCommon.Check_Position(AX_BTM_INSPECTOR_Z, Btm_Inspector_Z::Ready)
+			&& g_objCommon.Check_Position(AX_MARKER_Z, Marker_Z::Ready))				 
+		{
+			g_objAJinAXL.Home_Search(AX_INDEX_TABLE_R);
+			m_nIndexTCase++; m_nIndexTLoop.Set_LoopTime(10000);
+		}
+		break;
+	case 51:		// Check R Home Done
+		if (g_objAJinAXL.Is_Home(AX_INDEX_TABLE_R)) 
+		{
+			m_nIndexTCase = 0;
+		}
+		break;
+	}
 	// 9. (Error : 5500)
 	if (m_nIndexTLoop.Over_LoopTime()) 
 	{		
@@ -532,6 +716,20 @@ BOOL CSequenceMain::IndexTRun()
 
 BOOL CSequenceMain::UnloadConveyorRun()
 {
+	switch(m_nUnloadConveyorCase)
+	{
+	case 0:
+		return TRUE;
+	case 1:
+		if(g_objCommon.Check_Position(AX_TRAY_PICKER_Y, Tray_Picker_Y::Load))
+		{
+			g_objCommon.Move_Position(AX_TRAY_PICKER_Z, Tray_Picker_Z::Load);
+			m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(5000);
+		}
+		break;
+
+	}
+
 	// 10. (Error : 5800)
 	if (m_nUnloadConveyorLoop.Over_LoopTime()) 
 	{		
@@ -581,4 +779,121 @@ int CSequenceMain::Check_MZSensors()
 
 	return nMZCnt;
 	
+}
+
+BOOL CSequenceMain::Check_IndexDone()
+{
+	for(int i = 0 ; i < 6; i++)
+	{
+		if(!gData.bIndexDone[i])
+		{
+			return FALSE;
+		}
+	}
+	return TRUE;	
+}
+
+
+BOOL CSequenceMain::Check_IndexEmpty(int nPos)
+{
+	// nPos (0:Load, 1:clean, 2:top, 3:empty, 4:btm, 5:Mark  -1:All)
+	int nS = (nPos == -1 ? 0 : nPos);
+	int nE = (nPos == -1 ? 5 : nPos);
+
+	for (int i = nS; i < nE + 1; i++) 
+	{
+		for (int j = 0; j < ZIG_X; j++) 
+		{
+			for (int k = 0; k < ZIG_Y; k++) 
+			{
+				if (gData.nInfoIndexT[i][j][k] > 0) return FALSE;
+			}			
+		}
+	}
+	return TRUE;
+}
+
+BOOL CSequenceMain::Check_ZigPickerEmpty()
+{
+	for (int i = 0; i < ZIG_X; i++) 
+	{
+		for(int j = 0; j < ZIG_Y; j++)
+		{
+			if (gData.nInfoZigPicker[i] > 0) return FALSE; 
+		}		
+	}
+	return TRUE;
+}
+
+
+
+void CSequenceMain::Set_IndexEnd()
+{
+	memmove(gData.nInfoIndexT[IndexT::Clean], gData.nInfoIndexT[IndexT::Load], sizeof(int)*6*ZIG_X*ZIG_Y);
+	memmove(gData.nInfoIndexT[IndexT::Top], gData.nInfoIndexT[IndexT::Clean], sizeof(int)*6*ZIG_X*ZIG_Y);
+	memmove(gData.nInfoIndexT[IndexT::None], gData.nInfoIndexT[IndexT::Top], sizeof(int)*6*ZIG_X*ZIG_Y);
+	memmove(gData.nInfoIndexT[IndexT::Btm], gData.nInfoIndexT[IndexT::None], sizeof(int)*6*ZIG_X*ZIG_Y);
+	memmove(gData.nInfoIndexT[IndexT::Mark], gData.nInfoIndexT[IndexT::Btm], sizeof(int)*6*ZIG_X*ZIG_Y);
+
+	memset(gData.nInfoIndexT[IndexT::Load], 0x00, sizeof(int)*6*ZIG_X*ZIG_Y);
+
+	memset(gData.bIndexDone, 0x00, sizeof(BOOL) * 6);
+
+}
+
+void CSequenceMain::Init_TopZig()
+{
+	for(int i = 0; i < ZIG_X; i++)
+	{
+		for(int j = 0; j < ZIG_Y; j++)
+		{
+			gData.nInfoIndexT[IndexT::Top][ZIG_X][ZIG_Y] = LensState::TopReady;
+		}
+	}
+}
+
+
+
+BOOL CSequenceMain::Select_TopScanPos(int &nTopPosX, int &nTopPosY)
+{
+	// Module만 Scan
+	BOOL bScanLine = FALSE; 
+	nTopPosX = nTopPosY = 0;
+	for(int j=(gData.nZigY-1); j>=0; j--) 
+	{
+		// 잔량이 어디 있을지 몰라 Line에 한개 이상 모듈이 있으면 전체 Line Scan 해준다. 
+		for(int i=0; i<gData.nZigX; i++) {
+			if (gData.nInfoIndexT[IndexT::Top][j][i] != 0) { bScanLine = TRUE; break;}
+		}
+
+		if (j==1 || j==3 || j==5 || j==7 || j==9 || j==11) {
+			for(int i=(gData.nZigX-1); i>=0; i--) {
+				if ((gData.nInfoIndexT[IndexT::Top][j][i] == 0 
+					|| gData.nInfoIndexT[IndexT::Top][j][i] == LensState::TopReady) 
+					&& bScanLine) 
+				{
+					nTopPosY = j + 1;
+					nTopPosX = i + 1;
+					break;
+				}
+			}
+		} else {
+			for(int i=0; i<gData.nZigX; i++) {
+				if ((gData.nInfoIndexT[IndexT::Top][j][i] == 0 
+					|| gData.nInfoIndexT[IndexT::Top][j][i] == 9) 
+					&& bScanLine) 
+				{
+					nTopPosY = j + 1;
+					nTopPosX = i + 1;
+					break;
+				}
+			}
+		}
+		bScanLine = FALSE;
+		if (nTopPosY > 0) break;
+	}
+
+	if (nTopPosY > gData.nZigY) return FALSE;
+	if (nTopPosY == 0 || nTopPosX ==0) return FALSE;
+	return TRUE;
 }

@@ -83,7 +83,39 @@ public:
 	void Backup_File(CString strPath, CString strName);	// System Folder
 
 	///////////////////////////////////////////////////////////////////////////
-	
+	void Set_IndexLoadAlignIn();
+	void Set_IndexLoadAlignOut();
+	void Set_IndexCleanAlignIn();
+	void Set_IndexCleanAlignOut();
+	void Set_IndexTopAlignIn();
+	void Set_IndexTopAlignOut();
+	void Set_IndexBtmAlignIn();
+	void Set_IndexBtmAlignOut();
+	void Set_IndexMarkAlignIn();
+	void Set_IndexMarkAlignOut();
+
+	BOOL Get_IndexLoadAlignIn();
+	BOOL Get_IndexLoadAlignOut();
+	BOOL Get_IndexCleanAlignIn();
+	BOOL Get_IndexCleanAlignOut();
+	BOOL Get_IndexTopAlignIn();
+	BOOL Get_IndexTopAlignOut();
+	BOOL Get_IndexBtmAlignIn();
+	BOOL Get_IndexBtmAlignOut();
+	BOOL Get_IndexMarkAlignIn();
+	BOOL Get_IndexMarkAlignOut();
+
+	void Set_CleanerClose();
+	void Set_CleanerOpen();
+
+	BOOL Get_CleanerClose();
+	BOOL Get_CleanerOpen();
+
+	void Set_CleanerForward();
+	void Set_CleanerBackward();
+
+	BOOL Get_CleanerForwardDone();
+	BOOL Get_CleanerBackwardDone();
 
 };
 

@@ -193,11 +193,7 @@ BOOL CDataManager::Read_EquipData()
 	for (int i = 0; i < PICK; i++) { strKey.Format("%d", i); gData.dAssyLoadCell[i] = INI.Get_Double("ASSY_LOAD_CELL", strKey, 0.0); }
 
 	// Gloval Data
-	gData.nCmMaxCount = LT_Y * LT_X;	// Tray 배열 (3X4)
-	gData.nCapMaxCount = CT_Y * CT_X;	// Tray 배열 (4x7)
-	gData.STY =  ST_Y;
-	gData.nShipMaxCount = gData.STY * ST_X;	// Tray 배열 (3x7 or 3x6)
-	
+		
 	m_EquipData.nResultTestNg = INI.Get_Integer("RESULT_TEST", "RESULT_NG", 0);
 
 	//doorinterlock log
