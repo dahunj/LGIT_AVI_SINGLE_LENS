@@ -63,7 +63,7 @@ public:
 
 	void Set_LotStart(CString sLotId, int nPortNo);
 	void Set_LotEnd(CString sLotId, int nPortNo);
-	void Set_LoadComplete(CString sGbn, CString sLotId, int nPortNo, int nTNo1, int nTNo2, int nCNo1, int nCNo2, int nPickNo1, int nPickNo2);
+	void Set_LoadComplete(CString sGbn, CString sZigID, CString sMZID, int nSlotNo, int nLensNo);
 	void Set_InitialRequest();
 	void Set_LightOff();
 	void Set_ReloadComplete();

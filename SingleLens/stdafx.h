@@ -131,7 +131,7 @@ typedef struct
 	int		nZigY;
 
 	// Infomation 
-	int	nInfoZigPicker[ZIG_X][ZIG_Y];
+	int	nInfoZigPick[ZIG_X][ZIG_Y];
 	int nInfoIndexT[6][ZIG_X][ZIG_Y]; // 0:Empty,1:Good, 2:NG, 3:Top Ready, 4: Top Done, 5: Btm Ready, 6 : Btm Done,  9:Init 
 	std::vector<int> nInfoMark[ZIG_X][ZIG_Y];
 
@@ -147,6 +147,14 @@ typedef struct
 	CString	sOperID;		// Operator
 	CString	sRecipe;		// Recipe Item
 	CString	sLotID[60];
+
+
+	int		nMZNoElev;
+	int		nSlotNoElev;
+
+	int		nMZNoZigPick;
+	int		nSlotNoZigPick;
+
 	
 	//old 
 	
@@ -169,6 +177,8 @@ typedef struct
 	int        nLoadTrayCount[2];
 	int        nCapTrayCount;
 	int        nULPNo;                    // Unload Port No
+
+
 
 
 	

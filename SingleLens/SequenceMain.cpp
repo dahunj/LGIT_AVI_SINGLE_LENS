@@ -258,38 +258,41 @@ BOOL CSequenceMain::LoadConveyorRun()
 //  2. (Error : 3400)
 BOOL CSequenceMain::MZElevRun()
 {
+	static int  nMZCnt = 0;
+	static int	nSlotNo = 0;
+	DWORD dwTick1 = 0, dwTick2 = 0;
+	
 	//Suppose MZ on Right of Elev
 	switch(m_nMZElevCase)
 	{
 	case 0:
-		return TRUE;
-	case 1:
-		if(m_pDX00->iMZElevExistRight && m_pDX00->iMZElevExistLeft)
+		nMZCnt = Check_MZSensors();
+		if(nMZCnt > 0 && !gData.bCycleStop)
 		{
-			m_nMZElevCase = 10; m_nMZElevLoop.Set_LoopTime(5000);	
-		}
-		else if(m_pDX00->iMZElevExistRight && ! m_pDX00->iMZElevExistLeft)
+			if (!m_nMZElevLoop.Waiting_Time(500)) break;			
+			m_nMZElevCase = 1; m_nMZElevLoop.Set_LoopTime(5000);
+		}	
+		if(m_pDX00->iMZElevExistRight && m_pDX00->iMZElevExistLeft)
 		{
 			m_nMZElevCase = 30; m_nMZElevLoop.Set_LoopTime(5000);	
 		}
+		else if(m_pDX00->iMZElevExistRight && ! m_pDX00->iMZElevExistLeft)
+		{
+			m_nMZElevCase = 60; m_nMZElevLoop.Set_LoopTime(5000);	
+		}
 		else if(!m_pDX00->iMZElevExistRight && m_pDX00->iMZElevExistLeft)
 		{
-			m_nMZElevCase = 50; m_nMZElevLoop.Set_LoopTime(5000);	
+			m_nMZElevCase = 90; m_nMZElevLoop.Set_LoopTime(5000);	
 		}
-		else  
-		{
-			// empty
-			m_nMZElevCase = 70; m_nMZElevLoop.Set_LoopTime(5000);
-		}
-		break;
-	case 70:
+		return TRUE;
+	case 1:
 		//CW 회전하려면 CCW도 True 로 해야함 
 		m_pDY00->oLoadCVCCW = TRUE; m_pDY00->oLoadCVCW = TRUE;
 		m_pDY00->oMZElevCVCCW = TRUE; m_pDY00->oMZElevCVCW = TRUE;
 		g_objAJinAXL.Write_Output(0);
 		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		break;
-	case 71:
+	case 2:
 		if(m_pDX00->iMZElevExistRight)
 		{
 			m_pDY00->oLoadCVCCW = FALSE; m_pDY00->oLoadCVCW = FALSE;
@@ -298,40 +301,85 @@ BOOL CSequenceMain::MZElevRun()
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 72:
+	case 3:
 		if(m_pDX00->iMZElevExistRight)
 		{
-			//m_pDY00->oMZElevAlignRightUp = TRUE; m_pDY00->oMZElevAlignRightDown = FALSE;
+			m_pDY00->oMZElevLoadStopperUp = TRUE; m_pDY00->oMZElevLoadStopperDown = FALSE;
 			//m_pDY00->oMZElevAlignRightIn = TRUE; m_pDY00->oMZElevAlignRightOut = FALSE;
 			g_objAJinAXL.Write_Output(0);
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 73:
-		//CCW는 CCW만 TRUE
-		if(gLot.nMZRunningCnt > 1)
+	case 4:
+		if(m_pDX00->iMZElevLoadStopperUp)
 		{
-			m_pDY00->oLoadCVCCW = TRUE; m_pDY00->oLoadCVCW = FALSE;
-			m_pDY00->oMZElevCVCCW = TRUE; m_pDY00->oMZElevCVCW = FALSE;
+			//m_pDY00->oMZElevAlignRightIn = TRUE; m_pDY00->oMZElevAlignRightOut = FALSE;
 			g_objAJinAXL.Write_Output(0);
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}
-		else // MZ = 1 
+		break;
+	case 5:
+		if(m_pDX00->iMZElevLoadStopperIn)
 		{
-			m_nMZElevCase = 100; m_nMZElevLoop.Set_LoopTime(5000);
-		}		
+			if(m_pDX00->iMZElevExistLeft)
+			{
+				m_nMZElevCase = 1; m_nMZElevLoop.Set_LoopTime(5000);
+			}
+			else
+			{
+				dwTick2 = GetTickCount();
+				m_pDY00->oMZElevCVCCW = TRUE; m_pDY00->oMZElevCVCW = FALSE;
+				g_objAJinAXL.Write_Output(0);
+				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+			}
+		}
+		break;
+	case 6:
+		if(m_pDX00->iMZElevExistLeft)
+		{
+			m_pDY00->oMZElevCVCCW = FALSE; m_pDY00->oMZElevCVCW = FALSE;
+			g_objAJinAXL.Write_Output(0);
+			m_nMZElevCase = 1; m_nMZElevLoop.Set_LoopTime(5000);
+		}
+		else if(GetTickCount() - dwTick2 > 5000)
+		{
+			m_nMZElevCase = 1; m_nMZElevLoop.Set_LoopTime(5000);
+		}
+		break;
+
+
+
+
+	
+
+	case 75:
+		//CCW는 CCW만 TRUE
+		//if(gLot.nMZRunningCnt > 1)
+		//{
+		//	m_pDY00->oLoadCVCCW = TRUE; m_pDY00->oLoadCVCW = FALSE;
+		//	m_pDY00->oMZElevCVCCW = TRUE; m_pDY00->oMZElevCVCW = FALSE;
+		//	g_objAJinAXL.Write_Output(0);
+		//	m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+		//}
+		//else // MZ = 1 
+		//{
+		m_nMZElevCase = 100; m_nMZElevLoop.Set_LoopTime(5000);
+		//}		
 		break;
 	case 100:		
 		if(g_objCommon.Check_Position(AX_FEEDER_Y, Feeder_Y::Ready))
 		{
 			//아래 부터 검사 
-			g_objCommon.Move_Position(AX_MZ_ELEV_Z, MZ_Elev_Z::Bottom);
+			double dPos = m_pMoveData->dMzElevZ[MZ_Elev_Z::Bottom] + m_pEquipData->dMZPitchRightZ * nSlotNo;
+			g_objAJinAXL.Move_Absolute(AX_MZ_ELEV_Z, dPos);
+			
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}		
 		break;
 	case 101:
 		if(g_objCommon.Check_Position(AX_MZ_ELEV_Z, MZ_Elev_Z::Bottom))
 		{
+			gData.nSlotNoElev = 1; //Bottom 
 			g_objCommon.Move_Position(AX_FEEDER_X, Feeder_X::MZRight);
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}
@@ -348,20 +396,24 @@ BOOL CSequenceMain::MZElevRun()
 		{
 			if(m_pDX01->iFeederCoatJigCheck)
 			{
-				g_objCommon.Move_Position(AX_FEEDER_Y, Feeder_Y::JigRight);
+				gData.nSlotNoElev = (gData.nMZNoElev - 1) * 10 + gData.nSlotNoElev;
+				g_objCommon.Move_Position(AX_FEEDER_Y, Feeder_Y::LoadRight);
 				m_nMZElevCase = 110; m_nMZElevLoop.Set_LoopTime(5000);
 			}
 			else
 			{
+				//Z Pitch Move 
 				g_objAJinAXL.Move_Relative(AX_MZ_ELEV_Z,  m_pEquipData->dMZPitchRightZ*(1.0)); 
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 			}
 		}
 		break;
 	case 104:
+
+
 		break;
 	case 110:
-		if(g_objCommon.Check_Position(AX_FEEDER_Y, Feeder_Y::JigRight))
+		if(g_objCommon.Check_Position(AX_FEEDER_Y, Feeder_Y::LoadRight))
 		{
 			m_pDY01->oFeederGripClose = TRUE; m_pDY01->oFeederGripOpen = FALSE;
 			g_objAJinAXL.Write_Output(1);
@@ -476,7 +528,10 @@ BOOL CSequenceMain::LensCleanerRun()
 	switch(m_nLensCleanerCase)
 	{
 	case 0:
-		if(!gData.bIndexDone[IndexT::Clean]) m_nLensCleanerCase = 1;
+		if(!gData.bIndexDone[IndexT::Clean] && !Check_IndexEmpty(IndexT::Top))
+		{
+			m_nLensCleanerCase = 1;  m_nLensCleanerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
+		}
 		return TRUE;
 	case 1:
 		g_objCommon.Set_CleanerClose();
@@ -508,8 +563,8 @@ BOOL CSequenceMain::LensCleanerRun()
 		{
 			gData.bIndexDone[IndexT::Clean] = TRUE;
 			m_nLensCleanerCase = 0; m_nLensCleanerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
-			
-			
+
+
 		}
 		break;
 	}
@@ -533,6 +588,11 @@ BOOL CSequenceMain::TopInspectorRun()
 	switch(m_nTopInspectCase)
 	{
 	case 0:
+		if(!gData.bIndexDone[IndexT::Top] && !Check_IndexEmpty(IndexT::Top))
+		{
+			m_nTopInspectCase++;
+			m_nTopInspectLoop.Set_LoopTime(gData.nTime[LT::Motion]);
+		}
 		return TRUE;
 	case 1:
 		if(g_objCommon.Check_Position(AX_TOP_INSPECTOR_Z, Top_Inspector_Z::Ready))
@@ -575,16 +635,21 @@ BOOL CSequenceMain::TopInspectorRun()
 			else 
 			{
 				int nLensNo = (gData.nZigY - nTopYPos) * gData.nZigX + nTopXPos;	// Tray 하단부터 모듈 적재한다.
-				//g_objInspector.Set_LoadComplete(VISION_PC1, "T1", gLot.sLotID[gData.nPNoAnglePort[0]-1], gData.nPNoAnglePort[0], gData.nTNoAnglePort[0],0, 0, 0, nCmNo, 0, 0, 0);
+				g_objInspector.Set_LoadComplete(VISION_PC1, "T1", gLot.sLotID[] , gData.nPNoAnglePort[0], gData.nTNoAnglePort[0],0, 0, 0, nCmNo, 0, 0, 0);
 				m_nTopInspectCase = 15; m_nTopInspectLoop.Set_LoopTime(gData.nTime[LT::Scan]);			
 			}
 		}
+		break;
+	case 10:
+
 		break;
 	case 4:
 		break;
 	case 5:
 		break;
-	case 6:
+	case 100:
+		gData.bIndexDone[IndexT::Top] = TRUE;
+		m_nLensCleanerCase = 0; m_nLensCleanerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
 		break;
 
 	}
@@ -809,18 +874,15 @@ int CSequenceMain::Check_MZSensors()
 	if (m_pDX00->iLoadCVMZExist3) nMZCnt++;
 	if (m_pDX00->iLoadCVMZExist2) nMZCnt++;
 	if (m_pDX00->iLoadCVMZExist1) nMZCnt++;
-	if (m_pDX00->iMZElevExistLeft) nMZCnt++;
-	if (m_pDX00->iMZElevExistRight) nMZCnt++;
-
-	return nMZCnt;
 	
+	return nMZCnt;	
 }
 
 BOOL CSequenceMain::Check_IndexDone()
 {
 	for(int i = 0 ; i < 6; i++)
 	{
-		if(!gData.bIndexDone[i])
+		if(!gData.bIndexDone[i] && !Check_IndexEmpty(i))
 		{
 			return FALSE;
 		}

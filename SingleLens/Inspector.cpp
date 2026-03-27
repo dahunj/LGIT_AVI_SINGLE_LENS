@@ -306,12 +306,11 @@ void CInspector::Set_LotEnd(CString sLotId, int nPortNo)
 	Send_Command(strSendCmd);
 }
 
-void CInspector::Set_LoadComplete(CString sGbn, CString sLotId, int nPortNo, int nTNo1, int nTNo2, int nCNo1, int nCNo2, int nPickNo1, int nPickNo2)
+void CInspector::Set_LoadComplete(CString sGbn, CString sZigID, CString sMZID, int nSlotNo, int nLensNo)
 {
-	
-
-	/*strSendCmd.Format("LOAD,COMPLETE,%s,%s,%d,%d,%d,%d,%d,%s,%s,%d,%d,%d,%d", sGbn, sLotId, nPortNo, nTNo1, nTNo2, nCNo1, nCNo2, strBar1, strBar2, nPickNo1, nPickNo2, nINo1, nINo2);
-	Send_Command(strSendCmd);*/
+	CString	strSendCmd;
+	strSendCmd.Format("LOAD,COMPLETE,%s,%s,%s,%d,%d", sGbn, sZigID, sMZID, nSlotNo, nLensNo);
+	Send_Command(strSendCmd);
 }
 
 void CInspector::Set_InitialRequest()

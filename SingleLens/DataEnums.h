@@ -58,8 +58,8 @@ struct Feeder_Y
 	{
 		Ready = 0,
 		Sensing = 1,
-		JigRight = 2,
-		JigLeft = 3,
+		LoadRight = 2,
+		LoadLeft = 3,
 		Rail = 4,
 	};
 };
@@ -225,5 +225,32 @@ struct SpeedMode
 		Fast = 0,
 		Normal = 1,
 		Slow = 2,
+	};
+};
+
+
+//seq branch 
+
+struct ElevBranch
+{
+	enum Name
+	{
+		name = 0, 
+	};
+};
+
+struct FeederBranch
+{
+	enum Name
+	{
+		name = 0, 
+	};
+};
+
+struct ZigPickBranch
+{
+	enum Name
+	{
+		name = 0, 
 	};
 };
