@@ -37,11 +37,11 @@ void CSetupInOutDlg::Initial_Controls()
 {
 	m_tabSetupInOut.InsertItem( 0, "[00] - [01]");
 	m_tabSetupInOut.InsertItem( 1, "[02] - [03]");
-	m_tabSetupInOut.InsertItem( 2, "[04] - [05]");
-	m_tabSetupInOut.InsertItem( 3, "[06] - [07]");
-	m_tabSetupInOut.InsertItem( 4, "[08] - [09]");
-	m_tabSetupInOut.InsertItem( 5, "[10] - [11]");
-	m_tabSetupInOut.InsertItem( 6, "[12] - [13]");
+	//m_tabSetupInOut.InsertItem( 2, "[04] - [05]");
+	//m_tabSetupInOut.InsertItem( 3, "[06] - [07]");
+	//m_tabSetupInOut.InsertItem( 4, "[08] - [09]");
+	//m_tabSetupInOut.InsertItem( 5, "[10] - [11]");
+	//m_tabSetupInOut.InsertItem( 6, "[12] - [13]");
 	m_tabSetupInOut.SetItemSize(CSize(210, 60));
 	m_tabSetupInOut.Init_Ctrl("πŸ≈¡", 12, TRUE, RGB(0x00, 0x00, 0xFF), COLOR_DEFAULT);
 }

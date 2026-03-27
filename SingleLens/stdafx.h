@@ -53,7 +53,7 @@
 #include "CSClientSocket.h"
 #include "CSGrid.h"
 
-#include "MoveDataEnums.h"
+#include "DataEnums.h"
 
 #include <math.h>
 #include <iostream>
@@ -139,15 +139,17 @@ typedef struct
 	int nInfoMZUnload[10];
 
 
-	//old 
+	int nTime[10]; //LoopTime Set Value 
 
-
-
-	CString	sLotID[2];
+	BOOL	bDryRunMode;
+	int		nSpeedOption; // 여러개의 속도 옵션 가지게 바꾸고 싶다. 
+	
 	CString	sOperID;		// Operator
 	CString	sRecipe;		// Recipe Item
-	CString sVendor;		// Cap Vendor 
-
+	CString	sLotID[60];
+	
+	//old 
+	
 
 
 	
@@ -448,19 +450,3 @@ extern GLOVAL_PART		gPart;
 
 
 
-struct LensState
-{
-	enum eName
-	{
-		// 0:Empty,1:Good, 2:NG, 3:Top Ready, 4: Top Done, 5: Btm Ready, 6 : Btm Done,  9:Init 
-		nothing = 0,
-		Good = 1,
-		NG = 2,
-		TopReady = 3,
-		TopDone = 4,
-		BtmReady = 5,
-		BtmDone = 6,
-		Init = 9,
-
-	};
-};

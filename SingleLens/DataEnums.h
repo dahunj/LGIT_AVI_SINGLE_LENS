@@ -1,6 +1,23 @@
 #pragma once
 
 
+struct LensState
+{
+	enum eName
+	{
+		// 0:Empty,1:Good, 2:NG, 3:Top Ready, 4: Top Done, 5: Btm Ready, 6 : Btm Done,  9:Init 
+		nothing = 0,
+		Good = 1,
+		NG = 2,
+		TopReady = 3,
+		TopDone = 4,
+		BtmReady = 5,
+		BtmDone = 6,
+		Init = 9,
+
+	};
+};
+
 struct Conveyor_X
 {
 	enum dtName
@@ -55,6 +72,7 @@ struct Tray_Picker_Y
 	{
 		Ready = 0,
 		Load = 1,
+		MaxCnt,
 	};
 };
 
@@ -76,6 +94,7 @@ struct Top_Inspector_X
 	enum dtName
 	{
 		Ready = 0,
+		ScanStart = 1,
 	};
 };
 
@@ -86,6 +105,7 @@ struct Top_Inspector_Y
 	enum dtName
 	{
 		Ready = 0,
+		ScanStart = 1,
 	};
 };
 
@@ -96,6 +116,7 @@ struct Top_Inspector_Z
 	enum dtName
 	{
 		Ready = 0,
+		ScanStart = 1,
 	};
 };
 
@@ -183,4 +204,26 @@ struct IndexT
 		Mark = 5,
 	};
 
+};
+
+
+struct LT
+{
+	enum Name
+	{
+		Motion = 0,
+		Scan = 1,
+		Wait = 2,
+	};
+};
+
+
+struct SpeedMode
+{
+	enum Name
+	{
+		Fast = 0,
+		Normal = 1,
+		Slow = 2,
+	};
 };

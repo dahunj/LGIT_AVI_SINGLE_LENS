@@ -12,6 +12,9 @@ typedef struct tag_EQUIP_DATA {
 	BOOL	bUseTopVision;
 	BOOL	bUseBtmVision;
 	BOOL	bUseMark;
+
+	double  dZigPitchY;
+	double	dZigPitchX;
 	
 	
 	
@@ -79,41 +82,24 @@ typedef struct tag_EQUIP_DATA {
 
 ///////////////////////////////////////////////////////////////////////////////
 // Move Data
-typedef struct tag_MOVE_DATA {
-	double  dTrayPickerX[3];	// AXIS 00	[2]
-	double  dTrayPickerZ[3];	// AXIS 01	[3]
-	double  dTrayPickerR[2];	// AXIS 02	[2]
-	double  dLoadStage1X[4];	// AXIS 04	[4]
-	double  dLoadStage1Z[5];	// AXIS 05	[5]
-	double  dLoadStage2X[4];	// AXIS 06	[4]
-	double  dLoadStage2Z[5];	// AXIS 07	[5]
-	double  dLoadPickerY[3];	// AXIS 08	[3]
-	double  dLoadPickerZ[4];	// AXIS 09	[4]
-	double  dLoadPickerP[2];	// AXIS 10	[2]
-	double  dMainIndexR[1];		// AXIS 11	[1]
-	double  dVisionCmX[2];		// AXIS 12	[2]
-	double  dCapStage1X[3];		// AXIS 13	[3]
-	double  dCapStage1Z[4];		// AXIS 14	[4]
-	double  dCapStage2X[3];		// AXIS 15	[3]
-	double  dCapStage2Z[4];		// AXIS 16	[4]
-	double  dCapPickerY[13];	// AXIS 17	[3]
-	double  dCapPickerZ[4];		// AXIS 18	[4]
-	double  dCapPickerP[2];		// AXIS 19	[2]
-	double  dCapBufferY[4];		// AXIS 20	[4]
-	double  dVisionCapY[1];		// AXIS 21	[1]
-	double  dAssyPickerX[7];	// AXIS 22	[3]
-	double  dAssyPickerY[7];	// AXIS 23	[3]
-	double  dAssyPickerZ[7];	// AXIS 24	[5]
-	double  dTransStageX[2];	// AXIS 25	[2]
-	double  dTransStageZ[3];	// AXIS 26	[3]
-	double  dTransStageT[2];	// AXIS 27	[2]
-	double  dUnloadPickerX[4];	// AXIS 28	[4]
-	double  dUnloadPickerZ[4];	// AXIS 29	[4]
-	double  dUnloadPickerP[2];	// AXIS 30	[2]
-	double  dUnloadStage1Y[3];	// AXIS 31	[3]
-	double  dUnloadStage1Z[6];	// AXIS 32	[6]
-	double  dUnloadStage2Y[3];	// AXIS 33	[3]
-	double  dUnloadStage2Z[6];	// AXIS 34	[6]
+typedef struct tag_MOVE_DATA 
+{
+
+	double  dMzElevZ[10];			// AXIS 00	[2]
+	double  dFeederX[10];			// AXIS 01	[3]
+	double  dFeederY[10];			// AXIS 02	[2]
+	double  dTrayPickerY[10];		// AXIS 04	[4]
+	double  dTrayPickerZ[10];		// AXIS 05	[5]
+	double  dTopInspectorX[10];		// AXIS 06	[4]
+	double  dTopInspectorY[10];		// AXIS 07	[5]
+	double  dTopInspectorZ[10];		// AXIS 08	[3]
+	double  dBtmInspectorX[10];		// AXIS 09	[4]
+	double  dBtmInspectorY[10];		// AXIS 10	[2]
+	double  dBtmInspectorZ[10];		// AXIS 11	[1]
+	double  dMarkUnitX[10];			// AXIS 12	[2]
+	double  dMarkUnitY[10];			// AXIS 12	[2]
+	double  dMarkUnitZ[10];			// AXIS 12	[2]
+	double  dIndexTR[10];			// AXIS 12	[2]
 } MOVE_DATA;
 
 ///////////////////////////////////////////////////////////////////////////////

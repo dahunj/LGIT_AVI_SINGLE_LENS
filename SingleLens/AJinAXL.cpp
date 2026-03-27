@@ -504,28 +504,12 @@ UINT CAJinAXL::Thread_AJin(LPVOID lpVoid)
 /////////////////////////////////////////////////////////////////////////////
 BOOL CAJinAXL::Is_AbsoluteType(int nAxis)
 {
-	switch (nAxis) {
-	//case AX_LOAD_STAGE1_Z:
-	//case AX_LOAD_STAGE2_Z:
-	//case AX_CAP_STAGE1_Z:
-	//case AX_CAP_STAGE2_Z:
-	//case AX_UNLOAD_STAGE1_Z:
-	//case AX_UNLOAD_STAGE2_Z:
-	//	return TRUE;
-	default:
-		return FALSE;
-	}
+	return FALSE;
 }
 
 BOOL CAJinAXL::Use_OrgAxis(int nAxis)
 {
-	switch (nAxis) {
-	/*case AX_MAIN_INDEX_R:
-	case AX_TRANS_STAGE_T:
-		return TRUE;*/
-	default:
-		return FALSE;
-	}
+	return FALSE;
 }
 
 BOOL CAJinAXL::Use_ElpAxis(int nAxis)

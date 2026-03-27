@@ -149,7 +149,7 @@ void CSetupMotionTabDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	
 	for (int i = 0; i < 8; i++) {
 		bVisible = (i < nMaxAxis ? TRUE : FALSE);
-		if (m_nMotionTab == 0 && i == 3) bVisible = FALSE;
+		//if (m_nMotionTab == 0 && i == 3) bVisible = FALSE;
 
 		m_stcAxisName[i].ShowWindow(bVisible);
 		m_stcAxisPos[i].ShowWindow(bVisible);
@@ -331,7 +331,7 @@ void CSetupMotionTabDlg::OnBtnAbsMoveClick(UINT nID)
 	m_stcAbsDist[ID].GetWindowText(strText);
 	double dDist = atof(strText);
 
-	if (Check_Interlock(nStartAx + ID) == FALSE) return;
+	//if (Check_Interlock(nStartAx + ID) == FALSE) return;
 
 	g_objAJinAXL.Move_Absolute(nStartAx + ID, dDist);
 

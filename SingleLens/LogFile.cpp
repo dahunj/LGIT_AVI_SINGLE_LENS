@@ -440,14 +440,7 @@ void CLogFile::Save_CapLasLog(CString sShipLotId, CString sCapLotId, int nPort, 
 	DWORD dwTime = GetTickCount() - gData.dwCmTactStart[nTNo-1][gData.nLNoUnloadPicker];
 	double dTactTime = dwTime / 1000.0 / PICK;
 
-	//SWversion,site,moduleConfig,LotNum,barcode,Ship Lot Num,Cap Lot Num,Start,End,Cap Part No,Cap Qty,Cap Maker,Cap Program Info,Cap Tool Info,Year,Month,Day,Cap Serial No,
-	//Index No,Head No,Cap Picker Table X Pos,Turn Table Work Pos,Cap Picker Table Z Pos,Cap Attach Force,Alarm Code,Tact Time,UPH
-	sLog.Format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s, %d,%d,%0.3lf,%0.3lf,%0.3lf,%0.3lf,%s,%0.3lf,%0.3lf",
-		MAIN_VERSION, "C3", gData.sRecipe, gLot.sLotID[nPort-1], gMes.sBarID[nPort-1][nTNo-1][nCNo-1], sShipLotId, sCapLotId,
-		gData.sCapAttachStart[nTNo-1][nCNo-1], gData.sCapAttachEnd[nTNo-1][nCNo-1],
-		sPart, sQty, sMaker, sCapPgm, sCapTool, sYear, sMonth, sDay, sSerial,
-		nINo+1, nPickNo, pMoveData->dAssyPickerX[2+nINo], pMoveData->dMainIndexR[0], pMoveData->dAssyPickerZ[4], gData.dAssyLoadCell[nPickNo-1],
-		"0-0-0-0-0-0-0-0-0", dTactTime, 3600 / dTactTime);
+	
 	Save_ECMLog(5, sLog);
 }
 

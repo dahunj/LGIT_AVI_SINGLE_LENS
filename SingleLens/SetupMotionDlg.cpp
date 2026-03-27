@@ -37,9 +37,9 @@ void CSetupMotionDlg::Initial_Controls()
 {
 	m_tabSetupMotion.InsertItem( 0, "[00-07]");
 	m_tabSetupMotion.InsertItem( 1, "[08-15]");
-	m_tabSetupMotion.InsertItem( 2, "[16-23]");
-	m_tabSetupMotion.InsertItem( 3, "[24-31]");
-	m_tabSetupMotion.InsertItem( 4, "[32-34]");
+	//m_tabSetupMotion.InsertItem( 2, "[16-23]");
+	//m_tabSetupMotion.InsertItem( 3, "[24-31]");
+	//m_tabSetupMotion.InsertItem( 4, "[32-34]");
 	m_tabSetupMotion.SetItemSize(CSize(280, 60));
 	m_tabSetupMotion.Init_Ctrl("πŸ≈¡", 12, TRUE, RGB(0x00, 0x00, 0xFF), COLOR_DEFAULT);
 }

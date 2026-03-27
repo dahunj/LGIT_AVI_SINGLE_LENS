@@ -92,10 +92,10 @@ void CSetupMoveTab1Dlg::Display_MoveData()
 
 void CSetupMoveTab1Dlg::Save_MoveData()
 {
- 	CIniFileCS INI(gsCurrentDir + "\\System\\MoveData_" + gData.sVendor + ".ini");
+ 	CIniFileCS INI(gsCurrentDir + "\\System\\MoveData" + ".ini");
 	if (!INI.Check_File()) { AfxMessageBox("MoveData.ini File Not Found!!!"); return; }
 
-	g_objCommon.Backup_File(gsCurrentDir + "\\System", "MoveData_" + gData.sVendor);
+	g_objCommon.Backup_File(gsCurrentDir + "\\System", "MoveData");
 
 	
 

@@ -36,8 +36,8 @@ END_MESSAGE_MAP()
 void CMonitorMotionDlg::Initial_Controls() 
 {
 	m_tabMonitorMotion.InsertItem(0, "[00-15]");
-	m_tabMonitorMotion.InsertItem(1, "[16-31]");
-	m_tabMonitorMotion.InsertItem(2, "[32-34]");
+	//m_tabMonitorMotion.InsertItem(1, "[16-31]");
+	//m_tabMonitorMotion.InsertItem(2, "[32-34]");
 	m_tabMonitorMotion.SetItemSize(CSize(370, 50));
 	m_tabMonitorMotion.Init_Ctrl("πŸ≈¡", 14, TRUE, RGB(0x00, 0x00, 0xFF), COLOR_DEFAULT);
 }

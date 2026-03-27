@@ -200,28 +200,7 @@ void CAviHandler::Get_StatusUpdate(CString sStatus)
 
 void CAviHandler::Get_LotStart(CString sLotID, CString sPortNo, CString sTrayCnt, CString sCmCnt, CString sModel)
 {
-	int nPx = atoi(sPortNo) - 1;	// Port Index
-
-	gData.sLotID[nPx] = sLotID;
-	gData.nTrayUseCount[nPx] = atoi(sTrayCnt);
-	gData.nCmUseCount[nPx] = atoi(sCmCnt);	
-
-	if (sModel != gData.sRecipe) 
-	{
-		if (sModel != "R53B" && sModel != "R54B") { AfxMessageBox("Invalid Model Name!!!"); return; }
-
-		CIniFileCS INI(gsCurrentDir + "\\System\\EquipData.ini");
-		if (!INI.Check_File()) { AfxMessageBox("EquipData.ini File Not Found!!!"); return; }
-
-		INI.Set_String("EQUIPMENT", "MODEL", sModel);
-
-		g_objDataManager.Read_EquipData();
-		g_objDataManager.Read_MoveData();
-
-		if (g_dlgWork.IsWindowVisible()) g_dlgWork.Change_Model();
-	}
 	
-	g_dlgWork.Set_LotInfo(nPx);
 }
 
 void CAviHandler::Get_LotEnd(CString sLotID, CString sPortNo)
@@ -231,16 +210,7 @@ void CAviHandler::Get_LotEnd(CString sLotID, CString sPortNo)
 
 void CAviHandler::Get_TrayLoad(CString sLotID, CString sTrayNo, CString sCmCnt, CString sPortNo)
 {
-	int nPx = atoi(sPortNo) - 1;
-
-	gData.sLotID[nPx] = sLotID;
-	gData.nPNoAviPort = nPx + 1;
-	gData.nTNoAviPort = atoi(sTrayNo);
-	gData.nCmCntAviPort = atoi(sCmCnt);
-
 	
-
-	gData.bAviTrayLoad = TRUE;
 }
 
 void CAviHandler::Get_TrayEnd(CString sLastTrayNo, CString sPortNo)

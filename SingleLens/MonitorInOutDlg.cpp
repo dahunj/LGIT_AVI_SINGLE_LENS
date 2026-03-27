@@ -39,16 +39,16 @@ void CMonitorInOutDlg::Initial_Controls()
 	m_tabMonitorInOut.InsertItem( 1, "[01]");
 	m_tabMonitorInOut.InsertItem( 2, "[02]");
 	m_tabMonitorInOut.InsertItem( 3, "[03]");
-	m_tabMonitorInOut.InsertItem( 4, "[04]");
-	m_tabMonitorInOut.InsertItem( 5, "[05]");
-	m_tabMonitorInOut.InsertItem( 6, "[06]");
-	m_tabMonitorInOut.InsertItem( 7, "[07]");
-	m_tabMonitorInOut.InsertItem( 8, "[08]");
-	m_tabMonitorInOut.InsertItem( 9, "[09]");
-	m_tabMonitorInOut.InsertItem(10, "[10]");
-	m_tabMonitorInOut.InsertItem(11, "[11]");
-	m_tabMonitorInOut.InsertItem(12, "[12]");
-	m_tabMonitorInOut.InsertItem(13, "[13]");
+	//m_tabMonitorInOut.InsertItem( 4, "[04]");
+	//m_tabMonitorInOut.InsertItem( 5, "[05]");
+	//m_tabMonitorInOut.InsertItem( 6, "[06]");
+	//m_tabMonitorInOut.InsertItem( 7, "[07]");
+	//m_tabMonitorInOut.InsertItem( 8, "[08]");
+	//m_tabMonitorInOut.InsertItem( 9, "[09]");
+	//m_tabMonitorInOut.InsertItem(10, "[10]");
+	//m_tabMonitorInOut.InsertItem(11, "[11]");
+	//m_tabMonitorInOut.InsertItem(12, "[12]");
+	//m_tabMonitorInOut.InsertItem(13, "[13]");
 	m_tabMonitorInOut.SetItemSize(CSize(70, 50));
 	m_tabMonitorInOut.Init_Ctrl("πŸ≈¡", 14, TRUE, RGB(0x00, 0x00, 0xFF), COLOR_DEFAULT);
 }

@@ -172,6 +172,28 @@ BOOL CSingleLensDlg::OnInitDialog()
 
 	Save_EquipCappingCnt();
 
+	gData.nSpeedOption = SpeedMode::Slow;
+	if(gData.nSpeedOption == SpeedMode::Slow)
+	{
+		gData.nTime[LT::Motion] = 25000;
+		gData.nTime[LT::Scan] = 60000;
+		gData.nTime[LT::Wait] = 60000;
+	}
+	else if(gData.nSpeedOption == SpeedMode::Fast)
+	{
+		gData.nTime[LT::Motion] = 5000;
+		gData.nTime[LT::Scan] = 30000;
+		gData.nTime[LT::Wait] = 45000;
+
+	}
+	else if(gData.nSpeedOption == SpeedMode::Normal)
+	{
+		gData.nTime[LT::Motion] = 10000;
+		gData.nTime[LT::Scan] = 30000;
+		gData.nTime[LT::Wait] = 60000;
+	}
+	
+
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 

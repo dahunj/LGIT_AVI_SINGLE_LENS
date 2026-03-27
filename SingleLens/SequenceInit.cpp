@@ -729,66 +729,66 @@ BOOL CSequenceInit::Initial_Marker()
 	case 1:
 		if (1) 
 		{
-			g_objAJinAXL.Set_EncoderType(AX_MARKER_Z, 0);	// Inc
-			g_objAJinAXL.Set_EncoderType(AX_MARKER_Z, 1);	// Abs
+			g_objAJinAXL.Set_EncoderType(AX_MARK_UNIT_Z, 0);	// Inc
+			g_objAJinAXL.Set_EncoderType(AX_MARK_UNIT_Z, 1);	// Abs
 			m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 2:
-		g_objAJinAXL.Home_Search(AX_MARKER_Z);
+		g_objAJinAXL.Home_Search(AX_MARK_UNIT_Z);
 		m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(15000);
 		break;
 	case 3:
-		if(g_objAJinAXL.Is_Home(AX_MARKER_Z))
+		if(g_objAJinAXL.Is_Home(AX_MARK_UNIT_Z))
 		{			
-			g_objAJinAXL.Set_EncoderType(AX_MARKER_Z, 0);	// Inc
-			g_objAJinAXL.Set_EncoderType(AX_MARKER_Z, 1);	// Abs
+			g_objAJinAXL.Set_EncoderType(AX_MARK_UNIT_Z, 0);	// Inc
+			g_objAJinAXL.Set_EncoderType(AX_MARK_UNIT_Z, 1);	// Abs
 			m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 4:
 		if(!m_tiMarkerLoop.Waiting_Time(100)) break;
-		g_objCommon.Move_Position(AX_MARKER_Z, Marker_Z::Ready);
+		g_objCommon.Move_Position(AX_MARK_UNIT_Z, Marker_Z::Ready);
 		m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(5000);
 		break;
 	case 5:
-		if(g_objCommon.Check_Position(AX_MARKER_Z, Marker_Z::Ready))
+		if(g_objCommon.Check_Position(AX_MARK_UNIT_Z, Marker_Z::Ready))
 		{
 			m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 6:
-		g_objAJinAXL.Home_Search(AX_MARKER_Y);
+		g_objAJinAXL.Home_Search(AX_MARK_UNIT_Y);
 		m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(5000);
 		break;
 	case 7:
-		if(g_objAJinAXL.Is_Home(AX_MARKER_Y))
+		if(g_objAJinAXL.Is_Home(AX_MARK_UNIT_Y))
 		{			
 			m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 8:
-		g_objCommon.Move_Position(AX_MARKER_Y, Marker_Y::Ready);
+		g_objCommon.Move_Position(AX_MARK_UNIT_Y, Marker_Y::Ready);
 		m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(5000);
 	case 9:
-		if(g_objCommon.Check_Position(AX_MARKER_Y, Marker_Y::Ready))
+		if(g_objCommon.Check_Position(AX_MARK_UNIT_Y, Marker_Y::Ready))
 		{
 			m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 10:
-		g_objAJinAXL.Home_Search(AX_MARKER_X);
+		g_objAJinAXL.Home_Search(AX_MARK_UNIT_X);
 		m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(15000);
 		break;
 	case 11:		// Tray Picker Slave Out 
-		if(g_objAJinAXL.Is_Home(AX_MARKER_X))
+		if(g_objAJinAXL.Is_Home(AX_MARK_UNIT_X))
 		{			
-			g_objCommon.Move_Position(AX_MARKER_X, Marker_X::Ready);
+			g_objCommon.Move_Position(AX_MARK_UNIT_X, Marker_X::Ready);
 			m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 12:
-		if(g_objCommon.Check_Position(AX_MARKER_X, Marker_X::Ready))
+		if(g_objCommon.Check_Position(AX_MARK_UNIT_X, Marker_X::Ready))
 		{
 			g_objLogFile.Save_HandlerLog("[Initial Sequence] - Marker Complete");
 			m_niMarkerCase = 90; m_tiMarkerLoop.Set_LoopTime(5000);

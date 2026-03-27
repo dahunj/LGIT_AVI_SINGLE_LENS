@@ -12,16 +12,18 @@ const int AX_FEEDER_X			= 1;
 const int AX_FEEDER_Y			= 2;
 const int AX_TRAY_PICKER_Y		= 3;
 const int AX_TRAY_PICKER_Z		= 4;
-const int AX_INDEX_TABLE_R		= 5;
-const int AX_TOP_INSPECTOR_X	= 6;
-const int AX_TOP_INSPECTOR_Y	= 7;
-const int AX_TOP_INSPECTOR_Z	= 8;
-const int AX_BTM_INSPECTOR_X	= 9;
-const int AX_BTM_INSPECTOR_Y	= 10;
-const int AX_BTM_INSPECTOR_Z	= 11;
-const int AX_MARKER_X			= 12;
-const int AX_MARKER_Y			= 13;
-const int AX_MARKER_Z			= 14;	
+const int AX_TOP_INSPECTOR_X	= 5;
+const int AX_TOP_INSPECTOR_Y	= 6;
+const int AX_TOP_INSPECTOR_Z	= 7;
+const int AX_BTM_INSPECTOR_X	= 8;
+const int AX_BTM_INSPECTOR_Y	= 9;
+const int AX_BTM_INSPECTOR_Z	= 10;
+const int AX_MARK_UNIT_X			= 11;
+const int AX_MARK_UNIT_Y			= 12;
+const int AX_MARK_UNIT_Z			= 13;	
+
+const int AX_INDEX_TABLE_R		= 14;
+//const int AX_INDEX_TABLE_R2		= 15;
 
 
 

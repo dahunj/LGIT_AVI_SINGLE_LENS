@@ -446,7 +446,7 @@ BOOL CSequenceMain::TrayPickerRun()
 		if(g_objCommon.Check_Position(AX_TRAY_PICKER_Y, Tray_Picker_Y::Load))
 		{
 			g_objCommon.Move_Position(AX_TRAY_PICKER_Z, Tray_Picker_Z::Load);
-			m_nTrayPickerCase++; m_nTrayPickerLoop.Set_LoopTime(5000);
+			m_nTrayPickerCase++; m_nTrayPickerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
 		}
 		break;
 	case 2:
@@ -454,7 +454,7 @@ BOOL CSequenceMain::TrayPickerRun()
 		{
 			m_pDY01->oTrayPickerMasterIn = TRUE; m_pDY01->oTrayPickerMasterOut = FALSE;
 
-			m_nTrayPickerCase++; m_nTrayPickerLoop.Set_LoopTime(5000);
+			m_nTrayPickerCase++; m_nTrayPickerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
 		}
 		break;
 	case 3:
@@ -480,13 +480,13 @@ BOOL CSequenceMain::LensCleanerRun()
 		return TRUE;
 	case 1:
 		g_objCommon.Set_CleanerClose();
-		m_nLensCleanerCase++; m_nLensCleanerLoop.Set_LoopTime(5000);
+		m_nLensCleanerCase++; m_nLensCleanerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
 		break;
 	case 2:
 		if(g_objCommon.Get_CleanerClose())
 		{
 			g_objCommon.Set_CleanerForward();
-			m_nLensCleanerCase++; m_nLensCleanerLoop.Set_LoopTime(5000);
+			m_nLensCleanerCase++; m_nLensCleanerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
 		}		
 		break;
 	case 3:
@@ -494,20 +494,20 @@ BOOL CSequenceMain::LensCleanerRun()
 		{
 
 			g_objCommon.Set_CleanerOpen();
-			m_nLensCleanerCase++; m_nLensCleanerLoop.Set_LoopTime(5000);
+			m_nLensCleanerCase++; m_nLensCleanerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
 		}
 		break;
 	case 4:
 		if(g_objCommon.Get_CleanerOpen())
 		{
 			g_objCommon.Set_CleanerBackward();
-			m_nLensCleanerCase++; m_nLensCleanerLoop.Set_LoopTime(5000);
+			m_nLensCleanerCase++; m_nLensCleanerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
 		}
 	case 5:
 		if(g_objCommon.Get_CleanerBackwardDone())
 		{
 			gData.bIndexDone[IndexT::Clean] = TRUE;
-			m_nLensCleanerCase = 0; m_nLensCleanerLoop.Set_LoopTime(5000);
+			m_nLensCleanerCase = 0; m_nLensCleanerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
 			
 			
 		}
@@ -527,6 +527,9 @@ BOOL CSequenceMain::LensCleanerRun()
 // 6. (Error : 4600)
 BOOL CSequenceMain::TopInspectorRun()
 {
+	static int nTopXPos = 0, nTopYPos = 0;
+	static double	dTopUnitX, dTopUnitY, dTopUnitZ = 0.0;
+
 	switch(m_nTopInspectCase)
 	{
 	case 0:
@@ -537,19 +540,51 @@ BOOL CSequenceMain::TopInspectorRun()
 			if(m_pEquipData->bUseTopVision)
 			{
 				Init_TopZig();
-				m_nTopInspectCase++; m_nTopInspectLoop.Set_LoopTime(5000);
+				m_nTopInspectCase++; m_nTopInspectLoop.Set_LoopTime(gData.nTime[LT::Motion]);
 			}
 		}
 		break;
 	case 2:
+		if(Select_TopScanPos(nTopXPos, nTopYPos))
+		{
+			int nIdx = (nTopYPos - 1) * gData.nZigX + nTopXPos;
+			dTopUnitY = m_pMoveData->dTopInspectorY[Top_Inspector_Y::ScanStart] + (m_pEquipData->dZigPitchY * (nTopYPos - 1));
+			dTopUnitX = m_pMoveData->dTopInspectorX[Top_Inspector_X::ScanStart] + (m_pEquipData->dZigPitchX * (nTopXPos - 1));
+			dTopUnitZ = m_pMoveData->dTopInspectorZ[Top_Inspector_Z::ScanStart];
+			
+			g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Y, dTopUnitY);
+			g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_X, dTopUnitX);
+			g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, dTopUnitZ);
+
+			m_nTopInspectCase++; m_nTopInspectLoop.Set_LoopTime(gData.nTime[LT::Motion]);
+ 
+		}
 		break;
 	case 3:
+		if (g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_Y, dTopUnitY) &&
+			g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_X, dTopUnitX) &&
+			g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_Z, dTopUnitZ))
+		{
+
+			if (!m_pEquipData->bUseTopVision)
+			{
+				if (gData.nInfoIndexT[IndexT::Top][nTopYPos-1][nTopXPos-1] == 9)
+					gData.nInfoIndexT[IndexT::Top][nTopYPos-1][nTopXPos-1] = LensState::TopDone;	//Scan Done
+				m_nTopInspectCase = 10; m_nTopInspectLoop.Set_LoopTime(gData.nTime[LT::Scan]);
+			} 
+			else 
+			{
+				int nLensNo = (gData.nZigY - nTopYPos) * gData.nZigX + nTopXPos;	// Tray 하단부터 모듈 적재한다.
+				//g_objInspector.Set_LoadComplete(VISION_PC1, "T1", gLot.sLotID[gData.nPNoAnglePort[0]-1], gData.nPNoAnglePort[0], gData.nTNoAnglePort[0],0, 0, 0, nCmNo, 0, 0, 0);
+				m_nTopInspectCase = 15; m_nTopInspectLoop.Set_LoopTime(gData.nTime[LT::Scan]);			
+			}
+		}
 		break;
 	case 4:
 		break;
-	case 2:
+	case 5:
 		break;
-	case 2:
+	case 6:
 		break;
 
 	}
@@ -669,16 +704,16 @@ BOOL CSequenceMain::IndexTRun()
 				&& g_objCommon.Get_CleanerOpen()
 				&& g_objCommon.Check_Position(AX_TOP_INSPECTOR_Z, Top_Inspector_Z::Ready)
 				&& g_objCommon.Check_Position(AX_BTM_INSPECTOR_Z, Btm_Inspector_Z::Ready)
-				&& g_objCommon.Check_Position(AX_MARKER_Z, Marker_Z::Ready))				 
+				&& g_objCommon.Check_Position(AX_MARK_UNIT_Z, Marker_Z::Ready))				 
 			{
-				g_objAJinAXL.Move_Relative(AX_INDEX_TABLE_R, m_pMoveData->dMainIndexR[0]);
+				g_objAJinAXL.Move_Relative(AX_INDEX_TABLE_R, m_pMoveData->dIndexTR[0]);
 				m_nIndexTCase++; m_nIndexTLoop.Set_LoopTime(10000);
 			}
 
 		}
 		return TRUE;
 	case 11:
-		if (g_objAJinAXL.Is_MoveDone(AX_INDEX_TABLE_R, m_pMoveData->dMainIndexR[0])) {
+		if (g_objAJinAXL.Is_MoveDone(AX_INDEX_TABLE_R, m_pMoveData->dIndexTR[0])) {
 			
 			Set_IndexEnd();
 			m_nIndexTCase = 0; m_nIndexTLoop.Set_LoopTime(5000);
@@ -692,7 +727,7 @@ BOOL CSequenceMain::IndexTRun()
 			&& g_objCommon.Get_CleanerOpen()
 			&& g_objCommon.Check_Position(AX_TOP_INSPECTOR_Z, Top_Inspector_Z::Ready)
 			&& g_objCommon.Check_Position(AX_BTM_INSPECTOR_Z, Btm_Inspector_Z::Ready)
-			&& g_objCommon.Check_Position(AX_MARKER_Z, Marker_Z::Ready))				 
+			&& g_objCommon.Check_Position(AX_MARK_UNIT_Z, Marker_Z::Ready))				 
 		{
 			g_objAJinAXL.Home_Search(AX_INDEX_TABLE_R);
 			m_nIndexTCase++; m_nIndexTLoop.Set_LoopTime(10000);
@@ -847,7 +882,10 @@ void CSequenceMain::Init_TopZig()
 	{
 		for(int j = 0; j < ZIG_Y; j++)
 		{
-			gData.nInfoIndexT[IndexT::Top][ZIG_X][ZIG_Y] = LensState::TopReady;
+			if(gData.nInfoIndexT[IndexT::Top][ZIG_X][ZIG_Y] = LensState::Init)
+			{
+				gData.nInfoIndexT[IndexT::Top][ZIG_X][ZIG_Y] = LensState::TopReady;
+			}
 		}
 	}
 }
@@ -857,31 +895,17 @@ void CSequenceMain::Init_TopZig()
 BOOL CSequenceMain::Select_TopScanPos(int &nTopPosX, int &nTopPosY)
 {
 	// Module만 Scan
-	BOOL bScanLine = FALSE; 
-	nTopPosX = nTopPosY = 0;
-	for(int j=(gData.nZigY-1); j>=0; j--) 
-	{
-		// 잔량이 어디 있을지 몰라 Line에 한개 이상 모듈이 있으면 전체 Line Scan 해준다. 
-		for(int i=0; i<gData.nZigX; i++) {
-			if (gData.nInfoIndexT[IndexT::Top][j][i] != 0) { bScanLine = TRUE; break;}
-		}
 
-		if (j==1 || j==3 || j==5 || j==7 || j==9 || j==11) {
-			for(int i=(gData.nZigX-1); i>=0; i--) {
-				if ((gData.nInfoIndexT[IndexT::Top][j][i] == 0 
-					|| gData.nInfoIndexT[IndexT::Top][j][i] == LensState::TopReady) 
-					&& bScanLine) 
-				{
-					nTopPosY = j + 1;
-					nTopPosX = i + 1;
-					break;
-				}
-			}
-		} else {
-			for(int i=0; i<gData.nZigX; i++) {
-				if ((gData.nInfoIndexT[IndexT::Top][j][i] == 0 
-					|| gData.nInfoIndexT[IndexT::Top][j][i] == 9) 
-					&& bScanLine) 
+	nTopPosX = nTopPosY = 0;
+
+	//Y 기준 X 증가하면서 찍는 방법 
+	for(int j=(gData.nZigY - 1); j>=0; j--) 
+	{
+		if (j==1 || j==3 || j==5 || j==7 || j==9 || j==11)
+		{
+			for(int i = (gData.nZigX-1); i >=0; i--) 
+			{
+				if (gData.nInfoIndexT[IndexT::Top][j][i] == LensState::TopReady)  
 				{
 					nTopPosY = j + 1;
 					nTopPosX = i + 1;
@@ -889,7 +913,19 @@ BOOL CSequenceMain::Select_TopScanPos(int &nTopPosX, int &nTopPosY)
 				}
 			}
 		}
-		bScanLine = FALSE;
+		else
+		{
+			for(int i = 0; i < gData.nZigX; i++)
+			{
+				if (gData.nInfoIndexT[IndexT::Top][j][i] == LensState::TopReady) 
+				{
+					nTopPosY = j + 1;
+					nTopPosX = i + 1;
+					break;
+				}
+			}
+		}
+		
 		if (nTopPosY > 0) break;
 	}
 

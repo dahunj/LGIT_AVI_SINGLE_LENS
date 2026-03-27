@@ -82,41 +82,7 @@ void CDataManager::Reset_EquipData()
 
 void CDataManager::Reset_MoveData()
 {
-	for (int i = 0; i < 3; i++) m_MoveData.dTrayPickerX[i];		// AXIS 00
-	for (int i = 0; i < 4; i++) m_MoveData.dTrayPickerZ[i];		// AXIS 01
-	for (int i = 0; i < 2; i++) m_MoveData.dTrayPickerR[i];		// AXIS 02
-	for (int i = 0; i < 2; i++) m_MoveData.dLoadStage1X[i];		// AXIS 04
-	for (int i = 0; i < 2; i++) m_MoveData.dLoadStage1Z[i];		// AXIS 05
-	for (int i = 0; i < 2; i++) m_MoveData.dLoadStage2X[i];		// AXIS 06
-	for (int i = 0; i < 1; i++) m_MoveData.dLoadStage2Z[i];		// AXIS 07
-	for (int i = 0; i < 3; i++) m_MoveData.dLoadPickerY[i];		// AXIS 08
-	for (int i = 0; i < 5; i++) m_MoveData.dLoadPickerZ[i];		// AXIS 09
-	for (int i = 0; i < 6; i++) m_MoveData.dLoadPickerP[i];		// AXIS 00
-	for (int i = 0; i < 5; i++) m_MoveData.dMainIndexR[i];		// AXIS 11
-	for (int i = 0; i < 6; i++) m_MoveData.dVisionCmX[i];		// AXIS 12
-	for (int i = 0; i < 6; i++) m_MoveData.dCapStage1X[i];		// AXIS 13
-	for (int i = 0; i < 4; i++) m_MoveData.dCapStage1Z[i];		// AXIS 14
-	for (int i = 0; i < 2; i++) m_MoveData.dCapStage1X[i];		// AXIS 15
-	for (int i = 0; i < 2; i++) m_MoveData.dCapStage1Z[i];		// AXIS 16
-	for (int i = 0; i < 13; i++) m_MoveData.dCapPickerY[i];		// AXIS 17
-	for (int i = 0; i < 6; i++) m_MoveData.dCapPickerZ[i];		// AXIS 18
-	for (int i = 0; i < 6; i++) m_MoveData.dCapPickerP[i];		// AXIS 19
-	for (int i = 0; i < 6; i++) m_MoveData.dCapBufferY[i];		// AXIS 10
-	for (int i = 0; i < 3; i++) m_MoveData.dVisionCapY[i];		// AXIS 21
-	for (int i = 0; i < 7; i++) m_MoveData.dAssyPickerX[i];		// AXIS 22
-	for (int i = 0; i < 7; i++) m_MoveData.dAssyPickerY[i];		// AXIS 23
-	for (int i = 0; i < 7; i++) m_MoveData.dAssyPickerZ[i];		// AXIS 24
-	for (int i = 0; i < 2; i++) m_MoveData.dTransStageX[i];		// AXIS 25
-	for (int i = 0; i < 1; i++) m_MoveData.dTransStageZ[i];		// AXIS 26
-	for (int i = 0; i < 6; i++) m_MoveData.dTransStageT[i];		// AXIS 27
-	for (int i = 0; i < 4; i++) m_MoveData.dUnloadPickerX[i];	// AXIS 28
-	for (int i = 0; i < 2; i++) m_MoveData.dUnloadPickerZ[i];	// AXIS 29
-	for (int i = 0; i < 2; i++) m_MoveData.dUnloadPickerP[i];	// AXIS 20
-	for (int i = 0; i < 6; i++) m_MoveData.dUnloadStage1Y[i];	// AXIS 31
-	for (int i = 0; i < 6; i++) m_MoveData.dUnloadStage1Z[i];	// AXIS 32
-	for (int i = 0; i < 7; i++) m_MoveData.dUnloadStage2Y[i];	// AXIS 33
-	for (int i = 0; i < 5; i++) m_MoveData.dUnloadStage2Z[i];	// AXIS 34
-
+	
 }
 
 BOOL CDataManager::Read_EquipData()
@@ -142,7 +108,7 @@ BOOL CDataManager::Read_EquipData()
 	m_EquipData.nVendorSelection = INI.Get_Integer("EQUIPMENT", "VENDOR_SELECTION", 0);
 	m_EquipData.sVendor[0]=INI.Get_String("VENDOR","0", "");
 	m_EquipData.sVendor[1]=INI.Get_String("VENDOR","1", "");
-	gData.sVendor = m_EquipData.sVendor[m_EquipData.nVendorSelection];
+	
 
 #ifdef DRY_RUN_TEST
 	m_EquipData.bUseVisionCapDir = FALSE;
@@ -172,8 +138,7 @@ BOOL CDataManager::Read_EquipData()
 	m_EquipData.dLoadTrayPitchY = INI.Get_Double("LOAD_TRAY", "PITCH_Y", 0.0);
 	m_EquipData.dCapTrayPitchX = INI.Get_Double("CAP_TRAY", "PITCH_X", 0.0);
 	m_EquipData.dCapTrayPitchY = INI.Get_Double("CAP_TRAY", "PITCH_Y", 0.0);
-	m_EquipData.dShipTrayPitchX = INI.Get_Double("SHIP_TRAY", "PITCH_X_" + gData.sRecipe, 0.0);
-	m_EquipData.dShipTrayPitchY = INI.Get_Double("SHIP_TRAY", "PITCH_Y_" + gData.sRecipe, 0.0);
+	
 
 	for (int i = 0; i < 3; i++) { strKey.Format("%d", i); m_EquipData.nVacOffDelay[i] = INI.Get_Integer("VAC_OFF_DELAY", strKey, 30); }
 	for (int i = 0; i < 6; i++) { strKey.Format("%d", i); m_EquipData.nDelayAdd[i] = INI.Get_Integer("DELAY_ADD", strKey, 100); }
@@ -213,45 +178,10 @@ BOOL CDataManager::Read_EquipData()
 
 BOOL CDataManager::Read_MoveData()
 {
-	CIniFileCS INI(gsCurrentDir + "\\System\\MoveData_" + gData.sVendor + ".ini");
+	CIniFileCS INI(gsCurrentDir + "\\System\\MoveData"+".ini");
 	if (!INI.Check_File()) { AfxMessageBox("MoveData.ini File Not Found!!!"); return FALSE; }
 
 	CString strKey;
-
-	for (int i = 0; i < 3; i++) { strKey.Format("%02d", i); m_MoveData.dTrayPickerX[i]		= INI.Get_Double("00_TRAY_PICKER_X", strKey, 0.0); }
-	for (int i = 0; i < 3; i++) { strKey.Format("%02d", i); m_MoveData.dTrayPickerZ[i]		= INI.Get_Double("01_TRAY_PICKER_Z", strKey, 0.0); }
-	for (int i = 0; i < 2; i++) { strKey.Format("%02d", i); m_MoveData.dTrayPickerR[i]		= INI.Get_Double("02_TRAY_PICKER_R", strKey, 0.0); }
-	for (int i = 0; i < 4; i++) { strKey.Format("%02d", i); m_MoveData.dLoadStage1X[i]		= INI.Get_Double("04_LOAD_STAGE1_X", strKey, 0.0); }
-	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i); m_MoveData.dLoadStage1Z[i]		= INI.Get_Double("05_LOAD_STAGE1_Z", strKey, 0.0); }
-	for (int i = 0; i < 4; i++) { strKey.Format("%02d", i); m_MoveData.dLoadStage2X[i]		= INI.Get_Double("06_LOAD_STAGE2_X", strKey, 0.0); }
-	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i); m_MoveData.dLoadStage2Z[i]		= INI.Get_Double("07_LOAD_STAGE2_Z", strKey, 0.0); }
-	for (int i = 0; i < 3; i++) { strKey.Format("%02d", i); m_MoveData.dLoadPickerY[i]		= INI.Get_Double("08_LOAD_PICKER_Y", strKey, 0.0); }
-	for (int i = 0; i < 4; i++) { strKey.Format("%02d", i); m_MoveData.dLoadPickerZ[i]		= INI.Get_Double("09_LOAD_PICKER_Z", strKey, 0.0); }
-	for (int i = 0; i < 2; i++) { strKey.Format("%02d", i); m_MoveData.dLoadPickerP[i]		= INI.Get_Double("10_LOAD_PICKER_P", strKey, 0.0); }
-	for (int i = 0; i < 1; i++) { strKey.Format("%02d", i); m_MoveData.dMainIndexR[i]		= INI.Get_Double("11_INDEX_R", strKey, 0.0); }
-	for (int i = 0; i < 2; i++) { strKey.Format("%02d", i); m_MoveData.dVisionCmX[i]		= INI.Get_Double("12_VISION_CM_ALIGN_X", strKey, 0.0); }
-	for (int i = 0; i < 3; i++) { strKey.Format("%02d", i); m_MoveData.dCapStage1X[i]		= INI.Get_Double("13_CAP_STAGE1_X", strKey, 0.0); }
-	for (int i = 0; i < 4; i++) { strKey.Format("%02d", i); m_MoveData.dCapStage1Z[i]		= INI.Get_Double("14_CAP_STAGE1_Z", strKey, 0.0); }
-	for (int i = 0; i < 3; i++) { strKey.Format("%02d", i); m_MoveData.dCapStage2X[i]		= INI.Get_Double("15_CAP_STAGE2_X", strKey, 0.0); }
-	for (int i = 0; i < 4; i++) { strKey.Format("%02d", i); m_MoveData.dCapStage2Z[i]		= INI.Get_Double("16_CAP_STAGE2_Z", strKey, 0.0); }
-	for (int i = 0; i < 13; i++) { strKey.Format("%02d", i); m_MoveData.dCapPickerY[i]		= INI.Get_Double("17_CAP_PICKER_Y", strKey, 0.0); }
-	for (int i = 0; i < 4; i++) { strKey.Format("%02d", i); m_MoveData.dCapPickerZ[i]		= INI.Get_Double("18_CAP_PICKER_Z", strKey, 0.0); }
-	for (int i = 0; i < 2; i++) { strKey.Format("%02d", i); m_MoveData.dCapPickerP[i]		= INI.Get_Double("19_CAP_PICKER_P", strKey, 0.0); }
-	for (int i = 0; i < 4; i++) { strKey.Format("%02d", i); m_MoveData.dCapBufferY[i]		= INI.Get_Double("20_CAP_BUFFER_STAGE_Y", strKey, 0.0); }
-	for (int i = 0; i < 1; i++) { strKey.Format("%02d", i); m_MoveData.dVisionCapY[i]		= INI.Get_Double("21_VISION_CAP_ALIGN_Y", strKey, 0.0); }
-	for (int i = 0; i < 7; i++) { strKey.Format("%02d", i); m_MoveData.dAssyPickerX[i]		= INI.Get_Double("22_ASSEMBLY_PICKER_X", strKey, 0.0); }
-	for (int i = 0; i < 7; i++) { strKey.Format("%02d", i); m_MoveData.dAssyPickerY[i]		= INI.Get_Double("23_ASSEMBLY_PICKER_Y", strKey, 0.0); }
-	for (int i = 0; i < 7; i++) { strKey.Format("%02d", i); m_MoveData.dAssyPickerZ[i]		= INI.Get_Double("24_ASSEMBLY_PICKER_Z", strKey, 0.0); }
-	for (int i = 0; i < 2; i++) { strKey.Format("%02d", i); m_MoveData.dTransStageX[i]		= INI.Get_Double("25_TRANS_STAGE_X", strKey, 0.0); }
-	for (int i = 0; i < 3; i++) { strKey.Format("%02d", i); m_MoveData.dTransStageZ[i]		= INI.Get_Double("26_TRANS_STAGE_Z", strKey, 0.0); }
-	for (int i = 0; i < 2; i++) { strKey.Format("%02d", i); m_MoveData.dTransStageT[i]		= INI.Get_Double("27_TRANS_STAGE_T", strKey, 0.0); }
-	for (int i = 0; i < 4; i++) { strKey.Format("%02d", i); m_MoveData.dUnloadPickerX[i]	= INI.Get_Double("28_UNLOAD_PICKER_X", strKey, 0.0); }
-	for (int i = 0; i < 4; i++) { strKey.Format("%02d", i); m_MoveData.dUnloadPickerZ[i]	= INI.Get_Double("29_UNLOAD_PICKER_Z", strKey, 0.0); }
-	for (int i = 0; i < 2; i++) { strKey.Format("%02d", i); m_MoveData.dUnloadPickerP[i]	= INI.Get_Double("30_UNLOAD_PICKER_P", strKey, 0.0); }
-	for (int i = 0; i < 3; i++) { strKey.Format("%02d", i); m_MoveData.dUnloadStage1Y[i]	= INI.Get_Double("31_UNLOAD_STAGE1_Y", strKey, 0.0); }
-	for (int i = 0; i < 6; i++) { strKey.Format("%02d", i); m_MoveData.dUnloadStage1Z[i]	= INI.Get_Double("32_UNLOAD_STAGE1_Z", strKey, 0.0); }
-	for (int i = 0; i < 3; i++) { strKey.Format("%02d", i); m_MoveData.dUnloadStage2Y[i]	= INI.Get_Double("33_UNLOAD_STAGE2_Y", strKey, 0.0); }
-	for (int i = 0; i < 6; i++) { strKey.Format("%02d", i); m_MoveData.dUnloadStage2Z[i]	= INI.Get_Double("34_UNLOAD_STAGE2_Z", strKey, 0.0); }
 
 	return TRUE;
 }
