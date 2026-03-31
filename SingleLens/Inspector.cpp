@@ -138,7 +138,7 @@ LRESULT CInspector::OnUdpReceive(WPARAM wLocalPort, LPARAM lParam)
 			if (strOp == "READY") Get_LotReady(strArg[0], strArg[1]);
 
 		} else if (strCmd == "INSPECT") {
-			if (strOp == "COMPLETE") Get_InspectComplete(strArg[0], strArg[1], strArg[2], strArg[3], strArg[4], strArg[5], strArg[6], strArg[7], strArg[8], strArg[9], strArg[10]);
+			if (strOp == "COMPLETE") Get_InspectComplete(strArg[0], strArg[1], strArg[2], strArg[3], strArg[4], strArg[5], strArg[6]);
 
 		} else if (strCmd == "SCAN") {
 			if (strOp == "COMPLETE") Get_ScanComplete(strArg[0], strArg[1], strArg[2], strArg[3], strArg[4]);
@@ -197,14 +197,68 @@ void CInspector::Get_LotReady(CString sLotId, CString sPortNo)
 	m_bLotReady = TRUE;
 }
 
-void CInspector::Get_InspectComplete(CString sGbn, CString sLotId, CString sPortNo, CString sTrayNo, CString sCmNo, CString sJudge, CString sNgCode, CString sOffsetX, CString sOffsetY, CString sSizeX, CString sSizeY)
+void CInspector::Get_InspectComplete(CString sGbn, CString sMZID, CString sZigID, CString sSlotNo, CString sLensNo, CString sJudge, CString sNgCode)
 {
+	int	nSlot = atoi(sSlotNo) - 1;
+	int	nLens = atoi(sLensNo) - 1;
+	if ( nSlot < 0 || nSlot > 29 || nLens < 0 || nLens > 39) { g_objCommon.Show_Error(6101); return; }
+
+
+	int nV = (sGbn == "T1" ? 0 : 1);
+	if (nV == -1) { g_objCommon.Show_Error(6102); return; }
+
+
+	gData.cJudgeCode[nSlot][nLens][nV] = *(LPSTR)(LPCTSTR)sJudge;
+
+
+	if (sJudge != "G" && sNgCode.GetLength() < 2) sNgCode = "NON";	// Good ÀÏ¶§ NG Code´Â Space(" ")
+
+
+	if (sJudge == "N1" || sJudge == "N2" || sJudge == "N3" || sJudge == "N4")
+	{
+		
+	}
+
+	int nMode = theApp.Get_MainMode();
+	int nPreInfo = gData.nInspectInfo[nSlot][nLens];
+
+	if		(sJudge == "N") { if (nPreInfo < 8 || nPreInfo > 8) gData.nInspectInfo[nSlot][nLens] = LensState::NG; }	// N4
+	else if	(sJudge == "B")  { if (nPreInfo < 7 || nPreInfo > 8) gData.nInspectInfo[nSlot][nLens] = LensState::NG; }	// BS
+	else if (sJudge == "G")
+	{
+		gData.nInspectInfo[nSlot][nLens] = LensState::Good;
+	}
+
+	gData.byInspectDone[nSlot][nLens] |= (1 << nV);
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	if (pEquipData->bUseTopVision && ((gData.byInspectDone[nSlot][nLens] >> 0) & 1) == 0) return;	// T1
+	if (pEquipData->bUseBtmVision  && ((gData.byInspectDone[nSlot][nLens] >> 1) & 1) == 0) return;	// B1
 	
 }
 
-void CInspector::Get_ScanComplete(CString sGbn, CString sLotId, CString sPortNo, CString sTrayNo, CString sCmNo)
+void CInspector::Get_ScanComplete(CString sGbn, CString sMZId, CString sLotId, CString sSlotNo, CString sLensNo)
 {
-	
+	if (sGbn == "T1")
+	{
+		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_TOP_INSPECT);
+		if (nCase != 10) { Exception_Log("Scan Complete", sGbn, nCase); return; }
+		m_nT1ScanCnt++;
+		if (m_nT1ScanCnt < m_nT1ScanReq) return;
+		gData.bScanDone[0] = TRUE; 
+		g_objSequenceMain.Set_MainRunCase(AUTO_TOP_INSPECT, 10);
+
+	}
+	else if(sGbn == "B1")
+	{
+		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_BTM_INSPECT);
+		if (nCase != 10) { Exception_Log("Scan Complete", sGbn, nCase); return; }
+		m_nB1ScanCnt++;
+		if (m_nB1ScanCnt < m_nB1ScanReq) return;
+		gData.bScanDone[1] = TRUE; 
+		g_objSequenceMain.Set_MainRunCase(AUTO_BTM_INSPECT, 10);
+	}
 }
 
 void CInspector::Get_ErrorRequest(CString sGbn, CString sLotId, CString sPortNo, CString sTrayNo, CString sCmNo, CString sErrNo)
@@ -232,11 +286,47 @@ void CInspector::Get_HeartBeat()
 	SetTimer(0, 15000, NULL);
 }
 
-void CInspector::Get_ReloadRequest()
+void CInspector::Get_ReloadRequest( )
 {
 	
 
+
 }
+
+void CInspector::Get_ZMoveRequest(int nInspector, CString sGbn, CString sZ)
+{
+	double dZ = atof(sZ);
+	CString strLog = "";
+
+	int nMode = theApp.Get_MainMode();
+
+	if (sGbn == "T1") 
+	{
+		if (nMode == MODE_WORK || nMode == MODE_OPERATOR) 
+		{	
+			// AutoRun
+			int nCase1 = g_objSequenceMain.Get_MainRunCase(AUTO_TOP_INSPECT);
+			
+			if (nCase1 != TopBranch::VisionWait ) { Exception_Log("ZMove Request", sGbn, nCase1); return; }
+			g_objSequenceMain.m_dTop1Z = dZ;
+			g_objSequenceMain.Set_MainRunCase(AUTO_TOP_INSPECT, 6);
+
+		} 
+		/*else if (nMode == MODE_MANUAL)
+		{
+			if (!g_objAJinAXL.Is_Home(AX_TOP_INSPECTOR_Z) || dZ < 0.0) return;
+			g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, dZ);
+			DWORD dwStart = GetTickCount();
+			while (!g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_Z, dZ)) {
+				if (GetTickCount() - dwStart > 10000) return;
+				DoEvents();
+			}
+			Set_MoveComplete(nInspector, sGbn);
+		}*/
+	}
+
+}
+
 void CInspector::Exception_Log(CString sFunc, CString sGbn, int nCase)
 {
 	CString strLog;
@@ -306,9 +396,16 @@ void CInspector::Set_LotEnd(CString sLotId, int nPortNo)
 	Send_Command(strSendCmd);
 }
 
-void CInspector::Set_LoadComplete(CString sGbn, CString sZigID, CString sMZID, int nSlotNo, int nLensNo)
+void CInspector::Set_LoadComplete(int nInspector, CString sGbn, CString sZigID, CString sMZID, int nSlotNo, int nLensNo)
 {
-	CString	strSendCmd;
+	CString	strSendCmd, strTemp;
+
+	if (sGbn == "T1" || sGbn == "B1" ) {
+		int nScanReq = 0;
+		
+		if (sGbn == "T1") { m_nT1ScanReq = gData.nScanReqTop; m_nT1ScanCnt = 0; gData.bScanDone[0] = FALSE; }
+		if (sGbn == "B1") { m_nB1ScanReq = gData.nScanReqBtm; m_nB1ScanCnt = 0; gData.bScanDone[1] = FALSE; }
+	}
 	strSendCmd.Format("LOAD,COMPLETE,%s,%s,%s,%d,%d", sGbn, sZigID, sMZID, nSlotNo, nLensNo);
 	Send_Command(strSendCmd);
 }
@@ -330,6 +427,14 @@ void CInspector::Set_ReloadComplete()
 {
 	CString	strSendCmd;
 	strSendCmd.Format("RELOAD,COMPLETE");
+	Send_Command(strSendCmd);
+}
+
+
+void CInspector::Set_ZMoveComplete(int nInspector, CString sGbn)
+{
+	CString	strSendCmd;
+	strSendCmd.Format("ZMOVE,COMPLETE,%s", sGbn);
 	Send_Command(strSendCmd);
 }
 

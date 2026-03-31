@@ -115,6 +115,10 @@ private:
 
 
 public:
+
+	double m_dTop1Z;
+
+
 	BOOL Get_IsAutoRun();
 
 	BOOL Check_ModuleEmpty(int nPos);
@@ -136,9 +140,14 @@ public:
 
 
 	//////////////////////////////////////////////////////////////////////////
+	void Init_TopZig();
 	BOOL Select_TopScanPos(int &nTopPosX, int &nTopPosY);
 
-	void Init_TopZig();
+	
+	void Init_BtmZig();
+	BOOL Select_BtmScanPos(int &nBtmPosX, int &nBtmPosY);
+
+	BOOL Check_InspectDone(CString sZigID, CString sSlotNo, CString sLensNo);
 
 };
 

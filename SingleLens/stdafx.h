@@ -115,7 +115,8 @@ extern CString gsCurrentDir;	// 현재 프로젝트 폴더
 typedef struct
 {
 	//new 
-	
+	int		 nTime[10]; //LoopTime Set Value 
+
 	int     nStatus;
 	int		nLanguage;
 
@@ -137,9 +138,8 @@ typedef struct
 
 	int nInfoMZLoad[10];
 	int nInfoMZUnload[10];
-
-
-	int nTime[10]; //LoopTime Set Value 
+	
+	
 
 	BOOL	bDryRunMode;
 	int		nSpeedOption; // 여러개의 속도 옵션 가지게 바꾸고 싶다. 
@@ -149,19 +149,46 @@ typedef struct
 	CString	sLotID[60];
 
 
-	int		nMZNoElev;
+	CString	sMZIDElev;
+	CString	sZigIDElev;
 	int		nSlotNoElev;
+	
+		
+	CString	sMZIDTrayPick;
+	CString	sZigIDTrayPick;
+	int		nSlotNoTrayPick;
+	
+	CString	sMZIDLoad;
+	CString	sZigIDLoad;
+	int		nSlotNoLoad;
 
-	int		nMZNoZigPick;
-	int		nSlotNoZigPick;
+	CString	sMZIDCleaner;
+	CString	sZigIDCleaner;
+	int		nSlotNoCleaner;
 
+	CString	sMZIDTop;
+	CString	sZigIDTop;
+	int		nSlotNoTop;
+
+	CString	sMZIDBtm;
+	CString	sZigIDBtm;
+	int		nSlotNoBtm;
+
+
+	int		nScanReqTop;
+	int		nScanReqBtm;
+	
+	BOOL    bScanDone[2];            // 0:Top 1: Btm
+
+
+	char	cJudgeCode[10][ZIG_X*ZIG_Y][2];	
+	int     nInspectInfo[10][ZIG_X*ZIG_Y];    // ????? (0:Empty, 1:Good, 2:NG, 3:NoResult, 7:Request, 8:NG, 9:Init)
+	BYTE	byInspectDone[10][ZIG_X*ZIG_Y];	// 검사완료 (2bit 사용 ==> 0:T1, 1:Btm1)
+
+	//0: Rignt, 1 : Left,  판정코드 (0:Top, 1:Btm)
 	
 	//old 
 	
-
-
-	
-
 	int        nTrayUseCount[2];    // ????? ????? Tray ????
 	int        nCmUseCount[2];        // ????? ????? CM ????
 
@@ -178,11 +205,7 @@ typedef struct
 	int        nCapTrayCount;
 	int        nULPNo;                    // Unload Port No
 
-
-
-
 	
-
 
 	//old 
 	int        InfoCapBuffer[PICK];        // Cap Buffer ???? ??? 0:???    (0:Not Use, 9:Use)
@@ -227,11 +250,9 @@ typedef struct
 	int        nCNoTransStage[PICK];    // Trans Stage CM No
 	int        nCNoUnloadPick[PICK];    // Load Index CM No
 
-	BOOL    bScanDone[2];            // 0:CM Align, 1:Cap Align
 	int        nInspCmNo[2][2];        // 0:CM Align, 1:Cap Align, 0:CmNo1, 1:CmNo2
 	// Port ???? ?????????.
-	int        nInspectInfo[2][50][12];    // ????? (0:Empty, 1:Good, 2:NG, 3:NoResult, 7:Request, 8:NG, 9:Init)
-
+	
 	int        nCapInspectInfo[2][50][28];    // Cap Align ????? (0:Empty, 1:Good, 2:Normal)
 
 	BOOL    bCycleStop;                // Run ????? ???? (???? ???)

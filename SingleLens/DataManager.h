@@ -16,6 +16,7 @@ typedef struct tag_EQUIP_DATA {
 	double  dZigPitchY;
 	double	dZigPitchX;
 	
+	BOOL	bUseInspectSkip;
 	
 	
 /////////////////////	

@@ -3,6 +3,8 @@
 #include "SingleLensDlg.h"
 #include "SequenceMain.h"
 #include "Common.h"
+#include "Inspector.h"
+#include "LogFile.h"
 
 
 CSequenceMain g_objSequenceMain;
@@ -272,46 +274,35 @@ BOOL CSequenceMain::MZElevRun()
 			if (!m_nMZElevLoop.Waiting_Time(500)) break;			
 			m_nMZElevCase = 1; m_nMZElevLoop.Set_LoopTime(5000);
 		}	
-		if(m_pDX00->iMZElevExistRight && m_pDX00->iMZElevExistLeft)
-		{
-			m_nMZElevCase = 30; m_nMZElevLoop.Set_LoopTime(5000);	
-		}
-		else if(m_pDX00->iMZElevExistRight && ! m_pDX00->iMZElevExistLeft)
-		{
-			m_nMZElevCase = 60; m_nMZElevLoop.Set_LoopTime(5000);	
-		}
-		else if(!m_pDX00->iMZElevExistRight && m_pDX00->iMZElevExistLeft)
-		{
-			m_nMZElevCase = 90; m_nMZElevLoop.Set_LoopTime(5000);	
-		}
 		return TRUE;
 	case 1:
-		//CW 회전하려면 CCW도 True 로 해야함 
-		m_pDY00->oLoadCVCCW = TRUE; m_pDY00->oLoadCVCW = TRUE;
-		m_pDY00->oMZElevCVCCW = TRUE; m_pDY00->oMZElevCVCW = TRUE;
-		g_objAJinAXL.Write_Output(0);
-		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+		if(!m_pDX00->iMZElevExistLeft && !m_pDX00->iMZElevExistRight)
+		{
+			//CW 회전하려면 CCW도 True 로 해야함 
+			g_objCommon.Set_LoadCVRunCW();
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+		}		
 		break;
 	case 2:
-		if(m_pDX00->iMZElevExistRight)
+		if(m_pDX00->iMZElevExistLeft)
 		{
-			m_pDY00->oLoadCVCCW = FALSE; m_pDY00->oLoadCVCW = FALSE;
-			m_pDY00->oMZElevCVCCW = FALSE; m_pDY00->oMZElevCVCW = FALSE;
-			g_objAJinAXL.Write_Output(0);
+			g_objCommon.Set_LoadCVStop();
+			Sleep(10);
+			g_objCommon.Set_ElevCVRunCW();
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 3:
 		if(m_pDX00->iMZElevExistRight)
 		{
-			m_pDY00->oMZElevLoadStopperUp = TRUE; m_pDY00->oMZElevLoadStopperDown = FALSE;
-			//m_pDY00->oMZElevAlignRightIn = TRUE; m_pDY00->oMZElevAlignRightOut = FALSE;
-			g_objAJinAXL.Write_Output(0);
+			g_objCommon.Set_ElevCVStop();
+			Sleep(10);
+			//Stopper Up 
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 4:
-		if(m_pDX00->iMZElevLoadStopperUp)
+		if(m_pDX00->iMZElevUnloadStopperUp)
 		{
 			//m_pDY00->oMZElevAlignRightIn = TRUE; m_pDY00->oMZElevAlignRightOut = FALSE;
 			g_objAJinAXL.Write_Output(0);
@@ -319,58 +310,53 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		break;
 	case 5:
-		if(m_pDX00->iMZElevLoadStopperIn)
+		//if(m_pDX00->iMZElevUnloadStopperIn)
 		{
-			if(m_pDX00->iMZElevExistLeft)
-			{
-				m_nMZElevCase = 1; m_nMZElevLoop.Set_LoopTime(5000);
-			}
-			else
-			{
-				dwTick2 = GetTickCount();
-				m_pDY00->oMZElevCVCCW = TRUE; m_pDY00->oMZElevCVCW = FALSE;
-				g_objAJinAXL.Write_Output(0);
-				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
-			}
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 6:
+		if(!m_pDX00->iMZElevExistLeft)
+		{
+			g_objCommon.Set_LoadCVRunCW();
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 7:
 		if(m_pDX00->iMZElevExistLeft)
 		{
-			m_pDY00->oMZElevCVCCW = FALSE; m_pDY00->oMZElevCVCW = FALSE;
-			g_objAJinAXL.Write_Output(0);
-			m_nMZElevCase = 1; m_nMZElevLoop.Set_LoopTime(5000);
-		}
-		else if(GetTickCount() - dwTick2 > 5000)
-		{
-			m_nMZElevCase = 1; m_nMZElevLoop.Set_LoopTime(5000);
+			g_objCommon.Set_LoadCVStop();
+			Sleep(10);
+			//Stopper Up 
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
-
-
-
-
+	case 8:
+		if(m_pDX00->iMZElevLoadStopperUp)
+		{
+			//m_pDY00->oMZElevAlignRightIn = TRUE; m_pDY00->oMZElevAlignRightOut = FALSE;
+			g_objAJinAXL.Write_Output(0);
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 9:
+		if(m_pDX00->iMZElevLoadStopperIn)
+		{
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 10:
+		nSlotNo = 1;
+		m_nMZElevCase = 100; m_nMZElevLoop.Set_LoopTime(5000);
+		return TRUE;
 	
 
-	case 75:
-		//CCW는 CCW만 TRUE
-		//if(gLot.nMZRunningCnt > 1)
-		//{
-		//	m_pDY00->oLoadCVCCW = TRUE; m_pDY00->oLoadCVCW = FALSE;
-		//	m_pDY00->oMZElevCVCCW = TRUE; m_pDY00->oMZElevCVCW = FALSE;
-		//	g_objAJinAXL.Write_Output(0);
-		//	m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
-		//}
-		//else // MZ = 1 
-		//{
-		m_nMZElevCase = 100; m_nMZElevLoop.Set_LoopTime(5000);
-		//}		
-		break;
-	case 100:		
+	case (int)FeederBranch::NextSearch:		
 		if(g_objCommon.Check_Position(AX_FEEDER_Y, Feeder_Y::Ready))
 		{
 			//아래 부터 검사 
-			double dPos = m_pMoveData->dMzElevZ[MZ_Elev_Z::Bottom] + m_pEquipData->dMZPitchRightZ * nSlotNo;
+			double dPos = m_pMoveData->dMzElevZ[MZ_Elev_Z::Bottom] 
+				+ m_pEquipData->dMZPitchRightZ * (nSlotNo - 1) ;
 			g_objAJinAXL.Move_Absolute(AX_MZ_ELEV_Z, dPos);
 			
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
@@ -379,8 +365,7 @@ BOOL CSequenceMain::MZElevRun()
 	case 101:
 		if(g_objCommon.Check_Position(AX_MZ_ELEV_Z, MZ_Elev_Z::Bottom))
 		{
-			gData.nSlotNoElev = 1; //Bottom 
-			g_objCommon.Move_Position(AX_FEEDER_X, Feeder_X::MZRight);
+			 g_objCommon.Move_Position(AX_FEEDER_X, Feeder_X::MZRight);
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
@@ -396,7 +381,7 @@ BOOL CSequenceMain::MZElevRun()
 		{
 			if(m_pDX01->iFeederCoatJigCheck)
 			{
-				gData.nSlotNoElev = (gData.nMZNoElev - 1) * 10 + gData.nSlotNoElev;
+				
 				g_objCommon.Move_Position(AX_FEEDER_Y, Feeder_Y::LoadRight);
 				m_nMZElevCase = 110; m_nMZElevLoop.Set_LoopTime(5000);
 			}
@@ -408,10 +393,7 @@ BOOL CSequenceMain::MZElevRun()
 			}
 		}
 		break;
-	case 104:
 
-
-		break;
 	case 110:
 		if(g_objCommon.Check_Position(AX_FEEDER_Y, Feeder_Y::LoadRight))
 		{
@@ -423,6 +405,13 @@ BOOL CSequenceMain::MZElevRun()
 	case 111:
 		if(m_pDX01->iFeederGripClose && !m_pDX01->iFeederGripOpen)
 		{
+			//Info
+			gData.nSlotNoElev = nSlotNo;
+#ifndef AJIN_BOARD_USE
+			m_strLog.Format("%d", gData.nSlotNoElev++);
+			gData.sZigIDElev = m_strLog;
+#endif
+			//gData.sZigIDElev = Get barcode 
 			g_objCommon.Move_Position(AX_FEEDER_Y, Feeder_Y::Rail);
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}
@@ -452,17 +441,14 @@ BOOL CSequenceMain::MZElevRun()
 	case 115:
 		if(g_objCommon.Check_Position(AX_FEEDER_Y, Feeder_Y::Ready))
 		{
-			g_objCommon.Move_Position(AX_FEEDER_X, Feeder_X::Ready);
-			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+			nSlotNo++;
+			if(nSlotNo > 10) nSlotNo = 1;
+			m_nTrayPickerCase = 1; // Tray Picker load Start 			
+			m_nMZElevCase = 120; m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 116:
-		if(g_objCommon.Check_Position(AX_FEEDER_X, Feeder_X::Ready))
-		{
-			m_nTrayPickerCase = 1; // Tray Picker load Start 
-			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
-		}
-		break;
+	case 120: // Tray Pick working 
+		return TRUE;
 	}
 
 	// 2. (Error : 3400)
@@ -495,22 +481,87 @@ BOOL CSequenceMain::TrayPickerRun()
 	case 0:
 		return TRUE;
 	case 1:
+		if(g_objCommon.Check_Position(AX_TRAY_PICKER_Z, Tray_Picker_Z::Ready))
+		{
+			g_objCommon.Move_Position(AX_TRAY_PICKER_Y, Tray_Picker_Y::Load);
+			m_nTrayPickerCase++; m_nTrayPickerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
+		}
+		break;
+	case 2:
 		if(g_objCommon.Check_Position(AX_TRAY_PICKER_Y, Tray_Picker_Y::Load))
 		{
 			g_objCommon.Move_Position(AX_TRAY_PICKER_Z, Tray_Picker_Z::Load);
 			m_nTrayPickerCase++; m_nTrayPickerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
 		}
-		break;
-	case 2:
+	case 3:
 		if(g_objCommon.Check_Position(AX_TRAY_PICKER_Z, Tray_Picker_Z::Load))
 		{
-			m_pDY01->oTrayPickerMasterIn = TRUE; m_pDY01->oTrayPickerMasterOut = FALSE;
-
+			g_objCommon.Set_TrayPickMasterIn();
 			m_nTrayPickerCase++; m_nTrayPickerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
 		}
 		break;
-	case 3:
+	case 5:
+		if(g_objCommon.Get_TrayPickMasterIn())
+		{
+			g_objCommon.Set_TrayPickSlaveIn();
+			m_nTrayPickerCase++; m_nTrayPickerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
+		}
 		break;
+	
+	case 6:
+		if(g_objCommon.Get_TrayPickMasterSlaveIn())
+		{
+
+			//Info 
+			gData.nSlotNoTrayPick = gData.nSlotNoElev; gData.nSlotNoElev = 0;
+			gData.sZigIDTrayPick =  gData.sZigIDElev; gData.sZigIDElev = "";
+			
+			g_objCommon.Move_Position(AX_TRAY_PICKER_Z, Tray_Picker_Z::Ready);
+			m_nTrayPickerCase++; m_nTrayPickerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
+		}
+		break;
+	case 7:
+		if(g_objCommon.Check_Position(AX_TRAY_PICKER_Z, Tray_Picker_Z::Ready))
+		{
+			m_nMZElevCase = (int)FeederBranch::NextSearch;
+			g_objCommon.Move_Position(AX_TRAY_PICKER_Y, Tray_Picker_Y::Index);
+			m_nTrayPickerCase++; m_nTrayPickerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
+		}
+		break;
+	case 8:
+		if(g_objCommon.Check_Position(AX_TRAY_PICKER_Y, Tray_Picker_Y::Index))
+		{
+			g_objCommon.Move_Position(AX_TRAY_PICKER_Z, Tray_Picker_Z::Index);
+			m_nTrayPickerCase++; m_nTrayPickerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
+		}
+		break;
+	case 9:
+		if(g_objCommon.Check_Position(AX_TRAY_PICKER_Z, Tray_Picker_Z::Index))
+		{
+			g_objCommon.Set_TrayPickSlaveOut();
+			m_nTrayPickerCase++; m_nTrayPickerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
+		}
+		break;
+	case 10:
+		if(g_objCommon.Get_TrayPickSlaveOut())
+		{
+			g_objCommon.Set_TrayPickMasterOut();
+			m_nTrayPickerCase++; m_nTrayPickerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
+		}
+		break;
+	case 11:
+		if(g_objCommon.Get_TrayPickMasterSlaveOut())
+		{
+			//Info
+			gData.nSlotNoLoad = gData.nSlotNoTrayPick; gData.nSlotNoTrayPick = 0;
+			gData.sZigIDLoad =  gData.sZigIDTrayPick; gData.sZigIDTrayPick = "";
+
+			g_objCommon.Move_Position(AX_TRAY_PICKER_Z, Tray_Picker_Z::Ready);
+			m_nTrayPickerCase = 0; m_nTrayPickerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
+		}
+		break;
+
+
 	}
 
 	// 4. (Error : 4000)
@@ -562,9 +613,7 @@ BOOL CSequenceMain::LensCleanerRun()
 		if(g_objCommon.Get_CleanerBackwardDone())
 		{
 			gData.bIndexDone[IndexT::Clean] = TRUE;
-			m_nLensCleanerCase = 0; m_nLensCleanerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
-
-
+			m_nLensCleanerCase = 0; m_nLensCleanerLoop.Set_LoopTime(gData.nTime[LT::Motion]);			
 		}
 		break;
 	}
@@ -600,6 +649,7 @@ BOOL CSequenceMain::TopInspectorRun()
 			if(m_pEquipData->bUseTopVision)
 			{
 				Init_TopZig();
+				nTopXPos = 1; nTopYPos = 1;
 				m_nTopInspectCase++; m_nTopInspectLoop.Set_LoopTime(gData.nTime[LT::Motion]);
 			}
 		}
@@ -619,6 +669,11 @@ BOOL CSequenceMain::TopInspectorRun()
 			m_nTopInspectCase++; m_nTopInspectLoop.Set_LoopTime(gData.nTime[LT::Motion]);
  
 		}
+		else
+		{
+			//Done
+			m_nTopInspectCase = 15; m_nTopInspectLoop.Set_LoopTime(gData.nTime[LT::Motion]);
+		}
 		break;
 	case 3:
 		if (g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_Y, dTopUnitY) &&
@@ -630,24 +685,48 @@ BOOL CSequenceMain::TopInspectorRun()
 			{
 				if (gData.nInfoIndexT[IndexT::Top][nTopYPos-1][nTopXPos-1] == 9)
 					gData.nInfoIndexT[IndexT::Top][nTopYPos-1][nTopXPos-1] = LensState::TopDone;	//Scan Done
+			
 				m_nTopInspectCase = 10; m_nTopInspectLoop.Set_LoopTime(gData.nTime[LT::Scan]);
 			} 
 			else 
 			{
 				int nLensNo = (gData.nZigY - nTopYPos) * gData.nZigX + nTopXPos;	// Tray 하단부터 모듈 적재한다.
-				g_objInspector.Set_LoadComplete(VISION_PC1, "T1", gLot.sLotID[] , gData.nPNoAnglePort[0], gData.nTNoAnglePort[0],0, 0, 0, nCmNo, 0, 0, 0);
-				m_nTopInspectCase = 15; m_nTopInspectLoop.Set_LoopTime(gData.nTime[LT::Scan]);			
+				g_objInspector.Set_LoadComplete(VISION_PC1, "T1", gData.sZigIDTop , gData.sMZIDTop, gData.nSlotNoTop, nLensNo);
+				m_nTopInspectCase = (int)TopBranch::VisionWait; m_nTopInspectLoop.Set_LoopTime(gData.nTime[LT::Scan]);			
 			}
 		}
 		break;
+	case (int)TopBranch::VisionWait:
+		if (!m_pEquipData->bUseTopVision)
+		{
+			m_nTopInspectCase = 10; m_nTopInspectLoop.Set_LoopTime(gData.nTime[LT::Scan]);
+		}
+		break;
+	case 6:	// Top1 Z Focus Move
+		if (g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Z)) 
+		{
+			g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, m_dTop1Z);
+					
+			m_nTopInspectCase++; m_nTopInspectLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 7:	// Send Move Complete
+		if (g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Z)) 
+		{			
+			CString strLog;
+			g_objInspector.Set_ZMoveComplete(VISION_PC1, "T1");
+			m_nTopInspectCase = 5; m_nTopInspectLoop.Set_LoopTime(30000);	// 90초		
+		}
+		break;
 	case 10:
-
-		break;
-	case 4:
-		break;
-	case 5:
-		break;
-	case 100:
+		nTopXPos++;
+		if(nTopXPos > gData.nZigX) 
+		{
+			nTopXPos = 1; nTopYPos++;
+		}
+		m_nTopInspectCase = 2; m_nTopInspectLoop.Set_LoopTime(5000);
+		break;	
+	case 15:
 		gData.bIndexDone[IndexT::Top] = TRUE;
 		m_nLensCleanerCase = 0; m_nLensCleanerLoop.Set_LoopTime(gData.nTime[LT::Motion]);
 		break;
@@ -666,19 +745,108 @@ BOOL CSequenceMain::TopInspectorRun()
 // 7. (Error : 4900)
 BOOL CSequenceMain::BtmInspectorRun()
 {
-	switch(m_nTopInspectCase)
+	static int nBtmXPos = 0, nBtmYPos = 0;
+	static double	dBtmUnitX, dBtmUnitY, dBtmUnitZ = 0.0;
+
+	switch(m_nBtmInspectCase)
 	{
 	case 0:
+		if(!gData.bIndexDone[IndexT::Btm] && !Check_IndexEmpty(IndexT::Btm))
+		{
+			m_nBtmInspectCase++;
+			m_nBtmInspectLoop.Set_LoopTime(gData.nTime[LT::Motion]);
+		}
 		return TRUE;
 	case 1:
-		if(g_objCommon.Check_Position(AX_TRAY_PICKER_Y, Tray_Picker_Y::Load))
+		if(g_objCommon.Check_Position(AX_BTM_INSPECTOR_Z, Btm_Inspector_Z::Ready))
 		{
-			g_objCommon.Move_Position(AX_TRAY_PICKER_Z, Tray_Picker_Z::Load);
+			if(m_pEquipData->bUseBtmVision)
+			{
+				Init_TopZig();
+				nBtmXPos = 1; nBtmYPos = 1;
+				m_nBtmInspectCase++; m_nBtmInspectLoop.Set_LoopTime(gData.nTime[LT::Motion]);
+			}
+		}
+		break;
+	case 2:
+		if(Select_TopScanPos(nBtmXPos, nBtmYPos))
+		{
+			int nIdx = (nBtmYPos - 1) * gData.nZigX + nBtmXPos;
+			dBtmUnitX = m_pMoveData->dTopInspectorY[Top_Inspector_Y::ScanStart] + (m_pEquipData->dZigPitchY * (nBtmYPos - 1));
+			dBtmUnitY = m_pMoveData->dTopInspectorX[Top_Inspector_X::ScanStart] + (m_pEquipData->dZigPitchX * (nBtmXPos - 1));
+			dBtmUnitZ = m_pMoveData->dTopInspectorZ[Top_Inspector_Z::ScanStart];
+
+			g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Y, dBtmUnitY);
+			g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_X, dBtmUnitX);
+			g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, dBtmUnitZ);
+
+			m_nBtmInspectCase++; m_nBtmInspectLoop.Set_LoopTime(gData.nTime[LT::Motion]);
+
+		}
+		else
+		{
+			//Done
+			m_nBtmInspectCase = 15; m_nBtmInspectLoop.Set_LoopTime(gData.nTime[LT::Motion]);
+		}
+		break;
+	case 3:
+		if (g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_Y, dBtmUnitY) &&
+			g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_X, dBtmUnitX) &&
+			g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_Z, dBtmUnitZ))
+		{
+
+			if (!m_pEquipData->bUseTopVision)
+			{
+				if (gData.nInfoIndexT[IndexT::Btm][nBtmYPos-1][nBtmXPos-1] == 9)
+					gData.nInfoIndexT[IndexT::Btm][nBtmYPos-1][nBtmXPos-1] = LensState::BtmDone;	//Scan Done
+				
+				m_nBtmInspectCase = 10; m_nBtmInspectLoop.Set_LoopTime(gData.nTime[LT::Scan]);
+			} 
+			else 
+			{
+				int nLensNo = (gData.nZigY - nBtmYPos) * gData.nZigX + nBtmXPos;	// Tray 하단부터 모듈 적재한다.
+				g_objInspector.Set_LoadComplete(VISION_PC1, "B1", gData.sZigIDBtm , gData.sMZIDBtm, gData.nSlotNoBtm, nLensNo);
+				m_nBtmInspectCase = (int)BtmBranch::VisionWait; m_nBtmInspectLoop.Set_LoopTime(gData.nTime[LT::Scan]);			
+			}
+		}
+		break;
+	case (int)BtmBranch::VisionWait:
+		if (!m_pEquipData->bUseBtmVision)
+		{
+			m_nBtmInspectCase = 10; m_nBtmInspectLoop.Set_LoopTime(gData.nTime[LT::Scan]);
+		}
+		break;
+	case 6:	// Top1 Z Focus Move
+		if (g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Z)) 
+		{
+			g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_Z, m_dTop1Z);
+
 			m_nBtmInspectCase++; m_nBtmInspectLoop.Set_LoopTime(5000);
 		}
 		break;
+	case 7:	// Send Move Complete
+		if (g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Z)) 
+		{			
+			CString strLog;
+			g_objInspector.Set_ZMoveComplete(VISION_PC1, "B1");
+			m_nBtmInspectCase = (int)BtmBranch::VisionWait; m_nBtmInspectLoop.Set_LoopTime(30000);	// 90초		
+		}
+		break;
+	case 10:
+		nBtmXPos++;
+		if(nBtmXPos > gData.nZigX) 
+		{
+			nBtmXPos = 1; nBtmYPos++;
+		}
+		m_nBtmInspectCase = 2; m_nBtmInspectLoop.Set_LoopTime(5000);
+		break;	
+	case 15:
+		gData.bIndexDone[IndexT::Btm] = TRUE;
+		m_nBtmInspectCase = 0; m_nBtmInspectLoop.Set_LoopTime(gData.nTime[LT::Motion]);
+		break;
 
 	}
+
 
 	// 7. (Error : 4900)
 	if (m_nBtmInspectLoop.Over_LoopTime()) 
@@ -697,13 +865,11 @@ BOOL CSequenceMain::MarkerRun()
 	case 0:
 		return TRUE;
 	case 1:
-		if(g_objCommon.Check_Position(AX_TRAY_PICKER_Y, Tray_Picker_Y::Load))
+		/*if(Check_InspectDone())
 		{
-			g_objCommon.Move_Position(AX_TRAY_PICKER_Z, Tray_Picker_Z::Load);
-			m_nMarkerCase++; m_nMarkerLoop.Set_LoopTime(5000);
-		}
-		break;
 
+		}*/
+		break;
 	}
 
 
@@ -916,7 +1082,7 @@ BOOL CSequenceMain::Check_ZigPickerEmpty()
 	{
 		for(int j = 0; j < ZIG_Y; j++)
 		{
-			if (gData.nInfoZigPicker[i] > 0) return FALSE; 
+			if (gData.nInfoZigPick[i] > 0) return FALSE; 
 		}		
 	}
 	return TRUE;
@@ -944,7 +1110,7 @@ void CSequenceMain::Init_TopZig()
 	{
 		for(int j = 0; j < ZIG_Y; j++)
 		{
-			if(gData.nInfoIndexT[IndexT::Top][ZIG_X][ZIG_Y] = LensState::Init)
+			if(gData.nInfoIndexT[IndexT::Top][ZIG_X][ZIG_Y] == LensState::Init)
 			{
 				gData.nInfoIndexT[IndexT::Top][ZIG_X][ZIG_Y] = LensState::TopReady;
 			}
@@ -994,4 +1160,129 @@ BOOL CSequenceMain::Select_TopScanPos(int &nTopPosX, int &nTopPosY)
 	if (nTopPosY > gData.nZigY) return FALSE;
 	if (nTopPosY == 0 || nTopPosX ==0) return FALSE;
 	return TRUE;
+}
+
+
+void CSequenceMain::Init_BtmZig()
+{
+	for(int i = 0; i < ZIG_X; i++)
+	{
+		for(int j = 0; j < ZIG_Y; j++)
+		{
+			if(gData.nInfoIndexT[IndexT::Btm][ZIG_X][ZIG_Y] == LensState::Init
+				|| gData.nInfoIndexT[IndexT::Btm][ZIG_X][ZIG_Y] == LensState::TopDone)
+			{
+				gData.nInfoIndexT[IndexT::Btm][ZIG_X][ZIG_Y] = LensState::BtmReady;
+			}
+		}
+	}
+}
+
+
+
+
+BOOL CSequenceMain::Select_BtmScanPos(int &nBtmPosX, int &nBtmPosY)
+{
+	// Module만 Scan
+
+	nBtmPosX = nBtmPosY = 0;
+
+	//Y 기준 X 증가하면서 찍는 방법 
+	for(int j=(gData.nZigY - 1); j>=0; j--) 
+	{
+		if (j==1 || j==3 || j==5 || j==7 || j==9 || j==11)
+		{
+			for(int i = (gData.nZigX-1); i >=0; i--) 
+			{
+				if (gData.nInfoIndexT[IndexT::Btm][j][i] == LensState::BtmReady)  
+				{
+					nBtmPosY = j + 1;
+					nBtmPosX = i + 1;
+					break;
+				}
+			}
+		}
+		else
+		{
+			for(int i = 0; i < gData.nZigX; i++)
+			{
+				if (gData.nInfoIndexT[IndexT::Btm][j][i] == LensState::BtmReady) 
+				{
+					nBtmPosY = j + 1;
+					nBtmPosX = i + 1;
+					break;
+				}
+			}
+		}
+
+		if (nBtmPosY > 0) break;
+	}
+
+	if (nBtmPosY > gData.nZigY) return FALSE;
+	if (nBtmPosY == 0 || nBtmPosX ==0) return FALSE;
+	return TRUE;
+}
+
+
+BOOL CSequenceMain::Check_InspectDone(CString sZigID, CString sSlotNo, CString sLensNo)
+{
+	int nSlot = atoi(sSlotNo) - 1;
+	int nLens = atoi(sLensNo) - 1;
+
+
+	if (((gData.byInspectDone[nSlot][nLens] >> 7) & 1) == 1) return TRUE;	// 판정 완료 (2번 판정하지 않기 위해)
+
+	CString strLog;
+	BOOL bDone = TRUE;
+	if (m_pEquipData->bUseTopVision && ((gData.byInspectDone[nSlot][nLens] >> 0) & 1) == 0)
+		bDone = FALSE;	// return FALSE;	// Angle
+	if (m_pEquipData->bUseBtmVision  && ((gData.byInspectDone[nSlot][nLens] >> 1) & 1) == 0) 
+		bDone = FALSE;
+
+
+	DWORD dwTick = GetTickCount();
+	if (!bDone) 
+	{
+		//if (m_pEquipData->bUseInspectSkip || ((dwTick - gData.dwSkipTime_Sort2)  > m_pEquipData->nDelayAdd[4]) ) 
+		//{	
+		//	// SortPicker에서 검사 완료 체크할때 검사결과가 안날라왔으면 1차로 빼준다.
+		//	gData.nInspectInfo[nSlot][nLens] = LensState::Good;
+		//	//gMes.sJudge[nSlot][nLens] = "N1";
+		//	strLog.Format("Judge Time Over, SlotNo(%d), LensNo(%d)", nSlot+1, nLens+1);
+		//	g_objLogFile.Save_HandlerLog(strLog);
+		//}
+		//else
+		//{
+		//	return FALSE;
+		//}
+	}
+
+
+	if (m_pEquipData->bResultTestUse) 
+	{
+		/*int nRand = g_objCommon.Get_Random(0, 99);
+		int nNg1 = m_pEquipData->nResultTestN1;
+		int nNg2 = m_pEquipData->nResultTestN2 + nNg1;
+		int nNg3 = m_pEquipData->nResultTestN3 + nNg2;
+		int nNg4 = m_pEquipData->nResultTestN4 + nNg3;
+
+		int nJudge = (nRand < nNg1 ? 4 : (nRand < nNg2 ? 5 : (nRand < nNg3 ? 6 : (nRand < nNg4 ? 8 : 1))));
+		nInfo = gData.nInspectInfo[nPx][nTx][nCx] = nJudge;
+		if (nInfo == 9) { nInfo = gData.nInspectInfo[nPx][nTx][nCx] = 1; }
+		strLog.Format("ResultTest_Use : %d,%d,%d",nInfo, nTx+1, nCx+1);
+		g_objLogFile.Save_TestLog(strLog);*/
+
+	} 
+	else
+	{
+		//if (gData.bCycleStop && !Get_VisionInspectUse()) nInfo = gData.nInspectInfo[nPx][nTx][nCx] = 1;	//Good
+		//else if (Get_VisionInspectUse())  nInfo = gData.nInspectInfo[nPx][nTx][nCx];
+
+		//if (nInfo == 9) nInfo = gData.nInspectInfo[nPx][nTx][nCx] = 1;
+	}
+
+
+
+	gData.byInspectDone[nSlot][nLens] |= (1 << 7);	// 판정 완료 (2번 판정하지 않기 위해)
+	return TRUE;	// All Inspect Done
 }

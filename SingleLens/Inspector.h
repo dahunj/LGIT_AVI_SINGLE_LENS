@@ -30,8 +30,8 @@ private:
 	int		m_nStatusVPC;		// Vision PC ป๓ลย (0:Not Ready, 1:Ready)
 	BOOL	m_bLotReady;
 
-	int		m_nB12ScanReq, m_nT12ScanReq;
-	int		m_nB12ScanCnt, m_nT12ScanCnt;
+	int		m_nB1ScanReq, m_nT1ScanReq;
+	int		m_nB1ScanCnt, m_nT1ScanCnt;
 
 	void Get_ConnectRequest();
 	void Get_ConnectReply();
@@ -41,11 +41,16 @@ private:
 	void Get_StatusUpdate(CString sStatus);
 
 	void Get_LotReady(CString sLotId, CString sPortNo);
-	void Get_InspectComplete(CString sGbn, CString sLotId, CString sPortNo, CString sTrayNo, CString sCmNo, CString sJudge, CString sNgCode, CString sOffsetX, CString sOffsetY, CString sSizeX, CString sSizeY);
+	void Get_InspectComplete(CString sGbn, CString sMZID, CString sZigID, CString sSlotNo, CString sLensNo, CString sJudge, CString sNgCode);
 	void Get_ScanComplete(CString sGbn, CString sLotId, CString sPortNo, CString sTrayNo, CString sCmNo);
 	void Get_ErrorRequest(CString sGbn, CString sLotId, CString sPortNo, CString sTrayNo, CString sCmNo, CString sErrNo);
 	void Get_HeartBeat();
 	void Get_ReloadRequest();
+
+
+	void Get_ZMoveRequest(int nInspector, CString sGbn, CString sZ);
+
+
 
 	void Send_Command(CString strSend);
 	void Exception_Log(CString sFunc, CString sGbn, int nCase);	// Recevie Exception Log
@@ -63,10 +68,12 @@ public:
 
 	void Set_LotStart(CString sLotId, int nPortNo);
 	void Set_LotEnd(CString sLotId, int nPortNo);
-	void Set_LoadComplete(CString sGbn, CString sZigID, CString sMZID, int nSlotNo, int nLensNo);
+	void Set_LoadComplete(int nInspector, CString sGbn, CString sZigID, CString sMZID, int nSlotNo, int nLensNo);
 	void Set_InitialRequest();
 	void Set_LightOff();
 	void Set_ReloadComplete();
+
+	void Set_ZMoveComplete(int nInspector, CString sGbn);
 
 	int  Get_VisionStatus();
 	BOOL Check_LotReady();

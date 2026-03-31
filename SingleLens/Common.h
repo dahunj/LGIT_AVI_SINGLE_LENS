@@ -111,11 +111,38 @@ public:
 	BOOL Get_CleanerClose();
 	BOOL Get_CleanerOpen();
 
+	void Set_TrayPickMasterIn();
+	void Set_TrayPickSlaveIn();
+
+	BOOL Get_TrayPickMasterIn();
+	BOOL Get_TrayPickSlaveIn();
+	BOOL Get_TrayPickMasterSlaveIn();
+
+	void Set_TrayPickMasterOut();
+	void Set_TrayPickSlaveOut();
+
+	BOOL Get_TrayPickMasterOut();
+	BOOL Get_TrayPickSlaveOut();
+	BOOL Get_TrayPickMasterSlaveOut();
+
+
 	void Set_CleanerForward();
 	void Set_CleanerBackward();
 
 	BOOL Get_CleanerForwardDone();
 	BOOL Get_CleanerBackwardDone();
+
+	void Set_LoadCVRunCCW();
+	void Set_LoadCVRunCW();
+	void Set_LoadCVStop();
+
+	void Set_UnloadCVRunCCW();
+	void Set_UnloadCVRunCW();
+	void Set_UnloadCVStop();
+
+	void Set_ElevCVRunCCW();
+	void Set_ElevCVRunCW();
+	void Set_ElevCVStop();
 
 };
 

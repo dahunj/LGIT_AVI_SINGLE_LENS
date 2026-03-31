@@ -72,6 +72,7 @@ struct Tray_Picker_Y
 	{
 		Ready = 0,
 		Load = 1,
+		Index = 2,
 		MaxCnt,
 	};
 };
@@ -83,7 +84,9 @@ struct Tray_Picker_Z
 	enum dtName
 	{
 		Ready = 0,
+		
 		Load = 1, 
+		Index = 2,
 	};
 };
 
@@ -243,7 +246,8 @@ struct FeederBranch
 {
 	enum Name
 	{
-		name = 0, 
+		name = 0,
+		NextSearch = 100,
 	};
 };
 
@@ -252,5 +256,21 @@ struct ZigPickBranch
 	enum Name
 	{
 		name = 0, 
+	};
+};
+
+struct TopBranch
+{
+	enum Name
+	{
+		VisionWait = 5,
+	};
+};
+
+struct BtmBranch
+{
+	enum Name
+	{
+		VisionWait = 5,
 	};
 };

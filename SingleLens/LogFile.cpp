@@ -716,61 +716,7 @@ void CLogFile::Save_MesAgentLog(CString sLog)
 
 void CLogFile::Save_CmTrackingLog(CString strOut, int nTrayCount, int nPosX, int nPosY, int nPortNo, int nTrayNo, int nCmNo)
 {
-	g_csCmTrackingLog.Lock();
-
-	if (nTrayNo < 1 || nTrayNo > 50 || nCmNo < 1 || nCmNo > 50) return;
-
-	SYSTEMTIME time;
-	GetLocalTime(&time);
-
-	CString strPath, strFile, strTitle, strSave, strJudge;
-	strPath.Format("%s\\LOG\\CapTracking\\%04d-%02d-%02d", gsCurrentDir, time.wYear, time.wMonth, time.wDay);
-	Create_Folder(strPath);
-
-	if (gLot.sLotID[nPortNo-1] == "") gLot.sLotID[nPortNo-1] = "LOT_ID";
-	strFile.Format("%s\\%s_Tracking.csv", strPath, gLot.sLotID[nPortNo-1]);
-
-	CFile file;
-	if (!file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) return;
-
-	strTitle.Format("Time,Barcode,Judge,Port No,Tray No,CM No,Load Stage,Load Picker,Index Rotational Pos(Load),Index Pocket No(Load) ,Unload Picker,NG Tray,NG Y,NG X,Ship Tray,Ship Y,Ship X\r\n");
-
-	try {
-		file.SeekToEnd();
-
-		if (file.GetLength() < 1) file.Write(strTitle, strTitle.GetLength());
-
-		//¡ÆE¡íc¡Æa¡Æu (0:Empty, 1:Good, 2:NG)
-		
-		strJudge = (gData.nInspectInfo[nPortNo-1][nTrayNo-1][nCmNo-1] == 1 ? "G" : (gData.nInspectInfo[nPortNo-1][nTrayNo-1][nCmNo-1] == 2 ? "N" : ""));
-
-		int nLdStageNo, nLdPick, nIdxLdNo, nIdxLdJig, nUlPick;
-		nLdStageNo	= gData.nCmJigNo[nPortNo-1][nTrayNo-1][nCmNo-1][LOAD_STAGE];
-		nLdPick		= gData.nCmJigNo[nPortNo-1][nTrayNo-1][nCmNo-1][LOAD_PICK];		
-		nIdxLdNo	= gData.nCmJigNo[nPortNo-1][nTrayNo-1][nCmNo-1][INDEX_LOAD_NO];
-		nIdxLdJig	= gData.nCmJigNo[nPortNo-1][nTrayNo-1][nCmNo-1][INDEX_LOAD_JIG];
-		nUlPick		= gData.nCmJigNo[nPortNo-1][nTrayNo-1][nCmNo-1][UNLOAD_PICK];
-		
-		if (strOut == "GOOD") {
-			strSave.Format("%02d:%02d:%02d,%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\r\n", 
-				time.wHour, time.wMinute, time.wSecond, gMes.sBarID[nPortNo-1][nTrayNo-1][nCmNo-1], strJudge, nPortNo, nTrayNo, nCmNo, 
-				nLdStageNo, nLdPick, nIdxLdNo, nIdxLdJig, nUlPick,
-				0, 0, 0, nTrayCount, nPosY+1, nPosX+1);
-		} else {
-			strSave.Format("%02d:%02d:%02d,%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\r\n", 
-				time.wHour, time.wMinute, time.wSecond, gMes.sBarID[nPortNo-1][nTrayNo-1][nCmNo-1], strJudge, nPortNo, nTrayNo, nCmNo, 
-				nLdStageNo, nLdPick, nIdxLdNo, nIdxLdJig, nUlPick,
-				nTrayCount, nPosY+1, nPosX+1, 0, 0, 0);
-		}
-		file.Write(strSave, strSave.GetLength());
-		file.Close();
-
-	} catch (CFileException *pEx) {
-		pEx->Delete();
-	}
-	Save_ECMTracking(strSave, nTrayCount, nPosX, nPosY, nPortNo, nTrayNo, nCmNo);
-
-	g_csCmTrackingLog.Unlock();
+	
 }
 
 void CLogFile::Save_ECMTracking(CString sLog, int nTrayCount, int nPosX, int nPosY, int nPortNo, int nTrayNo, int nCmNo)

@@ -912,3 +912,177 @@ BOOL CCommon::Get_CleanerBackwardDone()
 	return FALSE;
 }
 
+
+
+void CCommon::Set_LoadCVRunCCW()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+	pDY00->oLoadCVCCW = TRUE;
+	pDY00->oLoadCVCW = FALSE;
+
+	g_objAJinAXL.Write_Output(0);
+}
+
+void CCommon::Set_LoadCVRunCW()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+	pDY00->oLoadCVCCW = TRUE;
+	pDY00->oLoadCVCW = TRUE;
+
+	g_objAJinAXL.Write_Output(0);
+}
+
+void CCommon::Set_LoadCVStop()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+	pDY00->oLoadCVCCW = FALSE;
+	pDY00->oLoadCVCW = FALSE;
+
+	g_objAJinAXL.Write_Output(0);
+}
+
+
+
+void CCommon::Set_UnloadCVRunCCW()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+	pDY00->oUnloadCVCCW = TRUE;
+	pDY00->oUnloadCVCW = FALSE;
+
+	g_objAJinAXL.Write_Output(0);
+}
+
+void CCommon::Set_UnloadCVRunCW()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+	pDY00->oUnloadCVCCW = TRUE;
+	pDY00->oUnloadCVCW = TRUE;
+
+	g_objAJinAXL.Write_Output(0);
+}
+
+void CCommon::Set_UnloadCVStop()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+	pDY00->oUnloadCVCCW = FALSE;
+	pDY00->oUnloadCVCW = FALSE;
+
+	g_objAJinAXL.Write_Output(0);
+}
+
+void CCommon::Set_ElevCVRunCCW()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+	pDY00->oMZElevCVCCW = TRUE;
+	pDY00->oMZElevCVCW = FALSE;
+	g_objAJinAXL.Write_Output(0);
+}
+
+
+void CCommon::Set_ElevCVRunCW()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+	pDY00->oMZElevCVCCW = TRUE;
+	pDY00->oMZElevCVCW = TRUE;
+	g_objAJinAXL.Write_Output(0);
+}
+	
+
+
+void CCommon::Set_ElevCVStop()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+	pDY00->oMZElevCVCCW = FALSE;
+	pDY00->oMZElevCVCW = FALSE;
+	g_objAJinAXL.Write_Output(0);
+}
+
+
+
+
+void CCommon::Set_TrayPickMasterIn()
+{
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+	pDY01->oTrayPickerMasterIn = TRUE; pDY01->oTrayPickerMasterOut = FALSE;
+	g_objAJinAXL.Write_Output(1);
+}
+
+void CCommon::Set_TrayPickSlaveIn()
+{
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+	pDY01->oTrayPickerSlaveIn = TRUE; pDY01->oTrayPickerSlaveOut = FALSE;
+	g_objAJinAXL.Write_Output(1);
+}
+
+BOOL CCommon::Get_TrayPickMasterIn()
+{
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+	if(pDX01->iTrayPickerMasterIn && !pDX01->iTrayPickerMasterOut)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+
+BOOL CCommon::Get_TrayPickSlaveIn()
+{
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+	if(pDX01->iTrayPickerSlaveIn && !pDX01->iTrayPickerSlaveOut)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+
+BOOL CCommon::Get_TrayPickMasterSlaveIn()
+{
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+	if(pDX01->iTrayPickerMasterIn && !pDX01->iTrayPickerMasterOut
+		&& pDX01->iTrayPickerSlaveIn && !pDX01->iTrayPickerSlaveOut)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+
+void CCommon::Set_TrayPickMasterOut()
+{
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+	pDY01->oTrayPickerMasterIn = FALSE; pDY01->oTrayPickerMasterOut = TRUE;
+	g_objAJinAXL.Write_Output(1);
+}
+void CCommon::Set_TrayPickSlaveOut()
+{
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+	pDY01->oTrayPickerSlaveIn = FALSE; pDY01->oTrayPickerSlaveOut = TRUE;
+	g_objAJinAXL.Write_Output(1);
+}
+
+BOOL CCommon::Get_TrayPickMasterOut()
+{
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+	if(!pDX01->iTrayPickerMasterIn && pDX01->iTrayPickerMasterOut)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+BOOL CCommon::Get_TrayPickSlaveOut()
+{
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+	if(!pDX01->iTrayPickerSlaveIn && pDX01->iTrayPickerSlaveOut)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+BOOL CCommon::Get_TrayPickMasterSlaveOut()
+{
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+	if(!pDX01->iTrayPickerMasterIn && pDX01->iTrayPickerMasterOut
+		&& !pDX01->iTrayPickerSlaveIn && pDX01->iTrayPickerSlaveOut)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
