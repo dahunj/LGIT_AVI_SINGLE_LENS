@@ -175,22 +175,22 @@ BOOL CSingleLensDlg::OnInitDialog()
 	gData.nSpeedOption = SpeedMode::Slow;
 	if(gData.nSpeedOption == SpeedMode::Slow)
 	{
-		gData.nTime[LT::Motion] = 25000;
-		gData.nTime[LT::Scan] = 60000;
-		gData.nTime[LT::Wait] = 60000;
+		gData.nTime[LoopTime::Motion] = 25000;
+		gData.nTime[LoopTime::Scan] = 60000;
+		gData.nTime[LoopTime::Wait] = 60000;
 	}
 	else if(gData.nSpeedOption == SpeedMode::Fast)
 	{
-		gData.nTime[LT::Motion] = 5000;
-		gData.nTime[LT::Scan] = 30000;
-		gData.nTime[LT::Wait] = 45000;
+		gData.nTime[LoopTime::Motion] = 5000;
+		gData.nTime[LoopTime::Scan] = 30000;
+		gData.nTime[LoopTime::Wait] = 45000;
 
 	}
 	else if(gData.nSpeedOption == SpeedMode::Normal)
 	{
-		gData.nTime[LT::Motion] = 10000;
-		gData.nTime[LT::Scan] = 30000;
-		gData.nTime[LT::Wait] = 60000;
+		gData.nTime[LoopTime::Motion] = 10000;
+		gData.nTime[LoopTime::Scan] = 30000;
+		gData.nTime[LoopTime::Wait] = 60000;
 	}
 	
 

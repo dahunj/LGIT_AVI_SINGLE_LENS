@@ -147,7 +147,10 @@ public:
 	void Init_BtmZig();
 	BOOL Select_BtmScanPos(int &nBtmPosX, int &nBtmPosY);
 
-	BOOL Check_InspectDone(CString sZigID, CString sSlotNo, CString sLensNo);
+	void Init_MarkZig();
+	BOOL Select_MarkScanPos(int &nMarkPosX, int &nMarkPosY);
+
+	BOOL Check_InspectDone(const CString& sZigID, int sSlotNo, int sLensNo, DWORD dwStart);
 
 };
 

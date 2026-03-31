@@ -13,6 +13,7 @@ struct LensState
 		TopDone = 4,
 		BtmReady = 5,
 		BtmDone = 6,
+		Marked = 7, 
 		Init = 9,
 
 	};
@@ -150,6 +151,7 @@ struct Btm_Inspector_Z
 	enum dtName
 	{
 		Ready = 0,
+		
 	};
 };
 
@@ -161,6 +163,7 @@ struct Marker_X
 	enum dtName
 	{
 		Ready = 0,
+		LeftTop = 1,
 	};
 };
 
@@ -171,6 +174,7 @@ struct Marker_Y
 	enum dtName
 	{
 		Ready = 0,
+		LeftTop = 1,
 	};
 };
 
@@ -181,6 +185,8 @@ struct Marker_Z
 	enum dtName
 	{
 		Ready = 0,
+		LeftTop = 1,
+		Mark = 2,
 	};
 };
 
@@ -210,7 +216,7 @@ struct IndexT
 };
 
 
-struct LT
+struct LoopTime
 {
 	enum Name
 	{
@@ -273,4 +279,23 @@ struct BtmBranch
 	{
 		VisionWait = 5,
 	};
+};
+
+
+struct MarkerBranch
+{
+	enum Name
+	{
+		VisionWait = 5,
+	};
+};
+
+struct delay
+{
+	enum Name
+	{
+		InspectionWait = 5,
+
+	};
+
 };

@@ -174,6 +174,10 @@ typedef struct
 	CString	sZigIDBtm;
 	int		nSlotNoBtm;
 
+	CString	sMZIDMark;
+	CString	sZigIDMark;
+	int		nSlotNoMark;
+
 
 	int		nScanReqTop;
 	int		nScanReqBtm;
