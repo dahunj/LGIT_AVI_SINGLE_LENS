@@ -350,61 +350,6 @@ void CLogFile::Save_LotError(CString sLog, int nPNo)
 	
 }
 
-void CLogFile::Save_CapLasLog(CString sShipLotId, CString sCapLotId, int nPort, int nTNo, int nCNo, int nPickNo)
-{
-	CString sPart, sQty, sLotID, sMaker, sCapPgm, sCapTool, sYear, sMonth, sDay, sSerial;
-	CString sLog, sTime, sLotID_1, sLotID_2, sLotID_3, sLotID_4, sLotID_5, sLotID_6, sLotID_7;
-
-	char chSep = '/';
-
-	AfxExtractSubString(sPart, sCapLotId, 0, chSep);
-	AfxExtractSubString(sQty, sCapLotId, 1, chSep);
-	AfxExtractSubString(sLotID, sCapLotId, 2, chSep);
-
-	sPart.Trim();
-	sQty.Trim();
-	sLotID.Trim();
-
-	sLotID_1 = sLotID.Mid(0, 1); // Maker: H, D, T
-	sLotID_2 = sLotID.Mid(1, 2); // Cap Program: 89, 94
-	sLotID_3 = sLotID.Mid(3, 2); // Cap Tool: 01~ 99
-	sLotID_4 = sLotID.Mid(5, 1); // Year: 0, 1, 2
-	sLotID_5 = sLotID.Mid(6, 1); // Month: 1~9, A, B, C
-	sLotID_6 = sLotID.Mid(7, 1); // Day: 1~9, A~Z except for 'I', 'O'
-	sLotID_7 = sLotID.Mid(8, 3); // Serial: 001~999
-
-	if		(sLotID_1 == "H") { sMaker = "HS"; } 
-	else if (sLotID_1 == "D") { sMaker = "DH"; }
-	else if (sLotID_1 == "T") {	sMaker = "TS"; }
-
-	if		(sLotID_2 == "89") { sCapPgm = "i89"; } 
-	else if (sLotID_2 == "94") { sCapPgm = "i94"; }
-	else					   { sCapPgm = sLotID_2; }
-
-	sCapTool = sLotID_3;
-	sYear = Get_CapYear(sLotID_4);
-	sMonth = Get_CapMonth(sLotID_5);
-	sDay = Get_CapDay(sLotID_6);
-	sSerial = sLotID_7;
-
-	SYSTEMTIME time;
-	GetLocalTime(&time);
-	sTime.Format("%04d-%02d-%02d %02d:%02d:%02d:%03d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
-
-	char szPcName[MAX_COMPUTERNAME_LENGTH + 1];
-	DWORD dwNameSize = MAX_COMPUTERNAME_LENGTH + 1;
-	GetComputerName(szPcName, &dwNameSize);
-	
-	int nINo = gData.nINoUnloadPicker;
-	MOVE_DATA *pMoveData = g_objDataManager.Get_pMoveData();
-	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-
-	DWORD dwTime = GetTickCount() - gData.dwCmTactStart[nTNo-1][gData.nLNoUnloadPicker];
-	double dTactTime = dwTime / 1000.0 / PICK;
-
-	
-	Save_ECMLog(5, sLog);
-}
 
 void CLogFile::Save_ECMLog(int nType, CString strLog)	//nType:1[Alarm], 2[Joblist] 3[Inspect]
 {
@@ -426,39 +371,6 @@ void CLogFile::Save_ECMLog(int nType, CString strLog)	//nType:1[Alarm], 2[Joblis
 	g_csECMLog.Unlock();
 }
 
-void CLogFile::Save_CapAssembly(int nPNo, CString sLog)
-{
-	CString strPath = gsCurrentDir + "\\LOG\\CapAssy";
-
-	Create_Folder(strPath);
-
-	SYSTEMTIME time;
-	GetLocalTime(&time);
-
-	CString sTitle, strFile, strSave, strLotID;
-
-	strLotID = gLot.sLotID[nPNo-1];
-	if (strLotID == "") strLotID = "CLOT_ID";
-
-	sTitle.Format("TIME,LOT_ID,CAP_TRAY,CAP_NO,-,PORT_NO,CM_TRAY,CM_NO,BARCODE,CAP_OFFSET_X,CAP_OFFSET_Y,CM_OFFSET_X,CM_OFFSET_Y,OFFSET_X,OFFSET_Y,CAP_SIZE_X,CAP_SIZE_Y,CM_SIZE_X,CM_SIZE_Y\r\n");
-	strFile.Format("%s\\%04d%02d%02d.csv", strPath, time.wYear, time.wMonth, time.wDay);
-
-	CFile file;
-	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
-		try {
-			file.SeekToEnd();
-			if (file.GetLength() < 1) file.Write(sTitle, sTitle.GetLength());
-
-			strSave.Format("[%02d:%02d:%02d.%03d],%s,%s\r\n", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, strLotID, sLog);
-
-			file.Write(strSave, strSave.GetLength());
-			file.Close();
-
-		} catch (CFileException *pEx) {
-			pEx->Delete();
-		}
-	}
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 

@@ -10,7 +10,7 @@
 #include "Common.h"
 #include "SetupDlg.h"
 #include "MESInterface.h"
-#include "AviHandler.h"
+
 
 // CSetupEquipDlg 대화 상자입니다.
 
@@ -121,8 +121,7 @@ BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
 
 	ON_STN_CLICKED(IDC_STC_SHOW_HIDDEN, &CSetupEquipDlg::OnStnClickedStcShowHidden)
 	ON_STN_CLICKED(IDC_STC_PASSWORD_MT, &CSetupEquipDlg::OnStnClickedStcPasswordMt)
-	ON_BN_CLICKED(IDC_BTN_AVI_CONNECT, &CSetupEquipDlg::OnBnClickedBtnAviConnect)
-	ON_BN_CLICKED(IDC_BTN_AVI_DISCONNECT, &CSetupEquipDlg::OnBnClickedBtnAviDisconnect)
+
 	ON_STN_CLICKED(IDC_STC_CM_VISION_0, &CSetupEquipDlg::OnStnClickedStcCmVision0)
 	ON_STN_CLICKED(IDC_STC_CM_VISION_1, &CSetupEquipDlg::OnStnClickedStcCmVision1)
 	ON_STN_CLICKED(IDC_STC_CM_VISION_2, &CSetupEquipDlg::OnStnClickedStcCmVision2)
@@ -464,17 +463,6 @@ void CSetupEquipDlg::Cancel_EquipData()
 ///////////////////////////////////////////////////////////////////////////////
 
 
-void CSetupEquipDlg::OnBnClickedBtnAviConnect()
-{
-	g_objAviHandler.Initialize();
-}
-
-
-void CSetupEquipDlg::OnBnClickedBtnAviDisconnect()
-{
-	g_objAviHandler.Set_ConnectStatus(FALSE);
-	g_objAviHandler.Terminate();
-}
 
 
 void CSetupEquipDlg::OnStnClickedStcCmVision0()

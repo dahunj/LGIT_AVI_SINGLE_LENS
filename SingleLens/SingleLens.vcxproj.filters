@@ -279,9 +279,6 @@
     <ClInclude Include="MESInterface.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="AviHandler.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="ManualRepeatRunDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -435,9 +432,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="MESInterface.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="AviHandler.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ManualRepeatRunDlg.cpp">

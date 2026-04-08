@@ -290,7 +290,7 @@ void CErrorDlg::OnBnClickedBtnErrRetry()
 
 void CErrorDlg::OnBnClickedBtnErrOk()
 {
-	if (m_nErrNo == 3706 || m_nErrNo == 6220) { gData.bCapDirSkip = FALSE; gData.bCapDirRetry = TRUE; }
+	//if (m_nErrNo == 3706 || m_nErrNo == 6220) { gData.bCapDirSkip = FALSE; gData.bCapDirRetry = TRUE; }
 	ShowWindow(SW_HIDE);
 	g_objLogFile.Save_HandlerLog("[Error Mode] OK button push");
 }

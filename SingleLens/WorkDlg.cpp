@@ -9,7 +9,6 @@
 #include "Common.h"
 
 #include "Inspector.h"
-#include "AviHandler.h"
 #include "BarcodeLot.h"
 #include "LoadCell.h"
 #include "MESInterface.h"
@@ -276,7 +275,7 @@ void CWorkDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	{
 		Change_Model();	
 
-		g_objAviHandler.Set_ConnectRequest();
+		
 
 		EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 		CString strText;
@@ -749,28 +748,6 @@ BOOL CWorkDlg::Work_Start()
 	//if (g_objSequenceMain.Get_IsAutoRun()) return TRUE;	// Auto Run이면 스킵
 
 
-	if(pEquipData->bUseInlineMode && !g_objAviHandler.Is_Connected())
-	{
-		g_objCommon.Show_MsgBox(1, "CAP과 AVI 통신 연결되어 있지 않습니다."); return FALSE;
-	}
-
-
-	if (pEquipData->bUseInlineMode) {
-		//g_objSequenceMain.Set_ClearRunData(1);	// 시점 변경 (LotEnd->LotStart)
-		gData.bFirstLotStart = TRUE;
-
-		g_dlgWork.Enable_UserInput(1, FALSE);
-		g_dlgWork.Enable_UserInput(2, FALSE);
-
-	} 
-	else 
-	{
-		
-
-		
-		
-	}
-
 	return TRUE;
 }
 
@@ -856,7 +833,7 @@ void CWorkDlg::Display_Status()
 
 
 	m_ledVisionStatus[0].Set_On(g_objInspector.Get_VisionStatus());
-	m_ledVisionStatus[1].Set_On(pEquipData->bUseInlineMode && g_objAviHandler.Is_Connected());
+	
 	//m_ledVisionStatus[1].Set_On(pEquipData->bUseInlineMode && g_objAviHandler.Is_Opened());
 
 	

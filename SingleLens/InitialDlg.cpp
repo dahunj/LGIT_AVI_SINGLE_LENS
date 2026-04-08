@@ -9,7 +9,6 @@
 #include "Common.h"
 
 #include "Inspector.h"
-#include "AviHandler.h"
 #include "SequenceInit.h"
 
 #include "OperatorDlg.h"

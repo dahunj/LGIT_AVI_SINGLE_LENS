@@ -146,7 +146,6 @@
     <ClInclude Include="AJinAXL.h" />
     <ClInclude Include="AJinDefine.h" />
     <ClInclude Include="AlarmDlg.h" />
-    <ClInclude Include="AviHandler.h" />
     <ClInclude Include="BarcodeLot.h" />
     <ClInclude Include="DataEnums.h" />
     <ClInclude Include="SequenceMain.h" />
@@ -202,7 +201,6 @@
   <ItemGroup>
     <ClCompile Include="AJinAXL.cpp" />
     <ClCompile Include="AlarmDlg.cpp" />
-    <ClCompile Include="AviHandler.cpp" />
     <ClCompile Include="BarcodeLot.cpp" />
     <ClCompile Include="SequenceMain.cpp" />
     <ClCompile Include="SingleLens.cpp" />

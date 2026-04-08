@@ -27,7 +27,7 @@
 #include "BarcodeLot.h"
 #include "LoadCell.h"
 #include "MESInterface.h"
-#include "AviHandler.h"
+
 
 #include "SequenceInit.h"
 #include "SequenceMain.h"
@@ -147,7 +147,7 @@ BOOL CSingleLensDlg::OnInitDialog()
 	g_objInspector.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
 	g_objBarcodeLot.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
 	g_objLoadCell.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
-	g_objAviHandler.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
+
 
 	g_dlgOperator.Create(COperatorDlg::IDD, this);
 	g_dlgInitial.Create(CInitialDlg::IDD, this);
@@ -167,8 +167,7 @@ BOOL CSingleLensDlg::OnInitDialog()
 	SetTimer(TIMER_DATE_TIME, 500, NULL);
 	SetTimer(TIMER_DOOR_LOCK, 1000, NULL);
 
-	gData.sInspectCmLotIDLater = "";
-	gData.sInspectCmLotIDPrevious = "";
+
 
 	gData.nSpeedOption = SpeedMode::Slow;
 	if(gData.nSpeedOption == SpeedMode::Slow)
@@ -257,7 +256,7 @@ void CSingleLensDlg::OnDestroy()
 	g_objInspector.DestroyWindow();
 	g_objBarcodeLot.DestroyWindow();
 	g_objLoadCell.DestroyWindow();
-	g_objAviHandler.DestroyWindow();
+
 	g_objCommon.DestroyWindow();
 		
 }
@@ -287,8 +286,6 @@ void CSingleLensDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	if (!g_objAJinAXL.Initialize()) { Exit_System(EXIT_SYSTEM_AJIN); return; }
 
 	g_objInspector.Initialize();
-	g_objAviHandler.Initialize();
-	
 	
 	gData.sOperID = "";
 	g_objMES.Initialize(pEquipData->bUseMES);
@@ -305,7 +302,6 @@ void CSingleLensDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	m_stcMainVer.SetWindowText(strVersion);
 
 	g_objInspector.Set_StatusUpdate(0);
-	g_objAviHandler.Set_StatusUpdate(0);
 	g_objInspector.Set_LightOff();
 
 	
@@ -741,7 +737,7 @@ void CSingleLensDlg::Exit_System(int nExitNo)
 
 	g_objInspector.Set_LightOff();
 	g_objInspector.Set_StatusUpdate(0);
-	g_objAviHandler.Set_StatusUpdate(0);
+	
 
 	/*DY_DATA_13 *pDY13 = g_objAJinAXL.Get_pDY13();
 	pDY13->oInsideLight = FALSE;
@@ -749,7 +745,7 @@ void CSingleLensDlg::Exit_System(int nExitNo)
 
 	g_objBarcodeLot.Terminate();
 	g_objLoadCell.Terminate();
-	g_objAviHandler.Terminate();
+	
 	g_objInspector.Terminate();
 	g_objAJinAXL.Terminate();
 

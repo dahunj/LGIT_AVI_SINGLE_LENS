@@ -25,8 +25,7 @@ public:
 	void Save_ECMLog(int nType, CString strLog);	//nType:1[Alarm], 2[Joblist] 3[Inspect]
 	void Save_TestLog(CString sLog);
 	void Save_OperatingRatio(CString sLog);
-	void Save_CapAssembly(int nPNo, CString sLog);
-	void Save_CapLasLog(CString sShipLotId, CString sCapLotId, int nPort, int nTNo, int nCNo, int nPickNo);
+	
 	void Save_MachineStopLog(CString sLog);
 	void Save_MesAgentLog(CString sLog);
 	void Save_CmTrackingLog(CString strOut, int nTrayCount, int nPosX, int nPosY, int nPortNo, int nTrayNo, int nCmNo);
