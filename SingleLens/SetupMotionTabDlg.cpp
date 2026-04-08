@@ -149,7 +149,7 @@ void CSetupMotionTabDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	
 	for (int i = 0; i < 8; i++) {
 		bVisible = (i < nMaxAxis ? TRUE : FALSE);
-		//if (m_nMotionTab == 0 && i == 3) bVisible = FALSE;
+		if (m_nMotionTab == 1 && i == 7) bVisible = FALSE;
 
 		m_stcAxisName[i].ShowWindow(bVisible);
 		m_stcAxisPos[i].ShowWindow(bVisible);
@@ -333,7 +333,15 @@ void CSetupMotionTabDlg::OnBtnAbsMoveClick(UINT nID)
 
 	//if (Check_Interlock(nStartAx + ID) == FALSE) return;
 
-	g_objAJinAXL.Move_Absolute(nStartAx + ID, dDist);
+	int nTemp = nStartAx +ID;
+	if(nTemp == AX_INDEX_TABLE_R)
+	{
+		AfxMessageBox("Can't Command Abs Move");
+	}
+	else
+	{
+		g_objAJinAXL.Move_Absolute(nStartAx + ID, dDist);
+	}
 
 	m_strLog.Format("[Setup Motion] Move Absolute - %s, %0.3lf", g_objAJinAXL.Get_AxisName(nStartAx + ID), dDist);
 	g_objLogFile.Save_HandlerLog(m_strLog);
@@ -364,8 +372,20 @@ void CSetupMotionTabDlg::OnBtnRelMovePClick(UINT nID)
 	m_stcRelDist[ID].GetWindowText(strText);
 	double dDist = atof(strText);
 
-	g_objAJinAXL.Move_Relative(nStartAx + ID, dDist);
+	int nAxis = nStartAx + ID;
 
+	double dPulse = 0.0;
+	if(nAxis == AX_INDEX_TABLE_R )
+	{
+		dPulse = dDist*7200;
+		g_objAJinAXL.Move_Relative(nStartAx + ID, (double)dPulse);
+	}
+	else
+	{
+		g_objAJinAXL.Move_Relative(nStartAx + ID, dDist);
+
+	}
+	
 	m_strLog.Format("[Setup Motion] Move Relative(+) - %s, %0.3lf", g_objAJinAXL.Get_AxisName(nStartAx + ID), dDist);
 	g_objLogFile.Save_HandlerLog(m_strLog);
 }
@@ -379,7 +399,19 @@ void CSetupMotionTabDlg::OnBtnRelMoveNClick(UINT nID)
 	m_stcRelDist[ID].GetWindowText(strText);
 	double dDist = atof(strText) * -1.0;
 
-	g_objAJinAXL.Move_Relative(nStartAx + ID, dDist);
+	int nAxis = nStartAx + ID;
+
+	double dPulse = 0.0;
+	if(nAxis == AX_INDEX_TABLE_R )
+	{
+		dPulse = dDist*7200;
+		g_objAJinAXL.Move_Relative(nStartAx + ID, (double)dPulse);
+	}
+	else
+	{
+		g_objAJinAXL.Move_Relative(nStartAx + ID, dDist);
+
+	}
 
 	m_strLog.Format("[Setup Motion] Move Relative(-) - %s, %0.3lf", g_objAJinAXL.Get_AxisName(nStartAx + ID), dDist);
 	g_objLogFile.Save_HandlerLog(m_strLog);
@@ -423,16 +455,30 @@ void CSetupMotionTabDlg::OnStcAccelClick(UINT nID)
 
 void CSetupMotionTabDlg::Display_Status()
 {
-	int nMaxAxis = (m_nMotionTab == 4 ? 3 : 8);
+	int nMaxAxis = 8;
 	int nStartAx = m_nMotionTab * 8;
 
 	CString strPos, strVel;
 
-	for (int i = 0; i < nMaxAxis; i++) {
+	for (int i = 0; i < nMaxAxis; i++) 
+	{
 		AXIS_STATUS *pStatus = g_objAJinAXL.Get_pStatus(nStartAx + i);
 
-		strPos.Format("%0.3lf", pStatus->dPos);
-		m_stcAxisPos[i].SetWindowText(strPos);
+		double dAngle = 0.0;
+		if(nStartAx + i == AX_INDEX_TABLE_R)
+		{
+			dAngle = (pStatus->dPos/7200.0);
+			if(dAngle > 360) dAngle =  fmod(dAngle, 360.0);
+			strPos.Format("%0.3lf", dAngle);
+			m_stcAxisPos[i].SetWindowText(strPos);
+		}
+		else
+		{
+			strPos.Format("%0.3lf", pStatus->dPos);
+			m_stcAxisPos[i].SetWindowText(strPos);
+		}
+
+		
 
 		strVel.Format("%0.3lf", pStatus->dVel);
 		m_stcAxisVel[i].SetWindowText(strVel);

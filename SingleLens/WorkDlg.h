@@ -113,7 +113,7 @@ protected:
 	afx_msg LRESULT OnUpdateModel(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUpdateTrayInfo(WPARAM nTray, LPARAM lParam);
 	afx_msg LRESULT OnUpdateBarcode(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnUpdateLoadCell(WPARAM wParam, LPARAM lParam);
+	
 	afx_msg LRESULT OnResetCycleStop(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUpdateUph(WPARAM wParam, LPARAM lParam);
 	

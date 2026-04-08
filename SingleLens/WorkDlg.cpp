@@ -127,7 +127,7 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_MESSAGE(UM_UPDATE_MODEL, &CWorkDlg::OnUpdateModel)
 	ON_MESSAGE(UM_UPDATE_TRAY_INFO, &CWorkDlg::OnUpdateTrayInfo)
 	ON_MESSAGE(UM_UPDATE_BARCODE, &CWorkDlg::OnUpdateBarcode)
-	ON_MESSAGE(UM_UPDATE_LOADCELL, &CWorkDlg::OnUpdateLoadCell)
+	
 	ON_MESSAGE(UM_RESET_CYCLE_STOP, &CWorkDlg::OnResetCycleStop)
 	ON_MESSAGE(UM_LOT_START_END, &CWorkDlg::OnLotStartEnd)
 	ON_MESSAGE(UM_UPDATE_UPH, &CWorkDlg::OnUpdateUph)
@@ -221,7 +221,7 @@ BOOL CWorkDlg::OnInitDialog()
 
 	gData.bLotEndBeep = FALSE;
 	gData.bFirstLotStart = FALSE;
-	gData.nCapTrayCount = 0;
+
 
 	m_rdoWorkStop.SetCheck(TRUE);
 	m_rdoWorkStop.Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
@@ -854,11 +854,7 @@ void CWorkDlg::Display_Status()
 		m_grpLot[1].Init_Ctrl("πŸ≈¡", 12, TRUE, RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
 	}*/
 
-	for (int i = 0; i < PICK; i++) { strText.Format("%d-%d", gData.nTNoIndex[0][i], gData.nCNoIndex[0][i]); m_stcLoadNo[i].Set_Text(strText); }
-	for (int i = 0; i < PICK; i++) { strText.Format("%d-%d", gData.nTNoIndex[1][i], gData.nCNoIndex[1][i]); m_stcAssyNo[i].Set_Text(strText); }
-	for (int i = 0; i < PICK; i++) { strText.Format("%d-%d", gData.nTNoIndex[2][i], gData.nCNoIndex[2][i]); m_stcTransNo[i].Set_Text(strText); }
-	for (int i = 0; i < PICK; i++) { strText.Format("%d-%d", gData.nTNoTransStage[i], gData.nCNoTransStage[i]); m_stcTStageNo[i].Set_Text(strText); }
-	for (int i = 0; i < PICK; i++) { strText.Format("%d-%d", gData.nTNoUnloadPick[i], gData.nCNoUnloadPick[i]); m_stcUnloadNo[i].Set_Text(strText); }
+
 	m_ledVisionStatus[0].Set_On(g_objInspector.Get_VisionStatus());
 	m_ledVisionStatus[1].Set_On(pEquipData->bUseInlineMode && g_objAviHandler.Is_Connected());
 	//m_ledVisionStatus[1].Set_On(pEquipData->bUseInlineMode && g_objAviHandler.Is_Opened());
@@ -1013,26 +1009,7 @@ LRESULT CWorkDlg::OnUpdateBarcode(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-LRESULT CWorkDlg::OnUpdateLoadCell(WPARAM wParam, LPARAM lParam)
-{
-	CString strTemp;
-	int nNo = (int)wParam;
-	double dData;
-	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
-	if (nNo == pEquipData->nAssyLoadCellPort) dData = g_objLoadCell.Get_AssyLoadCell();
-	if (nNo == pEquipData->nUnloadLoadCellPort) dData = g_objLoadCell.Get_UnloadLoadCell();
-
-	if (dData < 0) return 0;
-
-	if (nNo == pEquipData->nAssyLoadCellPort) {
-		gData.dLoadCell[0] = dData;
-	} else {
-		gData.dLoadCell[1] = dData;
-	}
-	gData.bLoadCellComplete = TRUE;
-	return 0;
-}
 
 LRESULT CWorkDlg::OnResetCycleStop(WPARAM wParam, LPARAM lParam)
 {

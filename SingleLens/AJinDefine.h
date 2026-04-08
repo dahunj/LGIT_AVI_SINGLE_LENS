@@ -101,27 +101,27 @@ typedef union tag_DX_DATA_00 {
 	DWORD nValue;
 	struct {
 
-		DWORD iLoadCVMZExist1: 1;				// X0000
-		DWORD iLoadCVMZExist2: 1;				// X0001
+		DWORD iLoadCVMZExist5: 1;				// X0000
+		DWORD iLoadCVMZExist4: 1;				// X0001
 		DWORD iLoadCVMZExist3 : 1;				// X0002
-		DWORD iLoadCVMZExist4 : 1;				// X0003
-		DWORD iLoadCVMZExist5 : 1;				// X0004
+		DWORD iLoadCVMZExist2 : 1;				// X0003
+		DWORD iLoadCVMZExist1Left : 1;				// X0004
 		DWORD i0009 : 1;						// X0005
 		DWORD iLoadCVStopperUp : 1;				// X0006
 		DWORD iLoadCVStopperDown : 1;			// X0007
-		DWORD iMZElevMZExist1 : 1;				// X0008
-		DWORD iMZElevMZExist2 : 1;				// X0009
+		DWORD iMZElevMZExist2 : 1;				// X0008
+		DWORD iMZElevMZExist1Left : 1;				// X0009
 		DWORD iMZElevLoadStopperIn : 1;			// X0010
 		DWORD iMZElevLoadStopperOut : 1;		// X0011
 		DWORD iMZElevLoadStopperUp : 1;			// X0012
 		DWORD iMZElevLoadStopperDown : 1;		// X0013
 		DWORD iMZElevUnloadStopperUp : 1;		// X0014
 		DWORD iMZElevUnloadStopperDown : 1;		// X0015
-		DWORD iUnloadCVMZExist1 : 1;			// X0016
-		DWORD iUnloadCVMZExist2 : 1;			// X0017
+		DWORD iUnloadCVMZExist5 : 1;			// X0016
+		DWORD iUnloadCVMZExist4 : 1;			// X0017
 		DWORD iUnloadCVMZExist3 : 1;			// X0018
-		DWORD iUnloadCVMZExist4 : 1;			// X0019
-		DWORD iUnloadCVMZExist5 : 1;			// X0020
+		DWORD iUnloadCVMZExist2 : 1;			// X0019
+		DWORD iUnloadCVMZExist1Left : 1;			// X0020
 		DWORD i0021 : 1;						// X0021
 		DWORD iUnloadCVStopperUp	: 1;		// X0022
 		DWORD iUnloadCVStopperDown	: 1;		// X0023

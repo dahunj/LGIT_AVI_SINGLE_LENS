@@ -347,45 +347,7 @@ void CLogFile::Save_LotError(CString sLog, int nPNo)
 	strPath3.Format("%s\\LOG\\SPC\\%04d\\%02d\\%02d\\", gsCurrentDir, time.wYear, time.wMonth, time.wDay);
 	MakeFolder(strPath3);
 
-	int nNo = nPNo-1;
-	if (nNo < 0) {
-		nNo = gData.nULPNo-1;
-		if (nNo < 0) nNo = gData.nLPNo-1;
-		if (nNo < 0) nNo = 0;
-	}
-
-	CString strFile1, strFile2, strFile3, strTitle, strDateTime, strPcName, strSave;
-	strFile1.Format("%s\\%s_%04d%02d%02d%02d_CapAVIError.csv", strPath1, gData.sLotID[nNo], time.wYear, time.wMonth, time.wDay, time.wHour);
-	strFile2.Format("%s\\%s_%04d%02d%02d%02d_CapAVIError.csv", strPath2, gData.sLotID[nNo], time.wYear, time.wMonth, time.wDay, time.wHour);
-	strFile3.Format("%s%s_CapAVIError.csv", strPath3, gData.sLotID[nNo]);
-
-	CFile file;
-	if (!file.Open(strFile1, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) return;
-
-	strTitle.Format("Time,Station,Model,Version,LotNum,Event,Error Code,event,ActionTime\r\n");
-
-	try {
-		file.SeekToEnd();
-
-		if (file.GetLength() < 1) file.Write(strTitle, strTitle.GetLength());
-
-		strDateTime.Format("%04d-%02d-%02d %02d:%02d:%02d:%03d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
-
-		char szPcName[MAX_COMPUTERNAME_LENGTH + 1];
-		DWORD dwNameSize = MAX_COMPUTERNAME_LENGTH + 1;
-		GetComputerName(szPcName, &dwNameSize);
-
-		strSave.Format("%s,%s,%s\r\n", strDateTime, szPcName, sLog);
-
-		file.Write(strSave, strSave.GetLength());
-		file.Close();
-
-		CopyFile(strFile1, strFile2, FALSE);	// Backup
-		CopyFile(strFile1, strFile3, FALSE);	// SPC
-
-	} catch (CFileException *pEx) {
-		pEx->Delete();
-	}
+	
 }
 
 void CLogFile::Save_CapLasLog(CString sShipLotId, CString sCapLotId, int nPort, int nTNo, int nCNo, int nPickNo)
@@ -459,44 +421,7 @@ void CLogFile::Save_ECMLog(int nType, CString strLog)	//nType:1[Alarm], 2[Joblis
 	GetLocalTime(&time);
 	strTime.Format("%04d-%02d-%02d %02d:%02d:%02d:%03d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
 
-	int nNo = gData.nULPNo-1;
-	if (nNo < 0) nNo = gData.nLPNo-1;
-	if (nNo < 0) nNo = 0;
-
-	if (nType == 1) sTitle.Format("Time,Station,Type,lotNum,Error Code,Error,Start_Time,End_Time,Lead_Time\r\n");
-	if (nType == 2) sTitle.Format("Time,Station,Type,lotNum,Start_Time,End_Time,Tack_Time,Tray_Count,CM_Count,Tack,Capping Fail count\r\n");
-	if (nType == 3) sTitle.Format("Time,Station,Type,lotNum,Load_Pick,Inspect,Barcode,NG_Pick,Good_Pick,Trans_Pick\r\n");
-	if (nType == 4) sTitle.Format("Time,Station,Type\r\n");
-	if (nType == 5) sTitle.Format("Time,Station,SWversion,site,moduleConfig,LotNum,barcode,Ship Lot Num,Cap Lot Num,Start,End,Cap Part No,Cap Qty,Cap Maker,Cap Program Info,Cap Tool Info,Year,Month,Day,Cap Serial No,Index No,Head No,Cap Picker Table X Pos,Turn Table Work Pos,Cap Picker Table Z Pos,Cap Attach Force,Alarm Code,Tact Time,UPH\r\n");
-
-	if (nType == 1) strFile.Format("%s%s_%04d%02d%02d%02d_CapAlarm.csv", strPath, gAlm.sLotID, time.wYear, time.wMonth, time.wDay, time.wHour);
-	if (nType == 2) strFile.Format("%s%s_%04d%02d%02d%02d_CapJobList.csv", strPath, gLot.sLotID[nNo], time.wYear, time.wMonth, time.wDay, time.wHour);
-	if (nType == 3) strFile.Format("%s%s_%04d%02d%02d%02d_Inspector.csv", strPath, gLot.sLotID[nNo], time.wYear, time.wMonth, time.wDay, time.wHour);
-	if (nType == 4) strFile.Format("%s%s_%04d%02d%02d%02d_CapHandler.csv", strPath, gLot.sLotID[nNo], time.wYear, time.wMonth, time.wDay, time.wHour);
-	if (nType == 5) { 
-		strFile.Format("%s%s_%04d%02d%02d%02d_Cap.csv", strPath, gLot.sLotID[nNo], time.wYear, time.wMonth, time.wDay, time.wHour);
-		strFile2.Format("%s%s_%04d%02d%02d%02d_Cap.csv", strPath2, gLot.sLotID[nNo], time.wYear, time.wMonth, time.wDay, time.wHour);
-	}
-
-	CFile file;
-	if (!file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) return;
-
-	try {
-		file.SeekToEnd();
-
-		if (file.GetLength() < 1) file.Write(sTitle, sTitle.GetLength());
-
-		if (nType == 5) { strSave.Format("%s,%s,%s\r\n", strTime, gData.sComName, strLog); }
-		else			{ strSave.Format("%s,%s,%s,%s\r\n", strTime, gData.sComName, gData.sRecipe, strLog); }
-
-		file.Write(strSave, strSave.GetLength());
-		file.Close();
-
-		if (nType == 5) { CopyFile(strFile, strFile2, FALSE); }	// Backup
-
-	} catch (CFileException *pEx) {
-		pEx->Delete();
-	}
+	
 
 	g_csECMLog.Unlock();
 }
@@ -770,102 +695,7 @@ void CLogFile::Save_Interlock(int nType)
 	sTitle.Format("time,station,lotNum,barcode,SWversion,State,site,Line,Machine,operator,result,Interlock,Interlock off Time,Interlock Coverage,Door I/L 1,Door I/L 2,Door I/L 3,Door I/L 4,Door I/L 5,Door I/L 6,Door I/L 7,Door I/L 8,Door I/L 9,Door I/L 10,%s\r\n", sTitle1);
 	strFile.Format("%sGSY827ADOOR1_%04d%02d%02d%02d_InterlockResult.csv", strPath, time.wYear, time.wMonth, time.wDay, time.wHour);
 
-	int nNo = gData.nULPNo-1;
-	if (nNo < 0) nNo = gData.nLPNo-1;
-	if (nNo < 0) nNo = 0;
 	
-	if (gData.nStatus > 0) strLotID = gData.sLotID[nNo];
-	else				   strLotID = "";
-
-	if(strLotID == "CLOT_ID") strLotID = "";
-
-	int	   nNGTime;
-	if (nType == 1) {
-
-		EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-		if(pEquipData->bUseDoorLock) gDoorLock.nOpenStart = 0;
-		else gDoorLock.nOpenStart = 1;
-
-
-		if (gDoorLock.nOpenStart == 1) {
-			nNGTime = (GetTickCount() - gDoorLock.dwOpenStartTime) / 1000;
-			gDoorLock.nOpenTime = gDoorLock.nOpenTime + nNGTime;
-		}
-		if (gDoorLock.nOpenTime > 0) {
-			if (gDoorLock.nOpenTime > 3600) gDoorLock.nOpenTime = 3600;
-			gDoorLock.dTime = gDoorLock.nOpenTime / 60.0;
-			gDoorLock.dPer = ((3600.0 - gDoorLock.nOpenTime) / 3600.0) * 100.0;
-		} else {
-			gDoorLock.dTime = 0.0; gDoorLock.dPer = 100.0;
-		}
-		gDoorLock.dwOpenStartTime = GetTickCount();
-		gDoorLock.nOpenTime = 0;
-		gDoorLock.nWriteHH = time.wHour;
-		gDoorLock.sCurrTime = strTime;
-
-		//Save_InterlockLast();
-		gDoorLock.nTimeYYYY = time.wYear;
-		gDoorLock.nTimeMM = time.wMonth;
-		gDoorLock.nTimeDD = time.wDay;
-		gDoorLock.nTimeHH = time.wHour;
-	}
-	if (nType == 2) {
-		gDoorLock.nOpenStart = 1;
-		gDoorLock.dwOpenStartTime = GetTickCount();
-	}
-	if (nType == 3) {
-		gDoorLock.nOpenStart = 0;
-		nNGTime = (GetTickCount() - gDoorLock.dwOpenStartTime) / 1000;
-		gDoorLock.nOpenTime = gDoorLock.nOpenTime + nNGTime;
-	}
-
-	CFile file;
-	if (!file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) return;
-
-	try {
-		file.SeekToEnd();
-
-		if (nType == 1 && file.GetLength() > 10) {};
-		if (file.GetLength() < 10) file.Write(sTitle, sTitle.GetLength());
-
-		strSave1.Format("%s,%s,%s,,%s,MP,Gumi Campus 3 Area,Campus 3 FOL,Cosmetic AVI,%s", strTime, gData.sComName, strLotID, MAIN_VERSION, gData.sOperID);
-		if (nType == 1 && gDoorLock.bFirst){
-			strSave2.Format("A1,OK,0,0%%");
-			gDoorLock.bFirst = FALSE;
-		}
-		else if(nType == 1){
-			strSave2.Format("A1,OK,%.2lf,%.2lf%%", gDoorLock.dTime, gDoorLock.dPer);
-		}
-		if (nType == 2) 
-			strSave2.Format("F,NG,,");
-		if (nType == 3) 
-			strSave2.Format("A2,OK,,");
-
-		
-	/*	DX_DATA_13 *pDX13 = g_objAJinAXL.Get_pDX13();
-		if (!pDX13->iDoor01Open) strDoor[0] = "Close"; else strDoor[0] = "Open";
-		if (!pDX13->iDoor02Open) strDoor[1] = "Close"; else strDoor[1] = "Open";
-		if (!pDX13->iDoor03Open) strDoor[2] = "Close"; else strDoor[2] = "Open";
-		if (!pDX13->iDoor04Open) strDoor[3] = "Close"; else strDoor[3] = "Open";
-		if (!pDX13->iDoor05Open) strDoor[4] = "Close"; else strDoor[4] = "Open";
-		if (!pDX13->iDoor06Open) strDoor[5] = "Close"; else strDoor[5] = "Open";
-		if (!pDX13->iDoor07Open) strDoor[6] = "Close"; else strDoor[6] = "Open";
-		if (!pDX13->iDoor08Open) strDoor[7] = "Close"; else strDoor[7] = "Open";
-		if (!pDX13->iDoor09Open) strDoor[8] = "Close"; else strDoor[8] = "Open";
-		if (!pDX13->iDoor10Open) strDoor[9] = "Close"; else strDoor[9] = "Open";
-		if (!pDX13->iDoor11Open) strDoor[10] = "Close"; else strDoor[10] = "Open";
-		if (!pDX13->iDoor12Open) strDoor[11] = "Close"; else strDoor[11] = "Open";
-		if (!pDX13->iDoor13Open) strDoor[12] = "Close"; else strDoor[12] = "Open";
-		strSave3.Format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", strDoor[0], strDoor[1], strDoor[2], strDoor[3], strDoor[4], strDoor[5], strDoor[6], strDoor[7], strDoor[8], strDoor[9], strDoor[10], strDoor[11], strDoor[12]);
-		strSave4 = "-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-";*/
-
-		strSave.Format("%s,%s,%s,%s\r\n", strSave1, strSave2, strSave3, strSave4);
-		file.Write(strSave, strSave.GetLength());
-		file.Close();
-
-	} catch (CFileException *pEx) {
-		pEx->Delete();
-	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -874,35 +704,7 @@ void CLogFile::Save_Interlock(int nType)
 void CLogFile::Save_JobListExcel(CString sLog)
 {
 	SYSTEMTIME time;
-	GetLocalTime(&time);
-
-	CString strPath, strFile, strTitle, strSave, strJudge;
-	strPath.Format("%s\\LOG\\LotJobList\\%04d-%02d-%02d", gsCurrentDir, time.wYear, time.wMonth, time.wDay);
-	Create_Folder(strPath);
-	int nNo = gData.nLPNo-1;
-	if (nNo < 0) nNo = 0;
-
-
-	if (gLot.sLotID[nNo] == "") gLot.sLotID[nNo] = "CLOT_ID";
-	strFile.Format("%s\\%s.csv", strPath, gLot.sLotID[nNo]);	
-
-	CFile file;
-	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
-		try {
-			file.SeekToEnd();
-// 			if (file.GetLength() < 1) {
-// 				strTitle.Format("Time,E¡Ì¡¾a,Lot ID,Lot Start,Lot End,Cycle Time,LM(EA),Run Time,Stop Time,Error Time,Error Count,¨ùoA©÷,UPH,ROS Time\r\n");
-// 				file.Write(strTitle, strTitle.GetLength());
-// 			}
-			strSave.Format("%02d:%02d:%02d %03d,%s\r\n", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, sLog);
-
-			file.Write(strSave, strSave.GetLength());
-			file.Close();
-
-		} catch (CFileException *pEx) {
-			pEx->Delete();
-		}
-	}
+	GetLocalTime(&time);	
 }
 
 void CLogFile::Save_AverageCycle(int nPNo)
@@ -950,32 +752,7 @@ void CLogFile::Save_LoadCellLog(int nPNo, CString sLog)
 
 	Create_Folder(strPath);
 
-	int nNo = nPNo - 1;
-	if (nNo < 0) {
-		nNo = gData.nULPNo - 1;
-		if (nNo < 0) nNo = gData.nLPNo - 1;
-		if (nNo < 0) nNo = 0;
-	}
-
-	SYSTEMTIME time;
-	GetLocalTime(&time);
-	strTime.Format("%04d-%02d-%02d %02d:%02d:%02d:%03d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
-
-	strFile.Format("%s%s_%04d%02d%02d%02d_CapAutoIPQC.csv", strPath, gLot.sLotID[nNo], time.wYear, time.wMonth, time.wDay, time.wHour);
-	CFile file;
-	if (!file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) return;
-
-	try {
-		file.SeekToEnd();
-		sTitle.Format("Time,Station,SWversion,Model,LotNum,Start,End,Head No,Cap Attach Force\r\n");
-		if (file.GetLength() < 1) file.Write(sTitle, sTitle.GetLength());
-		strSave.Format("%s,%s,%s,%s,%s,%s\r\n", strTime, gData.sComName, MAIN_VERSION, gData.sRecipe, gLot.sLotID[nNo], sLog);
-		file.Write(strSave, strSave.GetLength());
-		file.Close();
-	} catch (CFileException *pEx) {
-		pEx->Delete();
-	}
-
+	
 	g_csLoadCellLog.Unlock();
 }
 

@@ -703,16 +703,34 @@ UINT __cdecl CAJinAXL::WorkerProc(LPVOID pParam)
 		{	
 			::Sleep(SIM_WAITTIMEM);
 
-			if(dPos >= dPosCur)
+			if(nAxis == AX_INDEX_TABLE_R)
 			{
-				g_objAJinAXL.m_Status[nAxis].dPos += (dSpeed/1000)*VELOCITY_WEIGHT;
-				if(g_objAJinAXL.m_Status[nAxis].dPos > dPos) break;
+				if(dPos >= dPosCur)
+				{
+					g_objAJinAXL.m_Status[nAxis].dPos += (dSpeed/1000)*VELOCITY_WEIGHT*7200;
+					if(g_objAJinAXL.m_Status[nAxis].dPos > dPos) break;
+				}
+				else if(dPos < dPosCur)
+				{
+					g_objAJinAXL.m_Status[nAxis].dPos -= (dSpeed/1000)*VELOCITY_WEIGHT*7200;
+					if(g_objAJinAXL.m_Status[nAxis].dPos < dPos) break;
+				}
 			}
-			else if(dPos < dPosCur)
+			else
 			{
-				g_objAJinAXL.m_Status[nAxis].dPos -= (dSpeed/1000)*VELOCITY_WEIGHT;
-				if(g_objAJinAXL.m_Status[nAxis].dPos < dPos) break;
+				if(dPos >= dPosCur)
+				{
+					g_objAJinAXL.m_Status[nAxis].dPos += (dSpeed/1000)*VELOCITY_WEIGHT;
+					if(g_objAJinAXL.m_Status[nAxis].dPos > dPos) break;
+				}
+				else if(dPos < dPosCur)
+				{
+					g_objAJinAXL.m_Status[nAxis].dPos -= (dSpeed/1000)*VELOCITY_WEIGHT;
+					if(g_objAJinAXL.m_Status[nAxis].dPos < dPos) break;
+				}
 			}
+
+			
 
 		}
 
@@ -727,17 +745,33 @@ UINT __cdecl CAJinAXL::WorkerProc(LPVOID pParam)
 		{
 			::Sleep(SIM_WAITTIMEM);
 
-			if(dPos >= dPosCur)
-			{
-				g_objAJinAXL.m_Status[nAxis].dPos += (dSpeed/1000)*VELOCITY_WEIGHT;
-				if(g_objAJinAXL.m_Status[nAxis].dPos > target) break;
-			}
-			else if(dPos < dPosCur)
-			{
-				g_objAJinAXL.m_Status[nAxis].dPos -= (dSpeed/1000)*VELOCITY_WEIGHT;
-				if(g_objAJinAXL.m_Status[nAxis].dPos < target) break;
-			}			
 
+			if(nAxis == AX_INDEX_TABLE_R)
+			{
+				if(dPos >= dPosCur)
+				{
+					g_objAJinAXL.m_Status[nAxis].dPos += (dSpeed/1000)*VELOCITY_WEIGHT*7200;
+					if(g_objAJinAXL.m_Status[nAxis].dPos > target) break;
+				}
+				else if(dPos < dPosCur)
+				{
+					g_objAJinAXL.m_Status[nAxis].dPos -= (dSpeed/1000)*VELOCITY_WEIGHT*7200;
+					if(g_objAJinAXL.m_Status[nAxis].dPos < target) break;
+				}		
+			}
+			else
+			{
+				if(dPos >= dPosCur)
+				{
+					g_objAJinAXL.m_Status[nAxis].dPos += (dSpeed/1000)*VELOCITY_WEIGHT;
+					if(g_objAJinAXL.m_Status[nAxis].dPos > target) break;
+				}
+				else if(dPos < dPosCur)
+				{
+					g_objAJinAXL.m_Status[nAxis].dPos -= (dSpeed/1000)*VELOCITY_WEIGHT;
+					if(g_objAJinAXL.m_Status[nAxis].dPos < target) break;
+				}			
+			}
 		}
 
 		g_objAJinAXL.Get_pStatus(nAxis)->bRun = FALSE;

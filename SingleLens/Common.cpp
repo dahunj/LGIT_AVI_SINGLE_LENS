@@ -556,71 +556,6 @@ void CCommon::Get_CPUInfo(CString& strCPU)
 }
 
 
-void CCommon::Save_CapShiipData(int nType)	//1:Cap, 2:Ship
-{
-	CIniFileCS INI(gsCurrentDir + "\\System\\CapShipData.ini");
-
-	if (nType == 1) {
-		INI.Set_String("CAP_DATA", "LOTID", gData.sCapLotID);
-		/*INI.Set_Integer("CAP_DATA", "TRAYCOUNT", gData.nCapTrayUseCount);
-		INI.Set_Integer("CAP_DATA", "CMCOUNT", gData.nCapUseCount);*/
-		INI.Set_Integer("CAP_DATA", "USETYCOUNT", gData.nCapTrayCount);
-	}
-	if (nType == 2) {
-		INI.Set_String("SHIP_DATA", "LOTID", gData.sShipLotID);
-		/*INI.Set_Integer("SHIP_DATA", "TRAYCOUNT", gData.nShipTrayUseCount);
-		INI.Set_Integer("SHIP_DATA", "CMCOUNT", gData.nShipUseCount);
-		INI.Set_Integer("SHIP_DATA", "USETYCOUNT", gData.nShipTrayCount);*/
-	}
-}
-
-
-void CCommon::Read_CapShipPartNo()
-{
-	CIniFileCS INI(gsCurrentDir + "\\System\\CapShipPartNo.ini");
-	if (!INI.Check_File()) {
-		AfxMessageBox("CapShipPartNo.ini File Not Found!!!");
-		gPart.nCapCount = gPart.nShipCount = 0;
-		return;
-	}
-
-	CString sName;
-	gPart.nCapCount = INI.Get_Integer("CAP_PARTNO", "COUNT", 0);
-	for(int i=0; i<gPart.nCapCount; i++) {
-		sName.Format("%02d", i+1);
-		gPart.sCapPart[i] = INI.Get_String("CAP_PARTNO", sName, "");
-		if (gPart.sCapPart[i].GetLength() < 1) gPart.sCapPart[i] = "????";
-	}
-	gPart.nShipCount = INI.Get_Integer("SHIP_PARTNO", "COUNT", 0);
-	for(int i=0; i<gPart.nShipCount; i++) {
-		sName.Format("%02d", i+1);
-		gPart.sShipPart[i] = INI.Get_String("SHIP_PARTNO", sName, "");
-		if (gPart.sShipPart[i].GetLength() < 1) gPart.sShipPart[i] = "????";
-	}
-}
-
-BOOL CCommon::Check_CapShipPartNo(int nType, CString sPartNo)	//1:Cap, 2:Ship
-{
-	if (nType != 1 && nType != 2) return FALSE;
-	if (sPartNo.GetLength() < 4) return FALSE;
-
-	int nSize;
-	if (nType == 1) {
-		for(int i=0; i<gPart.nCapCount; i++) {
-			nSize = gPart.sCapPart[i].GetLength();
-			if (sPartNo.Left(nSize) == gPart.sCapPart[i]) return TRUE;
-		}
-	}
-
-	if (nType == 2) {
-		for(int i=0; i<gPart.nShipCount; i++) {
-			nSize = gPart.sShipPart[i].GetLength();
-			if (sPartNo.Left(nSize) == gPart.sShipPart[i]) return TRUE;
-		}
-	}
-	return FALSE;
-}
-
 
 //////////////////////////////
 void CCommon::Set_IndexLoadAlignIn()
@@ -1081,6 +1016,41 @@ BOOL CCommon::Get_TrayPickMasterSlaveOut()
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
 	if(!pDX01->iTrayPickerMasterIn && pDX01->iTrayPickerMasterOut
 		&& !pDX01->iTrayPickerSlaveIn && pDX01->iTrayPickerSlaveOut)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+
+
+void CCommon::Set_FeederClose()
+{
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+	pDY01->oFeederGripOpen = FALSE; pDY01->oFeederGripClose = TRUE;
+	g_objAJinAXL.Write_Output(1);
+}
+
+void CCommon::Set_FeederOpen()
+{
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+	pDY01->oFeederGripOpen = TRUE; pDY01->oFeederGripClose = FALSE;
+	g_objAJinAXL.Write_Output(1);
+}
+
+BOOL CCommon::Get_FeederClose()
+{
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+	if(!pDX01->iFeederGripOpen && pDX01->iFeederGripClose)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+
+BOOL CCommon::Get_FeederOpen()
+{
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+	if(pDX01->iFeederGripOpen && !pDX01->iFeederGripClose)
 	{
 		return TRUE;
 	}

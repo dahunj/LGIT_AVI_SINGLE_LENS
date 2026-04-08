@@ -142,17 +142,10 @@ LRESULT CAviHandler::OnUdpReceive(WPARAM wLocalPort, LPARAM lParam)
 			if (strOp == "START")	Get_LotStart(strArg[0], strArg[1], strArg[2], strArg[3], strArg[4]);
 			if (strOp == "END")		Get_LotEnd(strArg[0], strArg[1]);
 
-		} else if (strCmd == "TRAY") {
-			if (strOp == "LOAD")	Get_TrayLoad(strArg[0], strArg[1], strArg[2], strArg[3]);
-			if (strOp == "END")		Get_TrayEnd(strArg[0], strArg[1]);
-
-		} else if (strCmd == "BARCODE") {
-			if (strOp == "UPDATE")	Get_BarcodeUpdate(strArg[0], strArg[1], strArg[2], strArg[3]);
-
 		} 
-		else if (strCmd == "APD") 
+		else if (strCmd == "BARCODE") 
 		{
-			if (strOp == "REQUEST")	Get_ApdRequest();
+			if (strOp == "UPDATE")	Get_BarcodeUpdate(strArg[0], strArg[1], strArg[2], strArg[3]);
 		} 
 		else if (strCmd == "ALARM") 
 		{
@@ -208,16 +201,7 @@ void CAviHandler::Get_LotEnd(CString sLotID, CString sPortNo)
 	
 }
 
-void CAviHandler::Get_TrayLoad(CString sLotID, CString sTrayNo, CString sCmCnt, CString sPortNo)
-{
-	
-}
 
-void CAviHandler::Get_TrayEnd(CString sLastTrayNo, CString sPortNo)
-{
-	int nPx = atoi(sPortNo) - 1;
-	gData.nLastTrayNo[nPx] = atoi(sLastTrayNo);
-}
 
 void CAviHandler::Get_BarcodeUpdate(CString sPortNo, CString sTrayNo, CString sCmNo, CString sBarcode)
 {
@@ -233,11 +217,6 @@ void CAviHandler::Get_BarcodeUpdate(CString sPortNo, CString sTrayNo, CString sC
 	CString strLog;
 	strLog.Format("[Barcode NoRead] LotId(%s), PortNo(%d), TrayNo(%d), CmNo(%d)", gLot.sLotID[nPx], nPx+1, nTx+1, nCx+1);
 	g_objLogFile.Save_HandlerLog(strLog);
-}
-
-void CAviHandler::Get_ApdRequest()
-{
-	Set_ApdReply();
 }
 
 void CAviHandler::Get_VisionAlarmOn()
@@ -354,30 +333,6 @@ void CAviHandler::Set_StatusUpdate(int nStatus)
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
 	strSendCmd.Format("STATUS,UPDATE,%d,%s,%d", nStatus, pEquipData->sAviIp, UDP_AVI_LPORT);
-	Send_Command(strSendCmd);
-}
-
-void CAviHandler::Set_TrayUnload()
-{
-	CString	strSendCmd;
-	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-
-	strSendCmd.Format("TRAY,UNLOAD,%s,%d", pEquipData->sAviIp, UDP_AVI_LPORT);
-	Send_Command(strSendCmd);
-
-	gData.bAviTrayLoad = FALSE;
-}
-
-void CAviHandler::Set_ApdReply()
-{
-	CString	strSendCmd;
-	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-
-	double dCapForceTotal = 0.0, dCapForceAvg = 0.0;
-	for (int i = 0; i < PICK; i++) dCapForceTotal += gData.dAssyLoadCell[i];
-	dCapForceAvg = dCapForceTotal / PICK;
-
-	strSendCmd.Format("APD,REPLY,%0.3lf,%s,%d", dCapForceAvg, pEquipData->sAviIp, UDP_AVI_LPORT);
 	Send_Command(strSendCmd);
 }
 

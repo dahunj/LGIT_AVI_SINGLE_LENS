@@ -73,12 +73,9 @@ public:
 	void Get_CPUInfo(CString &strCPU);
 	void Get_HardInfo(CString &strHardDisk);
 
-	void Save_CapShiipData(int nType);	//1:Cap, 2:Ship
+
 	///////////////////////////////////////////////////////////////////////////
-	void Read_CapShipPartNo();
-	BOOL Check_CapShipPartNo(int nType, CString sPartNo);	//1:Cap, 2:Ship
-
-
+	
 	int Get_Random(int nStart, int nEnd);
 	void Backup_File(CString strPath, CString strName);	// System Folder
 
@@ -124,6 +121,11 @@ public:
 	BOOL Get_TrayPickMasterOut();
 	BOOL Get_TrayPickSlaveOut();
 	BOOL Get_TrayPickMasterSlaveOut();
+
+	void Set_FeederClose();
+	void Set_FeederOpen();
+	BOOL Get_FeederClose();
+	BOOL Get_FeederOpen();
 
 
 	void Set_CleanerForward();

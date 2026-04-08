@@ -134,9 +134,7 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 
 		CString strErrNo, strErrCode, strErrMsg, strShow, strLog;
 		CString strMes = "";
-		int nNo = gData.nULPNo-1;
-		if (nNo < 0) nNo = gData.nLPNo-1;
-		if (nNo < 0) nNo = 0;
+		
 
 		pMainDlg->Set_CurrentState(STATE_ERROR);
 
@@ -182,8 +180,8 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		gData.sAlarmTime[0].Format("%02d:%02d:%02d", time.wHour, time.wMinute, time.wSecond);
 		gData.sAlarmList[0].Format("[%s] %s", strErrNo, m_strErrMsg);
 
-		strLog.Format("%s,%s,%s", gData.sLotID[nNo], strErrNo, m_strErrMsg);
-		g_objLogFile.Save_AlarmLog(strLog);
+		//strLog.Format("%s,%s,%s", gData.sLotID[nNo], strErrNo, m_strErrMsg);
+		//g_objLogFile.Save_AlarmLog(strLog);
 		
 		Set_AlarmLog(m_nErrCode, m_strErrMsg);
 
@@ -345,25 +343,8 @@ void CErrorDlg::OnBnClickedBtnErrToManual()
 
 void CErrorDlg::Set_AlarmLog(int nErrNo, CString sErrMsg)
 {
-	SYSTEMTIME time;
-	int nNo = gData.nLPNo-1;
-	if (nNo < 0) nNo = 0;
-	gAlm.bBegin = TRUE;
-
-	gAlm.sLotID = gData.sLotID[nNo];
-	gAlm.nAlmNo = nErrNo;
-	gAlm.sAlmMsg = sErrMsg;
-	GetLocalTime(&time);
-	gAlm.dwStartTime = GetTickCount();
-	gAlm.sStartTime.Format("%04d%02d%02d_%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
-
-	// 작업자 기인 알람으로 설비 멈췄을때.
-	// MES 알람. (Door, Tray Empty/Full Alarm은 Alarm Dlg)
-	if (m_nErrNo > 9000 && m_nErrNo < 9100) {
-		CString sErr;
-		sErr.Format("%04d(%s)", nErrNo, sErrMsg);
-		g_dlgWork.MachineStopLog("ALARM", sErr);
-	}
+	
+	
 }
 
 ///////////////////////////////////////////////////////////////////////////////

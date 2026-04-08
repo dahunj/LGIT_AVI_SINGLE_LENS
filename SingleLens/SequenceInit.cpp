@@ -178,7 +178,7 @@ BOOL CSequenceInit::Initial_MainInit()
 
 	// Load
 	case 2:		
-		if (!m_pDX00->iMZElevMZExist1 && !m_pDX00->iMZElevMZExist2) 
+		if (!m_pDX00->iMZElevMZExist1Left && !m_pDX00->iMZElevMZExist2) 
 		{
 			m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
 		}
@@ -316,7 +316,7 @@ BOOL CSequenceInit::Initial_MZ_Elevator()
 	case 0:
 		return TRUE;
 	case 1:
-		if (!m_pDX00->iMZElevMZExist1 && !m_pDX00->iMZElevMZExist2) 
+		if (!m_pDX00->iMZElevMZExist1Left && !m_pDX00->iMZElevMZExist2) 
 		{			
 			g_objAJinAXL.Set_EncoderType(AX_MZ_ELEV_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_MZ_ELEV_Z, 1);	// Abs

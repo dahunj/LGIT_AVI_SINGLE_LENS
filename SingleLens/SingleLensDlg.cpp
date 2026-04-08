@@ -170,8 +170,6 @@ BOOL CSingleLensDlg::OnInitDialog()
 	gData.sInspectCmLotIDLater = "";
 	gData.sInspectCmLotIDPrevious = "";
 
-	Save_EquipCappingCnt();
-
 	gData.nSpeedOption = SpeedMode::Slow;
 	if(gData.nSpeedOption == SpeedMode::Slow)
 	{
@@ -309,7 +307,7 @@ void CSingleLensDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	g_objInspector.Set_StatusUpdate(0);
 	g_objAviHandler.Set_StatusUpdate(0);
 	g_objInspector.Set_LightOff();
-	g_objCommon.Read_CapShipPartNo();
+
 	
 	theApp.uSleep(1000);
 
@@ -338,12 +336,10 @@ void CSingleLensDlg::OnTimer(UINT_PTR nIDEvent)
 		break;
 	
 	case TIMER_NG_LAMP_FLKR:
-		if (gData.bCapPort1Wait)	{ Set_LampFlicker_Cap1(TRUE); /*Set_BuzzerFlicker(TRUE);*/ }
-		if (gData.bCapPort2Wait)	{ Set_LampFlicker_Cap2(TRUE); /*Set_BuzzerFlicker(TRUE);*/ }
+		
 		break;
 	case TIMER_GOOD_LAMP_FLKR:
-		if (gData.bUnloadPort1Wait) { Set_LampFlicker_Unload1(TRUE);	/*Set_BuzzerFlicker(TRUE);*/ }
-		if (gData.bUnloadPort2Wait) { Set_LampFlicker_Unload2(TRUE);	/*Set_BuzzerFlicker(TRUE);*/ }
+		
 		break;
 	case TIMER_DOOR_LOCK:
 		Set_DoorLock();
@@ -735,9 +731,7 @@ void CSingleLensDlg::Exit_System(int nExitNo)
 	KillTimer(TIMER_GOOD_LAMP_FLKR);
 	KillTimer(TIMER_EMPTY_LAMP_FLKR);
 	KillTimer(TIMER_DOOR_LOCK);
-
-	
-	Save_EquipCappingCnt();	// Capping한 수량 저장
+		
 	g_objLogFile.Save_HandlerLog("[Main Dialog] Program Exit");
 	g_dlgWork.MachineStopLog("PROGRAM_EXIT");
 
@@ -814,45 +808,11 @@ void CSingleLensDlg::Clear_EquipRunTime()
 	g_objLogFile.Save_HandlerLog("[Equipment Run Time] Clear Run Time");
 }
 
-void CSingleLensDlg::Save_EquipCappingCnt()
-{
-	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
-	CIniFileCS INIA(gsCurrentDir + "\\System\\EquipData.ini");
-	INIA.Set_Integer("LOAD_CELL", "CAPPING_CNT", pEquipData->nCappingCnt);
-
-	CString strKey;
-	for (int i = 0; i < PICK; i++) {
-		strKey.Format("%d", i); INIA.Set_Double("ASSY_LOAD_CELL", strKey, gData.dAssyLoadCell[i]);
-	}
-
-	CString strLog;
-	strLog.Format("[Equipment Capping Count] %d", pEquipData->nCappingCnt);
-	g_objLogFile.Save_HandlerLog(strLog);
-}
 
 void CSingleLensDlg::Set_LotErrorLog(CString sEvent, int nErrCode, CString sMessage, int nPNo)
 {
-	CString strModel, strAction, strLog;
-	int nNo = nPNo-1;
-	if (nNo < 0) {
-		nNo = gData.nULPNo-1;
-		if (nNo < 0) nNo = gData.nLPNo-1;
-		if (nNo < 0) nNo = 0;
-	}
-
-
-	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-	strModel = "EOL";
-
-	if (gData.sLotID[nNo] == "") gData.sLotID[nNo] = "CLOT_ID";
-
-	strAction.Format("%0.3lf", (GetTickCount() - m_dwEquipProcTime) / 1000.0);
-	m_dwEquipProcTime = GetTickCount();
-
-	m_strEquipEvent.Format("%s,%04d,%s", sEvent, nErrCode, sMessage);
-	strLog.Format("%s,%s,%s,%s,%s", strModel, MAIN_VERSION, gData.sLotID[nNo], m_strEquipEvent, strAction);
-	g_objLogFile.Save_LotError(strLog, nPNo);
+	
 }
 
 ///////////////////////////////////////////////////////////////////////////////

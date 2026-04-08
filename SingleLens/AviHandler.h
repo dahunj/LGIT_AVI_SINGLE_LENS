@@ -34,10 +34,8 @@ private:
 	void Get_TimeUpdate(CString sTime);
 	void Get_LotStart(CString sLotID, CString sPortNo, CString sTrayCnt, CString sCmCnt, CString sModel);
 	void Get_LotEnd(CString sLotID, CString sPortNo);
-	void Get_TrayLoad(CString sLotID, CString sTrayNo, CString sCmCnt, CString sPortNo);
-	void Get_TrayEnd(CString sLastTrayNo, CString sPortNo);
 	void Get_BarcodeUpdate(CString sPortNo, CString sTrayNo, CString sCmNo, CString sBarcode);
-	void Get_ApdRequest();
+
 
 	void Get_VisionAlarmOn();
 	void Get_VIsionAlarmOff();
@@ -54,10 +52,7 @@ public:
 	void Set_StatusRequest();
 	void Set_StatusReply(int nStatus);
 	void Set_StatusUpdate(int nStatus);
-	void Set_TrayUnload();
-	void Set_ApdReply();
-
-
+		
 	void Set_ConnectStatus(BOOL isConnected) { m_bConnected = isConnected; }
 	void Set_NotifyCmAlignAlarm();
 

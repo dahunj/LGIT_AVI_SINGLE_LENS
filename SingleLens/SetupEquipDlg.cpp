@@ -455,8 +455,7 @@ void CSetupEquipDlg::Cancel_EquipData()
 {
 	g_objDataManager.Read_EquipData();
 	g_objDataManager.Read_MoveData();
-	g_objCommon.Read_CapShipPartNo();
-
+	
 	Display_EquipData();
 
 	g_objLogFile.Save_HandlerLog("[Setup Equip] Cancel Click");

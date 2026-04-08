@@ -209,11 +209,11 @@ void COperatorDlg::OnStnClickedStcOperLotId()
 	/*m_stcOperLotId.SetWindowText(strKey);
 	g_dlgWork.m_stcLotId[1].SetWindowText(strKey);*/
 
-	CString sLog;
-	int nPx = gData.nLPNo - 1;
-	if (nPx < 0) nPx = 0;
-	sLog.Format("[Operator] Lot ID Input....  LotID[%s]", gData.sLotID[nPx]);
-	g_objLogFile.Save_HandlerLog(sLog);
+	//CString sLog;
+	//int nPx = gData.nLPNo - 1;
+	//if (nPx < 0) nPx = 0;
+	//sLog.Format("[Operator] Lot ID Input....  LotID[%s]", gData.sLotID[nPx]);
+	//g_objLogFile.Save_HandlerLog(sLog);
 }
 
 void COperatorDlg::OnStnClickedStcOperOperId()
@@ -245,11 +245,11 @@ void COperatorDlg::OnBnClickedBtnOperStart()
 	g_dlgWork.m_rdoWorkStart.SetCheck(TRUE);
 	Enable_OpModeButton(FALSE);
 
-	CString sLog;
-	int nNo = gData.nLPNo-1;
-	if (nNo < 0) nNo = 0;
-	sLog.Format("[Operator] START button push....  LotID[%s] OperID[%s]", gData.sLotID[nNo], gData.sOperID);
-	g_objLogFile.Save_HandlerLog(sLog);
+	//CString sLog;
+	//int nNo = gData.nLPNo-1;
+	//if (nNo < 0) nNo = 0;
+	//sLog.Format("[Operator] START button push....  LotID[%s] OperID[%s]", gData.sLotID[nNo], gData.sOperID);
+	//g_objLogFile.Save_HandlerLog(sLog);
 }
 
 void COperatorDlg::OnBnClickedBtnOperStop()
@@ -257,11 +257,11 @@ void COperatorDlg::OnBnClickedBtnOperStop()
 	g_dlgWork.m_rdoWorkStop.SetCheck(TRUE);
 	Enable_OpModeButton(TRUE);
 
-	CString sLog;
-	int nNo = gData.nLPNo-1;
-	if (nNo < 0) nNo = 0;
-	sLog.Format("[Operator] STOP button push....  LotID[%s] OperID[%s]", gData.sLotID[nNo], gData.sOperID);
-	g_objLogFile.Save_HandlerLog(sLog);
+	//CString sLog;
+	//int nNo = gData.nLPNo-1;
+	//if (nNo < 0) nNo = 0;
+	//sLog.Format("[Operator] STOP button push....  LotID[%s] OperID[%s]", gData.sLotID[nNo], gData.sOperID);
+	//g_objLogFile.Save_HandlerLog(sLog);
 }
 
 void COperatorDlg::OnBnClickedBtnOperCycleStop()
@@ -269,11 +269,11 @@ void COperatorDlg::OnBnClickedBtnOperCycleStop()
 	g_dlgWork.m_rdoWorkStop.SetCheck(TRUE);
 	Enable_OpModeButton(TRUE);
 
-	CString sLog;
+	/*CString sLog;
 	int nNo = gData.nLPNo-1;
 	if (nNo < 0) nNo = 0;
 	sLog.Format("[Operator] PAUSE button push....  LotID[%s] OperID[%s]", gData.sLotID[nNo], gData.sOperID);
-	g_objLogFile.Save_HandlerLog(sLog);
+	g_objLogFile.Save_HandlerLog(sLog);*/
 
 // 	if (gData.bCycleStop) return;
 // 
@@ -369,11 +369,7 @@ void COperatorDlg::OnBnClickedBtnOperExit()
 {
 	if (g_objCommon.Show_MsgBox(2, "Are you sure you want to exit the program?") != IDOK) return;
 
-	CString sLog;
-	int nNo = gData.nLPNo-1;
-	if (nNo < 0) nNo = 0;
-	sLog.Format("[Operator] Program Exit button push....  LotID[%s] OperID[%s]", gData.sLotID[nNo], gData.sOperID);
-	g_objLogFile.Save_HandlerLog(sLog);
+
 
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	pMainDlg->Exit_System(EXIT_SYSTEM_NONE);
@@ -453,25 +449,7 @@ void COperatorDlg::Display_Status()
 			m_btnOperStart.Set_Color(RGB(0x00, 0x00, 0x00), RGB(0xD7, 0xD7, 0xD7));
 			Enable_OpModeButton(TRUE);
 		}
-	}
-
-	int nNo = gData.nLPNo-1;
-	if (nNo < 0) nNo = 0;
-
-	COLORREF crCycleStop = (gData.bCycleStop ? RGB(0x80, 0xFF, 0xFF) : RGB(0xD7, 0xD7, 0xD7));
-	m_btnOperCycleStop.Set_Color(RGB(0x00, 0x00, 0x00), crCycleStop);
-
-	CString strText;
-	strText.Format("%d", gLot.nGoodCount[nNo]);
-	m_stcOperResult[0].SetWindowText(strText);
-
-	strText.Format("%d", gLot.nNgCount[nNo]);
-	m_stcOperResult[1].SetWindowText(strText);
-
-	int nTotal = gLot.nGoodCount[nNo] + gLot.nNgCount[nNo];
-	if (nTotal < 1) strText = "0.0%";
-	else strText.Format("%0.1lf%%", gLot.nGoodCount[nNo] * 100.0 / nTotal);
-	m_stcOperResult[2].SetWindowText(strText);
+	}	
 }
 
 void COperatorDlg::Update_TrayInfo(int nTray, int nNo)
@@ -481,12 +459,7 @@ void COperatorDlg::Update_TrayInfo(int nTray, int nNo)
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	if (nTray == 0 || nTray == 1)  // Load Tray
 	{		
-		int nPNo = gData.nLPNo - 1;
-		if (nPNo < 0) nPNo = 0;
-		strText.Format("%d", gData.nLoadTrayCount[nPNo]);
-		m_stcOperLoadTray.SetWindowText(strText);
-
-
+		
 		for (int j = 0; j < SLOT_NO_MAX; j++)
 		{
 			if		(gData.nInfoMZLoad[j] == 9) m_grdOperMZLoad.Set_CellBackClr(0, j, RGB(0x00, 0xFF, 0xFF));	// Reserve

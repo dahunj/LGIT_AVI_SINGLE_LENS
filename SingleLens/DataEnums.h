@@ -46,9 +46,9 @@ struct Feeder_X
 	enum dtName
 	{
 		Ready = 0,
-		MZRight = 1,
-		MZLeft = 2,
-		Rail = 3,
+		MZ1 = 1,
+		MZ2 = 2,
+		ZigPicker = 3,
 	};
 };
 
@@ -58,10 +58,10 @@ struct Feeder_Y
 	enum dtName
 	{
 		Ready = 0,
-		Sensing = 1,
-		LoadRight = 2,
-		LoadLeft = 3,
-		Rail = 4,
+		CheckExist = 1,
+		MZ1 = 2,
+		MZ2 = 3,
+		ZigPicker = 4,
 	};
 };
 
@@ -72,7 +72,7 @@ struct Tray_Picker_Y
 	enum dtName
 	{
 		Ready = 0,
-		Load = 1,
+		Rail = 1,
 		Index = 2,
 		MaxCnt,
 	};
@@ -86,7 +86,7 @@ struct Tray_Picker_Z
 	{
 		Ready = 0,
 		
-		Load = 1, 
+		Rail = 1, 
 		Index = 2,
 	};
 };
@@ -240,6 +240,16 @@ struct SpeedMode
 
 //seq branch 
 
+struct IndexTBranch
+{
+	enum Name
+	{
+		name = 0,
+		CheckInOut = 5,
+		ZoneStart = 11, 
+	};
+};
+
 struct ElevBranch
 {
 	enum Name
@@ -252,8 +262,9 @@ struct FeederBranch
 {
 	enum Name
 	{
-		name = 0,
-		NextSearch = 100,
+		Ready = 0,
+		LoadSearch = 1,
+		Unload = 30,
 	};
 };
 
@@ -261,7 +272,9 @@ struct ZigPickBranch
 {
 	enum Name
 	{
-		name = 0, 
+		Load = 1,
+		Unload = 20,
+
 	};
 };
 

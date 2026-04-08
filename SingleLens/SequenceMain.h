@@ -62,11 +62,11 @@ private:
 	int			m_nLoadConveyorCase;	//  1. (Error : 3100)
 	int			m_nMZElevCase;			//  2. (Error : 3400)
 	int			m_nFeederCase;			//  3. (Error : 3700)
-	int			m_nTrayPickerCase;		//  4. (Error : 4000)
+	int			m_nZigPickerCase;		//  4. (Error : 4000)
 	int			m_nLensCleanerCase;		//  5. (Error : 4300)
 	int			m_nTopInspectCase;		//  6. (Error : 4600)
 	int			m_nBtmInspectCase;		//  7. (Error : 4900)
-	int			m_nMarkerCase;			//  8. (Error : 5200)
+	int			m_nMarkUnitCase;			//  8. (Error : 5200)
 	int			m_nIndexTCase;			//  9. (Error : 5500)  
 	int			m_nUnloadConveyorCase;	//  10. (Error : 5800)
 
@@ -77,7 +77,7 @@ private:
 	DWORD		m_dwLensCleaner;		//  5. (Error : 4300)
 	DWORD		m_dwTopInspect;			//  6. (Error : 4600)
 	DWORD		m_dwBtmInspect;			//  7. (Error : 4900)
-	DWORD		m_dwMarker;				//  8. (Error : 5200)
+	DWORD		m_dwMarkUnit;				//  8. (Error : 5200)
 	DWORD		m_dwIndexT;				//  9. (Error : 5500)
 	DWORD		m_dwUnloadConveyor;			//  10. (Error : 5800)
 
@@ -88,7 +88,7 @@ private:
 	CLoopTimer	m_nLensCleanerLoop;		//  5. (Error : 4300)
 	CLoopTimer	m_nTopInspectLoop;		//  6. (Error : 4600)
 	CLoopTimer	m_nBtmInspectLoop;		//  7. (Error : 4900)
-	CLoopTimer	m_nMarkerLoop;			//  8. (Error : 5200) 
+	CLoopTimer	m_nMarkUnitLoop;			//  8. (Error : 5200) 
 	CLoopTimer	m_nIndexTLoop;			//  9. (Error : 5500) 
 	CLoopTimer	m_nUnloadConveyorLoop;	//  10. (Error : 5800)
 
@@ -96,11 +96,11 @@ private:
 	BOOL			LoadConveyorRun();		//  1. (Error : 3100)
 	BOOL			MZElevRun();			//  2. (Error : 3400)
 	BOOL			FeederRun();			//  3. (Error : 3700)
-	BOOL			TrayPickerRun();		//  4. (Error : 4000)
+	BOOL			ZigPickerRun();			//  4. (Error : 4000)
 	BOOL			LensCleanerRun();		//  5. (Error : 4300)
 	BOOL			TopInspectorRun();		//  6. (Error : 4600)
 	BOOL			BtmInspectorRun();		//  7. (Error : 4900)
-	BOOL			MarkerRun();			//  8. (Error : 5200)
+	BOOL			MarkUnitRun();			//  8. (Error : 5200)
 	BOOL			IndexTRun();			//  9. (Error : 5500)  
 	BOOL			UnloadConveyorRun();	//  10. (Error : 5800)
 
@@ -142,8 +142,7 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	void Init_TopZig();
 	BOOL Select_TopScanPos(int &nTopPosX, int &nTopPosY);
-
-	
+		
 	void Init_BtmZig();
 	BOOL Select_BtmScanPos(int &nBtmPosX, int &nBtmPosY);
 

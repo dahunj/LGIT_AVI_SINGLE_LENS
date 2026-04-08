@@ -135,7 +135,7 @@ public:
 	void Save_EquipRunTime();
 	void Clear_EquipRunTime();
 
-	void Save_EquipCappingCnt();
+	
 
 	void Set_LotErrorLog(CString sEvent, int nErrCode, CString sMessage, int nPNo=0);
 

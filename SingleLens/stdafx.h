@@ -191,110 +191,20 @@ typedef struct
 
 	//0: Rignt, 1 : Left,  판정코드 (0:Top, 1:Btm)
 	
-	//old 
-	
-	int        nTrayUseCount[2];    // ????? ????? Tray ????
-	int        nCmUseCount[2];        // ????? ????? CM ????
-
-	CString sCapLotID;
-	int        nCapTrayLoad;
-	int        nCapTrayMax;
-
-	CString sShipLotID;
-	int        nShipTrayLoad;
-	int        nShipTrayMax;
-
-	int        nLPNo;                    // Load ?? Port No
-	int        nLoadTrayCount[2];
-	int        nCapTrayCount;
-	int        nULPNo;                    // Unload Port No
-
-	
-
-	//old 
-	int        InfoCapBuffer[PICK];        // Cap Buffer ???? ??? 0:???    (0:Not Use, 9:Use)
-	int        InfoTransStage[PICK];        // Trans Stage ???? ??? 0:????    (0:Not Use, 1:Exist)
-
-	int        InfoLoadPick[PICK];        // 0:????
-	int        InfoCapPick[PICK];        // 0:???
-	int        InfoAssyPick[PICK];        // 0:???
-	int        InfoUnloadPick[PICK];    // 0:???????? 0 
-
-	int        nCapTNoCapPicker[PICK];        // Cap Picker Cap Tray No.
-	int        nCapTNoCapBuffer[PICK];        // Cap Buffer Cap Tray No.
-	int        nCapTNoAssyPicker[PICK];    // Assy Picker Cap Tray No.
-
-	int        nCapNoCapPicker[PICK];        // Cap Picker CapNo.
-	int        nCapNoCapBuffer[PICK];        // Cap Buffer CapNo.
-	int        nCapNoAssyPicker[PICK];        // Assy Picker CapNo.
-
-	int        nPNoAviPort;            // Inline Mode ??? Avi Port No.
-	int        nTNoAviPort;            // Inline Mode ??? Avi Port No.
-	int        nPNoTrayPick;            //
-	int        nPNoLoadPort;            //
-	int        nPNoLoadTray[2];        // 0: stage1, 1: stage2, Load Tray Port No (1, 2)
-	int        nPNoLoadPick;            // Load Picker Port No (1, 2)
-	int        nPNoIndex[3];            // Index Port No (1, 2)
-	int        nPNoTransStage;            // Trans Stage Port No (1, 2)
-	int        nPNoUnloadPick;            // Unload Picker Port No (1, 2)
-	int        nPNoUnloadTray;            // Unload Tray Port No (1, 2)
-	int        nPNoUnloadPort;            // Unload Port Port No (1, 2)
-
-	int        nTNoTrayPick;            // Tray Picker Tray No (1 ~ 25)
-	int        nTNoLoadPort;            // Load Port Tray No (1 ~ 25)    //AVI ?????????? ????.
-	int        nTNoLoadTray[2];        // 0: stage1 , 1: stage2, Load Stage Tray No (1 ~ 25)
-	int        nTNoLoadPick[PICK];        // Load Picker Tray No (1 ~ 25)
-	int        nTNoIndex[3][PICK];        // Index Tray No (1 ~ 25)
-	int        nTNoTransStage[PICK];    // Trans Stage Tray No (1 ~ 25)
-	int        nTNoUnloadPick[PICK];    // Unload Picker Tray No (1 ~ 25)
-	int        nTNoUnloadTray;            // Unload Stage Tray No(1 ~ 25)
-
-	int        nCNoLoadPick[PICK];        // Load Picker CM No
-	int        nCNoIndex[3][PICK];        // Index CM No
-	int        nCNoTransStage[PICK];    // Trans Stage CM No
-	int        nCNoUnloadPick[PICK];    // Load Index CM No
-
-	int        nInspCmNo[2][2];        // 0:CM Align, 1:Cap Align, 0:CmNo1, 1:CmNo2
-	// Port ???? ?????????.
-	
-	int        nCapInspectInfo[2][50][28];    // Cap Align ????? (0:Empty, 1:Good, 2:Normal)
-
-	BOOL    bCycleStop;                // Run ????? ???? (???? ???)
-
-	BOOL    bUnloadTrayLotEnd[2];
-	BOOL    bLoadPort3Wait;            // Load Port3 ???? ?????? ???
-	BOOL    bCapPort1Wait;            // Cap Port1 ???? ?????? ???
-	BOOL    bCapPort2Wait;            // Cap Port2 ???? ?????? ???
-	BOOL    bUnloadPort1Wait;        // Unload Port1 ???? ?????? ???
-	BOOL    bUnloadPort2Wait;        // Unload Port2 ???? ?????? ???
-
-	BOOL    bLoadLampOn[2];            // Load Port Lamp ?????? ?????? Lot End??? ???????? ??????.
-
+	BOOL    bCycleStop;                // Run 
 	BOOL    bFirstLotStart;
+	BOOL    bLotEndBeep;     
 
-	BOOL    bLotEndBeep;            // NG Full ????? ?????? LotEnd ??????? Skip ???? ?????.
+	
 
-	int        nCmInspPickNo1;
-	int        nCmInspPickNo2;
-	int        nCapInspPickNo1;
-	int        nCapInspPickNo2;
 
-	BOOL    bAviTrayLoad;
-	int        nCmCntAviPort;
-	int        nCmCntTrayPick;
-	int        nCmCntLoadPort;
-	int        nCmCntLoadStage[2];
-	int        nLastTrayNo[2];
+          
+	
+	
 
-	BOOL    bLoadCellComplete;
-	double    dLoadCell[2];
-	double    dAssyLoadCell[PICK];
-	double    dUnloadLoadCell[PICK];
+	//old 
+     
 
-	double    dAssyPickOffsetX[PICK];        // 0:???
-	double    dAssyPickOffsetY[PICK];        // 0:???
-	double    dAssyPickCapSizeX[PICK];    // 0:???
-	double    dAssyPickCapSizeY[PICK];    // 0:???
 
 	double    dIndexOffsetX[4][PICK];        // 0:???
 	double    dIndexOffsetY[4][PICK];        // 0:???

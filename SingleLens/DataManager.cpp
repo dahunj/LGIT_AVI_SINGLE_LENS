@@ -154,9 +154,7 @@ BOOL CDataManager::Read_EquipData()
 	m_EquipData.sPasswordMt = INI.Get_String("HIDDEN", "PASSWORD_MT", "");
 	m_EquipData.sPasswordSi = INI.Get_String("HIDDEN", "PASSWORD_SI", "");
 
-	m_EquipData.nLoadCellChkCnt = INI.Get_Integer("LOAD_CELL", "CHECK_COUNT", 0);
-	for (int i = 0; i < PICK; i++) { strKey.Format("%d", i); gData.dAssyLoadCell[i] = INI.Get_Double("ASSY_LOAD_CELL", strKey, 0.0); }
-
+	
 	// Gloval Data
 		
 	m_EquipData.nResultTestNg = INI.Get_Integer("RESULT_TEST", "RESULT_NG", 0);
