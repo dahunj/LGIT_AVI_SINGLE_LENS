@@ -560,112 +560,33 @@ void CCommon::Get_CPUInfo(CString& strCPU)
 //////////////////////////////
 void CCommon::Set_IndexLoadAlignIn()
 {
-	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+	DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
 
-	pDY01->oIndexTInOutAlignIn = TRUE;
-	pDY01->oIndexTInOutAlignOut = FALSE;
-	g_objAJinAXL.Write_Output(1);
+	pDY02->oIndexTZigAlignIn = TRUE;
+	pDY02->oIndexTZigAlignOut = FALSE;
+	g_objAJinAXL.Write_Output(2);
 
 }
 
 void CCommon::Set_IndexLoadAlignOut()
 {
-	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+	DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
 
-	pDY01->oIndexTInOutAlignIn = FALSE;
-	pDY01->oIndexTInOutAlignOut = TRUE;
-	g_objAJinAXL.Write_Output(1);
-
-}
-
-void CCommon::Set_IndexCleanAlignIn()
-{
-	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
-
-	pDY01->oIndexTCleanerAlignIn = TRUE;
-	pDY01->oIndexTCleanerAlignOut = FALSE;
-	g_objAJinAXL.Write_Output(1);
+	pDY02->oIndexTZigAlignIn = FALSE;
+	pDY02->oIndexTZigAlignOut = TRUE;
+	g_objAJinAXL.Write_Output(2);
 
 }
 
-void CCommon::Set_IndexCleanAlignOut()
-{
-	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
-
-	pDY01->oIndexTCleanerAlignIn = FALSE;
-	pDY01->oIndexTCleanerAlignOut = TRUE;
-	g_objAJinAXL.Write_Output(1);
-
-}
-
-void CCommon::Set_IndexTopAlignIn()
-{
-	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
-
-	pDY01->oIndexTInOutAlignIn = TRUE;
-	pDY01->oIndexTInOutAlignOut = FALSE;
-	g_objAJinAXL.Write_Output(1);
-
-}
-
-void CCommon::Set_IndexTopAlignOut()
-{
-	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
-
-	pDY01->oIndexTInOutAlignIn = FALSE;
-	pDY01->oIndexTInOutAlignOut = TRUE;
-	g_objAJinAXL.Write_Output(1);
-
-}
-
-void CCommon::Set_IndexBtmAlignIn()
-{
-	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
-
-	pDY01->oIndexTInOutAlignIn = TRUE;
-	pDY01->oIndexTInOutAlignOut = FALSE;
-	g_objAJinAXL.Write_Output(1);
-
-}
-
-void CCommon::Set_IndexBtmAlignOut()
-{
-	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
-
-	pDY01->oIndexTInOutAlignIn = FALSE;
-	pDY01->oIndexTInOutAlignOut = TRUE;
-	g_objAJinAXL.Write_Output(1);
-
-}
-
-void CCommon::Set_IndexMarkAlignIn()
-{
-	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
-
-	pDY01->oIndexTInOutAlignIn = TRUE;
-	pDY01->oIndexTInOutAlignOut = FALSE;
-	g_objAJinAXL.Write_Output(1);
-
-}
-
-void CCommon::Set_IndexMarkAlignOut()
-{
-	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
-
-	pDY01->oIndexTInOutAlignIn = FALSE;
-	pDY01->oIndexTInOutAlignOut = TRUE;
-	g_objAJinAXL.Write_Output(1);
-
-}
 
 
 //---------------Get--------------
 
 BOOL CCommon::Get_IndexLoadAlignIn()
 {
-	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
 		
-	if(pDX01->iIndexTInOutAlignIn && !pDX01->iIndexTInOutAlignOut)
+	if(pDX02->iIndexTAlignIn && !pDX02->iIndexTAlignOut)
 	{
 		return TRUE;
 	}
@@ -674,99 +595,13 @@ BOOL CCommon::Get_IndexLoadAlignIn()
 
 BOOL CCommon::Get_IndexLoadAlignOut()
 {
-	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
-	if(!pDX01->iIndexTInOutAlignIn && pDX01->iIndexTInOutAlignOut)
+	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
+
+	if(!pDX02->iIndexTAlignIn && pDX02->iIndexTAlignOut)
 	{
 		return TRUE;
 	}
-	return FALSE;
-}
-
-BOOL CCommon::Get_IndexCleanAlignIn()
-{
-	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
-	if(pDX01->iIndexTCleanerAlignIn && !pDX01->iIndexTCleanerAlignOut)
-	{
-		return TRUE;
-	}
-	return FALSE;
-
-}
-
-BOOL CCommon::Get_IndexCleanAlignOut()
-{
-	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
-	if(!pDX01->iIndexTCleanerAlignIn && pDX01->iIndexTCleanerAlignOut)
-	{
-		return TRUE;
-	}
-	return FALSE;
-
-}
-
-BOOL CCommon::Get_IndexTopAlignIn()
-{
-	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
-	if(pDX01->iIndexTTopAlignIn && !pDX01->iIndexTTopAlignOut)
-	{
-		return TRUE;
-	}
-	return FALSE;
-
-}
-
-BOOL CCommon::Get_IndexTopAlignOut()
-{
-	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
-	if(pDX01->iIndexTTopAlignIn && !pDX01->iIndexTTopAlignOut)
-	{
-		return TRUE;
-	}
-	return FALSE;
-
-}
-
-BOOL CCommon::Get_IndexBtmAlignIn()
-{
-	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
-	if(pDX01->iIndexTBtmAlignIn && !pDX01->iIndexTBtmAlignOut)
-	{
-		return TRUE;
-	}
-	return FALSE;
-}
-
-BOOL CCommon::Get_IndexBtmAlignOut()
-{
-	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
-	if(pDX01->iIndexTBtmAlignIn && !pDX01->iIndexTBtmAlignOut)
-	{
-		return TRUE;
-	}
-	return FALSE;
-
-}
-
-BOOL CCommon::Get_IndexMarkAlignIn()
-{
-	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
-	if(pDX01->iIndexTMarkAlignIn && !pDX01->iIndexTMarkAlignOut)
-	{
-		return TRUE;
-	}
-	return FALSE;
-
-}
-
-BOOL CCommon::Get_IndexMarkAlignOut()
-{
-	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
-	if(pDX01->iIndexTMarkAlignIn && !pDX01->iIndexTMarkAlignOut)
-	{
-		return TRUE;
-	}
-	return FALSE;
-
+	return FALSE;	
 }
 
 void CCommon::Set_CleanerClose()
@@ -789,7 +624,8 @@ BOOL CCommon::Get_CleanerClose()
 {
 	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
 
-	if(pDX02->iLensCleanerDown && !pDX02->iLensCleanerUp)
+	if(pDX02->iLensCleanerTopDown && !pDX02->iLensCleanerTopUp
+		&& !pDX02->iLensCleanerBtmDown && pDX02->iLensCleanerBtmUp)
 	{
 		return TRUE;
 	}
@@ -799,7 +635,9 @@ BOOL CCommon::Get_CleanerClose()
 BOOL CCommon::Get_CleanerOpen()
 {
 	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
-	if(!pDX02->iLensCleanerDown && pDX02->iLensCleanerUp)
+
+	if(!pDX02->iLensCleanerTopDown && pDX02->iLensCleanerTopUp
+		&& pDX02->iLensCleanerBtmDown && !pDX02->iLensCleanerBtmUp)
 	{
 		return TRUE;
 	}
@@ -829,8 +667,8 @@ void CCommon::Set_CleanerBackward()
 BOOL CCommon::Get_CleanerForwardDone()
 {
 	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
-
-	if(pDX02->iLensCleanerForward && !pDX02->iLensCleanerBackward)
+	if(pDX02->iLensCleanerBtmForward && !pDX02->iLensCleanerBtmBackward
+		&& pDX02->iLensCleanerTopForward && !pDX02->iLensCleanerTopBackward)
 	{
 		return TRUE;
 	}
@@ -840,7 +678,8 @@ BOOL CCommon::Get_CleanerForwardDone()
 BOOL CCommon::Get_CleanerBackwardDone()
 {
 	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
-	if(!pDX02->iLensCleanerForward && pDX02->iLensCleanerBackward)
+	if(!pDX02->iLensCleanerBtmForward && pDX02->iLensCleanerBtmBackward
+		&& !pDX02->iLensCleanerTopForward && pDX02->iLensCleanerTopBackward)
 	{
 		return TRUE;
 	}
@@ -852,8 +691,8 @@ BOOL CCommon::Get_CleanerBackwardDone()
 void CCommon::Set_LoadCVRunCCW()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
-	pDY00->oLoadCVCCW = TRUE;
-	pDY00->oLoadCVCW = FALSE;
+	pDY00->oLoadCVRun = TRUE;
+	pDY00->oLoadCVDirCCW = TRUE;
 
 	g_objAJinAXL.Write_Output(0);
 }
@@ -861,8 +700,8 @@ void CCommon::Set_LoadCVRunCCW()
 void CCommon::Set_LoadCVRunCW()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
-	pDY00->oLoadCVCCW = TRUE;
-	pDY00->oLoadCVCW = TRUE;
+	pDY00->oLoadCVRun = TRUE;
+	pDY00->oLoadCVDirCCW = FALSE;
 
 	g_objAJinAXL.Write_Output(0);
 }
@@ -870,8 +709,8 @@ void CCommon::Set_LoadCVRunCW()
 void CCommon::Set_LoadCVStop()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
-	pDY00->oLoadCVCCW = FALSE;
-	pDY00->oLoadCVCW = FALSE;
+	pDY00->oLoadCVRun = FALSE;
+	pDY00->oLoadCVDirCCW = FALSE;
 
 	g_objAJinAXL.Write_Output(0);
 }
@@ -880,79 +719,73 @@ void CCommon::Set_LoadCVStop()
 
 void CCommon::Set_UnloadCVRunCCW()
 {
-	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
-	pDY00->oUnloadCVCCW = TRUE;
-	pDY00->oUnloadCVCW = FALSE;
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+	pDY01->oUnloadCVRun = TRUE;
+	pDY01->oUnloadCVDirCCW = TRUE;
 
-	g_objAJinAXL.Write_Output(0);
+	g_objAJinAXL.Write_Output(1);
 }
 
 void CCommon::Set_UnloadCVRunCW()
 {
-	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
-	pDY00->oUnloadCVCCW = TRUE;
-	pDY00->oUnloadCVCW = TRUE;
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+	pDY01->oUnloadCVRun = TRUE;
+	pDY01->oUnloadCVDirCCW = FALSE;
 
-	g_objAJinAXL.Write_Output(0);
+	g_objAJinAXL.Write_Output(1);
 }
 
 void CCommon::Set_UnloadCVStop()
 {
-	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
-	pDY00->oUnloadCVCCW = FALSE;
-	pDY00->oUnloadCVCW = FALSE;
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+	pDY01->oUnloadCVRun = FALSE;
+	pDY01->oUnloadCVDirCCW = FALSE;
 
-	g_objAJinAXL.Write_Output(0);
+	g_objAJinAXL.Write_Output(1);
 }
 
 void CCommon::Set_ElevCVRunCCW()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
-	pDY00->oMZElevCVCCW = TRUE;
-	pDY00->oMZElevCVCW = FALSE;
+	pDY00->oMZElevCVRun = TRUE;
+	pDY00->oMZElevCVDirCCW = TRUE;
 	g_objAJinAXL.Write_Output(0);
 }
-
 
 void CCommon::Set_ElevCVRunCW()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
-	pDY00->oMZElevCVCCW = TRUE;
-	pDY00->oMZElevCVCW = TRUE;
+	pDY00->oMZElevCVRun = TRUE;
+	pDY00->oMZElevCVDirCCW = FALSE;
 	g_objAJinAXL.Write_Output(0);
 }
-	
-
 
 void CCommon::Set_ElevCVStop()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
-	pDY00->oMZElevCVCCW = FALSE;
-	pDY00->oMZElevCVCW = FALSE;
+	pDY00->oMZElevCVRun = FALSE;
+	pDY00->oMZElevCVDirCCW = FALSE;
 	g_objAJinAXL.Write_Output(0);
 }
-
-
-
 
 void CCommon::Set_TrayPickMasterIn()
 {
 	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
-	pDY01->oTrayPickerMasterIn = TRUE; pDY01->oTrayPickerMasterOut = FALSE;
+	pDY01->oZigPickerMasterIn = TRUE; pDY01->oZigPickerMasterOut = FALSE;
 	g_objAJinAXL.Write_Output(1);
 }
 
 void CCommon::Set_TrayPickSlaveIn()
 {
 	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
-	pDY01->oTrayPickerSlaveIn = TRUE; pDY01->oTrayPickerSlaveOut = FALSE;
+	pDY01->oZigPickerSlaveIn = TRUE; pDY01->oZigPickerSlaveOut = FALSE;
 	g_objAJinAXL.Write_Output(1);
 }
 
 BOOL CCommon::Get_TrayPickMasterIn()
 {
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
-	if(pDX01->iTrayPickerMasterIn && !pDX01->iTrayPickerMasterOut)
+	if(pDX01->iZigPickerMasterIn && !pDX01->iZigPickerMasterOut)
 	{
 		return TRUE;
 	}
@@ -962,7 +795,7 @@ BOOL CCommon::Get_TrayPickMasterIn()
 BOOL CCommon::Get_TrayPickSlaveIn()
 {
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
-	if(pDX01->iTrayPickerSlaveIn && !pDX01->iTrayPickerSlaveOut)
+	if(pDX01->iZigPickerSlaveIn && !pDX01->iZigPickerSlaveOut)
 	{
 		return TRUE;
 	}
@@ -972,8 +805,8 @@ BOOL CCommon::Get_TrayPickSlaveIn()
 BOOL CCommon::Get_TrayPickMasterSlaveIn()
 {
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
-	if(pDX01->iTrayPickerMasterIn && !pDX01->iTrayPickerMasterOut
-		&& pDX01->iTrayPickerSlaveIn && !pDX01->iTrayPickerSlaveOut)
+	if(pDX01->iZigPickerMasterIn && !pDX01->iZigPickerMasterOut
+		&& pDX01->iZigPickerSlaveIn && !pDX01->iZigPickerSlaveOut)
 	{
 		return TRUE;
 	}
@@ -983,20 +816,20 @@ BOOL CCommon::Get_TrayPickMasterSlaveIn()
 void CCommon::Set_TrayPickMasterOut()
 {
 	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
-	pDY01->oTrayPickerMasterIn = FALSE; pDY01->oTrayPickerMasterOut = TRUE;
+	pDY01->oZigPickerMasterIn = FALSE; pDY01->oZigPickerMasterOut = TRUE;
 	g_objAJinAXL.Write_Output(1);
 }
 void CCommon::Set_TrayPickSlaveOut()
 {
 	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
-	pDY01->oTrayPickerSlaveIn = FALSE; pDY01->oTrayPickerSlaveOut = TRUE;
+	pDY01->oZigPickerSlaveIn = FALSE; pDY01->oZigPickerSlaveOut = TRUE;
 	g_objAJinAXL.Write_Output(1);
 }
 
 BOOL CCommon::Get_TrayPickMasterOut()
 {
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
-	if(!pDX01->iTrayPickerMasterIn && pDX01->iTrayPickerMasterOut)
+	if(!pDX01->iZigPickerMasterIn && pDX01->iZigPickerMasterOut)
 	{
 		return TRUE;
 	}
@@ -1005,7 +838,7 @@ BOOL CCommon::Get_TrayPickMasterOut()
 BOOL CCommon::Get_TrayPickSlaveOut()
 {
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
-	if(!pDX01->iTrayPickerSlaveIn && pDX01->iTrayPickerSlaveOut)
+	if(!pDX01->iZigPickerSlaveIn && pDX01->iZigPickerSlaveOut)
 	{
 		return TRUE;
 	}
@@ -1014,14 +847,13 @@ BOOL CCommon::Get_TrayPickSlaveOut()
 BOOL CCommon::Get_TrayPickMasterSlaveOut()
 {
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
-	if(!pDX01->iTrayPickerMasterIn && pDX01->iTrayPickerMasterOut
-		&& !pDX01->iTrayPickerSlaveIn && pDX01->iTrayPickerSlaveOut)
+	if(!pDX01->iZigPickerMasterIn && pDX01->iZigPickerMasterOut
+		&& !pDX01->iZigPickerSlaveIn && pDX01->iZigPickerSlaveOut)
 	{
 		return TRUE;
 	}
 	return FALSE;
 }
-
 
 void CCommon::Set_FeederClose()
 {

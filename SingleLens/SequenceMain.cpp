@@ -186,44 +186,9 @@ BOOL CSequenceMain::LoadConveyorRun()
 	switch(m_nLoadConveyorCase)
 	{
 	case 0:
-		nMZCnt = Check_MZSensors();
-		if(nMZCnt > 0 && !gData.bCycleStop)
-		{
-			if (!m_nLoadConveyorLoop.Waiting_Time(500)) break;			
-			m_nLoadConveyorCase++; m_nLoadConveyorLoop.Set_LoopTime(5000);
-		}
+		
 		return TRUE;
-	case 1:
-		if(m_pDX00->iMZElevExistRight)
-		{
-			m_nLoadConveyorCase = 10; m_nLoadConveyorLoop.Set_LoopTime(5000);			
-		}
-		else
-		{
-			m_pDY00->oLoadCVCCW = TRUE; m_pDY00->oLoadCVCW = TRUE;
-			m_pDY00->oMZElevCVCCW = TRUE; m_pDY00->oMZElevCVCW = TRUE;
-			g_objAJinAXL.Write_Output(0);
-			m_nLoadConveyorCase++; m_nLoadConveyorLoop.Set_LoopTime(5000);		
-		}
-		break;
-	case 2:
-		if(m_pDX00->iMZElevExistRight)
-		{
-			m_pDY00->oLoadCVCCW = FALSE; m_pDY00->oLoadCVCW = FALSE;
-			m_pDY00->oMZElevCVCCW = FALSE; m_pDY00->oMZElevCVCW = FALSE;
-			g_objAJinAXL.Write_Output(0);
-			m_nLoadConveyorCase = 3; m_nLoadConveyorLoop.Set_LoopTime(5000);	
-		}
-		break;
-	case 3:
-		m_pDY00->oMZElevLoadStopperUp = TRUE; m_pDY00->oMZElevUnloadStopperDown = FALSE;
-		break;
-	case 5:
-		if(m_pDX00->iMZElevExistLeft)
-		{
-			nMZCnt--;			
-		}
-		break;
+	
 
 	//case 2:
 	//	m_pDY00->oLoadCVStopperUp = FALSE; m_pDY00->oLoadCVStopperDown = TRUE;

@@ -141,15 +141,16 @@ UINT CSequenceInit::Thread_Initial(LPVOID lpVoid)
 		if (!g_objCommon.Check_ServoOn()) break;
 		if (!g_objCommon.Check_DirveAlarm()) break;
 
-		if (!g_objSequenceInit.Initial_MainInit()) break;		//  0. (Error : 1000)
-		if (!g_objSequenceInit.Initial_Conveyor()) break;		//  1. (Error : 1100)
+		if (!g_objSequenceInit.Initial_MainInit()) break;			//  0. (Error : 1000)
+		if (!g_objSequenceInit.Initial_Conveyor()) break;			//  1. (Error : 1100)
 		if (!g_objSequenceInit.Initial_MZ_Elevator()) break;		//  2. (Error : 1200)
-		if (!g_objSequenceInit.Initial_Feeder()) break;		//  3. (Error : 1300)
-		if (!g_objSequenceInit.Initial_TrayPicker()) break;		//  4. (Error : 1400)
+		if (!g_objSequenceInit.Initial_Feeder()) break;				//  3. (Error : 1300)
+		if (!g_objSequenceInit.Initial_TrayPicker()) break;			//  4. (Error : 1400)
+		if (!g_objSequenceInit.Initial_LensCleaner()) break;		//  5. (Error : 1500)
 		if (!g_objSequenceInit.Initial_TopInspector()) break;		//  5. (Error : 1500)
 		if (!g_objSequenceInit.Initial_BtmInspector()) break;		//  6. (Error : 1600)
-		if (!g_objSequenceInit.Initial_Marker()) break;		//  7. (Error : 1700)
-		if (!g_objSequenceInit.Initial_IndexTable()) break;		//  8. (Error : 1800)
+		if (!g_objSequenceInit.Initial_Marker()) break;				//  7. (Error : 1700)
+		if (!g_objSequenceInit.Initial_IndexTable()) break;			//  8. (Error : 1800)
 		
 
 		if (!g_objSequenceInit.Initial_Simulation()) break;
@@ -379,19 +380,19 @@ BOOL CSequenceInit::Initial_Feeder()
 	case 0:
 		return TRUE;
 	case 1:
-		if (!m_pDX01->iFeederCoatJigCheck) 
+		if (!m_pDX01->iFeederGripZigExist) 
 		{
 			m_niFeederCase++; m_tiFeederLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 2:	
-		if (!m_pDX01->iRailCheckFront && !m_pDX01->iRailCheckRear) 
+		if (!m_pDX01->iFeederTipZigExist && !m_pDX01->iFeederRailZigExist) 
 		{
 			m_niFeederCase++; m_tiFeederLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 3:	
-		if (!m_pDX01->iMZCoatJigExist && m_niTrayPickerCase > 5)  
+		if (!m_pDX01->iFeederTipZigExist && m_niTrayPickerCase > 5)  
 		{				
 			m_niFeederCase++; m_tiFeederLoop.Set_LoopTime(5000);
 		}
@@ -444,7 +445,7 @@ BOOL CSequenceInit::Initial_TrayPicker()
 	case 0:
 		return TRUE;
 	case 1:
-		if (!m_pDX01->iTrayPickerExist) 
+		if (!m_pDX01->iZigPickerExist) 
 		{
 			g_objAJinAXL.Set_EncoderType(AX_ZIG_PICKER_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_ZIG_PICKER_Z, 1);	// Abs
@@ -501,28 +502,21 @@ BOOL CSequenceInit::Initial_TrayPicker()
 		break;
 	case 10:
 		{
-			m_pDY01->oTrayPickerSlaveIn = FALSE;
-			m_pDY01->oTrayPickerSlaveOut = TRUE;
-			m_pDY01->oTrayPickerMasterIn = FALSE;
-			m_pDY01->oTrayPickerMasterOut = TRUE;
-			g_objAJinAXL.Write_Output(1);
+			g_objCommon.Set_TrayPickMasterOut();
+			Sleep(5);
+			g_objCommon.Set_TrayPickSlaveOut();			
 			m_niTrayPickerCase++; m_tiTrayPickerLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 13:		// Tray Picker Slave Out 
-		if (!m_pDX01->iTrayPickerSlaveIn && m_pDX01->iTrayPickerSlaveOut) 
-		{
-			m_niTrayPickerCase++; m_tiTrayPickerLoop.Set_LoopTime(5000);
-		}
-		break;
-	case 14:		// Tray Picker Master Out 
-		if (!m_pDX01->iTrayPickerMasterIn && m_pDX01->iTrayPickerMasterOut) 
+		if (g_objCommon.Get_TrayPickMasterSlaveOut()) 
 		{
 			g_objLogFile.Save_HandlerLog("[Initial Sequence] - Feeder Complete");
 			m_niTrayPickerCase = 90; m_tiTrayPickerLoop.Set_LoopTime(5000);
-			
+
 		}
 		break;
+		
 	case 90:	// Initial Complete
 		return TRUE;
 	}
