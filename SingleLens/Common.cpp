@@ -111,7 +111,7 @@ BOOL CCommon::Check_Position(int nAxis, int nMoveIdx, double dRange)
 
 	if (g_objAJinAXL.Is_Done(nAxis)) {
 		//if (nAxis == AX_TRAY_PICKER_X)		dCheckPos = pMoveData->dTrayPickerX[nMoveIdx];		// AXIS 00
-		//if (nAxis == AX_TRAY_PICKER_Z)		dCheckPos = pMoveData->dTrayPickerZ[nMoveIdx];		// AXIS 01
+		//if (nAxis == AX_ZIG_PICKER_Z)		dCheckPos = pMoveData->dTrayPickerZ[nMoveIdx];		// AXIS 01
 		//if (nAxis == AX_TRAY_PICKER_R)		dCheckPos = pMoveData->dTrayPickerR[nMoveIdx];		// AXIS 02
 		//if (nAxis == AX_LOAD_STAGE1_X)		dCheckPos = pMoveData->dLoadStage1X[nMoveIdx];		// AXIS 04
 		//if (nAxis == AX_LOAD_STAGE1_Z)		dCheckPos = pMoveData->dLoadStage1Z[nMoveIdx];		// AXIS 05
@@ -159,7 +159,7 @@ void CCommon::Move_Position(int nAxis, int nMoveIdx)
 	double dMovePos = -999.0;
 
 	//if (nAxis == AX_TRAY_PICKER_X)			dMovePos = pMoveData->dTrayPickerX[nMoveIdx];		// AXIS 00
-	//if (nAxis == AX_TRAY_PICKER_Z)			dMovePos = pMoveData->dTrayPickerZ[nMoveIdx];		// AXIS 01
+	//if (nAxis == AX_ZIG_PICKER_Z)			dMovePos = pMoveData->dTrayPickerZ[nMoveIdx];		// AXIS 01
 	//if (nAxis == AX_TRAY_PICKER_R)			dMovePos = pMoveData->dTrayPickerR[nMoveIdx];		// AXIS 02
 	//if (nAxis == AX_LOAD_STAGE1_X)			dMovePos = pMoveData->dLoadStage1X[nMoveIdx];		// AXIS 04
 	//if (nAxis == AX_LOAD_STAGE1_Z)			dMovePos = pMoveData->dLoadStage1Z[nMoveIdx];		// AXIS 05

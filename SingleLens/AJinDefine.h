@@ -7,11 +7,11 @@
 const int AXIS_COUNT = 16;		// Motion Module
 
 
-const int AX_MZ_ELEV_Z			= 0;
-const int AX_FEEDER_X			= 1;
-const int AX_FEEDER_Y			= 2;
-const int AX_TRAY_PICKER_Y		= 3;
-const int AX_TRAY_PICKER_Z		= 4;
+const int AX_MZ_ELEVATOR_Z			= 0;
+const int AX_ZIG_FEEDER_X			= 1;
+const int AX_ZIG_FEEDER_Y			= 2;
+const int AX_ZIG_PICKER_Y		= 3;
+const int AX_ZIG_PICKER_Z		= 4;
 const int AX_TOP_INSPECTOR_X	= 5;
 const int AX_TOP_INSPECTOR_Y	= 6;
 const int AX_TOP_INSPECTOR_Z	= 7;
@@ -106,21 +106,21 @@ typedef union tag_DX_DATA_00 {
 		DWORD iLoadCVMZExist3 : 1;				// X0002
 		DWORD iLoadCVMZExist2 : 1;				// X0003
 		DWORD iLoadCVMZExist1Left : 1;				// X0004
-		DWORD i0009 : 1;						// X0005
-		DWORD iLoadCVStopperUp : 1;				// X0006
-		DWORD iLoadCVStopperDown : 1;			// X0007
-		DWORD iMZElevMZExist2 : 1;				// X0008
-		DWORD iMZElevMZExist1Left : 1;				// X0009
-		DWORD iMZElevLoadStopperIn : 1;			// X0010
-		DWORD iMZElevLoadStopperOut : 1;		// X0011
-		DWORD iMZElevLoadStopperUp : 1;			// X0012
-		DWORD iMZElevLoadStopperDown : 1;		// X0013
-		DWORD iMZElevUnloadStopperUp : 1;		// X0014
-		DWORD iMZElevUnloadStopperDown : 1;		// X0015
-		DWORD iUnloadCVMZExist5 : 1;			// X0016
+		DWORD i0005 : 1;						// X0005
+		DWORD i0006 : 1;				// X0006
+		DWORD i0007 : 1;			// X0007
+		DWORD iCVPos2StopperUp : 1;				// X0008
+		DWORD iCVPos21StopperDown : 1;				// X0009
+		DWORD iCVPos1StopperUp : 1;			// X0010
+		DWORD iCVPos1StopperDown : 1;		// X0011
+		DWORD i0012 : 1;			// X0012
+		DWORD i0013 : 1;		// X0013
+		DWORD i0014 : 1;		// X0014
+		DWORD i0015 : 1;		// X0015
+		DWORD i : ;			// X0016
 		DWORD iUnloadCVMZExist4 : 1;			// X0017
 		DWORD iUnloadCVMZExist3 : 1;			// X0018
-		DWORD iUnloadCVMZExist2 : 1;			// X0019
+		DWORD iUnloadCVMZExist2 : 1;no			// X0019
 		DWORD iUnloadCVMZExist1Left : 1;			// X0020
 		DWORD i0021 : 1;						// X0021
 		DWORD iUnloadCVStopperUp	: 1;		// X0022

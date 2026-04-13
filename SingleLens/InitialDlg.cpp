@@ -45,7 +45,7 @@ void CInitialDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_LED_MAIN_AIR_0 + i, m_ledMainAir[i]);
 	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_LED_EMG_SW_0 + i, m_ledEmgSw[i]);
 	for (int i = 0; i < 13; i++) DDX_Control(pDX, IDC_LED_DOOR_OPEN_0 + i, m_ledDoorOpen[i]);
-	for (int i = 0; i < 14; i++) DDX_Control(pDX, IDC_STC_INIT_CASE_0 + i, m_stcInitCase[i]);
+	for (int i = 0; i < 10; i++) DDX_Control(pDX, IDC_STC_INIT_CASE_0 + i, m_stcInitCase[i]);
 }
 
 BEGIN_MESSAGE_MAP(CInitialDlg, CDialogEx)
@@ -79,7 +79,7 @@ void CInitialDlg::Initial_Controls()
 	for (int i = 0; i < 3; i++) m_ledEmgSw[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emRed, CLedCS::em16);
 	for (int i = 0; i < 13; i++) m_ledDoorOpen[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em16);
 	m_stcInitCase[0].Init_Ctrl("¹ÙÅÁ", 10, TRUE, RGB(0xFF, 0xFF, 0x00), RGB(0x80, 0x80, 0x80));
-	for (int i = 1; i < 14; i++) m_stcInitCase[i].Init_Ctrl("¹ÙÅÁ", 10, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x80, 0x80, 0x80));
+	for (int i = 1; i < 10; i++) m_stcInitCase[i].Init_Ctrl("¹ÙÅÁ", 10, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x80, 0x80, 0x80));
 }
 
 BOOL CInitialDlg::OnInitDialog() 
@@ -91,7 +91,7 @@ BOOL CInitialDlg::OnInitDialog()
 
 	Initial_Controls();
 
-	for (int i = 0; i < 14; i++) m_stcInitCase[i].SetWindowText("000");
+	for (int i = 0; i < 10; i++) m_stcInitCase[i].SetWindowText("000");
 	for (int i = AXIS_COUNT; i < 46; i++) {
 		m_stcAxisName[i].ShowWindow(FALSE);
 		m_ledAxisRun[i].ShowWindow(FALSE);

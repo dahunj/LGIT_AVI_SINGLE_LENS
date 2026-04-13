@@ -48,11 +48,11 @@ private:
 	CLoopTimer	m_tiMZElevLoop;			//  2. (Error : 1200)
 	CLoopTimer	m_tiFeederLoop;			//  3. (Error : 1300)
 	CLoopTimer	m_tiTrayPickerLoop;		//  4. (Error : 1400)
-	CLoopTimer	m_tiLensCleanLoop;
-	CLoopTimer	m_tiTopInspectorLoop;	//  5. (Error : 1500)
-	CLoopTimer	m_tiBtmInspectorLoop;	//  6. (Error : 1600)
-	CLoopTimer	m_tiMarkerLoop;			//  7. (Error : 1700)
-	CLoopTimer	m_tiIndexTableLoop;		//  8. (Error : 1800)
+	CLoopTimer	m_tiLensCleanLoop;		//  5. (Error : 1500)
+	CLoopTimer	m_tiTopInspectorLoop;	//  6. (Error : 1600)
+	CLoopTimer	m_tiBtmInspectorLoop;	//  7. (Error : 1700)
+	CLoopTimer	m_tiMarkerLoop;			//  8. (Error : 1800)
+	CLoopTimer	m_tiIndexTableLoop;		
 
 
 	BOOL		m_bInitComplete;
@@ -67,13 +67,13 @@ private:
 	BOOL Initial_Conveyor();			//  1. (Error : 1100)
 	BOOL Initial_MZ_Elevator();			//  2. (Error : 1200)	
 	BOOL Initial_Feeder();				//  3. (Error : 1300)
-	BOOL Initial_LensCleaner();
-	BOOL Initial_TrayPicker();			//  4. (Error : 1400)
-	BOOL Initial_TopInspector();		//  5. (Error : 1500)
-	BOOL Initial_BtmInspector();		//  6. (Error : 1600)
-	BOOL Initial_Marker();				//  7. (Error : 1700)
-	BOOL Initial_IndexTable();			//  8. (Error : 1800)
-	
+	BOOL Initial_LensCleaner();			//  4. (Error : 1400)
+	BOOL Initial_TrayPicker();			//  5. (Error : 1500)
+	BOOL Initial_TopInspector();		//  6. (Error : 1600)
+	BOOL Initial_BtmInspector();		//  7. (Error : 1700)
+	BOOL Initial_Marker();				//  8. (Error : 1800)
+	BOOL Initial_IndexTable();			
+
 	BOOL Initial_Simulation();
 
 public:
