@@ -28,7 +28,7 @@ public:
 	CLedCS		m_ledMainAir[2];
 	CLedCS		m_ledEmgSw[5];
 	CLedCS		m_ledDoorOpen[13];
-	CStaticCS	m_stcInitCase[14];
+	CStaticCS	m_stcInitCase[10];
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.

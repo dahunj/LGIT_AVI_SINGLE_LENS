@@ -149,10 +149,10 @@ typedef union tag_DX_DATA_01 {
 		DWORD iUnloadCVStopperDown : 1;		// X0107
 		DWORD iFeederGripOpen : 1;			// X0108
 		DWORD iFeederGripClose : 1;			// X0109
-		DWORD iFeederGripZigExist : 1;		// X0110
+		DWORD iFeederZigExist : 1;			// X0110
 		DWORD i0111 : 1;					// X0111
-		DWORD iFeederTipZigExist : 1;		// X0112
-		DWORD iFeederRailZigExist : 1;		// X0113
+		DWORD iMagazineZigExist : 1;		// X0112
+		DWORD iRailZigExist : 1;			// X0113
 		DWORD iFeederZigAlignIn : 1;		// X0114
 		DWORD iFeederZigAlignOut : 1;		// X0115
 		DWORD iZigPickerMasterIn : 1;		// X0116

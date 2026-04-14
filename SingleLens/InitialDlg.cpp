@@ -263,7 +263,7 @@ void CInitialDlg::Display_Status()
 
 	CString strTemp;
 	int *pCase = g_objSequenceInit.Get_InitialCase();
-	for (int i = 0; i < 11; i++) { strTemp.Format("%03d", *(pCase + i)); m_stcInitCase[i].Set_Text(strTemp); }
+	for (int i = 0; i < 10; i++) { strTemp.Format("%03d", *(pCase + i)); m_stcInitCase[i].Set_Text(strTemp); }
 }
 
 void CInitialDlg::Display_Initial() 

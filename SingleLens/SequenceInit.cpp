@@ -180,32 +180,32 @@ BOOL CSequenceInit::Initial_MainInit()
 
 	// Load
 	case 2:		
-		if (!m_pDX00->iMZElevMZExist1Left && !m_pDX00->iMZElevMZExist2) 
+		if (!m_pDX00->iMZElevMZExist1 && !m_pDX00->iMZElevMZExist2) 
 		{
 			m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 3:		
-		if (!m_pDX01->iTrayPickerExist) 
+		if (!m_pDX01->iZigPickerExist) 
 		{
 			m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
 		}
 		break;
 
 	case 4:		
-		if (!m_pDX01->iFeederCoatJigCheck)
+		if (!m_pDX01->iFeederZigExist)
 		{
 			m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 5:		
-		if (!m_pDX01->iRailCheckFront && !m_pDX01->iRailCheckRear ) 
+		if (!m_pDX01->iRailZigExist ) 
 		{
 			m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 6:		
-		if (!m_pDX01->iMZCoatJigExist) 
+		if (!m_pDX01->iMagazineZigExist) 
 		{
 			m_niMainInitCase = 50; m_tiMainInitLoop.Set_LoopTime(5000);
 		}
@@ -232,31 +232,13 @@ BOOL CSequenceInit::Initial_MainInit()
 		}
 		return TRUE;
 	case 52:
-		m_pDY01->oIndexTInOutAlignIn = FALSE;
-		m_pDY01->oIndexTInOutAlignOut = TRUE;
-		m_pDY01->oIndexTCleanerAlignIn = FALSE;
-		m_pDY01->oIndexTCleanerAlignOut = TRUE;
-		m_pDY01->oIndexTTopAlignIn = FALSE;
-		m_pDY01->oIndexTTopAlignOut = TRUE;
-		m_pDY01->oIndexTEmptyAlignIn = FALSE;
-		m_pDY01->oIndexTEmptyAlignOut = TRUE;
-		m_pDY01->oIndexTBtmAlignIn = FALSE;
-		m_pDY01->oIndexTBtmAlignOut = TRUE;
-		m_pDY01->oIndexTMarkerAlignIn = FALSE;
-		m_pDY01->oIndexTMarkerAlignOut = TRUE;
-		g_objAJinAXL.Write_Output(1);
+		g_objCommon.Set_IndexLoadAlignOut();
 		m_niMainInitCase = 90;m_tiMainInitLoop.Set_LoopTime(5000);
 		break;
 	case 53:
-		if(!m_pDX01->iIndexTInOutAlignIn && m_pDX01->iIndexTInOutAlignOut
-			&& !m_pDX01->iIndexTCleanerAlignIn && m_pDX01->iIndexTCleanerAlignOut
-			&& !m_pDX01->iIndexTTopAlignIn && m_pDX01->iIndexTTopAlignOut
-			&& !m_pDX01->iIndexTEmptyAlignIn && m_pDX01->iIndexTEmptyAlignOut
-			&& !m_pDX01->iIndexTBtmAlignIn && m_pDX01->iIndexTBtmAlignOut
-			&& !m_pDX01->iIndexTMarkAlignIn && m_pDX01->iIndexTMarkAlignOut		
-		)
+		if(g_objCommon.Get_IndexLoadAlignOut())
 		{
-			m_niMainInitCase = 90;m_tiMainInitLoop.Set_LoopTime(5000);
+			m_niMainInitCase = 90; m_tiMainInitLoop.Set_LoopTime(5000);
 		}
 		break;
 
@@ -318,7 +300,7 @@ BOOL CSequenceInit::Initial_MZ_Elevator()
 	case 0:
 		return TRUE;
 	case 1:
-		if (!m_pDX00->iMZElevMZExist1Left && !m_pDX00->iMZElevMZExist2) 
+		if (!m_pDX00->iMZElevMZExist1 && !m_pDX00->iMZElevMZExist2) 
 		{			
 			g_objAJinAXL.Set_EncoderType(AX_MZ_ELEVATOR_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_MZ_ELEVATOR_Z, 1);	// Abs
@@ -380,19 +362,19 @@ BOOL CSequenceInit::Initial_Feeder()
 	case 0:
 		return TRUE;
 	case 1:
-		if (!m_pDX01->iFeederGripZigExist) 
+		if (!m_pDX01->iFeederZigExist) 
 		{
 			m_niFeederCase++; m_tiFeederLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 2:	
-		if (!m_pDX01->iFeederTipZigExist && !m_pDX01->iFeederRailZigExist) 
+		if (!m_pDX01->iMagazineZigExist) 
 		{
 			m_niFeederCase++; m_tiFeederLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 3:	
-		if (!m_pDX01->iFeederTipZigExist && m_niTrayPickerCase > 5)  
+		if (!m_pDX01->iRailZigExist && m_niTrayPickerCase > 5)  
 		{				
 			m_niFeederCase++; m_tiFeederLoop.Set_LoopTime(5000);
 		}

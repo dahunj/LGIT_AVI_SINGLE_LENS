@@ -239,7 +239,7 @@ BOOL CSequenceMain::MZElevRun()
 		}	
 		return TRUE;
 	case 1:
-		if(!m_pDX00->iMZElevExistLeft && !m_pDX00->iMZElevExistRight)
+		if(!m_pDX00->iMZElevMZExist1 && !m_pDX00->iMZElevMZExist2)
 		{
 			//CW 회전하려면 CCW도 True 로 해야함 
 			g_objCommon.Set_LoadCVRunCW();
@@ -247,7 +247,7 @@ BOOL CSequenceMain::MZElevRun()
 		}		
 		break;
 	case 2:
-		if(m_pDX00->iMZElevExistLeft)
+		if(m_pDX00->iMZElevMZExist1)
 		{
 			g_objCommon.Set_LoadCVStop();
 			Sleep(5);
@@ -256,37 +256,39 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		break;
 	case 3:
-		if(m_pDX00->iMZElevExistRight)
+		if(m_pDX00->iMZElevMZExist2)
 		{
 			g_objCommon.Set_ElevCVStop();
 			Sleep(5);
+
+			//out 
 			//Stopper Up 
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 4:
-		if(m_pDX00->iMZElevUnloadStopperUp)
+	case 10:
+		//if(m_pDX00->iMZElevUnloadStopperUp)
 		{
 			//m_pDY00->oMZElevAlignRightIn = TRUE; m_pDY00->oMZElevAlignRightOut = FALSE;
 			g_objAJinAXL.Write_Output(0);
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 5:
+	case 11:
 		//if(m_pDX00->iMZElevUnloadStopperIn)
 		{
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 6:
-		if(!m_pDX00->iMZElevExistLeft)
+	case 12:
+		//if(!m_pDX00->iMZElevExistLeft)
 		{
 			g_objCommon.Set_LoadCVRunCW();
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 7:
-		if(m_pDX00->iMZElevExistLeft)
+	case 13:
+		//if(m_pDX00->iMZElevExistLeft)
 		{
 			g_objCommon.Set_LoadCVStop();
 			Sleep(10);
@@ -294,21 +296,21 @@ BOOL CSequenceMain::MZElevRun()
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 8:
-		if(m_pDX00->iMZElevLoadStopperUp)
+	case 14:
+		//if(m_pDX00->iMZElevLoadStopperUp)
 		{
 			//m_pDY00->oMZElevAlignRightIn = TRUE; m_pDY00->oMZElevAlignRightOut = FALSE;
 			g_objAJinAXL.Write_Output(0);
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 9:
-		if(m_pDX00->iMZElevLoadStopperIn)
+	case 15:
+		//if(m_pDX00->iMZElevLoadStopperIn)
 		{
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 10:
+	case 16:
 		nSlotNo = 1;
 		m_nMZElevCase = (int) FeederBranch::LoadSearch; m_nMZElevLoop.Set_LoopTime(5000);
 		return TRUE;	
@@ -361,7 +363,7 @@ BOOL CSequenceMain::FeederRun()
 	case 4:
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, Feeder_Y::CheckExist))
 		{
-			if(m_pDX01->iFeederCoatJigCheck)
+			if(m_pDX01->iMagazineZigExist)
 			{				
 				g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, Feeder_Y::MZ2);
 				m_nFeederCase = 10; m_nFeederLoop.Set_LoopTime(5000);
@@ -455,7 +457,7 @@ BOOL CSequenceMain::FeederRun()
 		}
 		break;
 	case 34:
-		if(g_objCommon.Get_FeederClose() && m_pDX01->iFeederCoatJigCheck)
+		if(g_objCommon.Get_FeederClose() && m_pDX01->iFeederZigExist)
 		{
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, Feeder_Y::MZ2);
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
@@ -1188,17 +1190,14 @@ BOOL CSequenceMain::IndexTRun()
 	case 10:
 		// Wait Done 
 		return TRUE;
+
 	case IndexTBranch::ZoneStart:
 		if(g_objCommon.Get_IndexLoadAlignIn()) //Set at ZigPicker Run 
 		{
 			m_nIndexTCase++; m_nIndexTLoop.Set_LoopTime(5000);
 		}
 	case 12:
-		if(Check_IndexDone() && g_objCommon.Get_IndexLoadAlignIn()
-			&& g_objCommon.Get_IndexCleanAlignIn()
-			&& g_objCommon.Get_IndexTopAlignIn()
-			&& g_objCommon.Get_IndexBtmAlignIn()
-			&& g_objCommon.Get_IndexMarkAlignIn())
+		if(Check_IndexDone() && g_objCommon.Get_IndexLoadAlignIn())
 		{
 			if (Check_IndexEmpty(-1)) 
 			{ 

@@ -40,7 +40,7 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_LBL_LOT_0 + i, m_lblLot[i]);*/
 
 	//new 
-	for (int i = 0; i < 60; i++) DDX_Control(pDX, IDC_STC_MZ_LOTID_0 + i, m_stcLotId[i]);
+	for (int i = 0; i < 60; i++) DDX_Control(pDX, IDC_STC_MZ_ZIGID_0 + i, m_stcLotId[i]);
 	for (int i = 0; i < 60; i++) DDX_Control(pDX, IDC_STC_MZ_LENS_CNT_0+ i, m_stcLensCnt[i]);
 
 
@@ -105,7 +105,7 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_WM_SHOWWINDOW()
 	ON_WM_TIMER()
 
-	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MZ_LOTID_0, IDC_STC_MZ_LOTID_59, OnStcLotIdClick)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MZ_ZIGID_0, IDC_STC_MZ_ZIGID_59, OnStcLotIdClick)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MZ_LENS_CNT_0, IDC_STC_MZ_LENS_CNT_59, OnStcLensCountClick)
 
 
@@ -412,7 +412,7 @@ void CWorkDlg::OnStcLotIdClick(UINT nID)
 		return;
 	}
 
-	int ID = nID - IDC_STC_MZ_LOTID_0;
+	int ID = nID - IDC_STC_MZ_ZIGID_0;
 
 	if (m_rdoWorkStart.GetCheck()) 
 	{
