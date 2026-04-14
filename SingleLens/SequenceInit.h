@@ -39,10 +39,9 @@ private:
 	int			m_niLensCleanCase;			//  5. (Error : 1500)
 	int			m_niTopInspectorCase;		//  6. (Error : 1600)
 	int			m_niBtmInspectorCase; 		//  7. (Error : 1700)
-	int			m_niMarkerCase;				//  8. (Error : 1800)
-	int			m_niIndexTableCase;			
-
-
+	int			m_niMarkUnitCase;				//  8. (Error : 1800)
+	int			m_niMainIndexCase;			
+	
 	CLoopTimer	m_tiMainInitLoop;		//  0. (Error : 1000)
 	CLoopTimer	m_tiConveyorLoop;		//  1. (Error : 1100)
 	CLoopTimer	m_tiMZElevLoop;			//  2. (Error : 1200)
@@ -51,10 +50,9 @@ private:
 	CLoopTimer	m_tiLensCleanLoop;		//  5. (Error : 1500)
 	CLoopTimer	m_tiTopInspectorLoop;	//  6. (Error : 1600)
 	CLoopTimer	m_tiBtmInspectorLoop;	//  7. (Error : 1700)
-	CLoopTimer	m_tiMarkerLoop;			//  8. (Error : 1800)
-	CLoopTimer	m_tiIndexTableLoop;		
-
-
+	CLoopTimer	m_tiMarkUnitLoop;			//  8. (Error : 1800)
+	CLoopTimer	m_tiMainIndexLoop;		
+	
 	BOOL		m_bInitComplete;
 	
 protected:
@@ -67,12 +65,12 @@ private:
 	BOOL Initial_Conveyor();			//  1. (Error : 1100)
 	BOOL Initial_MZ_Elevator();			//  2. (Error : 1200)	
 	BOOL Initial_Feeder();				//  3. (Error : 1300)
-	BOOL Initial_LensCleaner();			//  4. (Error : 1400)
-	BOOL Initial_TrayPicker();			//  5. (Error : 1500)
+	BOOL Initial_TrayPicker();			//  5. (Error : 1400)
+	BOOL Initial_LensCleaner();			//  4. (Error : 1500)
 	BOOL Initial_TopInspector();		//  6. (Error : 1600)
 	BOOL Initial_BtmInspector();		//  7. (Error : 1700)
-	BOOL Initial_Marker();				//  8. (Error : 1800)
-	BOOL Initial_IndexTable();			
+	BOOL Initial_MarkUnit();			//  8. (Error : 1800)
+	BOOL Initial_MainIndex();			//  9. (Error : 1900)
 
 	BOOL Initial_Simulation();
 

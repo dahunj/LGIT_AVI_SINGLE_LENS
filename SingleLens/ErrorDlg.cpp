@@ -39,8 +39,8 @@ void CErrorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STC_ERR_TITLE, m_stcErrTitle);
 	DDX_Control(pDX, IDC_IMAGE_0, m_Image);
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_LED_MAIN_AIR_0 + i, m_ledMainAir[i]);
-	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_LED_EMG_SW_0 + i, m_ledEmgSw[i]);
-	for (int i = 0; i < 13; i++) DDX_Control(pDX, IDC_LED_DOOR_OPEN_0 + i, m_ledDoorOpen[i]);
+	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_LED_EMG_SW_0 + i, m_ledEmgSw[i]);
+	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_LED_DOOR_OPEN_0 + i, m_ledDoorOpen[i]);
 	for (int i = 0; i < 14; i++) DDX_Control(pDX, IDC_STC_ERR_POS_0 + i, m_stcErrPos[i]);
 	DDX_Control(pDX, IDC_STC_ERR_NO, m_stcErrNo);
 	DDX_Control(pDX, IDC_STC_MSG_BACK, m_stcMsgBack);
@@ -80,8 +80,8 @@ void CErrorDlg::Initial_Controls()
 	m_Image.SetWindowPos(NULL, 0, 0, 933, 677, SWP_NOZORDER | SWP_NOMOVE);	// 533x387 : ¿øº» 800x580 (933x677)
 
 	for (int i = 0; i < 2; i++) m_ledMainAir[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em24);
-	for (int i = 0; i < 3; i++) m_ledEmgSw[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emRed, CLedCS::em24);
-	for (int i = 0; i < 13; i++) m_ledDoorOpen[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em24);
+	for (int i = 0; i < 4; i++) m_ledEmgSw[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emRed, CLedCS::em24);
+	for (int i = 0; i < 8; i++) m_ledDoorOpen[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em24);
 
 	for (int i = 0; i < 14; i++) m_stcErrPos[i].Init_Ctrl("¹ÙÅÁ", 12, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00));
 

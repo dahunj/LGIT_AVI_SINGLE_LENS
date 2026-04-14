@@ -703,7 +703,7 @@ UINT __cdecl CAJinAXL::WorkerProc(LPVOID pParam)
 		{	
 			::Sleep(SIM_WAITTIMEM);
 
-			if(nAxis == AX_INDEX_TABLE_R)
+			if(nAxis == AX_MAIN_INDEX_R)
 			{
 				if(dPos >= dPosCur)
 				{
@@ -746,7 +746,7 @@ UINT __cdecl CAJinAXL::WorkerProc(LPVOID pParam)
 			::Sleep(SIM_WAITTIMEM);
 
 
-			if(nAxis == AX_INDEX_TABLE_R)
+			if(nAxis == AX_MAIN_INDEX_R)
 			{
 				if(dPos >= dPosCur)
 				{
@@ -830,8 +830,71 @@ void CAJinAXL::NotifyDone(int id)
 void CAJinAXL::Sim_SetOutToIn(int nNo)
 {
 	Sleep(SIM_WAITTIMES);
-	BOOL bT = TRUE;
-	BOOL bF = FALSE;
+	
+	if(nNo == 0)
+	{
+		m_DX00.iLoadCVStopper1Up = m_DY00.oLoadCVStopper1Up;
+		m_DX00.iLoadCVStopper1Down = m_DY00.oLoadCVStopper1Down;
+		m_DX00.iLoadCVStopper2Up = m_DY00.oLoadCVStopper2Up;
+		m_DX00.iLoadCVStopper2Down = m_DY00.oLoadCVStopper2Down;
+
+		m_DX00.iMZElevStopper1Up = m_DY00.oMZElevStopper1Up;
+		m_DX00.iMZElevStopper1Down = m_DY00.oMZElevStopper1Down;
+		m_DX00.iMZElevStopper1In = m_DY00.oMZElevStopper1In;
+		m_DX00.iMZElevStopper1Out = m_DY00.oMZElevStopper1Out;
+
+		m_DX00.iMZElevStopper2Up =		m_DY00.oMZElevStopper2Up;
+		m_DX00.iMZElevStopper2Down =	m_DY00.oMZElevStopper2Down;
+		m_DX00.iMZElevStopper2In =		m_DY00.oMZElevStopper2In;
+		m_DX00.iMZElevStopper2Out =		m_DY00.oMZElevStopper2Out;
+	}
+
+	if(nNo == 1)
+	{
+		m_DX01.iUnloadCVStopperUp =		m_DY01.oUnloadCVStopperUp;
+		m_DX01.iUnloadCVStopperDown =	m_DY01.oUnloadCVStopperDown;
+		
+		m_DX01.iFeederGripOpen =		m_DY01.oFeederGripOpen;
+		m_DX01.iFeederGripClose =		m_DY01.oFeederGripClose;
+
+		m_DX01.iFeederZigAlignIn =		m_DY01.oFeederZigAlignIn;
+		m_DX01.iFeederZigAlignOut =		m_DY01.oFeederZigAlignOut;
+		m_DX01.iZigPickerMasterIn =		m_DY01.oZigPickerMasterIn;
+		m_DX01.iZigPickerMasterOut =	m_DY01.oZigPickerMasterOut;
+		m_DX01.iZigPickerSlaveIn =		m_DY01.oZigPickerSlaveIn;
+		m_DX01.iZigPickerSlaveOut =		m_DY01.oZigPickerSlaveOut;
+
+	}
+
+	if(nNo == 2)
+	{
+		m_DX02.iMainIndexZigAlignOut =		m_DY02.oMainIndexZigAlignOut;
+		m_DX02.iMainIndexZigAlignIn =		m_DY02.oMainIndexZigAlignIn;
+		m_DX02.iLensCleanerTopDown =		m_DY02.oLensCleanerTopDown;
+		m_DX02.iLensCleanerTopUp =			m_DY02.oLensCleanerTopUp;
+		m_DX02.iLensCleanerTopForward =		m_DY02.oLensCleanerTopForward;
+		m_DX02.iLensCleanerTopBackward =	m_DY02.oLensCleanerTopBackward;
+		m_DX02.iLensCleanerBtmDown =		m_DY02.oLensCleanerBtmDown;
+		m_DX02.iLensCleanerBtmUp =			m_DY02.oLensCleanerBtmUp;
+		m_DX02.iLensCleanerBtmForward =		m_DY02.oLensCleanerBtmForward;
+		m_DX02.iLensCleanerBtmBackward =	m_DY02.oLensCleanerBtmBackward;
+		m_DX02.IMarkingPenIn =				m_DY02.oMarkingPenIn;
+		m_DX02.IMarkingPenOut =				m_DY02.oMarkingPenOut;
+
+	}
+
+	if(nNo == 3)
+	{
+		m_DX03.iDoor01UnlockFront1 =			m_DY03.oDoor01UnlockFront1; 	
+		m_DX03.iDoor02UnlockFront2 =			m_DY03.oDoor02UnlockFront2; 	
+		m_DX03.iDoor03UnlockRight1 =			m_DY03.oDoor03UnlockRight1; 	
+		m_DX03.iDoor04UnlockRight2 =			m_DY03.oDoor04UnlockRight2; 	
+		m_DX03.iDoor05UnlockRear1 =			m_DY03.oDoor05UnlockRear1; 	
+		m_DX03.iDoor06UnlockRear2 =			m_DY03.oDoor06UnlockRear2; 	
+		m_DX03.iDoor07UnlockLeft1 =			m_DY03.oDoor07UnlockLeft1;	
+		m_DX03.iDoor08UnlockLeft2 =			m_DY03.oDoor08UnlockLeft2;	
+
+	}
 
 	
 

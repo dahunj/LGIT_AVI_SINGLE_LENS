@@ -181,6 +181,22 @@ BOOL CDataManager::Read_MoveData()
 
 	CString strKey;
 
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i); m_MoveData.dMZElevZ[i]				= INI.Get_Double("00_MZ_ELEVATOR_Z", strKey, 0.0); }
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i); m_MoveData.dFeederX[i]				= INI.Get_Double("01_ZIG_FEEDER_X", strKey, 0.0); }
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i); m_MoveData.dFeederY[i]				= INI.Get_Double("02_ZIG_FEEDER_Y", strKey, 0.0); }
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i); m_MoveData.dTrayPickerY[i]			= INI.Get_Double("03_ZIG_PICKER_Y", strKey, 0.0); }
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i); m_MoveData.dTrayPickerZ[i]			= INI.Get_Double("04_ZIG_PICKER_Z", strKey, 0.0); }
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i); m_MoveData.dTopInspectorX[i]		= INI.Get_Double("05_TOP_INSPECTOR_X", strKey, 0.0); }
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i); m_MoveData.dTopInspectorY[i]		= INI.Get_Double("06_TOP_INSPECTOR_Y", strKey, 0.0); }
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i); m_MoveData.dTopInspectorZ[i]		= INI.Get_Double("07_TOP_INSPECTOR_Z", strKey, 0.0); }
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i); m_MoveData.dBtmInspectorX[i]		= INI.Get_Double("08_BTM_INSPECTOR_X", strKey, 0.0); }
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i); m_MoveData.dBtmInspectorY[i]		= INI.Get_Double("09_BTM_INSPECTOR_Y", strKey, 0.0); }
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i); m_MoveData.dBtmInspectorZ[i]		= INI.Get_Double("10_BTM_INSPECTOR_Z", strKey, 0.0); }
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i); m_MoveData.dMarkUnitX[i]			= INI.Get_Double("11_MARK_UNIT_X", strKey, 0.0); }
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i); m_MoveData.dMarkUnitY[i]			= INI.Get_Double("12_MARK_UNIT_Y", strKey, 0.0); }
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i); m_MoveData.dMarkUnitZ[i]			= INI.Get_Double("13_MARK_UNIT_Z", strKey, 0.0); }
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i); m_MoveData.dMainIndexR[i]			= INI.Get_Double("14_MAIN_INDEX_R", strKey, 0.0); }
+
 	return TRUE;
 }
 

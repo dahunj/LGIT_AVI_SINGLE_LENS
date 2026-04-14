@@ -109,41 +109,24 @@ BOOL CCommon::Check_Position(int nAxis, int nMoveIdx, double dRange)
 
 	double dCheckPos = -1.0;
 
-	if (g_objAJinAXL.Is_Done(nAxis)) {
-		//if (nAxis == AX_TRAY_PICKER_X)		dCheckPos = pMoveData->dTrayPickerX[nMoveIdx];		// AXIS 00
-		//if (nAxis == AX_ZIG_PICKER_Z)		dCheckPos = pMoveData->dTrayPickerZ[nMoveIdx];		// AXIS 01
-		//if (nAxis == AX_TRAY_PICKER_R)		dCheckPos = pMoveData->dTrayPickerR[nMoveIdx];		// AXIS 02
-		//if (nAxis == AX_LOAD_STAGE1_X)		dCheckPos = pMoveData->dLoadStage1X[nMoveIdx];		// AXIS 04
-		//if (nAxis == AX_LOAD_STAGE1_Z)		dCheckPos = pMoveData->dLoadStage1Z[nMoveIdx];		// AXIS 05
-		//if (nAxis == AX_LOAD_STAGE2_X)		dCheckPos = pMoveData->dLoadStage2X[nMoveIdx];		// AXIS 06
-		//if (nAxis == AX_LOAD_STAGE2_Z)		dCheckPos = pMoveData->dLoadStage2Z[nMoveIdx];		// AXIS 07
-		//if (nAxis == AX_LOAD_PICKER_Y)		dCheckPos = pMoveData->dLoadPickerY[nMoveIdx];		// AXIS 08
-		//if (nAxis == AX_LOAD_PICKER_Z)		dCheckPos = pMoveData->dLoadPickerZ[nMoveIdx];		// AXIS 09
-		//if (nAxis == AX_LOAD_PICKER_P)		dCheckPos = pMoveData->dLoadPickerP[nMoveIdx];		// AXIS 00
-		//if (nAxis == AX_MAIN_INDEX_R)		dCheckPos = pMoveData->dMainIndexR[nMoveIdx];		// AXIS 11
-		//if (nAxis == AX_VISION_CM_X)		dCheckPos = pMoveData->dVisionCmX[nMoveIdx];		// AXIS 12
-		//if (nAxis == AX_CAP_STAGE1_X)		dCheckPos = pMoveData->dCapStage1X[nMoveIdx];		// AXIS 13
-		//if (nAxis == AX_CAP_STAGE1_Z)		dCheckPos = pMoveData->dCapStage1Z[nMoveIdx];		// AXIS 14
-		//if (nAxis == AX_CAP_STAGE2_X)		dCheckPos = pMoveData->dCapStage2X[nMoveIdx];		// AXIS 15
-		//if (nAxis == AX_CAP_STAGE2_Z)		dCheckPos = pMoveData->dCapStage2Z[nMoveIdx];		// AXIS 16
-		//if (nAxis == AX_CAP_PICKER_Y)		dCheckPos = pMoveData->dCapPickerY[nMoveIdx];		// AXIS 17
-		//if (nAxis == AX_CAP_PICKER_Z)		dCheckPos = pMoveData->dCapPickerZ[nMoveIdx];		// AXIS 18
-		//if (nAxis == AX_CAP_PICKER_P)		dCheckPos = pMoveData->dCapPickerP[nMoveIdx];		// AXIS 19
-		//if (nAxis == AX_CAP_BUFFER_Y)		dCheckPos = pMoveData->dCapBufferY[nMoveIdx];		// AXIS 10
-		//if (nAxis == AX_VISION_CAP_Y)		dCheckPos = pMoveData->dVisionCapY[nMoveIdx];		// AXIS 21
-		//if (nAxis == AX_ASSY_PICKER_X)		dCheckPos = pMoveData->dAssyPickerX[nMoveIdx];		// AXIS 22
-		//if (nAxis == AX_ASSY_PICKER_Y)		dCheckPos = pMoveData->dAssyPickerY[nMoveIdx];		// AXIS 23
-		//if (nAxis == AX_ASSY_PICKER_Z)		dCheckPos = pMoveData->dAssyPickerZ[nMoveIdx];		// AXIS 24
-		//if (nAxis == AX_TRANS_STAGE_X)		dCheckPos = pMoveData->dTransStageX[nMoveIdx];		// AXIS 25
-		//if (nAxis == AX_TRANS_STAGE_Z)		dCheckPos = pMoveData->dTransStageZ[nMoveIdx];		// AXIS 26
-		//if (nAxis == AX_TRANS_STAGE_T)		dCheckPos = pMoveData->dTransStageT[nMoveIdx];		// AXIS 27
-		//if (nAxis == AX_UNLOAD_PICKER_X)	dCheckPos = pMoveData->dUnloadPickerX[nMoveIdx];	// AXIS 28
-		//if (nAxis == AX_UNLOAD_PICKER_Z)	dCheckPos = pMoveData->dUnloadPickerZ[nMoveIdx];	// AXIS 29
-		//if (nAxis == AX_UNLOAD_PICKER_P)	dCheckPos = pMoveData->dUnloadPickerP[nMoveIdx];	// AXIS 20
-		//if (nAxis == AX_UNLOAD_STAGE1_Y)	dCheckPos = pMoveData->dUnloadStage1Y[nMoveIdx];	// AXIS 31
-		//if (nAxis == AX_UNLOAD_STAGE1_Z)	dCheckPos = pMoveData->dUnloadStage1Z[nMoveIdx];	// AXIS 32
-		//if (nAxis == AX_UNLOAD_STAGE2_Y)	dCheckPos = pMoveData->dUnloadStage2Y[nMoveIdx];	// AXIS 33
-		//if (nAxis == AX_UNLOAD_STAGE2_Z)	dCheckPos = pMoveData->dUnloadStage2Z[nMoveIdx];	// AXIS 34
+	if (g_objAJinAXL.Is_Done(nAxis))
+	{
+		if (nAxis == AX_MZ_ELEVATOR_Z)			dCheckPos = pMoveData->dMZElevZ[nMoveIdx];		// AXIS 00
+		if (nAxis == AX_ZIG_FEEDER_X)			dCheckPos = pMoveData->dFeederX[nMoveIdx];		// AXIS 01
+		if (nAxis == AX_ZIG_FEEDER_Y)			dCheckPos = pMoveData->dFeederY[nMoveIdx];		// AXIS 02
+		if (nAxis == AX_ZIG_PICKER_Y)			dCheckPos = pMoveData->dTrayPickerY[nMoveIdx];		// AXIS 04
+		if (nAxis == AX_ZIG_PICKER_Z)			dCheckPos = pMoveData->dTrayPickerZ[nMoveIdx];		// AXIS 05
+		if (nAxis == AX_TOP_INSPECTOR_X)		dCheckPos = pMoveData->dTopInspectorX[nMoveIdx];		// AXIS 06
+		if (nAxis == AX_TOP_INSPECTOR_Y)		dCheckPos = pMoveData->dTopInspectorY[nMoveIdx];		// AXIS 07
+		if (nAxis == AX_TOP_INSPECTOR_Z)		dCheckPos = pMoveData->dTopInspectorZ[nMoveIdx];		// AXIS 08
+		if (nAxis == AX_BTM_INSPECTOR_X)		dCheckPos = pMoveData->dBtmInspectorX[nMoveIdx];		// AXIS 09
+		if (nAxis == AX_BTM_INSPECTOR_Y)		dCheckPos = pMoveData->dBtmInspectorY[nMoveIdx];		// AXIS 00
+		if (nAxis == AX_BTM_INSPECTOR_Z)		dCheckPos = pMoveData->dBtmInspectorZ[nMoveIdx];		// AXIS 11
+		if (nAxis == AX_MARK_UNIT_X)			dCheckPos = pMoveData->dMarkUnitX[nMoveIdx];		// AXIS 12
+		if (nAxis == AX_MARK_UNIT_Y)			dCheckPos = pMoveData->dMarkUnitY[nMoveIdx];		// AXIS 13
+		if (nAxis == AX_MARK_UNIT_Z)			dCheckPos = pMoveData->dMarkUnitZ[nMoveIdx];		// AXIS 14
+		if (nAxis == AX_MAIN_INDEX_R)			dCheckPos = pMoveData->dMainIndexR[nMoveIdx];		// AXIS 15
+		
 
 		if (fabs(dCurrentPos - dCheckPos) < dRange) return TRUE;
 
@@ -158,40 +141,21 @@ void CCommon::Move_Position(int nAxis, int nMoveIdx)
 
 	double dMovePos = -999.0;
 
-	//if (nAxis == AX_TRAY_PICKER_X)			dMovePos = pMoveData->dTrayPickerX[nMoveIdx];		// AXIS 00
-	//if (nAxis == AX_ZIG_PICKER_Z)			dMovePos = pMoveData->dTrayPickerZ[nMoveIdx];		// AXIS 01
-	//if (nAxis == AX_TRAY_PICKER_R)			dMovePos = pMoveData->dTrayPickerR[nMoveIdx];		// AXIS 02
-	//if (nAxis == AX_LOAD_STAGE1_X)			dMovePos = pMoveData->dLoadStage1X[nMoveIdx];		// AXIS 04
-	//if (nAxis == AX_LOAD_STAGE1_Z)			dMovePos = pMoveData->dLoadStage1Z[nMoveIdx];		// AXIS 05
-	//if (nAxis == AX_LOAD_STAGE2_X)			dMovePos = pMoveData->dLoadStage2X[nMoveIdx];		// AXIS 06
-	//if (nAxis == AX_LOAD_STAGE2_Z)			dMovePos = pMoveData->dLoadStage2Z[nMoveIdx];		// AXIS 07
-	//if (nAxis == AX_LOAD_PICKER_Y)			dMovePos = pMoveData->dLoadPickerY[nMoveIdx];		// AXIS 08
-	//if (nAxis == AX_LOAD_PICKER_Z)			dMovePos = pMoveData->dLoadPickerZ[nMoveIdx];		// AXIS 09
-	//if (nAxis == AX_LOAD_PICKER_P)			dMovePos = pMoveData->dLoadPickerP[nMoveIdx];		// AXIS 00
-	//if (nAxis == AX_MAIN_INDEX_R)			dMovePos = pMoveData->dMainIndexR[nMoveIdx];		// AXIS 11
-	//if (nAxis == AX_VISION_CM_X)			dMovePos = pMoveData->dVisionCmX[nMoveIdx];			// AXIS 12
-	//if (nAxis == AX_CAP_STAGE1_X)			dMovePos = pMoveData->dCapStage1X[nMoveIdx];		// AXIS 13
-	//if (nAxis == AX_CAP_STAGE1_Z)			dMovePos = pMoveData->dCapStage1Z[nMoveIdx];		// AXIS 14
-	//if (nAxis == AX_CAP_STAGE2_X)			dMovePos = pMoveData->dCapStage2X[nMoveIdx];		// AXIS 15
-	//if (nAxis == AX_CAP_STAGE2_Z)			dMovePos = pMoveData->dCapStage2Z[nMoveIdx];		// AXIS 16
-	//if (nAxis == AX_CAP_PICKER_Y)			dMovePos = pMoveData->dCapPickerY[nMoveIdx];		// AXIS 17
-	//if (nAxis == AX_CAP_PICKER_Z)			dMovePos = pMoveData->dCapPickerZ[nMoveIdx];		// AXIS 18
-	//if (nAxis == AX_CAP_PICKER_P)			dMovePos = pMoveData->dCapPickerP[nMoveIdx];		// AXIS 19
-	//if (nAxis == AX_CAP_BUFFER_Y)			dMovePos = pMoveData->dCapBufferY[nMoveIdx];		// AXIS 10
-	//if (nAxis == AX_VISION_CAP_Y)			dMovePos = pMoveData->dVisionCapY[nMoveIdx];		// AXIS 21
-	//if (nAxis == AX_ASSY_PICKER_X)			dMovePos = pMoveData->dAssyPickerX[nMoveIdx];		// AXIS 22
-	//if (nAxis == AX_ASSY_PICKER_Y)			dMovePos = pMoveData->dAssyPickerY[nMoveIdx];		// AXIS 23
-	//if (nAxis == AX_ASSY_PICKER_Z)			dMovePos = pMoveData->dAssyPickerZ[nMoveIdx];		// AXIS 24
-	//if (nAxis == AX_TRANS_STAGE_X)			dMovePos = pMoveData->dTransStageX[nMoveIdx];		// AXIS 25
-	//if (nAxis == AX_TRANS_STAGE_Z)			dMovePos = pMoveData->dTransStageZ[nMoveIdx];		// AXIS 26
-	//if (nAxis == AX_TRANS_STAGE_T)			dMovePos = pMoveData->dTransStageT[nMoveIdx];		// AXIS 27
-	//if (nAxis == AX_UNLOAD_PICKER_X)		dMovePos = pMoveData->dUnloadPickerX[nMoveIdx];		// AXIS 28
-	//if (nAxis == AX_UNLOAD_PICKER_Z)		dMovePos = pMoveData->dUnloadPickerZ[nMoveIdx];		// AXIS 29
-	//if (nAxis == AX_UNLOAD_PICKER_P)		dMovePos = pMoveData->dUnloadPickerP[nMoveIdx];		// AXIS 20
-	//if (nAxis == AX_UNLOAD_STAGE1_Y)		dMovePos = pMoveData->dUnloadStage1Y[nMoveIdx];		// AXIS 31
-	//if (nAxis == AX_UNLOAD_STAGE1_Z)		dMovePos = pMoveData->dUnloadStage1Z[nMoveIdx];		// AXIS 32
-	//if (nAxis == AX_UNLOAD_STAGE2_Y)		dMovePos = pMoveData->dUnloadStage2Y[nMoveIdx];		// AXIS 33
-	//if (nAxis == AX_UNLOAD_STAGE2_Z)		dMovePos = pMoveData->dUnloadStage2Z[nMoveIdx];		// AXIS 34
+	if (nAxis == AX_MZ_ELEVATOR_Z)			dMovePos = pMoveData->dMZElevZ[nMoveIdx];		// AXIS 00
+	if (nAxis == AX_ZIG_FEEDER_X)			dMovePos = pMoveData->dFeederX[nMoveIdx];		// AXIS 01
+	if (nAxis == AX_ZIG_FEEDER_Y)			dMovePos = pMoveData->dFeederY[nMoveIdx];		// AXIS 02
+	if (nAxis == AX_ZIG_PICKER_Y)			dMovePos = pMoveData->dTrayPickerY[nMoveIdx];		// AXIS 04
+	if (nAxis == AX_ZIG_PICKER_Z)			dMovePos = pMoveData->dTrayPickerZ[nMoveIdx];		// AXIS 05
+	if (nAxis == AX_TOP_INSPECTOR_X)		dMovePos = pMoveData->dTopInspectorX[nMoveIdx];		// AXIS 06
+	if (nAxis == AX_TOP_INSPECTOR_Y)		dMovePos = pMoveData->dTopInspectorY[nMoveIdx];		// AXIS 07
+	if (nAxis == AX_TOP_INSPECTOR_Z)		dMovePos = pMoveData->dTopInspectorZ[nMoveIdx];		// AXIS 08
+	if (nAxis == AX_BTM_INSPECTOR_X)		dMovePos = pMoveData->dBtmInspectorX[nMoveIdx];		// AXIS 09
+	if (nAxis == AX_BTM_INSPECTOR_Y)		dMovePos = pMoveData->dBtmInspectorY[nMoveIdx];		// AXIS 00
+	if (nAxis == AX_BTM_INSPECTOR_Z)		dMovePos = pMoveData->dBtmInspectorZ[nMoveIdx];		// AXIS 11
+	if (nAxis == AX_MARK_UNIT_X)			dMovePos = pMoveData->dMarkUnitX[nMoveIdx];		// AXIS 12
+	if (nAxis == AX_MARK_UNIT_Y)			dMovePos = pMoveData->dMarkUnitY[nMoveIdx];		// AXIS 13
+	if (nAxis == AX_MARK_UNIT_Z)			dMovePos = pMoveData->dMarkUnitZ[nMoveIdx];		// AXIS 14
+	if (nAxis == AX_MAIN_INDEX_R)			dMovePos = pMoveData->dMainIndexR[nMoveIdx];		// AXIS 15
 
 	if (dMovePos == -999) return;
 	g_objAJinAXL.Move_Absolute(nAxis, dMovePos);
@@ -562,8 +526,8 @@ void CCommon::Set_IndexLoadAlignIn()
 {
 	DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
 
-	pDY02->oIndexTZigAlignIn = TRUE;
-	pDY02->oIndexTZigAlignOut = FALSE;
+	pDY02->oMainIndexZigAlignIn = TRUE;
+	pDY02->oMainIndexZigAlignOut = FALSE;
 	g_objAJinAXL.Write_Output(2);
 
 }
@@ -572,8 +536,8 @@ void CCommon::Set_IndexLoadAlignOut()
 {
 	DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
 
-	pDY02->oIndexTZigAlignIn = FALSE;
-	pDY02->oIndexTZigAlignOut = TRUE;
+	pDY02->oMainIndexZigAlignIn = FALSE;
+	pDY02->oMainIndexZigAlignOut = TRUE;
 	g_objAJinAXL.Write_Output(2);
 
 }
@@ -586,7 +550,7 @@ BOOL CCommon::Get_IndexLoadAlignIn()
 {
 	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
 		
-	if(pDX02->iIndexTAlignIn && !pDX02->iIndexTAlignOut)
+	if(pDX02->iMainIndexZigAlignIn && !pDX02->iMainIndexZigAlignOut)
 	{
 		return TRUE;
 	}
@@ -597,7 +561,7 @@ BOOL CCommon::Get_IndexLoadAlignOut()
 {
 	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
 
-	if(!pDX02->iIndexTAlignIn && pDX02->iIndexTAlignOut)
+	if(!pDX02->iMainIndexZigAlignIn && pDX02->iMainIndexZigAlignOut)
 	{
 		return TRUE;
 	}
@@ -607,16 +571,16 @@ BOOL CCommon::Get_IndexLoadAlignOut()
 void CCommon::Set_CleanerClose()
 {
 	DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
-	pDY02->oLensCleannerTopDown = TRUE; pDY02->oLensCleannerTopUp = FALSE;
-	pDY02->oLensCleannerBtmUp = TRUE; pDY02->oLensCleannerBtmDown = FALSE;
+	pDY02->oLensCleanerTopDown = TRUE; pDY02->oLensCleanerTopUp = FALSE;
+	pDY02->oLensCleanerBtmUp = TRUE; pDY02->oLensCleanerBtmDown = FALSE;
 	g_objAJinAXL.Write_Output(2);
 }
 
 void CCommon::Set_CleanerOpen()
 {
 	DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
-	pDY02->oLensCleannerTopDown = FALSE; pDY02->oLensCleannerTopUp = TRUE;
-	pDY02->oLensCleannerBtmUp = FALSE; pDY02->oLensCleannerBtmDown = TRUE;
+	pDY02->oLensCleanerTopDown = FALSE; pDY02->oLensCleanerTopUp = TRUE;
+	pDY02->oLensCleanerBtmUp = FALSE; pDY02->oLensCleanerBtmDown = TRUE;
 	g_objAJinAXL.Write_Output(2);
 }
 
@@ -651,16 +615,16 @@ BOOL CCommon::Get_CleanerOpen()
 void CCommon::Set_CleanerForward()
 {
 	DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
-	pDY02->oLensCleannerTopForward = TRUE; pDY02->oLensCleannerTopBackward = FALSE;
-	pDY02->oLensCleannerBtmForward = TRUE; pDY02->oLensCleannerBtmBackward = FALSE;
+	pDY02->oLensCleanerTopForward = TRUE; pDY02->oLensCleanerTopBackward = FALSE;
+	pDY02->oLensCleanerBtmForward = TRUE; pDY02->oLensCleanerBtmBackward = FALSE;
 	g_objAJinAXL.Write_Output(2);
 }
 
 void CCommon::Set_CleanerBackward()
 {
 	DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
-	pDY02->oLensCleannerTopForward = FALSE; pDY02->oLensCleannerTopBackward = TRUE;
-	pDY02->oLensCleannerBtmForward = FALSE; pDY02->oLensCleannerBtmBackward = TRUE;
+	pDY02->oLensCleanerTopForward = FALSE; pDY02->oLensCleanerTopBackward = TRUE;
+	pDY02->oLensCleanerBtmForward = FALSE; pDY02->oLensCleanerBtmBackward = TRUE;
 	g_objAJinAXL.Write_Output(2);
 }
 

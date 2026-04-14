@@ -340,7 +340,7 @@ BOOL CSequenceMain::FeederRun()
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, Feeder_Y::Ready))
 		{
 			//아래 부터 검사 
-			dPosZ = m_pMoveData->dMzElevZ[MZ_Elev_Z::Bottom] + m_pEquipData->dMZPitchRightZ * (nSlotNo - 1) ;
+			dPosZ = m_pMoveData->dMZElevZ[MZ_Elev_Z::Bottom] + m_pEquipData->dMZPitchRightZ * (nSlotNo - 1) ;
 			g_objAJinAXL.Move_Absolute(AX_MZ_ELEVATOR_Z, dPosZ);
 
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
@@ -1211,14 +1211,14 @@ BOOL CSequenceMain::IndexTRun()
 				&& g_objCommon.Check_Position(AX_BTM_INSPECTOR_Z, Btm_Inspector_Z::Ready)
 				&& g_objCommon.Check_Position(AX_MARK_UNIT_Z, Marker_Z::Ready))				 
 			{
-				g_objAJinAXL.Move_Relative(AX_INDEX_TABLE_R, m_pMoveData->dIndexTR[0]);
+				g_objAJinAXL.Move_Relative(AX_MAIN_INDEX_R, m_pMoveData->dMainIndexR[0]);
 				m_nIndexTCase++; m_nIndexTLoop.Set_LoopTime(10000);
 			}
 
 		}
 		return TRUE;
 	case 13:
-		if (g_objAJinAXL.Is_MoveDone(AX_INDEX_TABLE_R, m_pMoveData->dIndexTR[0])) {
+		if (g_objAJinAXL.Is_MoveDone(AX_MAIN_INDEX_R, m_pMoveData->dMainIndexR[0])) {
 			
 			Set_IndexEnd();
 			m_nIndexTCase = 0; m_nIndexTLoop.Set_LoopTime(5000);
@@ -1234,12 +1234,12 @@ BOOL CSequenceMain::IndexTRun()
 			&& g_objCommon.Check_Position(AX_BTM_INSPECTOR_Z, Btm_Inspector_Z::Ready)
 			&& g_objCommon.Check_Position(AX_MARK_UNIT_Z, Marker_Z::Ready))				 
 		{
-			g_objAJinAXL.Home_Search(AX_INDEX_TABLE_R);
+			g_objAJinAXL.Home_Search(AX_MAIN_INDEX_R);
 			m_nIndexTCase++; m_nIndexTLoop.Set_LoopTime(10000);
 		}
 		break;
 	case 51:		// Check R Home Done
-		if (g_objAJinAXL.Is_Home(AX_INDEX_TABLE_R)) 
+		if (g_objAJinAXL.Is_Home(AX_MAIN_INDEX_R)) 
 		{
 			m_nIndexTCase = 0;
 		}

@@ -334,7 +334,7 @@ void CSetupMotionTabDlg::OnBtnAbsMoveClick(UINT nID)
 	//if (Check_Interlock(nStartAx + ID) == FALSE) return;
 
 	int nTemp = nStartAx +ID;
-	if(nTemp == AX_INDEX_TABLE_R)
+	if(nTemp == AX_MAIN_INDEX_R)
 	{
 		AfxMessageBox("Can't Command Abs Move");
 	}
@@ -375,7 +375,7 @@ void CSetupMotionTabDlg::OnBtnRelMovePClick(UINT nID)
 	int nAxis = nStartAx + ID;
 
 	double dPulse = 0.0;
-	if(nAxis == AX_INDEX_TABLE_R )
+	if(nAxis == AX_MAIN_INDEX_R )
 	{
 		dPulse = dDist*7200;
 		g_objAJinAXL.Move_Relative(nStartAx + ID, (double)dPulse);
@@ -402,7 +402,7 @@ void CSetupMotionTabDlg::OnBtnRelMoveNClick(UINT nID)
 	int nAxis = nStartAx + ID;
 
 	double dPulse = 0.0;
-	if(nAxis == AX_INDEX_TABLE_R )
+	if(nAxis == AX_MAIN_INDEX_R )
 	{
 		dPulse = dDist*7200;
 		g_objAJinAXL.Move_Relative(nStartAx + ID, (double)dPulse);
@@ -465,7 +465,7 @@ void CSetupMotionTabDlg::Display_Status()
 		AXIS_STATUS *pStatus = g_objAJinAXL.Get_pStatus(nStartAx + i);
 
 		double dAngle = 0.0;
-		if(nStartAx + i == AX_INDEX_TABLE_R)
+		if(nStartAx + i == AX_MAIN_INDEX_R)
 		{
 			dAngle = (pStatus->dPos/7200.0);
 			if(dAngle > 360) dAngle =  fmod(dAngle, 360.0);

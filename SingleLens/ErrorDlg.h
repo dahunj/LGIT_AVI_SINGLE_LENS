@@ -22,8 +22,8 @@ public:
 	CStaticCS	m_stcErrTitle;
 	CPictureCS	m_Image;
 	CLedCS		m_ledMainAir[2];
-	CLedCS		m_ledEmgSw[3];
-	CLedCS		m_ledDoorOpen[13];
+	CLedCS		m_ledEmgSw[4];
+	CLedCS		m_ledDoorOpen[8];
 	CStaticCS	m_stcErrPos[14];
 	CStaticCS	m_stcErrNo;
 	CStaticCS	m_stcMsgBack;

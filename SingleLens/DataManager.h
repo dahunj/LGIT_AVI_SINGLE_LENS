@@ -86,21 +86,21 @@ typedef struct tag_EQUIP_DATA {
 typedef struct tag_MOVE_DATA 
 {
 
-	double  dMzElevZ[10];			// AXIS 00	[2]
-	double  dFeederX[10];			// AXIS 01	[3]
-	double  dFeederY[10];			// AXIS 02	[2]
-	double  dTrayPickerY[10];		// AXIS 04	[4]
-	double  dTrayPickerZ[10];		// AXIS 05	[5]
-	double  dTopInspectorX[10];		// AXIS 06	[4]
-	double  dTopInspectorY[10];		// AXIS 07	[5]
-	double  dTopInspectorZ[10];		// AXIS 08	[3]
-	double  dBtmInspectorX[10];		// AXIS 09	[4]
-	double  dBtmInspectorY[10];		// AXIS 10	[2]
-	double  dBtmInspectorZ[10];		// AXIS 11	[1]
-	double  dMarkUnitX[10];			// AXIS 12	[2]
-	double  dMarkUnitY[10];			// AXIS 12	[2]
-	double  dMarkUnitZ[10];			// AXIS 12	[2]
-	double  dIndexTR[10];			// AXIS 12	[2]
+	double  dMZElevZ[5];			// AXIS 00	[2]
+	double  dFeederX[5];			// AXIS 01	[3]
+	double  dFeederY[5];			// AXIS 02	[2]
+	double  dTrayPickerY[5];		// AXIS 04	[4]
+	double  dTrayPickerZ[5];		// AXIS 05	[5]
+	double  dTopInspectorX[5];		// AXIS 06	[4]
+	double  dTopInspectorY[5];		// AXIS 07	[5]
+	double  dTopInspectorZ[5];		// AXIS 08	[3]
+	double  dBtmInspectorX[5];		// AXIS 09	[4]
+	double  dBtmInspectorY[5];		// AXIS 10	[2]
+	double  dBtmInspectorZ[5];		// AXIS 11	[1]
+	double  dMarkUnitX[5];			// AXIS 12	[2]
+	double  dMarkUnitY[5];			// AXIS 12	[2]
+	double  dMarkUnitZ[5];			// AXIS 12	[2]
+	double  dMainIndexR[5];			// AXIS 12	[2]
 } MOVE_DATA;
 
 ///////////////////////////////////////////////////////////////////////////////

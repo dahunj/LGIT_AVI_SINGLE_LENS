@@ -43,8 +43,8 @@ void CInitialDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_PIC_INIT_FLOW_0 + i, m_picInitFlow[i]);
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_STC_INIT_FLOW_0 + i, m_stcInitFlow[i]);
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_LED_MAIN_AIR_0 + i, m_ledMainAir[i]);
-	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_LED_EMG_SW_0 + i, m_ledEmgSw[i]);
-	for (int i = 0; i < 13; i++) DDX_Control(pDX, IDC_LED_DOOR_OPEN_0 + i, m_ledDoorOpen[i]);
+	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_LED_EMG_SW_0 + i, m_ledEmgSw[i]);
+	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_LED_DOOR_OPEN_0 + i, m_ledDoorOpen[i]);
 	for (int i = 0; i < 10; i++) DDX_Control(pDX, IDC_STC_INIT_CASE_0 + i, m_stcInitCase[i]);
 }
 
@@ -76,8 +76,8 @@ void CInitialDlg::Initial_Controls()
 	for (int i = 0; i < 8; i++) m_picInitFlow[i].Init_Ctrl(COLOR_DEFAULT, RGB(0xFF, 0xFF, 0xFF));
 	for (int i = 0; i < 8; i++) m_stcInitFlow[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xFF, 0x00));
 	for (int i = 0; i < 2; i++) m_ledMainAir[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em16);
-	for (int i = 0; i < 3; i++) m_ledEmgSw[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emRed, CLedCS::em16);
-	for (int i = 0; i < 13; i++) m_ledDoorOpen[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em16);
+	for (int i = 0; i < 4; i++) m_ledEmgSw[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emRed, CLedCS::em16);
+	for (int i = 0; i < 8; i++) m_ledDoorOpen[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em16);
 	m_stcInitCase[0].Init_Ctrl("¹ÙÅÁ", 10, TRUE, RGB(0xFF, 0xFF, 0x00), RGB(0x80, 0x80, 0x80));
 	for (int i = 1; i < 10; i++) m_stcInitCase[i].Init_Ctrl("¹ÙÅÁ", 10, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x80, 0x80, 0x80));
 }
@@ -92,10 +92,11 @@ BOOL CInitialDlg::OnInitDialog()
 	Initial_Controls();
 
 	for (int i = 0; i < 10; i++) m_stcInitCase[i].SetWindowText("000");
-	for (int i = AXIS_COUNT; i < 46; i++) {
-		m_stcAxisName[i].ShowWindow(FALSE);
-		m_ledAxisRun[i].ShowWindow(FALSE);
-		m_ledAxisHom[i].ShowWindow(FALSE);
+	for (int i = AXIS_COUNT; i < 46; i++) 
+	{
+		m_stcAxisName[i].ShowWindow(SW_HIDE);
+		m_ledAxisRun[i].ShowWindow(SW_HIDE);
+		m_ledAxisHom[i].ShowWindow(SW_HIDE);
 	}
 
 	m_bInitialRunning = FALSE;
@@ -252,15 +253,23 @@ void CInitialDlg::Display_Status()
 	for (int i = 0; i < AXIS_COUNT; i++) {
 		g_objAJinAXL.Get_MotorRun(i) ? m_ledAxisRun[i].On() : m_ledAxisRun[i].Off();
 		g_objAJinAXL.Get_HomeDone(i) ? m_ledAxisHom[i].On() : m_ledAxisHom[i].Off();
-	}
-
-	
-
-	
+	}		
 
 	BOOL bOk = g_objSequenceInit.Get_InitComplete();
 	m_ledInitialOK.Set_On(bOk);
 
+	DX_DATA_03 *pDX03 = g_objAJinAXL.Get_pDX03();
+	m_ledMainAir[0].Set_On(pDX03->iMainAir1);
+
+	m_ledEmgSw[0].Set_On(pDX03->iEmgSw1);
+	m_ledEmgSw[1].Set_On(pDX03->iEmgSw2);
+	m_ledEmgSw[2].Set_On(pDX03->iEmgSw3);
+	m_ledEmgSw[3].Set_On(pDX03->iEmgSw4);
+
+	for (int i = 0; i < 8; i++)
+	{
+		m_ledDoorOpen[i].Set_On((pDX03->nValue >> i + 22) & 1);
+	}
 	CString strTemp;
 	int *pCase = g_objSequenceInit.Get_InitialCase();
 	for (int i = 0; i < 10; i++) { strTemp.Format("%03d", *(pCase + i)); m_stcInitCase[i].Set_Text(strTemp); }
@@ -283,38 +292,47 @@ void CInitialDlg::Display_Initial()
 
 	if (*(pCase + 0) < 50) return;							// Main
 
-	if (*(pCase + 1) < 90 || *(pCase + 2) < 90) {							// Load
+	if (*(pCase + 1) < 90 || *(pCase + 2) < 90) //Conveyor & Magazine 
+	{						
 		if (m_nBackColorLoop == 1) Set_StatusColor(2, 1);	// Red
 		if (m_nBackColorLoop == 6) Set_StatusColor(2, 3);	// Blue
 	} else {
 		if (m_nBackColorLoop == 1) Set_StatusColor(2, 2);	// Green
 	}
 
-	if (*(pCase + 1) < 90 || *(pCase + 3) < 90 || *(pCase + 4) < 90) {		// Index & Align Vision
+	if (*(pCase + 3) < 90 )  // Feeder
+	{		
 		if (m_nBackColorLoop == 1) Set_StatusColor(3, 1);	// Red
 		if (m_nBackColorLoop == 6) Set_StatusColor(3, 3);	// Blue
-	} else {
+	} 
+	else 
+	{
 		if (m_nBackColorLoop == 1) Set_StatusColor(3, 2);	// Green
 	}
 
-	if (*(pCase + 5) < 90 || *(pCase + 6) < 90 || *(pCase + 7) < 90) {		// Cap
+	if (*(pCase + 4) < 90 ) //Zig Picker 
+	{		
 		if (m_nBackColorLoop == 1) Set_StatusColor(4, 1);	// Red
 		if (m_nBackColorLoop == 6) Set_StatusColor(4, 3);	// Blue
 	} else {
 		if (m_nBackColorLoop == 1) Set_StatusColor(4, 2);	// Green
 	}
 
-	if (*(pCase + 4) < 90 || *(pCase + 8) < 90) {							// Assy & Trans
+	if (*(pCase + 5) < 90 ) 
+	{							// Lens Cleaner 
 		if (m_nBackColorLoop == 1) Set_StatusColor(5, 1);	// Red
 		if (m_nBackColorLoop == 6) Set_StatusColor(5, 3);	// Blue
 	} else {
 		if (m_nBackColorLoop == 1) Set_StatusColor(5, 2);	// Green
 	}
 
-	if (*(pCase + 9) < 90 || *(pCase + 10) < 90) {							// Unload
+	if (*(pCase + 6) < 90 || *(pCase + 7) < 90 || *(pCase + 8) < 90)  // Unload
+	{							
 		if (m_nBackColorLoop == 1) Set_StatusColor(6, 1);	// Red
 		if (m_nBackColorLoop == 6) Set_StatusColor(6, 3);	// Blue
-	} else {
+	} 
+	else
+	{
 		if (m_nBackColorLoop == 1) Set_StatusColor(6, 2);	// Green
 	}
 }

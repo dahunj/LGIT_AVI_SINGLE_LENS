@@ -4,7 +4,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 // Motion Axis
-const int AXIS_COUNT = 16;		// Motion Module
+const int AXIS_COUNT = 15;		// Motion Module
 
 
 const int AX_MZ_ELEVATOR_Z			= 0;
@@ -22,7 +22,7 @@ const int AX_MARK_UNIT_X			= 11;
 const int AX_MARK_UNIT_Y			= 12;
 const int AX_MARK_UNIT_Z			= 13;	
 
-const int AX_INDEX_TABLE_R		= 14;
+const int AX_MAIN_INDEX_R		= 14;
 //const int AX_INDEX_TABLE_R2		= 15;
 
 
@@ -181,8 +181,8 @@ typedef union tag_DX_DATA_02 {
 		DWORD iIndexTPosBit1 			: 1;		// X0201
 		DWORD iIndexTPosBit2		: 1;		// X0202
 		DWORD i0203		: 1;		// X0203
-		DWORD iIndexTAlignOut		: 1;		// X0204
-		DWORD iIndexTAlignIn		: 1;	    // X0205
+		DWORD iMainIndexZigAlignOut		: 1;		// X0204
+		DWORD iMainIndexZigAlignIn		: 1;	    // X0205
 		DWORD iIndexTZigExist : 1;		// X0206
 		DWORD i0207 : 1;					// X0207
 		DWORD iLensCleanerTopDown : 1;			// X0208
@@ -215,10 +215,10 @@ typedef union tag_DX_DATA_02 {
 typedef union tag_DX_DATA_03 {
 	DWORD nValue;
 	struct {
-		DWORD iEMGSW1 : 1;			// X0300
-		DWORD iEMGSW2 : 1;			// X0301
-		DWORD iEMGSW3 : 1;			// X0302
-		DWORD iEMGSW4 : 1;			// X0303
+		DWORD iEmgSw1 : 1;			// X0300
+		DWORD iEmgSw2 : 1;			// X0301
+		DWORD iEmgSw3 : 1;			// X0302
+		DWORD iEmgSw4 : 1;			// X0303
 		DWORD iMainAir1 : 1;		// X0304
 		DWORD i0305 : 1;		// X0305
 		DWORD i0306 : 1;		// X0306
@@ -237,14 +237,14 @@ typedef union tag_DX_DATA_03 {
 		DWORD iMZLoadRunSW : 1;		// X0319
 		DWORD iMZUnloadOpenSW : 1;		// X0320
 		DWORD iMZUnloadRunSW : 1;		// X0321
-		DWORD iDoorUnlockFront1 : 1;	// X0322
-		DWORD iDoorUnlockFront2 : 1;	// X0323
-		DWORD iDoorUnlockRight1 : 1;		// X0324
-		DWORD iDoorUnlockRight2 : 1;		// X0325
-		DWORD iDoorUnlockRear1 : 1;		// X0326
-		DWORD iDoorUnlockRear2 : 1;		// X0327
-		DWORD iDoorUnlockLeft1 : 1;				// X0328
-		DWORD iDoorUnlockLeft2 : 1;				// X0329
+		DWORD iDoor01UnlockFront1 : 1;	// X0322
+		DWORD iDoor02UnlockFront2 : 1;	// X0323
+		DWORD iDoor03UnlockRight1 : 1;		// X0324
+		DWORD iDoor04UnlockRight2 : 1;		// X0325
+		DWORD iDoor05UnlockRear1 : 1;		// X0326
+		DWORD iDoor06UnlockRear2 : 1;		// X0327
+		DWORD iDoor07UnlockLeft1 : 1;				// X0328
+		DWORD iDoor08UnlockLeft2 : 1;				// X0329
 		DWORD i0330 : 1;				// X0330
 		DWORD i0331 : 1;				// X0331
 	};
@@ -336,24 +336,24 @@ typedef union tag_DY_DATA_02 {
 		DWORD o0201: 1;					// Y0201
 		DWORD o0202: 1;									// Y0202
 		DWORD o0203: 1;									// Y0203
-		DWORD oIndexTZigAlignOut: 1;								// Y0204
-		DWORD oIndexTZigAlignIn : 1;									// Y0205
+		DWORD oMainIndexZigAlignOut: 1;								// Y0204
+		DWORD oMainIndexZigAlignIn : 1;									// Y0205
 		DWORD o0206 : 1;											// Y0206
 		DWORD o0207 : 1;											// Y0207
-		DWORD oLensCleannerTopDown : 1;								// Y0208
-		DWORD oLensCleannerTopUp : 1;								// Y0209
-		DWORD oLensCleannerTopForward : 1;											// Y0210
-		DWORD oLensCleannerTopBackward : 1;											// Y0211
-		DWORD oLensCleannerTopBlow : 1;											// Y0212
-		DWORD oLensCleannerTopBlowOff : 1;											// Y0213
+		DWORD oLensCleanerTopDown : 1;								// Y0208
+		DWORD oLensCleanerTopUp : 1;								// Y0209
+		DWORD oLensCleanerTopForward : 1;											// Y0210
+		DWORD oLensCleanerTopBackward : 1;											// Y0211
+		DWORD oLensCleanerTopBlow : 1;											// Y0212
+		DWORD oLensCleanerTopBlowOff : 1;											// Y0213
 		DWORD o0214 : 1;					// Y0214
 		DWORD o0215 : 1;					// Y0215
-		DWORD oLensCleannerBtmDown :1;						// Y0216
-		DWORD oLensCleannerBtmUp :1;						// Y0217
-		DWORD oLensCleannerBtmForward :1;					// Y0218
-		DWORD oLensCleannerBtmBackward :1;					// Y0219
-		DWORD oLensCleannerBtmBlowOn :1;						// Y0220
-		DWORD oLensCleannerBtmBlowOff :	1;					// Y0221
+		DWORD oLensCleanerBtmDown :1;						// Y0216
+		DWORD oLensCleanerBtmUp :1;						// Y0217
+		DWORD oLensCleanerBtmForward :1;					// Y0218
+		DWORD oLensCleanerBtmBackward :1;					// Y0219
+		DWORD oLensCleanerBtmBlowOn :1;						// Y0220
+		DWORD oLensCleanerBtmBlowOff :	1;					// Y0221
 		DWORD o0222 : 1;					// Y0222
 		DWORD o0223 : 1;					// Y0223
 		DWORD oMarkingPenIn : 1;					// Y0224
@@ -393,13 +393,13 @@ typedef union tag_DY_DATA_03 {
 		DWORD MZUnloadLampOpen : 1;								// Y0320
 		DWORD MZUnloadLampRun : 1;								// Y0321
 		DWORD oDoor01UnlockFront1 : 1;						// Y0322
-		DWORD oDoor01UnlockFront2 : 1;						// Y0323
-		DWORD oDoor01UnlockRight1 : 1;						// Y0324
-		DWORD oDoor01UnlockRight2 : 1;						// Y0325
-		DWORD oDoor01UnlockRear1 : 1;						// Y0326
-		DWORD oDoor01UnlockRear2 : 1;						// Y0327
-		DWORD oDoor01UnlockLeft1 : 1;						// Y0328
-		DWORD oDoor01UnlockLeft2 : 1;						// Y0329
+		DWORD oDoor02UnlockFront2 : 1;						// Y0323
+		DWORD oDoor03UnlockRight1 : 1;						// Y0324
+		DWORD oDoor04UnlockRight2 : 1;						// Y0325
+		DWORD oDoor05UnlockRear1 : 1;						// Y0326
+		DWORD oDoor06UnlockRear2 : 1;						// Y0327
+		DWORD oDoor07UnlockLeft1 : 1;						// Y0328
+		DWORD oDoor08UnlockLeft2 : 1;						// Y0329
 		DWORD o0330 : 1;					// Y0330
 		DWORD o0331 : 1;					// Y0331
 	};

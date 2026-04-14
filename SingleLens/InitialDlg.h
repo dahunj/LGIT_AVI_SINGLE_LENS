@@ -26,8 +26,8 @@ public:
 	CPictureCS	m_picInitFlow[8];
 	CStaticCS	m_stcInitFlow[8];
 	CLedCS		m_ledMainAir[2];
-	CLedCS		m_ledEmgSw[5];
-	CLedCS		m_ledDoorOpen[13];
+	CLedCS		m_ledEmgSw[4];
+	CLedCS		m_ledDoorOpen[8];
 	CStaticCS	m_stcInitCase[10];
 
 protected:

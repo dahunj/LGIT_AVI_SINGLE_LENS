@@ -61,8 +61,8 @@ int *CSequenceInit::Get_InitialCase()
 	nCase[5]  = m_niLensCleanCase;		//  4. (Error : 1500)
 	nCase[6]  = m_niTopInspectorCase;	//  5. (Error : 1600)
 	nCase[7]  = m_niBtmInspectorCase; 	//  6. (Error : 1700)
-	nCase[8]  = m_niMarkerCase;			//  7. (Error : 1800)
-	nCase[9]  = m_niIndexTableCase;		//  8. (Error : 1900)
+	nCase[8]  = m_niMarkUnitCase;			//  7. (Error : 1800)
+	nCase[9]  = m_niMainIndexCase;		//  8. (Error : 1900)
 	
 
 	return nCase;
@@ -98,8 +98,8 @@ void CSequenceInit::Init_Replay()
 	m_tiTrayPickerLoop.Set_LoopTime(20000);		//  4. (Error : 1400)
 	m_tiTopInspectorLoop.Set_LoopTime(20000);		//  5. (Error : 1500)
 	m_tiBtmInspectorLoop.Set_LoopTime(20000);		//  6. (Error : 1600)
-	m_tiMarkerLoop.Set_LoopTime(20000); 		//  7. (Error : 1700)
-	m_tiIndexTableLoop.Set_LoopTime(20000);		//  8. (Error : 1800)
+	m_tiMarkUnitLoop.Set_LoopTime(20000); 		//  7. (Error : 1700)
+	m_tiMainIndexLoop.Set_LoopTime(20000);		//  8. (Error : 1800)
 
 }
 
@@ -112,8 +112,8 @@ void CSequenceInit::Reset_InitialCase()
 	m_niTrayPickerCase	= 0;	//  4. (Error : 1400)
 	m_niTopInspectorCase		= 0;	//  5. (Error : 1500)
 	m_niBtmInspectorCase 	= 0;	//  6. (Error : 1600)
-	m_niMarkerCase	= 0;	//  7. (Error : 1700)
-	m_niIndexTableCase	= 0;	//  8. (Error : 1800)
+	m_niMarkUnitCase	= 0;	//  7. (Error : 1700)
+	m_niMainIndexCase	= 0;	//  8. (Error : 1800)
 	
 }
 
@@ -149,8 +149,8 @@ UINT CSequenceInit::Thread_Initial(LPVOID lpVoid)
 		if (!g_objSequenceInit.Initial_LensCleaner()) break;		//  5. (Error : 1500)
 		if (!g_objSequenceInit.Initial_TopInspector()) break;		//  5. (Error : 1500)
 		if (!g_objSequenceInit.Initial_BtmInspector()) break;		//  6. (Error : 1600)
-		if (!g_objSequenceInit.Initial_Marker()) break;				//  7. (Error : 1700)
-		if (!g_objSequenceInit.Initial_IndexTable()) break;			//  8. (Error : 1800)
+		if (!g_objSequenceInit.Initial_MarkUnit()) break;				//  7. (Error : 1700)
+		if (!g_objSequenceInit.Initial_MainIndex()) break;			//  8. (Error : 1800)
 		
 
 		if (!g_objSequenceInit.Initial_Simulation()) break;
@@ -199,7 +199,7 @@ BOOL CSequenceInit::Initial_MainInit()
 		}
 		break;
 	case 5:		
-		if (!m_pDX01->iRailZigExist ) 
+		if (!m_pDX01->iRailZigExist && !m_pDX02->iIndexTZigExist) 
 		{
 			m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
 		}
@@ -211,38 +211,33 @@ BOOL CSequenceInit::Initial_MainInit()
 		}
 		break;
 	case 50:	// 각 파트 초기화 진행
-		if (m_niConveyorCase == 0)	 m_niConveyorCase = 1;				//  1. (Error : 1100)
-		if (m_niMZElevCase == 0) m_niMZElevCase = 1;					//  2. (Error : 1200)
-		if (m_niFeederCase == 0) m_niFeederCase = 1;					//  3. (Error : 1300)
-		if (m_niTrayPickerCase == 0)	 m_niTrayPickerCase = 1;		//  4. (Error : 1400)
-		if (m_niTopInspectorCase == 0)	 m_niTopInspectorCase = 1;		//  5. (Error : 1500)
-		if (m_niBtmInspectorCase == 0) m_niBtmInspectorCase = 1;		//  6. (Error : 1600)
-		if (m_niMarkerCase == 0)	 m_niMarkerCase = 1;				//  7. (Error : 1700)
-		if (m_niIndexTableCase == 0)	 m_niIndexTableCase = 1;		//  8. (Error : 1800)
+		if(m_niConveyorCase == 0)			m_niConveyorCase = 1;
+		if(m_niMZElevCase == 0)				m_niMZElevCase = 1;
+		if(m_niMainIndexCase == 0)			m_niMainIndexCase = 1;
+		if(m_niFeederCase == 0)				m_niFeederCase = 1; 
+
+		if (m_niTrayPickerCase == 0)		m_niTrayPickerCase = 1;		
+		if (m_niLensCleanCase == 0)			m_niLensCleanCase = 1;		
+		if (m_niTopInspectorCase == 0)		m_niTopInspectorCase = 1;		
+		if (m_niBtmInspectorCase == 0)		m_niBtmInspectorCase = 1;		
+		if (m_niMarkUnitCase == 0)			m_niMarkUnitCase = 1;				
+		
 		
 		m_niMainInitCase++;m_tiMainInitLoop.Set_LoopTime(5000);
 		break;
 
 	case 51:	// Wait 
-		if (m_niMainInitCase == 90 && m_niConveyorCase == 90 && m_niMZElevCase == 90 && m_niFeederCase == 90 &&
-			m_niTrayPickerCase == 90 && m_niLensCleanCase == 90 && m_niTopInspectorCase == 90 && m_niBtmInspectorCase == 90 &&
-			m_niMarkerCase == 90 && m_niIndexTableCase == 90 )
+		if (m_niConveyorCase == 90 && m_niMZElevCase == 90 && m_niFeederCase == 90 &&
+			m_niTrayPickerCase == 90 && m_niLensCleanCase == 90 && m_niTopInspectorCase == 90 
+			&& m_niBtmInspectorCase == 90 && m_niMarkUnitCase == 90 && m_niMainIndexCase == 90 )
 		{
-			m_niMainInitCase = 52;m_tiMainInitLoop.Set_LoopTime(5000);
+			
+			m_niMainInitCase = 90;m_tiMainInitLoop.Set_LoopTime(5000);
 		}
 		return TRUE;
-	case 52:
-		g_objCommon.Set_IndexLoadAlignOut();
-		m_niMainInitCase = 90;m_tiMainInitLoop.Set_LoopTime(5000);
-		break;
-	case 53:
-		if(g_objCommon.Get_IndexLoadAlignOut())
-		{
-			m_niMainInitCase = 90; m_tiMainInitLoop.Set_LoopTime(5000);
-		}
-		break;
-
+	
 	case 90:	// Initial Complete
+		if(m_niMainIndexCase != 90) return TRUE;
 		m_bInitComplete = TRUE;
 
 		Reset_InitialCase();
@@ -374,7 +369,7 @@ BOOL CSequenceInit::Initial_Feeder()
 		}
 		break;
 	case 3:	
-		if (!m_pDX01->iRailZigExist && m_niTrayPickerCase > 5)  
+		if (!m_pDX01->iRailZigExist && m_niTrayPickerCase > 10)  
 		{				
 			m_niFeederCase++; m_tiFeederLoop.Set_LoopTime(5000);
 		}
@@ -383,7 +378,7 @@ BOOL CSequenceInit::Initial_Feeder()
 		m_niFeederCase++; m_tiFeederLoop.Set_LoopTime(5000);
 		break;
 	case 5:
-		if(m_niTrayPickerCase > 5) // Tray Picker Z Ready Up Complete 
+		if(m_niTrayPickerCase > 10) // Tray Picker Z Ready Up Complete 
 		{
 			g_objAJinAXL.Home_Search(AX_ZIG_FEEDER_Y);
 			m_niFeederCase++; m_tiFeederLoop.Set_LoopTime(5000);
@@ -422,6 +417,7 @@ BOOL CSequenceInit::Initial_Feeder()
 // 4. (Error : 1400)
 BOOL CSequenceInit::Initial_TrayPicker()
 {
+	
 	switch (m_niTrayPickerCase)
 	{
 	case 0:
@@ -449,9 +445,9 @@ BOOL CSequenceInit::Initial_TrayPicker()
 	case 4:
 		if(!m_tiTrayPickerLoop.Waiting_Time(100)) break;
 		g_objCommon.Move_Position(AX_ZIG_PICKER_Z, Tray_Picker_Z::Ready);
-		m_niTrayPickerCase++; m_tiTrayPickerLoop.Set_LoopTime(5000);
+		m_niTrayPickerCase = 10; m_tiTrayPickerLoop.Set_LoopTime(5000);
 		break;
-	case 5:
+	case 10:
 		if(g_objCommon.Check_Position(AX_ZIG_PICKER_Z, Tray_Picker_Z::Ready))
 		{
 			g_objAJinAXL.Set_EncoderType(AX_ZIG_PICKER_Y, 0);	// Inc
@@ -459,11 +455,11 @@ BOOL CSequenceInit::Initial_TrayPicker()
 			m_niTrayPickerCase++; m_tiTrayPickerLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 6:
+	case 11:
 		g_objAJinAXL.Home_Search(AX_ZIG_PICKER_Y);
 		m_niTrayPickerCase++; m_tiTrayPickerLoop.Set_LoopTime(5000);
 		break;
-	case 7:
+	case 12:
 		if(g_objAJinAXL.Is_Home(AX_ZIG_PICKER_Y))
 		{
 			g_objAJinAXL.Set_EncoderType(AX_ZIG_PICKER_Y, 0);	// Inc
@@ -472,17 +468,17 @@ BOOL CSequenceInit::Initial_TrayPicker()
 			m_niTrayPickerCase++; m_tiTrayPickerLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 8:
+	case 13:
 		if(!m_tiTrayPickerLoop.Waiting_Time(100)) break;
 		g_objCommon.Move_Position(AX_ZIG_PICKER_Y, Tray_Picker_Y::Ready);
 		m_niTrayPickerCase++; m_tiTrayPickerLoop.Set_LoopTime(5000);
-	case 9:
+	case 14:
 		if(g_objCommon.Check_Position(AX_ZIG_PICKER_Y, Tray_Picker_Y::Ready))
 		{
 			m_niTrayPickerCase++; m_tiTrayPickerLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 10:
+	case 15:
 		{
 			g_objCommon.Set_TrayPickMasterOut();
 			Sleep(5);
@@ -490,7 +486,7 @@ BOOL CSequenceInit::Initial_TrayPicker()
 			m_niTrayPickerCase++; m_tiTrayPickerLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 13:		// Tray Picker Slave Out 
+	case 16:		// Tray Picker Slave Out 
 		if (g_objCommon.Get_TrayPickMasterSlaveOut()) 
 		{
 			g_objLogFile.Save_HandlerLog("[Initial Sequence] - Feeder Complete");
@@ -513,8 +509,53 @@ BOOL CSequenceInit::Initial_TrayPicker()
 }
 
 
+
 /////////////////////////////////////////////////////////////////////////////
 // 5. (Error : 1500)
+BOOL CSequenceInit::Initial_LensCleaner()
+{
+	switch (m_niLensCleanCase)
+	{
+	case 0:
+		return TRUE;
+	case 1:
+		g_objCommon.Set_CleanerOpen();
+		m_niLensCleanCase++; m_tiLensCleanLoop.Set_LoopTime(5000);
+		break;
+	case 2:
+		if(g_objCommon.Get_CleanerOpen())
+		{
+			g_objCommon.Set_CleanerBackward();
+			m_niLensCleanCase = 10; m_tiLensCleanLoop.Set_LoopTime(5000);
+		}		
+		break;
+	case 10:
+		if(g_objCommon.Get_CleanerBackwardDone())
+		{
+			g_objLogFile.Save_HandlerLog("[Initial Sequence] - Lens Clean Complete");
+			m_niLensCleanCase = 90; m_tiLensCleanLoop.Set_LoopTime(5000);
+		}		
+		break;	
+
+	case 90:	// Initial Complete
+		return TRUE;
+	}
+
+	// 1. (Error : 1500)
+	if (m_tiLensCleanLoop.Over_LoopTime()) {
+		g_objCommon.Show_Error(1500 + m_niLensCleanCase);
+		return FALSE;
+	}
+
+
+
+	return TRUE;
+}
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 5. (Error : 1600)
 BOOL CSequenceInit::Initial_TopInspector()
 {
 	switch (m_niTopInspectorCase)
@@ -544,45 +585,45 @@ BOOL CSequenceInit::Initial_TopInspector()
 	case 4:
 		if(!m_tiTopInspectorLoop.Waiting_Time(100)) break;
 		g_objCommon.Move_Position(AX_TOP_INSPECTOR_Z, Top_Inspector_Z::Ready);
-		m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(5000);
+		m_niTopInspectorCase = 10; m_tiTopInspectorLoop.Set_LoopTime(5000);
 		break;
-	case 5:
+	case 10:
 		if(g_objCommon.Check_Position(AX_TOP_INSPECTOR_Z, Top_Inspector_Z::Ready))
 		{
 			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 6:
+	case 11:
 		g_objAJinAXL.Home_Search(AX_TOP_INSPECTOR_Y);
 		m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(5000);
 		break;
-	case 7:
+	case 12:
 		if(g_objAJinAXL.Is_Home(AX_TOP_INSPECTOR_Y))
 		{			
 			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 8:
+	case 13:
 		g_objCommon.Move_Position(AX_TOP_INSPECTOR_Y, Top_Inspector_Y::Ready);
 		m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(5000);
-	case 9:
+	case 14:
 		if(g_objCommon.Check_Position(AX_TOP_INSPECTOR_Y, Top_Inspector_Y::Ready))
 		{
 			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 10:
+	case 15:
 		g_objAJinAXL.Home_Search(AX_TOP_INSPECTOR_X);
 		m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(15000);
 		break;
-	case 11:		// Tray Picker Slave Out 
+	case 16:		// Tray Picker Slave Out 
 		if(g_objAJinAXL.Is_Home(AX_TOP_INSPECTOR_X))
 		{			
 			g_objCommon.Move_Position(AX_TOP_INSPECTOR_X, Top_Inspector_X::Ready);
 			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 12:
+	case 17:
 		if(g_objCommon.Check_Position(AX_TOP_INSPECTOR_X, Top_Inspector_X::Ready))
 		{
 			g_objLogFile.Save_HandlerLog("[Initial Sequence] - Top Inspector Complete");
@@ -593,9 +634,9 @@ BOOL CSequenceInit::Initial_TopInspector()
 		return TRUE;
 	}
 
-	// 1. (Error : 1500)
+	// 1. (Error : 1600)
 	if (m_tiTopInspectorLoop.Over_LoopTime()) {
-		g_objCommon.Show_Error(1500 + m_niTopInspectorCase);
+		g_objCommon.Show_Error(1600 + m_niTopInspectorCase);
 		return FALSE;
 	}
 
@@ -606,7 +647,7 @@ BOOL CSequenceInit::Initial_TopInspector()
 
 
 /////////////////////////////////////////////////////////////////////////////
-// 6. (Error : 1600)
+// 6. (Error : 1700)
 BOOL CSequenceInit::Initial_BtmInspector()
 {
 	switch (m_niBtmInspectorCase)
@@ -636,45 +677,45 @@ BOOL CSequenceInit::Initial_BtmInspector()
 	case 4:
 		if(!m_tiBtmInspectorLoop.Waiting_Time(100)) break;
 		g_objCommon.Move_Position(AX_BTM_INSPECTOR_Z, Btm_Inspector_Z::Ready);
-		m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(5000);
+		m_niBtmInspectorCase = 10; m_tiBtmInspectorLoop.Set_LoopTime(5000);
 		break;
-	case 5:
+	case 10:
 		if(g_objCommon.Check_Position(AX_BTM_INSPECTOR_Z, Btm_Inspector_Z::Ready))
 		{
 			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 6:
+	case 11:
 		g_objAJinAXL.Home_Search(AX_BTM_INSPECTOR_Y);
 		m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(5000);
 		break;
-	case 7:
+	case 12:
 		if(g_objAJinAXL.Is_Home(AX_BTM_INSPECTOR_Y))
 		{			
 			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 8:
+	case 13:
 		g_objCommon.Move_Position(AX_BTM_INSPECTOR_Y, Btm_Inspector_Y::Ready);
 		m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(5000);
-	case 9:
+	case 14:
 		if(g_objCommon.Check_Position(AX_BTM_INSPECTOR_Y, Btm_Inspector_Y::Ready))
 		{
 			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 10:
+	case 15:
 		g_objAJinAXL.Home_Search(AX_BTM_INSPECTOR_X);
 		m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(15000);
 		break;
-	case 11:		// Tray Picker Slave Out 
+	case 16:		// Tray Picker Slave Out 
 		if(g_objAJinAXL.Is_Home(AX_BTM_INSPECTOR_X))
 		{			
 			g_objCommon.Move_Position(AX_BTM_INSPECTOR_X, Btm_Inspector_X::Ready);
 			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(5000);
 		}
 		break;
-	case 12:
+	case 17:
 		if(g_objCommon.Check_Position(AX_BTM_INSPECTOR_X, Btm_Inspector_X::Ready))
 		{
 			g_objLogFile.Save_HandlerLog("[Initial Sequence] - Btm Inspector Complete");
@@ -687,7 +728,7 @@ BOOL CSequenceInit::Initial_BtmInspector()
 
 	// 1. (Error : 1600)
 	if (m_tiBtmInspectorLoop.Over_LoopTime()) {
-		g_objCommon.Show_Error(1600 + m_niBtmInspectorCase);
+		g_objCommon.Show_Error(1700 + m_niBtmInspectorCase);
 		return FALSE;
 	}
 
@@ -697,9 +738,9 @@ BOOL CSequenceInit::Initial_BtmInspector()
 
 /////////////////////////////////////////////////////////////////////////////
 // 7. (Error : 1700)
-BOOL CSequenceInit::Initial_Marker()
+BOOL CSequenceInit::Initial_MarkUnit()
 {
-	switch (m_niMarkerCase)
+	switch (m_niMarkUnitCase)
 	{
 	case 0:
 		return TRUE;
@@ -708,76 +749,76 @@ BOOL CSequenceInit::Initial_Marker()
 		{
 			g_objAJinAXL.Set_EncoderType(AX_MARK_UNIT_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_MARK_UNIT_Z, 1);	// Abs
-			m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(5000);
+			m_niMarkUnitCase++; m_tiMarkUnitLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 2:
 		g_objAJinAXL.Home_Search(AX_MARK_UNIT_Z);
-		m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(15000);
+		m_niMarkUnitCase++; m_tiMarkUnitLoop.Set_LoopTime(15000);
 		break;
 	case 3:
 		if(g_objAJinAXL.Is_Home(AX_MARK_UNIT_Z))
 		{			
 			g_objAJinAXL.Set_EncoderType(AX_MARK_UNIT_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_MARK_UNIT_Z, 1);	// Abs
-			m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(5000);
+			m_niMarkUnitCase++; m_tiMarkUnitLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 4:
-		if(!m_tiMarkerLoop.Waiting_Time(100)) break;
+		if(!m_tiMarkUnitLoop.Waiting_Time(100)) break;
 		g_objCommon.Move_Position(AX_MARK_UNIT_Z, Marker_Z::Ready);
-		m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(5000);
+		m_niMarkUnitCase++; m_tiMarkUnitLoop.Set_LoopTime(5000);
 		break;
 	case 5:
 		if(g_objCommon.Check_Position(AX_MARK_UNIT_Z, Marker_Z::Ready))
 		{
-			m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(5000);
+			m_niMarkUnitCase++; m_tiMarkUnitLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 6:
 		g_objAJinAXL.Home_Search(AX_MARK_UNIT_Y);
-		m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(5000);
+		m_niMarkUnitCase++; m_tiMarkUnitLoop.Set_LoopTime(5000);
 		break;
 	case 7:
 		if(g_objAJinAXL.Is_Home(AX_MARK_UNIT_Y))
 		{			
-			m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(5000);
+			m_niMarkUnitCase++; m_tiMarkUnitLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 8:
 		g_objCommon.Move_Position(AX_MARK_UNIT_Y, Marker_Y::Ready);
-		m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(5000);
+		m_niMarkUnitCase++; m_tiMarkUnitLoop.Set_LoopTime(5000);
 	case 9:
 		if(g_objCommon.Check_Position(AX_MARK_UNIT_Y, Marker_Y::Ready))
 		{
-			m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(5000);
+			m_niMarkUnitCase++; m_tiMarkUnitLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 10:
 		g_objAJinAXL.Home_Search(AX_MARK_UNIT_X);
-		m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(15000);
+		m_niMarkUnitCase++; m_tiMarkUnitLoop.Set_LoopTime(15000);
 		break;
 	case 11:		// Tray Picker Slave Out 
 		if(g_objAJinAXL.Is_Home(AX_MARK_UNIT_X))
 		{			
 			g_objCommon.Move_Position(AX_MARK_UNIT_X, Marker_X::Ready);
-			m_niMarkerCase++; m_tiMarkerLoop.Set_LoopTime(5000);
+			m_niMarkUnitCase++; m_tiMarkUnitLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 12:
 		if(g_objCommon.Check_Position(AX_MARK_UNIT_X, Marker_X::Ready))
 		{
 			g_objLogFile.Save_HandlerLog("[Initial Sequence] - Marker Complete");
-			m_niMarkerCase = 90; m_tiMarkerLoop.Set_LoopTime(5000);
+			m_niMarkUnitCase = 90; m_tiMarkUnitLoop.Set_LoopTime(5000);
 		}		
 
 	case 90:	// Initial Complete
 		return TRUE;
 	}
 
-	// 1. (Error : 1600)
+	// 1. (Error : 1800)
 	if (m_tiBtmInspectorLoop.Over_LoopTime()) {
-		g_objCommon.Show_Error(1600 + m_niBtmInspectorCase);
+		g_objCommon.Show_Error(1800 + m_niBtmInspectorCase);
 		return FALSE;
 	}
 
@@ -788,8 +829,62 @@ BOOL CSequenceInit::Initial_Marker()
 
 /////////////////////////////////////////////////////////////////////////////
 // 8. (Error : 1800)
-BOOL CSequenceInit::Initial_IndexTable()
+BOOL CSequenceInit::Initial_MainIndex()
 {
+
+	switch (m_niMarkUnitCase)
+	{
+	case 0:
+		return TRUE;
+	case 1:
+		if(m_niTrayPickerCase > 10
+			&& m_niLensCleanCase > 10
+			&& m_niTopInspectorCase > 10
+			&& m_niBtmInspectorCase > 10
+			&& m_niMarkUnitCase > 10)
+		{
+			g_objLogFile.Save_HandlerLog("[Initial Sequence] - Main Index Start");
+			m_niMainIndexCase++; m_tiMainIndexLoop.Set_LoopTime(5000);
+		}
+		return TRUE;
+	case 2:
+		g_objCommon.Set_IndexLoadAlignOut();
+		m_niMainIndexCase++; m_tiMainIndexLoop.Set_LoopTime(5000);
+		break;
+	case 3:
+		if(g_objCommon.Get_IndexLoadAlignOut())
+		{					
+			m_niMainIndexCase++; m_tiMainInitLoop.Set_LoopTime(25000);
+		}
+		break;
+	case 4:
+		if(g_objCommon.Check_Position(AX_ZIG_PICKER_Z, Tray_Picker_Z::Ready)
+			&& g_objCommon.Check_Position(AX_TOP_INSPECTOR_Z, Top_Inspector_Z::Ready)
+			&& g_objCommon.Check_Position(AX_BTM_INSPECTOR_Z, Btm_Inspector_Z::Ready)
+			&& g_objCommon.Get_CleanerOpen() && g_objCommon.Get_CleanerBackwardDone()) //Interlock 
+		{
+			g_objAJinAXL.Home_Search(AX_MAIN_INDEX_R);
+			m_niMainIndexCase++; m_tiMainInitLoop.Set_LoopTime(25000);
+		}		
+		break;
+	case 5:
+		if(g_objAJinAXL.Is_Home(AX_MAIN_INDEX_R))
+		{
+			m_niMainIndexCase = 90; m_tiMainInitLoop.Set_LoopTime(5000);
+		}
+		break;
+
+	case 90:	// Initial Complete
+		return TRUE;
+	}
+
+	// 1. (Error : 1900)
+	if (m_tiMainIndexLoop.Over_LoopTime())
+	{
+		g_objCommon.Show_Error(1900 + m_niMainIndexCase);
+		return FALSE;
+	}
+	
 	return TRUE;
 }
 
@@ -806,8 +901,24 @@ BOOL CSequenceInit::Initial_Simulation()
 
 	Sleep(SIM_WAITTIMES);
 
+	if(m_niMZElevCase == 2)
+	{
+
+	}
 	
-	
+
+	if(m_niFeederCase == 1)
+	{
+		m_pDX01->iFeederZigExist = FALSE;
+	}
+	if(m_niFeederCase == 2)
+	{
+		m_pDX01->iMagazineZigExist = FALSE;
+	}
+	if(m_niFeederCase == 3)
+	{
+		m_pDX01->iRailZigExist = FALSE;
+	}
 
 	return TRUE;
 }
