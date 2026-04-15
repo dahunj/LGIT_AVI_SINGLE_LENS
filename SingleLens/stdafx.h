@@ -125,8 +125,10 @@ typedef struct
 	int		nZigY;
 
 	// Infomation 
-	int	nInfoZigPick[ZIG_X][ZIG_Y];
-	int nInfoIndexT[6][ZIG_X][ZIG_Y]; // 0:Empty,1:Good, 2:NG, 3:Top Ready, 4: Top Done, 5: Btm Ready, 6 : Btm Done,  9:Init 
+	int InfoMagazine[10][ZIG_X][ZIG_Y];
+	int InfoFeeder[ZIG_X][ZIG_Y];
+	int	InfoZigPick[ZIG_X][ZIG_Y];
+	int InfoMainIndex[6][ZIG_X][ZIG_Y]; // 0:Empty,1:Good, 2:NG, 3:Top Ready, 4: Top Done, 5: Btm Ready, 6 : Btm Done,  9:Init 
 	
 	std::vector<int> nInfoMark[ZIG_X][ZIG_Y];
 

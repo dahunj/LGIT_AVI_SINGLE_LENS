@@ -96,13 +96,9 @@ protected:
 
 	//new 
 	afx_msg void OnStcLotIdClick(UINT nID);
-	afx_msg void OnStcLensCountClick(UINT nID);
-
-	
+	afx_msg void OnStcLensCountClick(UINT nID);	
 
 	//old 
-	
-
 	afx_msg void OnStnClickedLblLot0();
 	afx_msg void OnStnClickedLblLot3();
 	

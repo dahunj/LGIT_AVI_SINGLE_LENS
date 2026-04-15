@@ -888,28 +888,31 @@ BOOL CSequenceMain::LensCleanerRun()
 	switch(m_nLensCleanerCase)
 	{
 	case 0:
-		if(!gData.bIndexDone[IndexT::Clean] && !Check_IndexEmpty(IndexT::Top))
+		if(!gData.bIndexDone[MainIndex::Clean] && !Check_IndexEmpty(MainIndex::Clean))
 		{
 			m_nLensCleanerCase = 1;  m_nLensCleanerLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
+			m_strLog.Format("Lens Cleanner Start"); m_nFeederLoop.Takt_Save(5, m_nLensCleanerCase, m_strLog);
 		}
 		return TRUE;
 	case 1:
 		g_objCommon.Set_CleanerClose();
 		m_nLensCleanerCase++; m_nLensCleanerLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
+		m_strLog.Format("Lens Cleanner Close"); m_nFeederLoop.Takt_Save(5, m_nLensCleanerCase, m_strLog);
 		break;
 	case 2:
 		if(g_objCommon.Get_CleanerClose())
 		{
 			g_objCommon.Set_CleanerForward();
 			m_nLensCleanerCase++; m_nLensCleanerLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
+			m_strLog.Format("Lens Cleanner Forward"); m_nFeederLoop.Takt_Save(5, m_nLensCleanerCase, m_strLog);
 		}		
 		break;
 	case 3:
 		if(g_objCommon.Get_CleanerForwardDone())
 		{
-
 			g_objCommon.Set_CleanerOpen();
 			m_nLensCleanerCase++; m_nLensCleanerLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
+			m_strLog.Format("Lens Cleanner Open"); m_nFeederLoop.Takt_Save(5, m_nLensCleanerCase, m_strLog);
 		}
 		break;
 	case 4:
@@ -917,12 +920,14 @@ BOOL CSequenceMain::LensCleanerRun()
 		{
 			g_objCommon.Set_CleanerBackward();
 			m_nLensCleanerCase++; m_nLensCleanerLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
+			m_strLog.Format("Lens Cleanner Backward"); m_nFeederLoop.Takt_Save(5, m_nLensCleanerCase, m_strLog);
 		}
 	case 5:
 		if(g_objCommon.Get_CleanerBackwardDone())
 		{
-			gData.bIndexDone[IndexT::Clean] = TRUE;
-			m_nLensCleanerCase = 0; m_nLensCleanerLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);			
+			gData.bIndexDone[MainIndex::Clean] = TRUE;
+			m_nLensCleanerCase = 0; m_nLensCleanerLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);	
+			m_strLog.Format("Lens Cleanner Done"); m_nFeederLoop.Takt_Save(5, m_nLensCleanerCase, m_strLog);
 		}
 		break;
 	}
@@ -946,10 +951,11 @@ BOOL CSequenceMain::TopInspectorRun()
 	switch(m_nTopInspectCase)
 	{
 	case 0:
-		if(!gData.bIndexDone[IndexT::Top] && !Check_IndexEmpty(IndexT::Top))
+		if(!gData.bIndexDone[MainIndex::Top] && !Check_IndexEmpty(MainIndex::Top))
 		{
 			m_nTopInspectCase++;
 			m_nTopInspectLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
+			m_strLog.Format("Top Vision Start"); m_nFeederLoop.Takt_Save(6, m_nTopInspectCase, m_strLog);
 		}
 		return TRUE;
 	case 1:
@@ -960,6 +966,12 @@ BOOL CSequenceMain::TopInspectorRun()
 				Init_TopZig();
 				nTopXPos = 1; nTopYPos = 1;
 				m_nTopInspectCase++; m_nTopInspectLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
+				m_strLog.Format("Top Vision Use"); m_nFeederLoop.Takt_Save(6, m_nTopInspectCase, m_strLog);
+			}
+			else
+			{
+				m_nTopInspectCase = 15; m_nTopInspectLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
+				m_strLog.Format("Top Vision Skip"); m_nFeederLoop.Takt_Save(6, m_nTopInspectCase, m_strLog);
 			}
 		}
 		break;
@@ -992,8 +1004,8 @@ BOOL CSequenceMain::TopInspectorRun()
 
 			if (!m_pEquipData->bUseTopVision)
 			{
-				if (gData.nInfoIndexT[IndexT::Top][nTopYPos-1][nTopXPos-1] == 9)
-					gData.nInfoIndexT[IndexT::Top][nTopYPos-1][nTopXPos-1] = LensState::TopDone;	//Scan Done
+				if (gData.InfoMainIndex[MainIndex::Top][nTopYPos-1][nTopXPos-1] == 9)
+					gData.InfoMainIndex[MainIndex::Top][nTopYPos-1][nTopXPos-1] = LensState::TopDone;	//Scan Done
 			
 				m_nTopInspectCase = 10; m_nTopInspectLoop.Set_LoopTime(gData.nTime[LoopTime::Scan]);
 			} 
@@ -1036,8 +1048,9 @@ BOOL CSequenceMain::TopInspectorRun()
 		m_nTopInspectCase = 2; m_nTopInspectLoop.Set_LoopTime(5000);
 		break;	
 	case 15:
-		gData.bIndexDone[IndexT::Top] = TRUE;
+		gData.bIndexDone[MainIndex::Top] = TRUE;
 		m_nLensCleanerCase = 0; m_nLensCleanerLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
+		m_strLog.Format("Top Vision Done"); m_nFeederLoop.Takt_Save(6, m_nTopInspectCase, m_strLog);
 		break;
 
 	}
@@ -1060,10 +1073,11 @@ BOOL CSequenceMain::BtmInspectorRun()
 	switch(m_nBtmInspectCase)
 	{
 	case 0:
-		if(!gData.bIndexDone[IndexT::Btm] && !Check_IndexEmpty(IndexT::Btm))
+		if(!gData.bIndexDone[MainIndex::Btm] && !Check_IndexEmpty(MainIndex::Btm))
 		{
 			m_nBtmInspectCase++;
 			m_nBtmInspectLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
+			m_strLog.Format("Btm Vision Start"); m_nFeederLoop.Takt_Save(7, m_nBtmInspectCase, m_strLog);
 		}
 		return TRUE;
 	case 1:
@@ -1074,6 +1088,12 @@ BOOL CSequenceMain::BtmInspectorRun()
 				Init_TopZig();
 				nBtmXPos = 1; nBtmYPos = 1;
 				m_nBtmInspectCase++; m_nBtmInspectLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
+				m_strLog.Format("Btm Vision Use"); m_nFeederLoop.Takt_Save(7, m_nBtmInspectCase, m_strLog);
+			}
+			else
+			{
+				m_nBtmInspectCase = 15; m_nBtmInspectLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
+				m_strLog.Format("Btm Vision Skip"); m_nFeederLoop.Takt_Save(7, m_nBtmInspectCase, m_strLog);
 			}
 		}
 		break;
@@ -1106,8 +1126,8 @@ BOOL CSequenceMain::BtmInspectorRun()
 
 			if (!m_pEquipData->bUseTopVision)
 			{
-				if (gData.nInfoIndexT[IndexT::Btm][nBtmYPos-1][nBtmXPos-1] == 9)
-					gData.nInfoIndexT[IndexT::Btm][nBtmYPos-1][nBtmXPos-1] = LensState::BtmDone;	//Scan Done
+				if (gData.InfoMainIndex[MainIndex::Btm][nBtmYPos-1][nBtmXPos-1] == 9)
+					gData.InfoMainIndex[MainIndex::Btm][nBtmYPos-1][nBtmXPos-1] = LensState::BtmDone;	//Scan Done
 				
 				m_nBtmInspectCase = 10; m_nBtmInspectLoop.Set_LoopTime(gData.nTime[LoopTime::Scan]);
 			} 
@@ -1150,8 +1170,9 @@ BOOL CSequenceMain::BtmInspectorRun()
 		m_nBtmInspectCase = 2; m_nBtmInspectLoop.Set_LoopTime(5000);
 		break;	
 	case 15:
-		gData.bIndexDone[IndexT::Btm] = TRUE;
+		gData.bIndexDone[MainIndex::Btm] = TRUE;
 		m_nBtmInspectCase = 0; m_nBtmInspectLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
+		m_strLog.Format("Btm Vision Done"); m_nFeederLoop.Takt_Save(7, m_nBtmInspectCase, m_strLog);
 		break;
 
 	}
@@ -1179,9 +1200,10 @@ BOOL CSequenceMain::MarkUnitRun()
 	switch(m_nMarkUnitCase)
 	{
 	case 0:
-		if(!gData.bIndexDone[IndexT::Mark] && !Check_IndexEmpty(IndexT::Mark))
+		if(!gData.bIndexDone[MainIndex::Mark] && !Check_IndexEmpty(MainIndex::Mark))
 		{
 			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
+			m_strLog.Format("Marking Start"); m_nFeederLoop.Takt_Save(8, m_nMarkUnitCase, m_strLog);
 		}
 		return TRUE;
 	case 1:
@@ -1194,6 +1216,12 @@ BOOL CSequenceMain::MarkUnitRun()
 				nMarkXPos = 1; nMarkYPos = 1;
 				nLensNo = 1;
 				m_nMarkUnitCase = 2; m_nMarkUnitLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
+				m_strLog.Format("Marking Use"); m_nFeederLoop.Takt_Save(8, m_nMarkUnitCase, m_strLog);
+			}
+			else
+			{
+				m_nMarkUnitCase = 15; m_nMarkUnitLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
+				m_strLog.Format("Marking Skip"); m_nFeederLoop.Takt_Save(8, m_nMarkUnitCase, m_strLog);
 			}
 		}
 		break;
@@ -1228,8 +1256,8 @@ BOOL CSequenceMain::MarkUnitRun()
 		if (!m_pEquipData->bUseMark)
 		{
 			g_objCommon.Move_Position(AX_MARK_UNIT_Z, Marker_Z::Ready);
-			if (gData.nInfoIndexT[IndexT::Mark][nMarkYPos-1][nMarkXPos-1] == 9)
-				gData.nInfoIndexT[IndexT::Mark][nMarkYPos-1][nMarkXPos-1] = LensState::Marked;	//Scan Done
+			if (gData.InfoMainIndex[MainIndex::Mark][nMarkYPos-1][nMarkXPos-1] == 9)
+				gData.InfoMainIndex[MainIndex::Mark][nMarkYPos-1][nMarkXPos-1] = LensState::Marked;	//Scan Done
 
 			m_nBtmInspectCase = 15; m_nBtmInspectLoop.Set_LoopTime(gData.nTime[LoopTime::Scan]);
 		} 
@@ -1254,8 +1282,9 @@ BOOL CSequenceMain::MarkUnitRun()
 		}		
 		break;	
 case 15:
-		gData.bIndexDone[IndexT::Mark] = TRUE;
+		gData.bIndexDone[MainIndex::Mark] = TRUE;
 		m_nMarkUnitCase = 0; m_nMarkUnitLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
+		m_strLog.Format("Marking Done"); m_nFeederLoop.Takt_Save(8, m_nMarkUnitCase, m_strLog);
 		break;
 
 	}
@@ -1279,38 +1308,35 @@ BOOL CSequenceMain::MainIndexRun()
 	case 1:
 		if (Check_IndexEmpty(-1) && Check_ZigPickerEmpty()) return TRUE;
 
-		if(m_nZigPickerCase > 4 && m_nZigPickerCase <= 14)
-		{
-			m_nMainIndexCase++; m_nIndexTLoop.Set_LoopTime(5000);
-		}	
-		return TRUE;
+		m_nMainIndexCase++; m_nIndexTLoop.Set_LoopTime(5000);
+		m_strLog.Format("MainIdex Start"); m_nFeederLoop.Takt_Save(9, m_nMainIndexCase, m_strLog);
+		break;
 	case 2:
 		g_objCommon.Set_IndexLoadAlignOut();
 	 	m_nMainIndexCase++; m_nIndexTLoop.Set_LoopTime(5000);
+		m_strLog.Format("Load Align Out"); m_nFeederLoop.Takt_Save(9, m_nMainIndexCase, m_strLog);
 		break;
 	case 3:
 		if(g_objCommon.Get_IndexLoadAlignOut())
 		{
-			m_nMainIndexCase++; m_nIndexTLoop.Set_LoopTime(5000);
+			m_nMainIndexCase = MainIndexBranch::CheckInOut; m_nIndexTLoop.Set_LoopTime(5000);
+			m_strLog.Format("In or Out Branch"); m_nFeederLoop.Takt_Save(9, m_nMainIndexCase, m_strLog);
 		}
 		break;
-	case 4:
-		if(m_nMZElevCase == 10 && m_nFeederCase == 0 && m_nZigPickerCase == 0)// Magazine Elev Ready Check 
-		{
-			m_nMainIndexCase = MainIndexBranch::CheckInOut; m_nIndexTLoop.Set_LoopTime(5000);
-		}		
-		return TRUE;
-		
-	case (int)MainIndexBranch::CheckInOut:
-		if(Check_IndexEmpty(IndexT::Load))
+			
+	case (int) MainIndexBranch::CheckInOut:
+		if(Check_IndexEmpty(MainIndex::Load) 
+			&& m_nMZElevCase == 10 && m_nFeederCase == 0 && m_nZigPickerCase == 0)// +조건 Index에 Info가 없을때 넣을것 
 		{			
 			m_nFeederCase = FeederBranch::LoadSearch; // Feeder  부터
 			m_nMainIndexCase = 10; m_nIndexTLoop.Set_LoopTime(5000);
+			m_strLog.Format("Feeder LoadSearch"); m_nFeederLoop.Takt_Save(9, m_nMainIndexCase, m_strLog);
 		}
-		else 
+		else if( m_nMZElevCase == 10 && m_nFeederCase == 0 && m_nZigPickerCase == 0) //  +조건 Index에 Info가 있을떄 넣을것 
 		{ 
 			m_nZigPickerCase = ZigPickBranch::Unload; // ZigPicker 부터 
 			m_nMainIndexCase = 10; m_nIndexTLoop.Set_LoopTime(5000);
+			m_strLog.Format("Zig Picker Unload"); m_nFeederLoop.Takt_Save(9, m_nMainIndexCase, m_strLog);
 		}
 		break;
 	case 10:
@@ -1463,7 +1489,7 @@ BOOL CSequenceMain::Check_IndexEmpty(int nPos)
 		{
 			for (int k = 0; k < ZIG_Y; k++) 
 			{
-				if (gData.nInfoIndexT[i][j][k] > 0) return FALSE;
+				if (gData.InfoMainIndex[i][j][k] > 0) return FALSE;
 			}			
 		}
 	}
@@ -1476,7 +1502,7 @@ BOOL CSequenceMain::Check_ZigPickerEmpty()
 	{
 		for(int j = 0; j < ZIG_Y; j++)
 		{
-			if (gData.nInfoZigPick[i] > 0) return FALSE; 
+			if (gData.InfoZigPick[i] > 0) return FALSE; 
 		}		
 	}
 	return TRUE;
@@ -1486,13 +1512,13 @@ BOOL CSequenceMain::Check_ZigPickerEmpty()
 
 void CSequenceMain::Set_IndexEnd()
 {
-	memmove(gData.nInfoIndexT[IndexT::Clean], gData.nInfoIndexT[IndexT::Load], sizeof(int)*6*ZIG_X*ZIG_Y);
-	memmove(gData.nInfoIndexT[IndexT::Top], gData.nInfoIndexT[IndexT::Clean], sizeof(int)*6*ZIG_X*ZIG_Y);
-	memmove(gData.nInfoIndexT[IndexT::None], gData.nInfoIndexT[IndexT::Top], sizeof(int)*6*ZIG_X*ZIG_Y);
-	memmove(gData.nInfoIndexT[IndexT::Btm], gData.nInfoIndexT[IndexT::None], sizeof(int)*6*ZIG_X*ZIG_Y);
-	memmove(gData.nInfoIndexT[IndexT::Mark], gData.nInfoIndexT[IndexT::Btm], sizeof(int)*6*ZIG_X*ZIG_Y);
+	memmove(gData.InfoMainIndex[MainIndex::Clean], gData.InfoMainIndex[MainIndex::Load], sizeof(int)*6*ZIG_X*ZIG_Y);
+	memmove(gData.InfoMainIndex[MainIndex::Top], gData.InfoMainIndex[MainIndex::Clean], sizeof(int)*6*ZIG_X*ZIG_Y);
+	memmove(gData.InfoMainIndex[MainIndex::None], gData.InfoMainIndex[MainIndex::Top], sizeof(int)*6*ZIG_X*ZIG_Y);
+	memmove(gData.InfoMainIndex[MainIndex::Btm], gData.InfoMainIndex[MainIndex::None], sizeof(int)*6*ZIG_X*ZIG_Y);
+	memmove(gData.InfoMainIndex[MainIndex::Mark], gData.InfoMainIndex[MainIndex::Btm], sizeof(int)*6*ZIG_X*ZIG_Y);
 
-	memset(gData.nInfoIndexT[IndexT::Load], 0x00, sizeof(int)*6*ZIG_X*ZIG_Y);
+	memset(gData.InfoMainIndex[MainIndex::Load], 0x00, sizeof(int)*6*ZIG_X*ZIG_Y);
 
 	memset(gData.bIndexDone, 0x00, sizeof(BOOL) * 6);
 
@@ -1504,9 +1530,9 @@ void CSequenceMain::Init_TopZig()
 	{
 		for(int j = 0; j < ZIG_Y; j++)
 		{
-			if(gData.nInfoIndexT[IndexT::Top][ZIG_X][ZIG_Y] == LensState::Init)
+			if(gData.InfoMainIndex[MainIndex::Top][ZIG_X][ZIG_Y] == LensState::Init)
 			{
-				gData.nInfoIndexT[IndexT::Top][ZIG_X][ZIG_Y] = LensState::TopReady;
+				gData.InfoMainIndex[MainIndex::Top][ZIG_X][ZIG_Y] = LensState::TopReady;
 			}
 		}
 	}
@@ -1527,7 +1553,7 @@ BOOL CSequenceMain::Select_TopScanPos(int &nTopPosX, int &nTopPosY)
 		{
 			for(int i = (gData.nZigX-1); i >=0; i--) 
 			{
-				if (gData.nInfoIndexT[IndexT::Top][j][i] == LensState::TopReady)  
+				if (gData.InfoMainIndex[MainIndex::Top][j][i] == LensState::TopReady)  
 				{
 					nTopPosY = j + 1;
 					nTopPosX = i + 1;
@@ -1539,7 +1565,7 @@ BOOL CSequenceMain::Select_TopScanPos(int &nTopPosX, int &nTopPosY)
 		{
 			for(int i = 0; i < gData.nZigX; i++)
 			{
-				if (gData.nInfoIndexT[IndexT::Top][j][i] == LensState::TopReady) 
+				if (gData.InfoMainIndex[MainIndex::Top][j][i] == LensState::TopReady) 
 				{
 					nTopPosY = j + 1;
 					nTopPosX = i + 1;
@@ -1563,10 +1589,10 @@ void CSequenceMain::Init_BtmZig()
 	{
 		for(int j = 0; j < ZIG_Y; j++)
 		{
-			if(gData.nInfoIndexT[IndexT::Btm][ZIG_X][ZIG_Y] == LensState::Init
-				|| gData.nInfoIndexT[IndexT::Btm][ZIG_X][ZIG_Y] == LensState::TopDone)
+			if(gData.InfoMainIndex[MainIndex::Btm][ZIG_X][ZIG_Y] == LensState::Init
+				|| gData.InfoMainIndex[MainIndex::Btm][ZIG_X][ZIG_Y] == LensState::TopDone)
 			{
-				gData.nInfoIndexT[IndexT::Btm][ZIG_X][ZIG_Y] = LensState::BtmReady;
+				gData.InfoMainIndex[MainIndex::Btm][ZIG_X][ZIG_Y] = LensState::BtmReady;
 			}
 		}
 	}
@@ -1588,7 +1614,7 @@ BOOL CSequenceMain::Select_BtmScanPos(int &nBtmPosX, int &nBtmPosY)
 		{
 			for(int i = (gData.nZigX-1); i >=0; i--) 
 			{
-				if (gData.nInfoIndexT[IndexT::Btm][j][i] == LensState::BtmReady)  
+				if (gData.InfoMainIndex[MainIndex::Btm][j][i] == LensState::BtmReady)  
 				{
 					nBtmPosY = j + 1;
 					nBtmPosX = i + 1;
@@ -1600,7 +1626,7 @@ BOOL CSequenceMain::Select_BtmScanPos(int &nBtmPosX, int &nBtmPosY)
 		{
 			for(int i = 0; i < gData.nZigX; i++)
 			{
-				if (gData.nInfoIndexT[IndexT::Btm][j][i] == LensState::BtmReady) 
+				if (gData.InfoMainIndex[MainIndex::Btm][j][i] == LensState::BtmReady) 
 				{
 					nBtmPosY = j + 1;
 					nBtmPosX = i + 1;

@@ -201,7 +201,7 @@ struct Btm_Index_Table_R
 };
 
 
-struct IndexT
+struct MainIndex
 {
 	enum JobName
 	{
