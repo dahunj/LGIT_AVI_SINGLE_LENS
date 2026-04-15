@@ -24,7 +24,7 @@ CCriticalSection g_csMachineStopLog;
 CCriticalSection g_csMesAgentLog;
 CCriticalSection g_csCmTrackingLog;
 CCriticalSection g_csBarcodeLog;
-CCriticalSection g_csSeqLog;
+CCriticalSection g_csMCCLog;
 
 CLogFile::CLogFile()
 {
@@ -272,9 +272,9 @@ void CLogFile::Save_LotResult(int nPNo, CString sLog)
 	MakeFolder(strPath3);
 
 	CString strFile1, strFile2, strFile3, strTitle, strDate, strSave;
-	strFile1.Format("%s\\%s_%04d%02d%02d07_CapLot_Result.csv", strPath1, gData.sLotID[nPNo], tLog.GetYear(), tLog.GetMonth(), tLog.GetDay());
-	strFile2.Format("%s\\%s_%04d%02d%02d07_CapLot_Result.csv", strPath2, gData.sLotID[nPNo], tLog.GetYear(), tLog.GetMonth(), tLog.GetDay());
-	strFile3.Format("%s%s_CapLot_Result.csv", strPath3, gData.sLotID[nPNo]);
+	strFile1.Format("%s\\%s_%04d%02d%02d07_CapLot_Result.csv", strPath1, gData.sZigID[nPNo], tLog.GetYear(), tLog.GetMonth(), tLog.GetDay());
+	strFile2.Format("%s\\%s_%04d%02d%02d07_CapLot_Result.csv", strPath2, gData.sZigID[nPNo], tLog.GetYear(), tLog.GetMonth(), tLog.GetDay());
+	strFile3.Format("%s%s_CapLot_Result.csv", strPath3, gData.sZigID[nPNo]);
 
 	CFile file;
 	if (!file.Open(strFile1, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) return;
@@ -619,470 +619,6 @@ void CLogFile::Save_JobListExcel(CString sLog)
 	GetLocalTime(&time);	
 }
 
-void CLogFile::Save_AverageCycle(int nPNo)
-{
-	SYSTEMTIME time;
-	GetLocalTime(&time);
-
-	CString strPath, strFile, strLog, strMsg = "";
-	strPath.Format("%s\\LOG\\LotJobList\\%04d-%02d-%02d", gsCurrentDir, time.wYear, time.wMonth, time.wDay);
-	Create_Folder(strPath);
-
-	strFile.Format("%s\\%s_Average.csv", strPath, gLot.sLotID[nPNo]);	
-
-	CFile file;
-	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
-		try {
-			file.SeekToEnd();
-
-			for (int i = 1; i <= 15; i++) {
-				for (int j = 1; j <= 20; j++) {
-					strMsg = Job_Msg(i, j);
-					if (strMsg != "") {
-						double dTemp = gLot.dAverageCycle[i-1][1][j-1] == 0 ? 0.0 : gLot.dAverageCycle[i-1][1][j-1] / gLot.dAverageCycle[i-1][0][j-1];
-						strLog.Format("%02d:%02d:%02d %03d,%s,%0.3lf\r\n",time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, strMsg, dTemp);
-						file.Write(strLog, strLog.GetLength());
-					} else 
-						break;
-				}
-			}
-			file.Close();
-
-		} catch (CFileException *pEx) {
-			pEx->Delete();
-		}
-	}
-}
-
-void CLogFile::Save_LoadCellLog(int nPNo, CString sLog)
-{
-	g_csLoadCellLog.Lock();
-
-	CString strFile, sTitle, strTime, strSave;
-
-	CString strPath = "D:\\EVMS\\TP\\Log\\";
-
-	Create_Folder(strPath);
-
-	
-	g_csLoadCellLog.Unlock();
-}
-
-CString CLogFile::Job_Msg(int nFun, int nId)
-{
-	CString strFun, strLog, strMsg = "";
-	switch (nFun) {
-	case 1:		// Tray Picker
-		strFun = "TrayPicker";
-		switch (nId) {
-		case  1: strMsg = "Z Axis Move to Avi Down Position"; break;
-		case  2: strMsg = "Tray Picker Grip Close"; break;
-		case  3: strMsg = "Z Axis Move to Ready Up Position"; break;
-		case  4: strMsg = "X Axis Move to Load1 Position(R Axis Turn)"; break;
-		case  5: strMsg = "Z Axis Move to Load1 Down Position"; break;
-		case  6: strMsg = "Tray Picker Grip Open"; break;
-		case  7: strMsg = "Z Axis Move to Ready Up Position"; break;
-		case  8: strMsg = "X Axis Move to Avi Position(R Axis Ready)"; break;
-		}
-		break;
-	case 2:		// Load Stage1
-		strFun = "LoadStage1";
-		switch (nId) {
-		case  1: strMsg = "Z Axis Move to Support Up Position"; break;
-		case  2: strMsg = "Port Support Out"; break;
-		case  3: strMsg = "Z Axis Move to Support Down Position"; break;
-		case  4: strMsg = "Port Support In"; break;
-		case  5: strMsg = "Z Axis Move to Moving Up Position"; break;
-		case  6: strMsg = "Master/Slave In"; break;
-		case  7: strMsg = "X Axis Move to Work Position"; break;
-		case  8: strMsg = "X Axis Move to Unload Position"; break;
-		case  9: strMsg = "Z Axis Move to Unload Up Position"; break;
-		case 10: strMsg = "Master/Slave Out"; break;
-		case 11: strMsg = "Z Axis Move to Moving Down Position"; break;
-		case 12: strMsg = "X Axis Move to Load Position"; break;
-		}
-		break;
-	case 3:		// Load Stage2
-		strFun = "LoadStage2";
-		switch (nId) {
-		case  1: strMsg = "Z Axis Move to Support Up Position"; break;
-		case  2: strMsg = "Port Support Out"; break;
-		case  3: strMsg = "Z Axis Move to Support Down Position"; break;
-		case  4: strMsg = "Port Support In"; break;
-		case  5: strMsg = "Z Axis Move to Moving Up Position"; break;
-		case  6: strMsg = "Master/Slave In"; break;
-		case  7: strMsg = "X Axis Move to Work Position"; break;
-		case  8: strMsg = "X Axis Move to Unload Position"; break;
-		case  9: strMsg = "Z Axis Move to Unload Up Position"; break;
-		case 10: strMsg = "Master/Slave Out"; break;
-		case 11: strMsg = "Z Axis Move to Moving Down Position"; break;
-		case 12: strMsg = "X Axis Move to Load Position"; break;
-		}
-		break;
-	case 4:		// Load Picker
-		strFun = "LoadPicker";
-		switch (nId) {
-		case 1: strMsg = "Y Axis Move to Pickup position"; break; 
-		case 2: strMsg = "Z Axis Move to Tray Down. Cylinder Down"; break;
-		case 3: strMsg = "Load Picker Grip Close"; break;
-		case 4: strMsg = "Z Axis Move to Tray Up. Cylinder Up"; break;
-		case 5: strMsg = "Y/P Axis Move to Index Position"; break;
-		case 6: strMsg = "Z Axis Move to Index Down. Cylinder Down"; break;
-		case 7: strMsg = "Load Picker Grip Open"; break;
-		case 8: strMsg = "Z Axis Move to Index Up. Cylinder Up"; break;
-		case 9: strMsg = "Y/P Axis Move to Tray position"; break;
-		}
-		break;
-	case 5:		// Vision Cm Align
-		strFun = "CmAlign";
-		switch (nId) {
-		case  1: strMsg = "X Axis Move to Inspect Position(LoadComplete)"; break;
-		case  2: strMsg = "CM Scan Complete"; break;
-		case  3: strMsg = "X Axis Move to Ready Position"; break;
-		}
-		break;
-	case 6:		// Vision Cap Align
-		strFun = "CapAlign";
-		switch (nId) {
-		case  1: strMsg = "Y Axis Move to Inspect Position(LoadComplete)"; break;
-		case  2: strMsg = "Cap Scan Complete"; break;
-		case  3: strMsg = "Y Axis Move to Ready Position"; break;
-		}
-		break;
-	case 7:		// Cap Stage1
-		strFun = "CapStage1";
-		switch (nId) {
-		case  1: strMsg = "Z Axis Move to Support Up Position"; break;
-		case  2: strMsg = "Port Support Out"; break;
-		case  3: strMsg = "Z Axis Move to Support Down Position"; break;
-		case  4: strMsg = "Port Support In"; break;
-		case  5: strMsg = "Z Axis Move to Moving Down Position"; break;
-		case  6: strMsg = "Master/Slave In"; break;
-		case  7: strMsg = "X Axis Move to Work Position"; break;
-		case  8: strMsg = "Z Axis Move to Moving Up(Work) Position"; break;
-		case  9: strMsg = "X Axis Move to Unload Position"; break;
-		case 10: strMsg = "Z Axis Move to Support Down Position"; break;
-		case 11: strMsg = "Port Support Out"; break;
-		case 12: strMsg = "Z Axis Move to Support Up Position"; break;
-		case 13: strMsg = "Port Support In"; break;
-		case 14: strMsg = "Master/Slave Out"; break;
-		case 15: strMsg = "Z Axis Move to Moving Up Position"; break;
-		case 16: strMsg = "X Axis Move to Load Position"; break;
-		}
-		break;
-	case 8:		// Cap Stage2
-		strFun = "CapStage2";
-		switch (nId) {
-		case  1: strMsg = "Z Axis Move to Support Up Position"; break;
-		case  2: strMsg = "Port Support Out"; break;
-		case  3: strMsg = "Z Axis Move to Support Down Position"; break;
-		case  4: strMsg = "Port Support In"; break;
-		case  5: strMsg = "Z Axis Move to Moving Down Position"; break;
-		case  6: strMsg = "Master/Slave In"; break;
-		case  7: strMsg = "X Axis Move to Work Position"; break;
-		case  8: strMsg = "Z Axis Move to Moving Up(Work) Position"; break;
-		case  9: strMsg = "X Axis Move to Unload Position"; break;
-		case 10: strMsg = "Z Axis Move to Support Down Position"; break;
-		case 11: strMsg = "Port Support Out"; break;
-		case 12: strMsg = "Z Axis Move to Support Up Position"; break;
-		case 13: strMsg = "Port Support In"; break;
-		case 14: strMsg = "Master/Slave Out"; break;
-		case 15: strMsg = "Z Axis Move to Moving Up Position"; break;
-		case 16: strMsg = "X Axis Move to Load Position"; break;
-		}
-		break;
-	case 9:		// Cap Picker
-		strFun = "CapPicker";
-		switch (nId) {
-		case  1: strMsg = "X/Y Axis Move to Cap Pickup Position"; break;
-		case  2: strMsg = "Cap Pickup (Down + VacOn + Up) In Cap Tray"; break;
-		case  3: strMsg = "X/Y Axis Move to Cap Buffer Position"; break;
-		case  4: strMsg = "Cap Buffer Align Out"; break;
-		case  5: strMsg = "Cap Unloading (Down + VacOff + Up) In Cap Buffer"; break;
-		case  6: strMsg = "X/Y Axis Move to Cap Tray Position"; break;
-		}
-		break;
-	case 10:	// Cap Buffer
-		strFun = "CapBuffer";
-		switch (nId) {
-		case  1: strMsg = "Move to Cleaning Position"; break;
-		case  2: strMsg = "Cap Cover In"; break;
-		case  3: strMsg = "Cap Cover Down/Cap Clean Up + Cap Clean Air On/Off + Cap Cover Up/Cap Clean Down"; break;
-		case  4: strMsg = "Cap Cover Out"; break;
-		case  5: strMsg = "Move to Cap Unload Position"; break;
-		case  6: strMsg = "Move to Cap Load Position"; break;
-		}
-		break;
-	case 11:	// Assy Picker
-		strFun = "Assy Picker";
-		switch (nId) {
-		case 1: strMsg = "Cap Pickup (Down + VacOn + Up) In Cap Buffer"; break;
-		case 2: strMsg = "X/Y/Z Axis Move to Inspect Position"; break;
-		case 3: strMsg = "X/Y Axis Move to Index Position"; break;
-		case 4: strMsg = "Index Assy Vac Up"; break;
-		case 5: strMsg = "Index Assy Vac On"; break;
-		case 6: strMsg = "Cap Assembly (Down + Assembly + Tilt Check Up)"; break;
-		case 7: strMsg = "Tilt Cylinder Down"; break;
-		case 8: strMsg = "Tilt Cylinder Up/Index Assy Vac Down"; break;
-		case 9: strMsg = "X/Y Axis Move to Cap Load Position"; break;
-		}
-		break;
-	case 12:	// Trans Stage
-		strFun = "TransStage";
-		switch (nId) {
-		case 1: strMsg = "Z Axis Move to Index Down"; break;
-		case 2: strMsg = "Index Trans Align Out"; break;
-		case 3: strMsg = "Clamp On"; break;
-		case 4: strMsg = "Z Axis Move to Ready Up"; break;
-		case 5: strMsg = "Index Trans Align In"; break;
-		case 6: strMsg = "X/T Axis Move to Unload Position"; break;
-		case 7: strMsg = "Z Axis Move to Unload Up Position"; break;
-		case 8: strMsg = "Z Axis Move to Ready Up Position"; break;
-		case 9: strMsg = "X/T Axis Move to Load Position"; break;
-		}
-		break;
-	case 13:	// UnloadPicker
-		strFun = "UnloadPicker";
-		switch (nId) {
-		case  1: strMsg = "Z Axis Move to Trans Down"; break;
-		case  2: strMsg = "Trans Stage Clamp Off"; break;
-		case  3: strMsg = "Z Axis Move to Ready Up"; break;
-		case  4: strMsg = "X/P Axis Move to Unload Tray"; break;
-		case  5: strMsg = "X/Y Axis Move to Unload Down Position"; break;
-		case  6: strMsg = "Module Unloading (Down + VacuumOff + Up) In Unload Tray"; break;
-		case  7: strMsg = "Z Axis Move to Ready Up"; break;
-		case  8: strMsg = "X/P Axis Move to Trans Stage Position"; break;
-		}
-		break;
-	case 14:	// UnloadStage1
-		strFun = "UnloadStage1";
-		switch (nId) {
-		case  1: strMsg = "Z Axis Move to Support Up Position"; break;
-		case  2: strMsg = "Port Support Out"; break;
-		case  3: strMsg = "Z Axis Move to Support Down Position"; break;
-		case  4: strMsg = "Port Support In"; break;
-		case  5: strMsg = "Z Axis Move to Moving Up Position"; break;
-		case  6: strMsg = "Master/Slave In"; break;
-		case  7: strMsg = "Y Axis Move to Work Position"; break;
-		case  8: strMsg = "Y Axis Move to Unload Position"; break;
-		case  9: strMsg = "Z Axis Move to Support Down Position"; break;
-		case 10: strMsg = "Port Support Out"; break;
-		case 11: strMsg = "Z Axis Move to Support Up Position"; break;
-		case 12: strMsg = "Port Support In"; break;
-		case 13: strMsg = "Master/Slave Out"; break;
-		case 14: strMsg = "Z Axis Move to Moving Down Position"; break;
-		case 15: strMsg = "Y Axis Move to Load Position"; break;
-		case 16: strMsg = "Z Axis Move to Moving Up Position"; break;
-		}
-		break;
-	case 15:	// UnloadStage2
-		strFun = "UnloadStage2";
-		switch (nId) {
-		case  1: strMsg = "Z Axis Move to Support Up Position"; break;
-		case  2: strMsg = "Port Support Out"; break;
-		case  3: strMsg = "Z Axis Move to Support Down Position"; break;
-		case  4: strMsg = "Port Support In"; break;
-		case  5: strMsg = "Z Axis Move to Moving Up Position"; break;
-		case  6: strMsg = "Master/Slave In"; break;
-		case  7: strMsg = "Y Axis Move to Work Position"; break;
-		case  8: strMsg = "Y Axis Move to Unload Position"; break;
-		case  9: strMsg = "Z Axis Move to Support Down Position"; break;
-		case 10: strMsg = "Port Support Out"; break;
-		case 11: strMsg = "Z Axis Move to Support Up Position"; break;
-		case 12: strMsg = "Port Support In"; break;
-		case 13: strMsg = "Master/Slave Out"; break;
-		case 14: strMsg = "Z Axis Move to Moving Down Position"; break;
-		case 15: strMsg = "Y Axis Move to Load Position"; break;
-		case 16: strMsg = "Z Axis Move to Moving Up Position"; break;
-		}
-		break;
-	}
-	if (strMsg == "") return "";
-	CString strTemp;
-	strTemp.Format("%s,%d,%s", strFun, nId, strMsg);
-	return strTemp;
-}
-
-
-void CLogFile::Save_BarcodeChkLog(CString sLog)
-{
-	g_csBarcodeLog.Lock();
-
-	CString strPath = gsCurrentDir + "\\LOG\\Barcode";
-
-	Create_Folder(strPath);
-
-	SYSTEMTIME time;
-	GetLocalTime(&time);
-
-	CString strFile, strSave;
-	strFile.Format("%s\\%04d-%02d-%02d.txt", strPath, time.wYear, time.wMonth, time.wDay);
-
-	CFile file;
-	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
-		try {
-			file.SeekToEnd();
-
-			strSave.Format("%s\r\n", sLog);
-
-			file.Write(strSave, strSave.GetLength());
-			file.Close();
-
-		} catch (CFileException *pEx) {
-			pEx->Delete();
-		}
-	}
-	g_csBarcodeLog.Unlock();
-
-}
-
-
-
-// 2주 이내 같은 바코드 기록 있는지 체크 , 있으면 FALSE, 없으면 TRUE
-// 파일 읽기 실패, FALSE
-BOOL CLogFile::Check_BarcodeLog(CString sBarcode) 
-{
-	int nPoint = 0;
-	int nCnt = 0;
-
-	CString strFileName,strFilePath, strData, strTemp, strTime, strBarcode;
-	CString strPath = gsCurrentDir + "\\LOG\\Barcode\\*.*";
-
-	CFileFind finder;
-	BOOL bRes = finder.FindFile(strPath);
-
-	SYSTEMTIME sysTime;
-	GetLocalTime(&sysTime);
-
-	CTime tempTime;
-	CTime curTime(sysTime);
-	CTimeSpan diffTime; 
-
-	while (bRes) {
-		bRes = finder.FindNextFile();
-		if (finder.IsDirectory()) continue;
-		strFileName = finder.GetFileName();
-		strFilePath = finder.GetFilePath();
-
-		int nLogYear = atoi(strFileName.Left(4));
-		int nLogMonth = atoi(strFileName.Mid(5, 2));
-		int nLogDay = atoi(strFileName.Mid(8, 2));
-
-		if(strFileName.GetLength() != 14 || nLogYear < 2000 || nLogMonth < 1 || nLogMonth > 12 || nLogDay < 1 || nLogDay > 31) {
-			DeleteFile(strFilePath);
-			continue;
-		}
-
-		CTime tempTime(nLogYear, nLogMonth , nLogDay,0,0,0);
-		diffTime = curTime -  tempTime;
-
-		// 2주전 기록은 삭제, 2주 이내는 FALSE
-		if(diffTime.GetDays() > 14) {
-			DeleteFile(strFilePath);
-			continue;
-		}
-	}
-
-	bRes = finder.FindFile(strPath);
-	CFile file;
-
-	while (bRes) {
-		bRes = finder.FindNextFile();
-		if (finder.IsDirectory()) continue;
-		strFileName = finder.GetFileName();
-		strFilePath = finder.GetFilePath();
-
-		if (!file.Open(strFilePath, CFile::modeRead)) return FALSE;
-
-		int nSize = (int)file.GetLength();
-
-		char *pBuff = new char[nSize + 1];
-		pBuff[nSize] = '\0';
-
-		file.Read(pBuff, nSize);
-		strData.Format("%s", pBuff);
-
-		file.Close();
-		delete pBuff;
-
-		if(strData.Find(sBarcode) != -1 )
-		{
-			return FALSE;
-		}
-	}
-	return TRUE;
-
-}
-
-CString CLogFile::Get_CapYear(CString sYear)
-{
-	CString sY;
-	if (sYear == "0")		{ sY = "Y20"; } 
-	else if (sYear == "1")  { sY = "Y21"; }
-	else if (sYear == "2")  { sY = "Y22"; }
-
-	return sY;
-}
-
-CString CLogFile::Get_CapMonth(CString sMonth)
-{
-	CString sM;
-
-	if (sMonth == "1")		 { sM = "1"; }
-	else if (sMonth == "2")  { sM = "2"; }
-	else if (sMonth == "3")  { sM = "3"; }
-	else if (sMonth == "4")  { sM = "4"; }
-	else if (sMonth == "5")  { sM = "5"; }
-	else if (sMonth == "6")  { sM = "6"; }
-	else if (sMonth == "7")  { sM = "7"; }
-	else if (sMonth == "8")  { sM = "8"; }
-	else if (sMonth == "9")  { sM = "9"; }
-	else if (sMonth == "A")  { sM = "10"; }
-	else if (sMonth == "B")  { sM = "11"; }
-	else if (sMonth == "C")  { sM = "12"; }
-
-	return sM;
-}
-
-CString CLogFile::Get_CapDay(CString sDay)
-{
-	CString sD;
-	if (sDay == "1")	   { sD = "1"; }
-	else if (sDay == "2")  { sD = "2"; }
-	else if (sDay == "3")  { sD = "3"; }
-	else if (sDay == "4")  { sD = "4"; }
-	else if (sDay == "5")  { sD = "5"; }
-	else if (sDay == "6")  { sD = "6"; }
-	else if (sDay == "7")  { sD = "7"; }
-	else if (sDay == "8")  { sD = "8"; }
-	else if (sDay == "9")  { sD = "9"; }
-	else if (sDay == "A")  { sD = "10"; }
-	else if (sDay == "B")  { sD = "11"; }
-	else if (sDay == "C")  { sD = "12"; }
-	else if (sDay == "D")  { sD = "13"; }
-	else if (sDay == "E")  { sD = "14"; }
-	else if (sDay == "F")  { sD = "15"; }
-	else if (sDay == "G")  { sD = "16"; }
-	else if (sDay == "H")  { sD = "17"; }
-	else if (sDay == "J")  { sD = "18"; }
-	else if (sDay == "K")  { sD = "19"; }
-	else if (sDay == "L")  { sD = "20"; }
-	else if (sDay == "M")  { sD = "21"; }
-	else if (sDay == "N")  { sD = "22"; }
-	else if (sDay == "P")  { sD = "23"; }
-	else if (sDay == "Q")  { sD = "24"; }
-	else if (sDay == "R")  { sD = "25"; }
-	else if (sDay == "S")  { sD = "26"; }
-	else if (sDay == "T")  { sD = "27"; }
-	else if (sDay == "U")  { sD = "28"; }
-	else if (sDay == "V")  { sD = "29"; }
-	else if (sDay == "W")  { sD = "30"; }
-	else if (sDay == "X")  { sD = "31"; }
-	else if (sDay == "Y")  { sD = "32"; }
-	else if (sDay == "Z")  { sD = "33"; }
-
-	return sD;
-}
 
 
 void CLogFile::Save_PCLog(int nPNo, CString sLog)
@@ -1097,8 +633,8 @@ void CLogFile::Save_PCLog(int nPNo, CString sLog)
 	GetLocalTime(&time);
 
 	CString strFile1, strFile2, strTitle, strTime, strPcName, strSave;
-	strFile1.Format("%s\\%s_%04d%02d%02d%02d_PC.csv", strPath1, gData.sLotID[nPNo-1], time.wYear, time.wMonth, time.wDay, time.wHour);
-	strFile2.Format("%s\\%s_%04d%02d%02d%02d_PC.csv", strPath2, gData.sLotID[nPNo-1], time.wYear, time.wMonth, time.wDay, time.wHour);
+	strFile1.Format("%s\\%s_%04d%02d%02d%02d_PC.csv", strPath1, gData.sZigID[nPNo-1], time.wYear, time.wMonth, time.wDay, time.wHour);
+	strFile2.Format("%s\\%s_%04d%02d%02d%02d_PC.csv", strPath2, gData.sZigID[nPNo-1], time.wYear, time.wMonth, time.wDay, time.wHour);
 
 	CFile file;
 	if (!file.Open(strFile1, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) return;
@@ -1131,25 +667,26 @@ void CLogFile::Save_PCLog(int nPNo, CString sLog)
 }
 
 
-void CLogFile::Save_SeqLog(CString sLog)
+void CLogFile::Save_MCCLog(const CString& sLog)
 {
-	g_csSeqLog.Lock();
-
-	CString strPath = gsCurrentDir + "\\LOG\\Seq";
+	g_csMCCLog.Lock();
+	
+	CString strPath = gsCurrentDir + "\\LOG\\Handler";
+	CString strPath2 = "D:\\Dump\\MCC";
 
 	Create_Folder(strPath);
+	Create_Folder(strPath2);
 
 	SYSTEMTIME time;
 	GetLocalTime(&time);
 
-	CString strFile, strSave;
-	strFile.Format("%s\\%04d%02d%02d.txt", strPath, time.wYear, time.wMonth, time.wDay);
+	CString strFile,strFile2, strSave;
+	strFile.Format("%s\\%04d%02d%02d_MCC.txt", strPath, time.wYear, time.wMonth, time.wDay);
+	strFile2.Format("%s\\%04d%02d%02d_MCC.txt", strPath2, time.wYear, time.wMonth, time.wDay);
 
 	CFile file;
-	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) 
-	{
-		try 
-		{
+	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
+		try {
 			file.SeekToEnd();
 
 			strSave.Format("[%02d:%02d:%02d.%03d], %s\r\n", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, sLog);
@@ -1157,13 +694,111 @@ void CLogFile::Save_SeqLog(CString sLog)
 			file.Write(strSave, strSave.GetLength());
 			file.Close();
 
+		} catch (CFileException *pEx) {
+			pEx->Delete();
+		}
+	}
+
+	CFile file2;
+	if (file2.Open(strFile2, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
+		try {
+			file2.SeekToEnd();
+
+			strSave.Format("[%02d:%02d:%02d.%03d],%s\r\n", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, sLog);
+
+			file2.Write(strSave, strSave.GetLength());
+			file2.Close();
+
 		}
 		catch (CFileException *pEx)
 		{
 			pEx->Delete();
 		}
 	}
-	g_csSeqLog.Unlock();
 
-	//Save_ECMLog(4, sLog);
+	g_csMCCLog.Unlock();
+}
+
+
+
+
+void CLogFile::Get_ZoneMsg(int nZone, int nCase, CString &sZone, CString &sMsg)
+{
+	switch (nZone) {
+	case 1:		
+		sZone = "Load C/V";
+		switch (nCase) 
+		{
+		case 1: sMsg = "Load Tray, Port check"; break;
+		case 2: sMsg = "Tray X Move to Load Position"; break;
+		}
+		break;
+	case 2:		
+		sZone = "MZ Elevator";
+		switch (nCase) {
+		case 1: sMsg = "Z Cylinder Down"; break;
+		case 2: sMsg = "Load Tray Slave Out"; break;		
+		}
+		break;
+	case 3:		 
+		sZone = "Zig Feeder";
+		switch (nCase) {
+		case 0: sMsg = "check angle port and angle inspection option"; break;
+		case 1: sMsg = "Master out"; break;
+		case 2: sMsg  ="Slave out"; break;	
+		}
+		break;
+	case 4:		 
+		sZone = "Zig Picker";
+		switch (nCase) {
+		case  1: sMsg = "Z Axis Move to Support Up Position or Wait Pos[S]"; break;
+		case  2: sMsg = "Z Axis Move to Support Up Pos from Wait pos[S]";break;	
+		}
+		break;
+	case 5:		 
+		sZone = "LensCleaner";
+		switch (nCase) {
+		case  1: sMsg = "Z Axis Move to Support Up Position or Wait Pos[S]"; break;
+		case  2: sMsg = "Z Axis Move to Support Up Pos from Wait pos[S]";break;		
+		}
+		break;
+	case 6:		 
+		sZone = "TopInspector";
+		switch (nCase) 
+		{
+			case  1: sMsg = "Angle Tray Empty Checked"; break;
+			case  2: sMsg = "Angle Tray Y & Btm1 Picker X Move to Pick Position"; break;		
+		}
+		break;
+	case 7:		 
+		sZone = "BtmInspector";
+		switch (nCase) 
+		{
+			case  1: sMsg = "X Move to Module Align or Wait(Align) Position[S]"; break;
+			case  2: sMsg = "Align Z Axis Down"; break;
+		}
+		break;
+	case 8:		 
+		sZone = "MarkUnit";
+		switch (nCase) 
+		{
+			case  1: sMsg = "X Move to Module Align or Wait(Align) Position[S]"; break;		
+		}
+		break;
+	case 9:		 
+		sZone = "MainIndex";
+		switch (nCase) 
+		{
+			case  1: sMsg = "X Move to Module Align or Wait(Align) Position[S]"; break;	
+		}
+		break;
+	case 10:	 
+		sZone = "Unload C/V";
+		switch (nCase) 
+		{
+			case  1: sMsg = "Working Stage Number checked"; break;
+		}
+		break;
+
+	}
 }

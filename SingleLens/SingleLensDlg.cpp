@@ -626,7 +626,7 @@ void CSingleLensDlg::Set_BuzzerFlicker(BOOL bEnable)
 	
 }
 
-void CSingleLensDlg::Set_LampFlicker_Load1(BOOL bEnable)
+void CSingleLensDlg::Set_LampFlicker_LoadOpen(BOOL bEnable)
 {
 	
 }

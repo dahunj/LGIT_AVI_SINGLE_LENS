@@ -30,7 +30,7 @@ public:
 	enum { IDD = IDD_WORK_DLG };
 
 	//new 
-	CStaticCS		m_stcLotId[60];
+	CStaticCS		m_stcZigId[60];
 	CStaticCS		m_stcLensCnt[60];
 
 
@@ -73,7 +73,7 @@ public:
 	CGridCS			m_grdCapTray;
 	CGridCS			m_grdShipTray;
 	CGridCS			m_grdNGTray;
-	CStaticCS		m_stcWorkCase[16];
+	CStaticCS		m_stcWorkCase[10];
 	CStaticCS		m_stcPortNo[12];
 	CStaticCS		m_stcTakt[4];
 	CStaticCS		m_stcUph[4];
@@ -98,8 +98,10 @@ protected:
 	afx_msg void OnStcLotIdClick(UINT nID);
 	afx_msg void OnStcLensCountClick(UINT nID);
 
-	BOOL	LotID_Check();
+	
+
 	//old 
+	
 
 	afx_msg void OnStnClickedLblLot0();
 	afx_msg void OnStnClickedLblLot3();
@@ -171,6 +173,7 @@ public:
 
 
 
+	afx_msg void OnBnClickedBtnSimul1();
 };
 
 extern CWorkDlg g_dlgWork;

@@ -115,7 +115,7 @@ public:
 	void Set_TowerFlicker(BOOL bEnable);
 	void Set_BuzzerFlicker(BOOL bEnable);
 
-	void Set_LampFlicker_Load1(BOOL bEnable);
+	void Set_LampFlicker_LoadOpen(BOOL bEnable);
 	void Set_LampFlicker_Load2(BOOL bEnable);
 	void Set_LampFlicker_Load3(BOOL bEnable);
 	void Set_LampFlicker_Cap1(BOOL bEnable);

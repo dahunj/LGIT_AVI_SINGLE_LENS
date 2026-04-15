@@ -284,15 +284,7 @@ void CSetupEquipDlg::OnRdoModelClick(UINT nID)
 
 	CString strData;
 	CString strModel = (m_rdoModel[1].GetCheck() ? "R54B" : "R53B");
-
-	int nTrayY =  ST_Y;
-	strData.Format("%d", nTrayY); m_stcShipTrayData[1].SetWindowText(strData);
-
-	double dPitchX = INI.Get_Double("SHIP_TRAY", "PITCH_X_" + strModel, 0.0);
-	double dPitchY = INI.Get_Double("SHIP_TRAY", "PITCH_Y_" + strModel, 0.0);
-	strData.Format("%0.2lf", dPitchX); m_stcShipTrayData[2].SetWindowText(strData);
-	strData.Format("%0.2lf", dPitchY); m_stcShipTrayData[3].SetWindowText(strData);
-}
+	}
 
 void CSetupEquipDlg::OnStnClickedStcMotionCheck()
 {

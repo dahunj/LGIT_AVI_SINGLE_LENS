@@ -32,19 +32,16 @@ public:
 	void Save_ECMTracking(CString sLog, int nTrayCount, int nPosX, int nPosY, int nPortNo, int nTrayNo, int nCmNo);
 	void Save_Interlock(int nType);	
 	void Save_PCLog(int nPNo, CString sLog);
-	void Save_SeqLog(CString sLog);
+	
+	void Save_MCCLog(const CString& sLog);
+
+	void Get_ZoneMsg(int nZone, int nCase, CString &sZone, CString &sMsg);
+
 
 	void Save_JobListExcel(CString sLog);
-	void Save_AverageCycle(int nPNo);
-	void Save_LoadCellLog(int nPNo, CString sLog);
-	CString Job_Msg(int nFun, int nId);
+	
 
-	void Save_BarcodeChkLog(CString sLog);
-	BOOL Check_BarcodeLog(CString sBarcode);
-
-	CString Get_CapYear(CString sYear);
-	CString Get_CapMonth(CString sMonth);
-	CString Get_CapDay(CString sDay);
+		
 };
 
 extern CLogFile g_objLogFile;

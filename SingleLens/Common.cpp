@@ -250,95 +250,34 @@ BOOL CCommon::Check_MainDoor(BOOL bAuto)
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
 #ifdef AJIN_BOARD_USE
-	DX_DATA_13 *pDX13 = g_objAJinAXL.Get_pDX13();
-	BOOL bLoad1 = g_objSequenceMain.Get_LotLoadEnable(0);
-	BOOL bLoad2 = g_objSequenceMain.Get_LotLoadEnable(1);
+	DX_DATA_03 *pDX03 = g_objAJinAXL.Get_pDX03();
 
-// 	if ((!bAuto || !bLoad) && pDX13->iDoor04Unlock) { Show_Alarm("Main 04번 Door(X1019) Unlocked."); return FALSE; }
 
-	if (pEquipData->bUseInlineMode && !pEquipData->bUseDoorLock) {
-		// Inline 모드는 도어락 사용 안해도 무조건 Load Port쪽 확인한다.
-		if (pDX13->iDoor01Open) { Show_Alarm("Main 01번 Door(X1300) Opened."); return FALSE; }
-		if (pDX13->iDoor02Open) { Show_Alarm("Main 02번 Door(X1301) Opened."); return FALSE; }
-
-	} else {
+	if (!pEquipData->bUseDoorLock) 
+	{		
+		//Don't Check Door when Unlocked 
+		//if (pDX03->iDoor01UnlockFront1) { Show_Alarm("Main 01번 Door(X0322) Opened."); return FALSE; }
+		//if (pDX03->iDoor02UnlockFront2) { Show_Alarm("Main 02번 Door(X0323) Opened."); return FALSE; }
+	} 
+	else
+	{
 		if (!pEquipData->bUseDoorLock) return TRUE;
 
 		// temp
-		if (pDX13->iDoor01Open && !bLoad1)					{ Show_Alarm("Main 01번 Door(X1300) Opened."); return FALSE; }
-		if (pDX13->iDoor02Open && !bLoad2)					{ Show_Alarm("Main 02번 Door(X1301) Opened."); return FALSE; }
-		if (pDX13->iDoor03Open)								{ Show_Alarm("Main 03번 Door(X1302) Opened."); return FALSE; }
-		if (pDX13->iDoor04Open && !gData.bLoadPort3Wait)	{ Show_Alarm("Main 04번 Door(X1303) Opened."); return FALSE; }
-		if (pDX13->iDoor05Open && !gData.bUnloadPort2Wait)	{ Show_Alarm("Main 05번 Door(X1304) Opened."); return FALSE; }
-		if (pDX13->iDoor06Open && !gData.bUnloadPort2Wait)	{ Show_Alarm("Main 06번 Door(X1305) Opened."); return FALSE; }
-		if (pDX13->iDoor07Open)								{ Show_Alarm("Main 07번 Door(X1306) Opened."); return FALSE; }
-		if (pDX13->iDoor08Open)								{ Show_Alarm("Main 08번 Door(X1307) Opened."); return FALSE; }
-		if (pDX13->iDoor09Open)								{ Show_Alarm("Main 09번 Door(X1308) Opened."); return FALSE; }
-		if (pDX13->iDoor10Open && !gData.bUnloadPort1Wait)	{ Show_Alarm("Main 10번 Door(X1309) Opened."); return FALSE; }
-		if (pDX13->iDoor11Open && !gData.bCapPort1Wait)		{ Show_Alarm("Main 11번 Door(X1310) Opened."); return FALSE; }
-		if (pDX13->iDoor12Open && !gData.bCapPort2Wait)		{ Show_Alarm("Main 12번 Door(X1311) Opened."); return FALSE; }
-		if (pDX13->iDoor13Open)								{ Show_Alarm("Main 13번 Door(X1312) Opened."); return FALSE; }
+		if (pDX03->iDoor01UnlockFront1 )						{ Show_Alarm("Main 01번 Door(X0322) Opened."); return FALSE; }
+		if (pDX03->iDoor02UnlockFront2)							{ Show_Alarm("Main 02번 Door(X0323) Opened."); return FALSE; }
+		if (pDX03->iDoor03UnlockRight1 && !gData.bUnloadOpenSW)	{ Show_Alarm("Main 03번 Door(X0324) Opened."); return FALSE; }
+		if (pDX03->iDoor04UnlockRight2)							{ Show_Alarm("Main 04번 Door(X0325) Opened."); return FALSE; }
+		if (pDX03->iDoor05UnlockRear1)							{ Show_Alarm("Main 05번 Door(X0326) Opened."); return FALSE; }
+		if (pDX03->iDoor06UnlockRear2)							{ Show_Alarm("Main 06번 Door(X0327) Opened."); return FALSE; }
+		if (pDX03->iDoor07UnlockLeft1 && !gData.bLoadOpenSW)	{ Show_Alarm("Main 07번 Door(X0328) Opened."); return FALSE; }
+		if (pDX03->iDoor08UnlockLeft2)							{ Show_Alarm("Main 08번 Door(X0329) Opened."); return FALSE; }
+		
 	}
 #endif
 	return TRUE;
 }
 
-BOOL CCommon::Check_PortArea(BOOL bAuto)
-{
-	// 슬라이드를 사용하지 않고 손을 장비안으로 넣어 트레이 적재 및 배출을 하기 때문에 사용하지 않는다.
-	return TRUE;
-#ifdef DRY_RUN_TEST
-	return TRUE;
-#endif
-	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-	if (!bAuto)	return TRUE;
-
-#ifdef AJIN_BOARD_USE
-	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
-	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
-	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
-	DX_DATA_03 *pDX03 = g_objAJinAXL.Get_pDX03();
-	BOOL bLoad1 = g_objSequenceMain.Get_LotLoadEnable(0);
-	BOOL bLoad2 = g_objSequenceMain.Get_LotLoadEnable(1);
-
-	if (pEquipData->bUseInlineMode && !pEquipData->bUseDoorLock) {
-		// Inline 모드는 도어락 사용 안해도 무조건 Load Port쪽 확인한다.
-		if (!pDX01->iLoadPortAreaCheck) { Show_Alarm("Load Port Area(X0115) 감지 되었습니다."); return FALSE; }
-
-	} else {
-		if (!pEquipData->bUseDoorLock) return TRUE;
-
-		if (!pDX01->iLoadPortAreaCheck && (pDX00->iLoadPort1SlideOpen || pDX00->iLoadPort1SlideClose)) {
-			Show_Alarm("Load Port Area(X0115) 감지 되었습니다."); return FALSE;
-		}
-
-		if (!pDX01->iLoadPortAreaCheck && (pDX01->iLoadPort2SlideOpen || pDX01->iLoadPort2SlideClose)) {
-			Show_Alarm("Load Port Area(X0115) 감지 되었습니다."); return FALSE;
-		}
-
-		if (!pDX01->iLoadPort3AreaCheck && !gData.bLoadPort3Wait) {
-			Show_Alarm("Load Port Area(X0131) 감지 되었습니다."); return FALSE;
-		}
-
-		if (!pDX02->iCapPortAreaCheck	&& (pDX02->iCapPort1SlideOpen || pDX02->iCapPort1SlideClose)) {
-			Show_Alarm("Cap Port Area(X0231) 감지 되었습니다."); return FALSE;
-		}
-
-		if (!pDX02->iCapPortAreaCheck	&& (pDX02->iCapPort2SlideOpen || pDX02->iCapPort2SlideClose)) {
-			Show_Alarm("Cap Port Area(X0231) 감지 되었습니다."); return FALSE;
-		}
-
-		if (!pDX03->iUnloadPort1AreaCheck && (pDX03->iUnloadPort1SlideOpen || pDX03->iUnloadPort1SlideClose)) {
-			Show_Alarm("Unload Port1 Area(X0315) 감지 되었습니다."); return FALSE;
-		}
-
-		if (!pDX03->iUnloadPort2AreaCheck && (pDX03->iUnloadPort2SlideOpen || pDX03->iUnloadPort2SlideClose)) {
-			Show_Alarm("Unload Port2 Area(X0331) 감지 되었습니다."); return FALSE;
-		}
-	}
-#endif
-	return TRUE;
-}
 
 BOOL CCommon::Check_TrayFull()
 {
@@ -520,8 +459,185 @@ void CCommon::Get_CPUInfo(CString& strCPU)
 }
 
 
+//////////////////////
+void CCommon::Set_ElevStopper1In()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+
+	pDY00->oMZElevStopper1In = TRUE;
+	pDY00->oMZElevStopper1Out = FALSE;
+	g_objAJinAXL.Write_Output(0);
+
+}
+
+void CCommon::Set_ElevStopper1Out()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+
+	pDY00->oMZElevStopper1In = FALSE;
+	pDY00->oMZElevStopper1Out = TRUE;
+	g_objAJinAXL.Write_Output(0);
+}
+
+void CCommon::Set_ElevStopper1Up()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+
+	pDY00->oMZElevStopper1Up = TRUE;
+	pDY00->oMZElevStopper1Down = FALSE;
+	g_objAJinAXL.Write_Output(0);
+
+}
+
+void CCommon::Set_ElevStopper1Down()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+
+	pDY00->oMZElevStopper1Up = FALSE;
+	pDY00->oMZElevStopper1Down = TRUE;
+	g_objAJinAXL.Write_Output(0);
+
+}
+
+BOOL CCommon::Get_ElevStopper1In()
+{
+	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
+
+	if(pDX00->iMZElevStopper1In && !pDX00->iMZElevStopper1Out)
+	{
+		return TRUE;
+	}
+	return FALSE;	
+}
+
+BOOL CCommon::Get_ElevStopper1Out()
+{
+	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
+
+	if(!pDX00->iMZElevStopper1In && pDX00->iMZElevStopper1Out)
+	{
+		return TRUE;
+	}
+	return FALSE;	
+}
+
+
+BOOL CCommon::Get_ElevStopper1Up()
+{
+	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
+
+	if(pDX00->iMZElevStopper1Up && !pDX00->iMZElevStopper1Down)
+	{
+		return TRUE;
+	}
+	return FALSE;	
+}
+
+
+BOOL CCommon::Get_ElevStopper1Down()
+{
+	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
+
+	if(!pDX00->iMZElevStopper1Up && pDX00->iMZElevStopper1Down)
+	{
+		return TRUE;
+	}
+	return FALSE;	
+
+}
+//////////////////////////////
+
+
+//////////////////////
+void CCommon::Set_ElevStopper2In()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+
+	pDY00->oMZElevStopper1In = TRUE;
+	pDY00->oMZElevStopper1Out = FALSE;
+	g_objAJinAXL.Write_Output(0);
+
+}
+
+void CCommon::Set_ElevStopper2Out()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+
+	pDY00->oMZElevStopper1In = FALSE;
+	pDY00->oMZElevStopper1Out = TRUE;
+	g_objAJinAXL.Write_Output(0);
+}
+
+void CCommon::Set_ElevStopper2Up()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+
+	pDY00->oMZElevStopper1Up = TRUE;
+	pDY00->oMZElevStopper1Down = FALSE;
+	g_objAJinAXL.Write_Output(0);
+
+}
+
+void CCommon::Set_ElevStopper2Down()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+
+	pDY00->oMZElevStopper1Up = FALSE;
+	pDY00->oMZElevStopper1Down = TRUE;
+	g_objAJinAXL.Write_Output(0);
+
+}
+
+BOOL CCommon::Get_ElevStopper2In()
+{
+	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
+
+	if(pDX00->iMZElevStopper1In && !pDX00->iMZElevStopper1Out)
+	{
+		return TRUE;
+	}
+	return FALSE;	
+}
+
+BOOL CCommon::Get_ElevStopper2Out()
+{
+	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
+
+	if(!pDX00->iMZElevStopper1In && pDX00->iMZElevStopper1Out)
+	{
+		return TRUE;
+	}
+	return FALSE;	
+}
+
+
+BOOL CCommon::Get_ElevStopper2Up()
+{
+	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
+
+	if(pDX00->iMZElevStopper1Up && !pDX00->iMZElevStopper1Down)
+	{
+		return TRUE;
+	}
+	return FALSE;	
+}
+
+
+BOOL CCommon::Get_ElevStopper2Down()
+{
+	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
+
+	if(!pDX00->iMZElevStopper1Up && pDX00->iMZElevStopper1Down)
+	{
+		return TRUE;
+	}
+	return FALSE;	
+
+}
 
 //////////////////////////////
+
+
 void CCommon::Set_IndexLoadAlignIn()
 {
 	DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();

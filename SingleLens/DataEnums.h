@@ -48,7 +48,7 @@ struct Feeder_X
 		Ready = 0,
 		MZ1 = 1,
 		MZ2 = 2,
-		ZigPicker = 3,
+		PickUp = 3,
 	};
 };
 
@@ -59,9 +59,9 @@ struct Feeder_Y
 	{
 		Ready = 0,
 		CheckExist = 1,
-		MZ1 = 2,
-		MZ2 = 3,
-		ZigPicker = 4,
+		Grip1 = 2,
+		Grip2 = 3,
+		PickUp = 4,
 	};
 };
 
@@ -240,13 +240,13 @@ struct SpeedMode
 
 //seq branch 
 
-struct IndexTBranch
+struct MainIndexBranch
 {
 	enum Name
 	{
 		name = 0,
 		CheckInOut = 5,
-		ZoneStart = 11, 
+		
 	};
 };
 

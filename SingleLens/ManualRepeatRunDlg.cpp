@@ -229,37 +229,7 @@ void CManualRepeatRunDlg::Repeat_Action()
 
 void CManualRepeatRunDlg::OnCbnSelchangeCboPicker()
 {
-	m_cboPickNum.ResetContent();
-
-	if(m_cboPicker.GetCurSel() == 0) // Load picker
-	{
-		m_nRepeatCase = 100;
-		for(int i = 1; i < PICK+1 ; i++)
-		{	
-			m_strLog.Format("Picker CM No.: %d", i);
-			m_cboPickNum.AddString(m_strLog);
-		}
-		
-	}
-	else if(m_cboPicker.GetCurSel() == 1) // Load picker
-	{
-		m_nRepeatCase = 200;
-		for(int i = 1; i < PICK+1 ; i++)
-		{	
-			m_strLog.Format("Picker CM No.: %d", i);
-			m_cboPickNum.AddString(m_strLog);
-		}		
-	}	
-	else if(m_cboPicker.GetCurSel() == 2) // Load picker
-	{
-		m_nRepeatCase = 300;
-		for(int i = 1; i < PICK+1 ; i++)
-		{	
-			m_strLog.Format("Picker CM No.: %d", i);
-			m_cboPickNum.AddString(m_strLog);
-		}
-		
-	}	
+	
 }
 
 

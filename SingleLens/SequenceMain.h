@@ -67,7 +67,7 @@ private:
 	int			m_nTopInspectCase;		//  6. (Error : 4600)
 	int			m_nBtmInspectCase;		//  7. (Error : 4900)
 	int			m_nMarkUnitCase;			//  8. (Error : 5200)
-	int			m_nIndexTCase;			//  9. (Error : 5500)  
+	int			m_nMainIndexCase;			//  9. (Error : 5500)  
 	int			m_nUnloadConveyorCase;	//  10. (Error : 5800)
 
 	DWORD		m_dwLoadConveyor;		//  1. (Error : 3100)
@@ -101,7 +101,7 @@ private:
 	BOOL			TopInspectorRun();		//  6. (Error : 4600)
 	BOOL			BtmInspectorRun();		//  7. (Error : 4900)
 	BOOL			MarkUnitRun();			//  8. (Error : 5200)
-	BOOL			IndexTRun();			//  9. (Error : 5500)  
+	BOOL			MainIndexRun();			//  9. (Error : 5500)  
 	BOOL			UnloadConveyorRun();	//  10. (Error : 5800)
 
 	BOOL LotEnd_Run();
@@ -115,10 +115,8 @@ private:
 
 
 public:
-
 	double m_dTop1Z;
-
-
+	
 	BOOL Get_IsAutoRun();
 
 	BOOL Check_ModuleEmpty(int nPos);
@@ -126,8 +124,7 @@ public:
 
 	void Set_ClearRunData(BOOL bInit);
 	void Set_ClearLotData(BOOL bInit, int nLotNo);
-
-
+	
 	//Conveyor 
 	int Check_MZSensors();
 	BOOL Check_IndexDone();
@@ -135,10 +132,8 @@ public:
 	BOOL Check_ZigPickerEmpty();
 	BOOL Check_IndexEmpty(int nPos);
 
-
 	void Set_IndexEnd();
-
-
+	
 	//////////////////////////////////////////////////////////////////////////
 	void Init_TopZig();
 	BOOL Select_TopScanPos(int &nTopPosX, int &nTopPosY);

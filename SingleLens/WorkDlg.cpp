@@ -40,7 +40,7 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_LBL_LOT_0 + i, m_lblLot[i]);*/
 
 	//new 
-	for (int i = 0; i < 60; i++) DDX_Control(pDX, IDC_STC_MZ_ZIGID_0 + i, m_stcLotId[i]);
+	for (int i = 0; i < 60; i++) DDX_Control(pDX, IDC_STC_MZ_ZIGID_0 + i, m_stcZigId[i]);
 	for (int i = 0; i < 60; i++) DDX_Control(pDX, IDC_STC_MZ_LENS_CNT_0+ i, m_stcLensCnt[i]);
 
 
@@ -90,7 +90,7 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_GRD_SHIP_TRAY , m_grdShipTray);
 	DDX_Control(pDX, IDC_GRD_SHIP_TRAY_NG , m_grdNGTray);
 
-	for (int i = 0; i < 16; i++) DDX_Control(pDX, IDC_STC_WORK_CASE_0 + i, m_stcWorkCase[i]);
+	for (int i = 0; i < AUTO_COUNT; i++) DDX_Control(pDX, IDC_STC_WORK_CASE_0 + i, m_stcWorkCase[i]);
 	for (int i = 0; i < 12; i++) DDX_Control(pDX, IDC_STC_PORT_NO_0 + i, m_stcPortNo[i]);
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_STC_TAKT_0 + i, m_stcTakt[i]);
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_STC_UPH_0 + i, m_stcUph[i]);
@@ -142,6 +142,7 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	
 
 	
+	ON_BN_CLICKED(IDC_BTN_SIMUL1, &CWorkDlg::OnBnClickedBtnSimul1)
 END_MESSAGE_MAP()
 
 // CWorkDlg 메시지 처리기입니다.
@@ -190,11 +191,8 @@ void CWorkDlg::Initial_Controls()
 	m_stcShipTrayCount.Init_Ctrl("바탕", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00));
 	m_stcNGTrayCount.Init_Ctrl("바탕", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00));
 
-	Initial_Grid(&m_grdLoadTray, LT_Y, LT_X);
-	Initial_Grid(&m_grdCapTray, CT_Y, CT_X);
-	Initial_Grid(&m_grdShipTray, ST_Y, ST_X);
-	Initial_Grid(&m_grdNGTray, ST_Y, ST_X);
-	for (int i = 0; i < 16; i++) m_stcWorkCase[i].Init_Ctrl("바탕", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x40, 0x40));
+	
+	for (int i = 0; i < AUTO_COUNT; i++) m_stcWorkCase[i].Init_Ctrl("바탕", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x40, 0x40));
 	for (int i = 0; i < 12; i++) m_stcPortNo[i].Init_Ctrl("바탕", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x40, 0x40));
 	for (int i = 0; i < 4; i++) m_stcTakt[i].Init_Ctrl("Arial", 9, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x40, 0x40));
 	for (int i = 0; i < 4; i++) m_stcUph[i].Init_Ctrl("Arial", 9, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x40, 0x40));
@@ -430,7 +428,7 @@ void CWorkDlg::OnStcLotIdClick(UINT nID)
 		return;
 	}
 
-	m_stcLotId[ID].SetWindowText(strKey);
+	m_stcZigId[ID].SetWindowText(strKey);
 
 	strNew.Format("[Work Mode] Lot ID Input(%d-%s)", ID, strKey);
 	g_objLogFile.Save_HandlerLog(strNew);
@@ -472,139 +470,13 @@ void CWorkDlg::OnStcLensCountClick(UINT nID)
 	strValue.Format("%d", nCmCnt);
 	m_stcLensCnt[ID].SetWindowText(strValue);
 
-	if (LotID_Check()==FALSE) return;
+	
 
 	strNew.Format("[Work Mode] Module Count Input(%d-%d-%d)", ID, nCmCnt);
 	g_objLogFile.Save_HandlerLog(strNew);
 }
 
 
-
-BOOL CWorkDlg::LotID_Check()
-{
-	int nLensCnt, nLotCnt;
-	CString strMsg, strTemp, strTemp2, sLog;
-
-	nLotCnt = 0;
-	for(int i=0; i<60; i++)
-	{
-		m_stcLotId[i].GetWindowText(strTemp);
-		m_stcLensCnt[i].GetWindowText(strTemp2);
-		nLensCnt = atoi(strTemp2);
-
-		// Input Error Check
-		if (nLensCnt > 200)
-		{
-			if (gData.nLanguage == 0) strMsg.Format("[%d] Check Lens 수량 (Max:200)....................", i+1);
-			else					  strMsg.Format("[%d] Check Lens Quantity ....................", i+1);
-			g_objCommon.Show_MsgBox(1, strMsg);
-			return FALSE;
-		}
-		if (nLensCnt > 0)
-		{
-			if (strTemp.GetLength() < 1) 
-			{
-				if (gData.nLanguage == 0) strMsg.Format("[%d] Check Lens ID, 수량 ....................", i+1);
-				else					  strMsg.Format("[%d] Check Lens ID, Quantity ....................", i+1);
-				g_objCommon.Show_MsgBox(1, strMsg);
-				return FALSE;
-			}
-		}
-		else
-		{
-			if (strTemp.GetLength() > 0)
-			{
-				if (gData.nLanguage == 0) strMsg.Format("[%d] Check Lot ID, 수량 ....................", i+1);
-				else					  strMsg.Format("[%d] Check Lot ID, Quantity ....................", i+1);
-				g_objCommon.Show_MsgBox(1, strMsg);
-				return FALSE;
-			}
-		}
-
-		if (nLensCnt > 0)
-		{
-			gLot.sLotID[i] = strTemp;
-			gLot.nLensCnt[i] = nLensCnt;
-			nLotCnt++;
-			if (gLot.nLotStatus[i] == 3) gLot.bEmptyLot[i] = FALSE;
-
-			sLog.Format("[Work Mode] LotID_Copy] (%d-%s)", i+1, gLot.sLotID[i]);
-			g_objLogFile.Save_HandlerLog(sLog);
-		} else {
-			sLog.Format("[Work Mode] LotID_Delete] (%d-%s)", i+1, gLot.sLotID[i]);
-			g_objLogFile.Save_HandlerLog(sLog);
-
-			gLot.nLensCnt[i] = gLot.nGoodCount[i] = gLot.nNgCount[i] = gLot.nLotStatus[i] = 0;// = gLot.nSkipCount[i] = 0;
-			gLot.sLotID[i] = "";
-		}
-	}
-
-	//EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-	//if (pEquipData->bUseMES) {
-	//	if (nLotCnt > 0 &&   gLot.nJobStatus == 0) {
-	//		g_objCommon.Show_MsgBox(1, "MES사용시 Lot 정보를 입력하지 마세요.....");
-	//		return FALSE;
-	//	}
-	//	return TRUE;
-	//} else {
-	//	if (nLotCnt < 1 && !g_objSequenceMain.Get_IsAutoRun()) {
-	//		g_objCommon.Show_MsgBox(1, "Lot 정보를 입력해야 합니다.....");
-	//		return FALSE;
-	//	}
-	//}
-
-	if (nLotCnt < 1 && ! g_objSequenceMain.Get_IsAutoRun()) 
-	{
-		g_objCommon.Show_MsgBox(1, "Lot 정보를 입력해야 합니다.....");
-		return FALSE;
-	}
-
-	for(int i=0; i < 60; i++) 
-	{
-		for(int j=0; j < 60; j++) 
-		{
-			if (i != j && gLot.sLotID[i].GetLength() > 0 && gLot.sLotID[i] == gLot.sLotID[j]) 
-			{
-				gLot.nCmCount[j] = 0;
-				if (gData.nLanguage == 0) strMsg.Format("[%d-%d]에 동일 Lot ID가 있습니다........", i+1, j+1);
-				else					  strMsg.Format("[%d-%d] has the same Lot ID........", i+1, j+1);
-				g_objCommon.Show_MsgBox(1, strMsg);
-				return FALSE;
-			}
-		}
-	}
-/*
-	if (gLot.nCmCount[1] > 0 || gLot.nCmCount[2] > 0) {
-		if (gLot.nCmCount[0] < 1) {
-			gLot.nCmCount[1] = gLot.nCmCount[2] = 0;
-			g_objCommon.Show_MsgBox(1, "[1] Lot ID는 첫번째부터 입력해야 합니다.....");
-			return FALSE;
-		}
-	}
-	if (gLot.nCmCount[2] > 0) {
-		if (gLot.nCmCount[1] < 1) {
-			gLot.nCmCount[2] = 0;
-			g_objCommon.Show_MsgBox(1, "[2] Lot ID는 순서되로 입력해야 합니다.....");
-			return FALSE;
-		}
-	}
-	if (gLot.nCmCount[4] > 0 || gLot.nCmCount[5] > 0) {
-		if (gLot.nCmCount[3] < 1) {
-			gLot.nCmCount[4] = gLot.nCmCount[5] = 0;
-			g_objCommon.Show_MsgBox(1, "[4] Lot ID는 첫번째부터 입력해야 합니다.....");
-			return FALSE;
-		}
-	}
-	if (gLot.nCmCount[5] > 0) {
-		if (gLot.nCmCount[4] < 1) {
-			gLot.nCmCount[5] = 0;
-			g_objCommon.Show_MsgBox(1, "[5] Lot ID는 순서되로 입력해야 합니다.....");
-			return FALSE;
-		}
-	}
-*/
-	return TRUE;
-}
 
 
 void CWorkDlg::OnStnClickedLblLot0()
@@ -628,11 +500,6 @@ void CWorkDlg::OnStnClickedLblLot3()
 	m_Group[9].Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
 	
 }
-
-
-
-
-
 
 
 
@@ -725,16 +592,10 @@ BOOL CWorkDlg::Work_Start()
 	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
 	DX_DATA_03 *pDX03 = g_objAJinAXL.Get_pDX03();
 
-	//if (!pDX00->iLoadPort1SlideClose)	{ g_objCommon.Show_MsgBox(1, "Load Port 1번 Slide Close 센서가 감지 되지 않습니다. Slide를 끝까지 밀어주십시오."); return FALSE; }
-	//if (!pDX01->iLoadPort2SlideClose)	{ g_objCommon.Show_MsgBox(1, "Load Port 2번 Slide Close 센서가 감지 되지 않습니다. Slide를 끝까지 밀어주십시오."); return FALSE; }
-	//if (!pDX01->iLoadPort3SlideClose)	{ g_objCommon.Show_MsgBox(1, "Load Port 3번 Slide Close 센서가 감지 되지 않습니다. Slide를 끝까지 밀어주십시오."); return FALSE; }
-	//if (!pDX02->iCapPort1SlideClose)	{ g_objCommon.Show_MsgBox(1, "Cap Port1 Slide Close 센서가 감지 되지 않습니다. Slide를 끝까지 밀어주십시오."); return FALSE; }
-	//if (!pDX02->iCapPort2SlideClose)	{ g_objCommon.Show_MsgBox(1, "Cap Port2 Slide Close 센서가 감지 되지 않습니다. Slide를 끝까지 밀어주십시오."); return FALSE; }
-	//if (!pDX03->iUnloadPort1SlideClose)	{ g_objCommon.Show_MsgBox(1, "Unload Port1 Slide Close 센서가 감지 되지 않습니다. Slide를 끝까지 밀어주십시오."); return FALSE; }
-	//if (!pDX03->iUnloadPort2SlideClose)	{ g_objCommon.Show_MsgBox(1, "Unload Port2 Slide Close 센서가 감지 되지 않습니다. Slide를 끝까지 밀어주십시오."); return FALSE; }
-
+	
 	int nMotionNo = g_objCommon.Check_MotionPos();
-	if (nMotionNo < 99) {
+	if (nMotionNo < 99) 
+	{
 		double dCurrentPos = g_objAJinAXL.Get_Position(nMotionNo);
 		CString strName = g_objAJinAXL.Get_AxisName(nMotionNo);
 		strTemp.Format("Motion(%s) 위치를 Check 하세요.\n이전위치(%0.3lf) != 현재위치(%0.3lf)", strName, gAlm.dMotionPos[nMotionNo], dCurrentPos);
@@ -745,8 +606,29 @@ BOOL CWorkDlg::Work_Start()
 		return FALSE;
 	}
 
-	//if (g_objSequenceMain.Get_IsAutoRun()) return TRUE;	// Auto Run이면 스킵
+	if (g_objSequenceMain.Get_IsAutoRun()) return TRUE;	// If Auto Runnning, Skip 
 
+	for(int i = 0; i < 60; i++)
+	{
+		m_stcZigId[i].GetWindowText(strTemp);		// Lot ID
+		if(strTemp == "") continue;
+
+		if (strTemp.GetLength() < 2) { g_objCommon.Show_MsgBox(1, "Please Input Lot-ID."); return FALSE; }
+		gData.sZigID[i] = strTemp;
+
+
+		m_stcLensCnt[i].GetWindowText(strTemp);		// Lens 수량
+		if(strTemp != "")
+		{
+			int nTempCnt = atoi(strTemp);
+			if (nTempCnt < 1 || nTempCnt > ZIG_X*ZIG_Y) { g_objCommon.Show_MsgBox(1, "Lens 수량을 확인하여 주십시오."); return FALSE; }
+			gData.nLensUseCnt[i] = nTempCnt;	
+		}
+	
+
+	}
+	
+	gData.bFirstLotStart = TRUE;
 
 	return TRUE;
 }
@@ -788,20 +670,16 @@ void CWorkDlg::Check_Lamp()
 	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02(); DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
 	DX_DATA_03 *pDX03 = g_objAJinAXL.Get_pDX03(); DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
 	
-
-
-
-	//Cap Port1, 2, Unload Port1 버튼 누르면 도어락 풀리고 작업중 Flag Set
-	//Flag Set 상태에서 버튼 누르면 도어락 걸리고 Flag Clear
-	//Cap Port1, Unload Port1 트레이 없으면 알람
-	//Cap Port2, Full Sensor 감지되면 알람
-	//Load Port는 연속랏 테스트할때 정리하자....
+	
 }
 
 void CWorkDlg::Display_Status()
 {
 	CString strTemp, strText;
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	int *pCase = g_objSequenceMain.Get_pMainRunCase();
+	for (int i = 0; i < AUTO_COUNT; i++) { strText.Format("%02d", *(pCase + i)); m_stcWorkCase[i].Set_Text(strText); }
 
 // 	if (g_objMesAgent.Is_Connected()) { m_stcMesConnect.Set_Text("Connected"); m_stcMesConnect.Set_Color(RGB(0x00, 0x00, 0x00), RGB(0x00, 0xFF, 0x00)); }
 // 	else { m_stcMesConnect.Set_Text("Disconnected"); m_stcMesConnect.Set_Color(RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00)); }
@@ -1115,3 +993,11 @@ void CWorkDlg::OnBnClickedButton2()
 {
 }
 
+
+
+void CWorkDlg::OnBnClickedBtnSimul1()
+{
+	DX_DATA_00* m_pDX00 = g_objAJinAXL.Get_pDX00();
+	m_pDX00->iLoadCVMZExist5 = TRUE;
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}

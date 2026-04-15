@@ -193,7 +193,7 @@ void CInspector::Get_StatusUpdate(CString sStatus)
 void CInspector::Get_LotReady(CString sLotId, CString sPortNo)
 {
 	int nPortNo = atoi(sPortNo);
-	if (sLotId != gData.sLotID[nPortNo-1]) return;
+	if (sLotId != gData.sZigID[nPortNo-1]) return;
 	m_bLotReady = TRUE;
 }
 

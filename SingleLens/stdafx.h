@@ -103,11 +103,6 @@ const int ZIG_MAX = 500;
 //Zig X-Y
 const int ZIG_X = 4, ZIG_Y = 8;
 
-
-// R53B (VR-L) : LoadTray(3x4), CapTray(4x7),  ShipTray(3x7),  Picker(4) => AllPicker(1,2,3,4)
-// R54B (VR-R) : LoadTray(3x4), CapTray(4x7),  ShipTray(3x6),  Picker(4) => AllPicker(1,2,3,4)
-const int LT_X = 4, LT_Y = 3, CT_X = 4, CT_Y = 7,  ST_X = 4, ST_Y = 5, PICK = 4;
-
 ///////////////////////////////////////////////////////////////////////////////
 
 extern CString gsCurrentDir;	// 현재 프로젝트 폴더
@@ -115,38 +110,35 @@ extern CString gsCurrentDir;	// 현재 프로젝트 폴더
 typedef struct
 {
 	//new 
-	int		 nTime[10]; //LoopTime Set Value 
+	int		nTime[10]; //LoopTime Set Value 
 
 	int     nStatus;
 	int		nLanguage;
 
 	int		nMZCnt;
-
 	int		nLensUseCnt[60];
 	int		nLensMaxCnt;
 	
 	BOOL	bIndexDone[6]; //0: Load , 1: Clean, 2: Top, 3:empty, 4:btm, 5: Mark
-
-
+	
 	int		nZigX;
 	int		nZigY;
 
 	// Infomation 
 	int	nInfoZigPick[ZIG_X][ZIG_Y];
 	int nInfoIndexT[6][ZIG_X][ZIG_Y]; // 0:Empty,1:Good, 2:NG, 3:Top Ready, 4: Top Done, 5: Btm Ready, 6 : Btm Done,  9:Init 
+	
 	std::vector<int> nInfoMark[ZIG_X][ZIG_Y];
 
 	int nInfoMZLoad[10];
 	int nInfoMZUnload[10];
-	
-	
 
 	BOOL	bDryRunMode;
 	int		nSpeedOption; // 여러개의 속도 옵션 가지게 바꾸고 싶다. 
 	
 	CString	sOperID;		// Operator
 	CString	sRecipe;		// Recipe Item
-	CString	sLotID[60];
+	CString	sZigID[60];
 
 
 	CString	sMZIDElev;
@@ -206,6 +198,9 @@ typedef struct
 	CString    sComName;
 	int        nDoorLockTime;
 	DWORD    dwDoorStartTime;
+
+	BOOL	bLoadOpenSW;	// LED Switch below doors of machine  
+	BOOL	bUnloadOpenSW;
 	
 } GLOVAL_DATA;
 
