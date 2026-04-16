@@ -102,8 +102,8 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_MES_CANCEL, &CWorkDlg::OnBnClickedMesCancel)
 		
 	ON_BN_CLICKED(IDC_BTN_SIMUL1, &CWorkDlg::OnBnClickedBtnSimul1)
-	ON_WM_PAINT()
-	ON_WM_SIZE()
+	
+
 END_MESSAGE_MAP()
 
 // CWorkDlg 메시지 처리기입니다.
@@ -120,16 +120,6 @@ void CWorkDlg::Initial_Controls()
 	//for (int i = 0; i < 3; i++) m_lblLot[i].Init_Ctrl("바탕", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x20, 0x20, 0x80));
 	//for (int i = 3; i < 6; i++) m_lblLot[i].Init_Ctrl("바탕", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x00, 0x80));
 	
-	m_bmpCtrl.SubclassDlgItem(IDC_STATIC_WORKIMAGE, this);
-	m_bmpCtrl.LoadBmp(IDB_EQUIP_WORK);
-	CRect rcWnd;
-	m_bmpCtrl.GetWindowRect(&rcWnd);
-	ScreenToClient(&rcWnd);
-	m_bmpCtrl.MoveWindow(&rcWnd);
-
-	m_bmpCtrl.SetWindowPos(	&wndBottom,	0, 0, 0, 0,	SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-
-
 	m_picUphBack.Init_Ctrl(COLOR_DEFAULT, COLOR_DEFAULT);
 	
 	
@@ -977,17 +967,4 @@ void CWorkDlg::OnBnClickedBtnSimul1()
 
 
 
-void CWorkDlg::OnSize(UINT nType, int cx, int cy)
-{
-	CDialogEx::OnSize(nType, cx, cy);
 
-	if (::IsWindow(m_bmpCtrl.GetSafeHwnd()))
-	{
-		m_bmpCtrl.SetWindowPos(
-			&wndBottom,
-			0, 0, 0, 0,
-			SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-	}
-
-	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
-}

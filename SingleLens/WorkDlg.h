@@ -4,7 +4,6 @@
 
 #include "WorkInfoDlg.h"
 #include "afxwin.h"
-#include "BmpControl.h"
 
 #define UM_UPDATE_MODEL			WM_USER+1
 #define UM_UPDATE_TRAY_INFO		WM_USER+2
@@ -31,8 +30,6 @@ public:
 	enum { IDD = IDD_WORK_DLG };
 
 	//new 
-	CBmpControl m_bmpCtrl;
-
 	CPictureCS		m_picUphBack;
 	
 	CStaticCS		m_stcZigId[60];
@@ -76,8 +73,6 @@ public:
 	
 	CButtonCS		m_btnMesCancel;
 
-
-
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
@@ -102,6 +97,7 @@ protected:
 
 	afx_msg void OnBnClickedChkCycleStop();
 	afx_msg void OnBnClickedChkMesUse();
+	afx_msg void OnBnClickedMesCancel();
 	afx_msg LRESULT OnUpdateModel(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUpdateTrayInfo(WPARAM nTray, LPARAM lParam);
 	afx_msg LRESULT OnUpdateBarcode(WPARAM wParam, LPARAM lParam);
@@ -112,22 +108,15 @@ protected:
 	afx_msg LRESULT OnLotStartEnd(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnIndexTack(WPARAM wParam, LPARAM lParam);	//AHN
 	afx_msg LRESULT OnShowMsg(WPARAM wParam, LPARAM lParam);
-	afx_msg void OnBnClickedButton1();
-	afx_msg void OnBnClickedButton2();
-	afx_msg void OnBnClickedMesCancel();
-
-private:
 	
 
 
+private:
 	BOOL	m_bAutoRunning;
 	BOOL	m_bCycleStopRun;
 
-
 	int		m_nGroupNo;
-
 	int		m_nBuffChange;
-
 	BOOL	m_bMesManual;
 
 	int		m_nTimer;
@@ -157,9 +146,9 @@ public:
 	void MachineStopLog(CString sType, CString sMsg="");
 	void Change_Model();
 
-	afx_msg void OnBnClickedBtnSimul1();
-
-	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnBnClickedBtnSimul1();	
+	afx_msg void OnBnClickedButton1();
+	afx_msg void OnBnClickedButton2();
 };
 
 
