@@ -40,7 +40,7 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_LBL_LOT_0 + i, m_lblLot[i]);*/
 
 	//new 
-	for (int i = 0; i < 60; i++) DDX_Control(pDX, IDC_STC_MZ_ZIGID_0 + i, m_stcZigId[i]);
+	for (int i = 0; i < 60; i++) DDX_Control(pDX, IDC_STC_MZ_ZIGID_0 + i, m_stcZigID[i]);
 	for (int i = 0; i < 60; i++) DDX_Control(pDX, IDC_STC_MZ_LENS_CNT_0+ i, m_stcLensCnt[i]);
 
 	DDX_Control(pDX, IDC_BTN_MES_CANCEL, m_btnMesCancel);
@@ -75,7 +75,8 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_WM_DESTROY()
 	ON_WM_SHOWWINDOW()
 	ON_WM_TIMER()
-
+	ON_WM_ERASEBKGND()
+	ON_WM_CTLCOLOR()
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MZ_ZIGID_0, IDC_STC_MZ_ZIGID_59, OnStcZigIdClick)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MZ_LENS_CNT_0, IDC_STC_MZ_LENS_CNT_59, OnStcLensCountClick)
 	
@@ -120,6 +121,26 @@ void CWorkDlg::Initial_Controls()
 	//for (int i = 0; i < 3; i++) m_lblLot[i].Init_Ctrl("바탕", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x20, 0x20, 0x80));
 	//for (int i = 3; i < 6; i++) m_lblLot[i].Init_Ctrl("바탕", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x00, 0x80));
 	
+	// 비트맵 로드
+	m_bmpBg.LoadBitmap(IDB_EQUIP_WORK);
+
+	// 리소스에 있는 static의 위치/크기 가져오기
+	CWnd* pWndBg = GetDlgItem(IDC_STATIC_WORKIMAGE);
+	if (pWndBg && ::IsWindow(pWndBg->GetSafeHwnd()))
+	{
+		pWndBg->GetWindowRect(&m_rcBgArea);
+		ScreenToClient(&m_rcBgArea);
+
+		// 기준용 static은 숨김
+		pWndBg->ShowWindow(SW_HIDE);
+	}
+	else
+	{
+		m_rcBgArea.SetRectEmpty();
+	}
+
+
+
 	m_picUphBack.Init_Ctrl(COLOR_DEFAULT, COLOR_DEFAULT);
 	
 	
@@ -361,7 +382,7 @@ void CWorkDlg::OnStcZigIdClick(UINT nID)
 		return;
 	}
 
-	m_stcZigId[ID].SetWindowText(strKey);
+	m_stcZigID[ID].SetWindowText(strKey);
 
 	int nShare = 0, nRemainder = 0;
 	nShare = ID / 10;
@@ -561,18 +582,27 @@ BOOL CWorkDlg::Work_Start()
 
 	if (g_objSequenceMain.Get_IsAutoRun()) return TRUE;	// If Auto Runnning, Skip 
 
+	for(int i = 2; i < 6; i++)
+	{
+		gData.sMZID[i - 2].Empty();
+		m_stcZigID[i].GetWindowText(strTemp);
+		if(strTemp != "") gData.sMZID[i - 2] = strTemp;
+	}
+
+
 	int nShare = 0, nRemainder;
 	for(int i = 0; i < 40; i++)
 	{
-		m_stcZigId[i].GetWindowText(strTemp);		// Lot ID
+		nShare = (i/10) + 2; nRemainder = i % 10;
+
+		gData.sZigID[nShare][nRemainder].Empty();
+		m_stcZigID[i].GetWindowText(strTemp);		// Lot ID
 		if(strTemp == "") continue;
 
 		if (strTemp.GetLength() < 2) { g_objCommon.Show_MsgBox(1, "Please Input Lot-ID."); return FALSE; }
-		
-		nShare = i/10; nRemainder = i%10;
+				
 		gData.sZigID[nShare][nRemainder] = strTemp;
-
-
+		
 		m_stcLensCnt[i].GetWindowText(strTemp);		// Lens 수량
 		if(strTemp != "")
 		{
@@ -779,16 +809,12 @@ void CWorkDlg::Get_MZInfo(int nMZNo)
 	for(int i = 0; i < 10; i++)
 	{
 		nZigNo = (nMZNo-1)*10 +i;
-		m_stcZigId[nZigNo].GetWindowText(sZigID);
+		m_stcZigID[nZigNo].GetWindowText(sZigID);
 		gData.sZigID[nMZNo-1][i] = sZigID;
 
 		m_stcLensCnt[nZigNo].GetWindowText(sLensCnt);
 		gData.nLensUseCnt[nMZNo-1][i] = atoi(sLensCnt);
-
-	}
-	 
-	
-	
+	}	
 }
 
 void CWorkDlg::Set_MZInfo(int nMZNo)
@@ -967,4 +993,59 @@ void CWorkDlg::OnBnClickedBtnSimul1()
 
 
 
+BOOL CWorkDlg::OnEraseBkgnd(CDC* pDC)
+{
+	// 기본 배경 먼저 그림
+	BOOL bRet = CDialogEx::OnEraseBkgnd(pDC);
+
+	// 배경 이미지 영역 없으면 종료
+	if (m_rcBgArea.IsRectEmpty())
+		return bRet;
+
+	// 비트맵 없으면 종료
+	if (m_bmpBg.GetSafeHandle() == NULL)
+		return bRet;
+
+	CDC memDC;
+	memDC.CreateCompatibleDC(pDC);
+
+	CBitmap* pOldBmp = memDC.SelectObject(&m_bmpBg);
+
+	BITMAP bm;
+	::ZeroMemory(&bm, sizeof(BITMAP));
+	m_bmpBg.GetBitmap(&bm);
+
+	pDC->SetStretchBltMode(HALFTONE);
+
+	// IDC_STATIC_BG 크기에 맞춰 그림
+	pDC->StretchBlt(
+		m_rcBgArea.left,
+		m_rcBgArea.top,
+		m_rcBgArea.Width(),
+		m_rcBgArea.Height(),
+		&memDC,
+		0,
+		0,
+		bm.bmWidth,
+		bm.bmHeight,
+		SRCCOPY);
+
+	memDC.SelectObject(pOldBmp);
+
+	return TRUE;
+}
+
+HBRUSH CWorkDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	// static text 배경 투명 처리
+	/*if (nCtlColor == CTLCOLOR_STATIC)
+	{
+		pDC->SetBkMode(TRANSPARENT);
+		return (HBRUSH)GetStockObject(NULL_BRUSH);
+	}*/
+
+	return hbr;
+}
 

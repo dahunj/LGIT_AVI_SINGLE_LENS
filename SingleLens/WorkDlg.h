@@ -32,7 +32,9 @@ public:
 	//new 
 	CPictureCS		m_picUphBack;
 	
-	CStaticCS		m_stcZigId[60];
+
+	CStaticCS		m_stcMZID[6];
+	CStaticCS		m_stcZigID[60];
 	CStaticCS		m_stcLensCnt[60];
 		//old 
 
@@ -58,10 +60,7 @@ public:
 	CCheckCS		m_chkMesUse;
 	CPictureCS		m_picTrayBack[6];
 
-	CStaticCS		m_stcLoadTrayCount;
-	CStaticCS		m_stcCapTrayCount;
-	CStaticCS		m_stcShipTrayCount;
-	CStaticCS		m_stcNGTrayCount;
+
 
 	
 	CStaticCS		m_stcWorkCase[10];
@@ -109,7 +108,11 @@ protected:
 	afx_msg LRESULT OnIndexTack(WPARAM wParam, LPARAM lParam);	//AHN
 	afx_msg LRESULT OnShowMsg(WPARAM wParam, LPARAM lParam);
 	
+	CBitmap m_bmpBg;
+	CRect   m_rcBgArea;   // IDC_STATIC_BG의 위치/크기 저장
 
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
 private:
 	BOOL	m_bAutoRunning;

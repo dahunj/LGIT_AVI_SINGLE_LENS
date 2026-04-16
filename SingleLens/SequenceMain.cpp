@@ -389,9 +389,7 @@ BOOL CSequenceMain::MZElevRun()
 	case 6:
 		if(g_objCommon.Get_ElevStopper2In() && g_objCommon.Get_ElevStopper2Up())
 		{
-
-
-
+			//Check MZ ID if Exist Move Infomation to Loading MZ UI
 
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Stopper2 In Done");

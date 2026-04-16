@@ -111,6 +111,8 @@ typedef struct
 {
 	CString	sOperID;		// Operator
 	CString	sRecipe;		// Recipe Item
+
+	CString	sMZID[4];
 	CString	sZigID[4][10];
 	CString	sZigIDLoading[10];
 	CString sZigIDWaiting[10];
