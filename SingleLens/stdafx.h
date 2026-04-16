@@ -109,6 +109,12 @@ extern CString gsCurrentDir;	// 현재 프로젝트 폴더
 
 typedef struct
 {
+	CString	sOperID;		// Operator
+	CString	sRecipe;		// Recipe Item
+	CString	sZigID[4][10];
+	CString	sZigIDLoading[10];
+	CString sZigIDWaiting[10];
+
 	//new 
 	int		nTime[10]; //LoopTime Set Value 
 
@@ -116,7 +122,10 @@ typedef struct
 	int		nLanguage;
 
 	int		nMZCnt;
-	int		nLensUseCnt[60];
+	int		nLensUseCnt[4][10];
+	int		nLensCntLoading[10];
+	int		nLensCntWaiting[10];
+
 	int		nLensMaxCnt;
 	
 	BOOL	bIndexDone[6]; //0: Load , 1: Clean, 2: Top, 3:empty, 4:btm, 5: Mark
@@ -138,9 +147,7 @@ typedef struct
 	BOOL	bDryRunMode;
 	int		nSpeedOption; // 여러개의 속도 옵션 가지게 바꾸고 싶다. 
 	
-	CString	sOperID;		// Operator
-	CString	sRecipe;		// Recipe Item
-	CString	sZigID[60];
+	
 
 
 	CString	sMZIDElev;

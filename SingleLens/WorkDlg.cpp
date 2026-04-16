@@ -60,7 +60,7 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 
 
 
-	for (int i = 0; i < 7; i++) DDX_Control(pDX, IDC_LED_EQUIP_OPTION_0 + i, m_ledEquipOption[i]);
+	
 
 	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_STC_LOAD_NO_0 + i, m_stcLoadNo[i]);
 	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_STC_ASSY_NO_0 + i, m_stcAssyNo[i]);
@@ -80,15 +80,9 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHK_MES_USE, m_chkMesUse);
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_PIC_TRAY_BACK_0 + i, m_picTrayBack[i]);
 
-	DDX_Control(pDX, IDC_STC_LOAD_TRAY_COUNT, m_stcLoadTrayCount);
-	DDX_Control(pDX, IDC_STC_CAP_TRAY_COUNT, m_stcCapTrayCount);
-	DDX_Control(pDX, IDC_STC_SHIP_TRAY_COUNT, m_stcShipTrayCount);
-	DDX_Control(pDX, IDC_STC_SHIP_TRAY_COUNT_NG, m_stcNGTrayCount);
 
-	DDX_Control(pDX, IDC_GRD_LOAD_TRAY, m_grdLoadTray);
-	DDX_Control(pDX, IDC_GRD_CAP_TRAY, m_grdCapTray);
-	DDX_Control(pDX, IDC_GRD_SHIP_TRAY , m_grdShipTray);
-	DDX_Control(pDX, IDC_GRD_SHIP_TRAY_NG , m_grdNGTray);
+
+	
 
 	for (int i = 0; i < AUTO_COUNT; i++) DDX_Control(pDX, IDC_STC_WORK_CASE_0 + i, m_stcWorkCase[i]);
 	for (int i = 0; i < 12; i++) DDX_Control(pDX, IDC_STC_PORT_NO_0 + i, m_stcPortNo[i]);
@@ -105,7 +99,7 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_WM_SHOWWINDOW()
 	ON_WM_TIMER()
 
-	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MZ_ZIGID_0, IDC_STC_MZ_ZIGID_59, OnStcLotIdClick)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MZ_ZIGID_0, IDC_STC_MZ_ZIGID_59, OnStcZigIdClick)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MZ_LENS_CNT_0, IDC_STC_MZ_LENS_CNT_59, OnStcLensCountClick)
 
 
@@ -158,16 +152,12 @@ void CWorkDlg::Initial_Controls()
 	//for (int i = 0; i < 2; i++) m_grpLot[i].Init_Ctrl("바탕", 12, TRUE, COLOR_DEFAULT, COLOR_DEFAULT);
 	//for (int i = 0; i < 3; i++) m_lblLot[i].Init_Ctrl("바탕", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x20, 0x20, 0x80));
 	//for (int i = 3; i < 6; i++) m_lblLot[i].Init_Ctrl("바탕", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x00, 0x80));
-
 	
-
-
-
 	
 	m_bmpEquipment.LoadBitmap(IDB_EQUIP_WORK);
 	m_imgEquipment.SetBitmap(m_bmpEquipment);
 	m_picUphBack.Init_Ctrl(COLOR_DEFAULT, COLOR_DEFAULT);
-	for (int i = 0; i < 7; i++) m_ledEquipOption[i].Init_Ctrl("Arial", 10, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emBlue, CLedCS::em16);
+	
 	for (int i = 0; i < 6; i++) m_stcLoadNo[i].Init_Ctrl("바탕", 12, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));
 	for (int i = 0; i < 6; i++) m_stcAssyNo[i].Init_Ctrl("바탕", 12, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));
 	for (int i = 0; i < 6; i++) m_stcTransNo[i].Init_Ctrl("바탕", 12, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));
@@ -288,15 +278,7 @@ void CWorkDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		
 
 		m_chkMesUse.SetCheck(pEquipData->bUseMES);
-
-		m_ledEquipOption[0].Set_On(pEquipData->bUseInlineMode);
-		m_ledEquipOption[1].Set_On(pEquipData->bUseVisionCapDir);
-		m_ledEquipOption[2].Set_On(pEquipData->bUseVisionCmAlign);
-		m_ledEquipOption[3].Set_On(pEquipData->bUseTrayPickerTurn);
-		m_ledEquipOption[4].Set_On(pEquipData->bUseCapPickerTurn);
-		m_ledEquipOption[5].Set_On(pEquipData->bUseMesCapReg);
-		m_ledEquipOption[6].Set_On(pEquipData->bUseMesShipReg);		
-
+		
 	/*	m_grpLot[1].SetWindowText("Port 2 Lot Info");
 		m_stcLotId[1].Set_Color(COLOR_DEFAULT, RGB(0x80, 0xF0, 0xF0));
 		m_stcCmCount[1].Set_Color(COLOR_DEFAULT, RGB(0x80, 0xF0, 0xF0));*/
@@ -402,7 +384,7 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 
 /////////////////
 
-void CWorkDlg::OnStcLotIdClick(UINT nID)
+void CWorkDlg::OnStcZigIdClick(UINT nID)
 {
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	if (pEquipData->bUseMES) {
@@ -430,6 +412,16 @@ void CWorkDlg::OnStcLotIdClick(UINT nID)
 
 	m_stcZigId[ID].SetWindowText(strKey);
 
+	int nShare = 0, nRemainder = 0;
+	nShare = ID / 10;
+	nRemainder = ID %10;
+
+	//if Running variable gets lensCnt/ if not  gets at Work_Start() 
+	if (m_rdoWorkStart.GetCheck())
+	{
+		gData.sZigID[nShare][nRemainder] = strKey;		
+	}
+
 	strNew.Format("[Work Mode] Lot ID Input(%d-%s)", ID, strKey);
 	g_objLogFile.Save_HandlerLog(strNew);
 
@@ -449,30 +441,40 @@ void CWorkDlg::OnStcLensCountClick(UINT nID)
 
 	int ID = nID - IDC_STC_MZ_LENS_CNT_0;
 
-	if (m_rdoWorkStart.GetCheck()) {
-		if (gData.nLanguage == 0) g_objCommon.Show_MsgBox(1, "장비 Stop 상태에서 진행이 가능합니다.....");
-		else					  g_objCommon.Show_MsgBox(1, "You can proceed with the equipment stopped.");
-		return;
-	}
+	/*if (m_rdoWorkStart.GetCheck()) {
+	if (gData.nLanguage == 0) g_objCommon.Show_MsgBox(1, "장비 Stop 상태에서 진행이 가능합니다.....");
+	else					  g_objCommon.Show_MsgBox(1, "You can proceed with the equipment stopped.");
+	return;
+	}*/
 
 	CString strOld, strNew, strValue;
 
 	m_stcLensCnt[ID].GetWindowText(strOld);
 	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
 
-	int nCmCnt = atoi(strNew);
-	if (nCmCnt < 1 || nCmCnt > ZIG_MAX) {
+	int nLensCnt = atoi(strNew);
+	if (nLensCnt < 1 || nLensCnt > ZIG_MAX) {
 		m_stcLensCnt[ID].SetWindowText("");
 		if (gData.nLanguage == 0) AfxMessageBox(_T("Zig당 Lens수량은 200개이상 입력할수 없습니다.........."));
 		else					  AfxMessageBox(_T("Lens quantity per Zig cannot be entered more than 200."));
 		return;
 	}
-	strValue.Format("%d", nCmCnt);
+	strValue.Format("%d", nLensCnt);
 	m_stcLensCnt[ID].SetWindowText(strValue);
 
-	
 
-	strNew.Format("[Work Mode] Module Count Input(%d-%d-%d)", ID, nCmCnt);
+	
+	int nShare = 0, nRemainder = 0;
+	nShare = ID / 10;
+	nRemainder = ID %10;
+
+	//if Running variable gets lensCnt/ if not  gets at Work_Start() 
+	if (m_rdoWorkStart.GetCheck())
+	{		
+		gData.nLensUseCnt[nShare][nRemainder] = nLensCnt;
+	}
+	
+	strNew.Format("[Work Mode] Module Count Input(%d-%d-%d)", ID, nLensCnt);
 	g_objLogFile.Save_HandlerLog(strNew);
 }
 
@@ -608,13 +610,16 @@ BOOL CWorkDlg::Work_Start()
 
 	if (g_objSequenceMain.Get_IsAutoRun()) return TRUE;	// If Auto Runnning, Skip 
 
-	for(int i = 0; i < 60; i++)
+	int nShare = 0, nRemainder;
+	for(int i = 0; i < 40; i++)
 	{
 		m_stcZigId[i].GetWindowText(strTemp);		// Lot ID
 		if(strTemp == "") continue;
 
 		if (strTemp.GetLength() < 2) { g_objCommon.Show_MsgBox(1, "Please Input Lot-ID."); return FALSE; }
-		gData.sZigID[i] = strTemp;
+		
+		nShare = i/10; nRemainder = i%10;
+		gData.sZigID[nShare][nRemainder] = strTemp;
 
 
 		m_stcLensCnt[i].GetWindowText(strTemp);		// Lens 수량
@@ -622,10 +627,8 @@ BOOL CWorkDlg::Work_Start()
 		{
 			int nTempCnt = atoi(strTemp);
 			if (nTempCnt < 1 || nTempCnt > ZIG_X*ZIG_Y) { g_objCommon.Show_MsgBox(1, "Lens 수량을 확인하여 주십시오."); return FALSE; }
-			gData.nLensUseCnt[i] = nTempCnt;	
+			gData.nLensUseCnt[nShare][nRemainder] = nTempCnt;	
 		}
-	
-
 	}
 	
 	gData.bFirstLotStart = TRUE;
@@ -817,15 +820,27 @@ void CWorkDlg::Enable_UserInput(int nNo, BOOL bEnable)
 	}
 }
 
-void CWorkDlg::Get_LotInfo(int nPx)
+void CWorkDlg::Get_MZInfo(int nMZNo)
 {
-	if (nPx < 0 || nPx > 1) return;
+	int nZigNo = 0;
+	CString sZigID, sLensCnt;
 
-	CString strTemp;
+	for(int i = 0; i < 10; i++)
+	{
+		nZigNo = (nMZNo-1)*10 +i;
+		m_stcZigId[nZigNo].GetWindowText(sZigID);
+		gData.sZigID[nMZNo-1][i] = sZigID;
+
+		m_stcLensCnt[nZigNo].GetWindowText(sLensCnt);
+		gData.nLensUseCnt[nMZNo-1][i] = atoi(sLensCnt);
+
+	}
+	 
+	
 	
 }
 
-void CWorkDlg::Set_LotInfo(int nPx)
+void CWorkDlg::Set_MZInfo(int nMZNo)
 {
 		
 }

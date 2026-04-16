@@ -46,7 +46,7 @@ public:
 
 	CPictureCS		m_imgEquipment;
 	CPictureCS		m_picUphBack;
-	CLedCS			m_ledEquipOption[7];
+	
 	CComboCS		m_cboStartIndexJig;
 	CStaticCS		m_stcLoadNo[6];
 	CStaticCS		m_stcAssyNo[6];
@@ -69,10 +69,7 @@ public:
 	CStaticCS		m_stcShipTrayCount;
 	CStaticCS		m_stcNGTrayCount;
 
-	CGridCS			m_grdLoadTray;
-	CGridCS			m_grdCapTray;
-	CGridCS			m_grdShipTray;
-	CGridCS			m_grdNGTray;
+	
 	CStaticCS		m_stcWorkCase[10];
 	CStaticCS		m_stcPortNo[12];
 	CStaticCS		m_stcTakt[4];
@@ -95,7 +92,7 @@ protected:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 
 	//new 
-	afx_msg void OnStcLotIdClick(UINT nID);
+	afx_msg void OnStcZigIdClick(UINT nID);
 	afx_msg void OnStcLensCountClick(UINT nID);	
 
 	//old 
@@ -158,8 +155,8 @@ public:
 	void Set_State(int nState);
 	void Enable_UserInput(int nNo, BOOL bEnable);
 
-	void Get_LotInfo(int nPx);
-	void Set_LotInfo(int nPx);
+	void Get_MZInfo(int nMZNo);
+	void Set_MZInfo(int nMZNo);
 
 	
 
