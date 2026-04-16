@@ -391,6 +391,8 @@ BOOL CSequenceMain::MZElevRun()
 		{
 			//Check MZ ID if Exist Move Infomation to Loading MZ UI
 
+
+
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Stopper2 In Done");
 		}
@@ -1448,18 +1450,18 @@ void CSequenceMain::End_MainRunThread()
 int CSequenceMain::Check_MZSensors()
 {
 	int nMZCnt = 0;
-	if (m_pDX00->iLoadCVMZExist5) nMZCnt++;
-	if (m_pDX00->iLoadCVMZExist4) nMZCnt++;
-	if (m_pDX00->iLoadCVMZExist3) nMZCnt++;
+	if (m_pDX00->iLoadCVMZExist1Right) nMZCnt++;
 	if (m_pDX00->iLoadCVMZExist2) nMZCnt++;
-	if (m_pDX00->iLoadCVMZExist1Left) nMZCnt++;
+	if (m_pDX00->iLoadCVMZExist3) nMZCnt++;
+	if (m_pDX00->iLoadCVMZExist4) nMZCnt++;
+	if (m_pDX00->iLoadCVMZExist5) nMZCnt++;
 	
 #ifndef AJIN_BOARD_USE
 	m_pDX00->iLoadCVMZExist5 = FALSE;
 	m_pDX00->iLoadCVMZExist4 = FALSE;
 	m_pDX00->iLoadCVMZExist3 = FALSE;
 	m_pDX00->iLoadCVMZExist2 = FALSE;
-	m_pDX00->iLoadCVMZExist1Left = FALSE;	
+	m_pDX00->iLoadCVMZExist1Right = FALSE;	
 #endif
 
 

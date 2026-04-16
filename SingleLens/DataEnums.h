@@ -312,3 +312,18 @@ struct delay
 	};
 
 };
+
+
+
+struct eMZIdx
+{
+	enum Name
+	{
+		Load = 0,
+		Ready = 1,
+		CV1 = 2,
+		CV2 = 3,
+		CV3 = 4,
+		CV4 = 5, 
+	};
+};

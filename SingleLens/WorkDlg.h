@@ -143,6 +143,11 @@ public:
 	void Set_State(int nState);
 	void Enable_UserInput(int nNo, BOOL bEnable);
 
+
+	int		SearchMZReadyInfo();
+	int		SearchMZCVInfo();
+	void	TransferMZInfo(int nFrom, int nTo);
+
 	void Get_MZInfo(int nMZNo);
 	void Set_MZInfo(int nMZNo);
 	

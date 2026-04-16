@@ -101,36 +101,36 @@ typedef union tag_DX_DATA_00 {
 	DWORD nValue;
 	struct {
 
-		DWORD iLoadCVMZExist5: 1;				// X0000
-		DWORD iLoadCVMZExist4: 1;				// X0001
+		DWORD iLoadCVMZExist1Right: 1;				// X0000
+		DWORD iLoadCVMZExist2: 1;				// X0001
 		DWORD iLoadCVMZExist3 : 1;				// X0002
-		DWORD iLoadCVMZExist2 : 1;				// X0003
-		DWORD iLoadCVMZExist1Left : 1;				// X0004
+		DWORD iLoadCVMZExist4 : 1;				// X0003
+		DWORD iLoadCVMZExist5 : 1;				// X0004
 		DWORD i0005 : 1;						// X0005
 		DWORD i0006 : 1;				// X0006
 		DWORD i0007 : 1;			// X0007
-		DWORD iLoadCVStopper2Up : 1;				// X0008
-		DWORD iLoadCVStopper2Down : 1;				// X0009
-		DWORD iLoadCVStopper1Up : 1;			// X0010
-		DWORD iLoadCVStopper1Down : 1;		// X0011
+		DWORD iLoadCVStopper1UpRight : 1;				// X0008
+		DWORD iLoadCVStopper1Down : 1;				// X0009
+		DWORD iLoadCVStopper2Up : 1;			// X0010
+		DWORD iLoadCVStopper2Down : 1;		// X0011
 		DWORD i0012 : 1;			// X0012
 		DWORD i0013 : 1;		// X0013
 		DWORD i0014 : 1;		// X0014
 		DWORD i0015 : 1;		// X0015
 		DWORD iMZElevMZExist1 : 1;			// X0016
 		DWORD i0017 : 1;			// X0017
-		DWORD iMZElevStopper1Up : 1;			// X0018
+		DWORD iMZElevStopper1UpLeft : 1;			// X0018
 		DWORD iMZElevStopper1Down : 1;			// X0019
 		DWORD iMZElevStopper1In : 1;			// X0020
 		DWORD iMZElevStopper1Out : 1;						// X0021
 		DWORD i0022	: 1;		// X0022
 		DWORD i0023	: 1;		// X0023
-		DWORD iMZElevMZExist2 : 1;						// X0024
-		DWORD i0025 : 1;			// X0025 - 임시 부여 
-		DWORD iMZElevStopper2Up : 1;				// X0026 - 임시 부여 
-		DWORD iMZElevStopper2Down : 1;				// X0027
-		DWORD iMZElevStopper2In : 1;				// X0028
-		DWORD iMZElevStopper2Out : 1;				// X0029
+		DWORD iMZElevMZExist2		: 1;						// X0024
+		DWORD i0025					: 1;			// X0025 - 임시 부여 
+		DWORD iMZElevStopper2UpRight		: 1;				// X0026 - 임시 부여 
+		DWORD iMZElevStopper2Down	: 1;				// X0027
+		DWORD iMZElevStopper2In		: 1;				// X0028
+		DWORD iMZElevStopper2Out	: 1;				// X0029
 		DWORD i0030 : 1;					// X0030
 		DWORD i0031 : 1;					// X0031
 	};
@@ -264,17 +264,17 @@ typedef union tag_DY_DATA_00 {
 		DWORD o0005 : 1;					// Y0005
 		DWORD o0006 : 1;			// Y0006
 		DWORD o0007 : 1;		// Y0007
-		DWORD oLoadCVStopper2Up : 1;				// Y0008
-		DWORD oLoadCVStopper2Down : 1;				// Y0009
-		DWORD oLoadCVStopper1Up : 1;		// Y0010
-		DWORD oLoadCVStopper1Down : 1;	// Y0011
+		DWORD oLoadCVStopper1UpRight : 1;				// Y0008
+		DWORD oLoadCVStopper1Down : 1;				// Y0009
+		DWORD oLoadCVStopper2Up : 1;		// Y0010
+		DWORD oLoadCVStopper2Down : 1;	// Y0011
 		DWORD o0012 : 1;		// Y0012
 		DWORD o0013 : 1;	// Y0013
 		DWORD o0014 : 1;		// Y0014
 		DWORD o0015 : 1;	// Y0015
 		DWORD oMZElevCVRun : 1;				// Y0016
 		DWORD oMZElevCVDirCCW : 1;				// Y0017
-		DWORD oMZElevStopper1Up : 1;					// Y0018
+		DWORD oMZElevStopper1UpLeft : 1;					// Y0018
 		DWORD oMZElevStopper1Down : 1;					// Y0019
 		DWORD oMZElevStopper1In : 1;					// Y0020
 		DWORD oMZElevStopper1Out : 1;					// Y0021
@@ -282,7 +282,7 @@ typedef union tag_DY_DATA_00 {
 		DWORD o0023 : 1;					// Y0023
 		DWORD o0024 : 1;		// Y0024
 		DWORD o0025 : 1;		// Y0025
-		DWORD oMZElevStopper2Up : 1;				// Y0026
+		DWORD oMZElevStopper2UpRight : 1;				// Y0026
 		DWORD oMZElevStopper2Down : 1;				// Y0027
 		DWORD oMZElevStopper2In : 1;					// Y0028
 		DWORD oMZElevStopper2Out : 1;					// Y0029

@@ -483,7 +483,7 @@ void CCommon::Set_ElevStopper1Up()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oMZElevStopper1Up = TRUE;
+	pDY00->oMZElevStopper1UpLeft = TRUE;
 	pDY00->oMZElevStopper1Down = FALSE;
 	g_objAJinAXL.Write_Output(0);
 
@@ -493,7 +493,7 @@ void CCommon::Set_ElevStopper1Down()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oMZElevStopper1Up = FALSE;
+	pDY00->oMZElevStopper1UpLeft = FALSE;
 	pDY00->oMZElevStopper1Down = TRUE;
 	g_objAJinAXL.Write_Output(0);
 
@@ -526,7 +526,7 @@ BOOL CCommon::Get_ElevStopper1Up()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(pDX00->iMZElevStopper1Up && !pDX00->iMZElevStopper1Down)
+	if(pDX00->iMZElevStopper1UpLeft && !pDX00->iMZElevStopper1Down)
 	{
 		return TRUE;
 	}
@@ -538,7 +538,7 @@ BOOL CCommon::Get_ElevStopper1Down()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(!pDX00->iMZElevStopper1Up && pDX00->iMZElevStopper1Down)
+	if(!pDX00->iMZElevStopper1UpLeft && pDX00->iMZElevStopper1Down)
 	{
 		return TRUE;
 	}
@@ -553,8 +553,8 @@ void CCommon::Set_ElevStopper2In()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oMZElevStopper1In = TRUE;
-	pDY00->oMZElevStopper1Out = FALSE;
+	pDY00->oMZElevStopper2In = TRUE;
+	pDY00->oMZElevStopper2Out = FALSE;
 	g_objAJinAXL.Write_Output(0);
 
 }
@@ -563,8 +563,8 @@ void CCommon::Set_ElevStopper2Out()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oMZElevStopper1In = FALSE;
-	pDY00->oMZElevStopper1Out = TRUE;
+	pDY00->oMZElevStopper2In = FALSE;
+	pDY00->oMZElevStopper2Out = TRUE;
 	g_objAJinAXL.Write_Output(0);
 }
 
@@ -572,8 +572,8 @@ void CCommon::Set_ElevStopper2Up()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oMZElevStopper1Up = TRUE;
-	pDY00->oMZElevStopper1Down = FALSE;
+	pDY00->oMZElevStopper2UpRight = TRUE;
+	pDY00->oMZElevStopper2Down = FALSE;
 	g_objAJinAXL.Write_Output(0);
 
 }
@@ -582,8 +582,8 @@ void CCommon::Set_ElevStopper2Down()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oMZElevStopper1Up = FALSE;
-	pDY00->oMZElevStopper1Down = TRUE;
+	pDY00->oMZElevStopper2UpRight = FALSE;
+	pDY00->oMZElevStopper2Down = TRUE;
 	g_objAJinAXL.Write_Output(0);
 
 }
@@ -615,7 +615,7 @@ BOOL CCommon::Get_ElevStopper2Up()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(pDX00->iMZElevStopper1Up && !pDX00->iMZElevStopper1Down)
+	if(pDX00->iMZElevStopper1UpLeft && !pDX00->iMZElevStopper1Down)
 	{
 		return TRUE;
 	}
@@ -627,7 +627,7 @@ BOOL CCommon::Get_ElevStopper2Down()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(!pDX00->iMZElevStopper1Up && pDX00->iMZElevStopper1Down)
+	if(!pDX00->iMZElevStopper1UpLeft && pDX00->iMZElevStopper1Down)
 	{
 		return TRUE;
 	}

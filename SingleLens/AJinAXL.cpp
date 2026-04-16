@@ -833,17 +833,17 @@ void CAJinAXL::Sim_SetOutToIn(int nNo)
 	
 	if(nNo == 0)
 	{
-		m_DX00.iLoadCVStopper1Up = m_DY00.oLoadCVStopper1Up;
+		m_DX00.iLoadCVStopper1UpRight = m_DY00.oLoadCVStopper1UpRight;
 		m_DX00.iLoadCVStopper1Down = m_DY00.oLoadCVStopper1Down;
 		m_DX00.iLoadCVStopper2Up = m_DY00.oLoadCVStopper2Up;
 		m_DX00.iLoadCVStopper2Down = m_DY00.oLoadCVStopper2Down;
 
-		m_DX00.iMZElevStopper1Up = m_DY00.oMZElevStopper1Up;
+		m_DX00.iMZElevStopper1UpLeft = m_DY00.oMZElevStopper1UpLeft;
 		m_DX00.iMZElevStopper1Down = m_DY00.oMZElevStopper1Down;
 		m_DX00.iMZElevStopper1In = m_DY00.oMZElevStopper1In;
 		m_DX00.iMZElevStopper1Out = m_DY00.oMZElevStopper1Out;
 
-		m_DX00.iMZElevStopper2Up =		m_DY00.oMZElevStopper2Up;
+		m_DX00.iMZElevStopper2UpRight =		m_DY00.oMZElevStopper2UpRight;
 		m_DX00.iMZElevStopper2Down =	m_DY00.oMZElevStopper2Down;
 		m_DX00.iMZElevStopper2In =		m_DY00.oMZElevStopper2In;
 		m_DX00.iMZElevStopper2Out =		m_DY00.oMZElevStopper2Out;

@@ -617,6 +617,9 @@ BOOL CWorkDlg::Work_Start()
 	return TRUE;
 }
 
+
+
+
 void CWorkDlg::Initial_Grid(CGridCS *pGrid, int nRows, int nCols, int nNoDir)
 {
 	pGrid->Set_RowCount(nRows);
@@ -1049,3 +1052,35 @@ HBRUSH CWorkDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return hbr;
 }
 
+
+
+int CWorkDlg::SearchMZReadyInfo()
+{
+	CString sMZInfo;
+	m_stcMZID[1].GetWindowText(sMZInfo);
+	if(sMZInfo != "")
+	{
+		return 1;
+	}
+	return -1;
+}
+
+int CWorkDlg::SearchMZCVInfo()
+{
+	for(int i = 2; i < 6; i++) // start from 2 <-- Conveyor 1 pos
+	{
+		CString sMZInfo;
+		m_stcMZID[i].GetWindowText(sMZInfo);
+		if(sMZInfo != "")
+		{
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
+void CWorkDlg::TransferMZInfo(int nFrom, int nTo)
+{
+
+}
