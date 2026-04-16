@@ -4,6 +4,7 @@
 
 #include "WorkInfoDlg.h"
 #include "afxwin.h"
+#include "BmpControl.h"
 
 #define UM_UPDATE_MODEL			WM_USER+1
 #define UM_UPDATE_TRAY_INFO		WM_USER+2
@@ -30,22 +31,18 @@ public:
 	enum { IDD = IDD_WORK_DLG };
 
 	//new 
+	CBmpControl m_bmpCtrl;
+
+	CPictureCS		m_picUphBack;
+	
 	CStaticCS		m_stcZigId[60];
 	CStaticCS		m_stcLensCnt[60];
-
-
-
-	//old 
+		//old 
 
 	CGroupCS		m_Group[10];
 	CLabelCS		m_Label[7];
 	CGroupCS		m_grpLot[2];
-	CLabelCS		m_lblLot[6];
-
-	
-
-	CPictureCS		m_imgEquipment;
-	CPictureCS		m_picUphBack;
+	CLabelCS		m_lblLot[6];	
 	
 	CComboCS		m_cboStartIndexJig;
 	CStaticCS		m_stcLoadNo[6];
@@ -59,7 +56,7 @@ public:
 	CRadioCS		m_rdoWorkStart;
 	CRadioCS		m_rdoWorkStop;
 	CLedCS			m_ledInitComplete;
-	CLedCS			m_ledLotLoadEnable;
+
 	CCheckCS		m_chkCycleStop;
 	CCheckCS		m_chkMesUse;
 	CPictureCS		m_picTrayBack[6];
@@ -120,9 +117,8 @@ protected:
 	afx_msg void OnBnClickedMesCancel();
 
 private:
+	
 
-
-	CBitmap	m_bmpEquipment;
 
 	BOOL	m_bAutoRunning;
 	BOOL	m_bCycleStopRun;
@@ -157,17 +153,16 @@ public:
 
 	void Get_MZInfo(int nMZNo);
 	void Set_MZInfo(int nMZNo);
-
 	
-
-
 	void MachineStopLog(CString sType, CString sMsg="");
 	void Change_Model();
 
-
-
 	afx_msg void OnBnClickedBtnSimul1();
+
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };
+
+
 
 extern CWorkDlg g_dlgWork;
 

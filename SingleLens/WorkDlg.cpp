@@ -43,54 +43,31 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 60; i++) DDX_Control(pDX, IDC_STC_MZ_ZIGID_0 + i, m_stcZigId[i]);
 	for (int i = 0; i < 60; i++) DDX_Control(pDX, IDC_STC_MZ_LENS_CNT_0+ i, m_stcLensCnt[i]);
 
+	DDX_Control(pDX, IDC_BTN_MES_CANCEL, m_btnMesCancel);
+	DDX_Control(pDX, IDC_PIC_UPH_BACK, m_picUphBack);
 
+	DDX_Control(pDX, IDC_RDO_WORK_START, m_rdoWorkStart);
+	DDX_Control(pDX, IDC_RDO_WORK_STOP, m_rdoWorkStop);
+	DDX_Control(pDX, IDC_LED_INIT_COMPLETE, m_ledInitComplete);
+	DDX_Control(pDX, IDC_CHK_CYCLE_STOP, m_chkCycleStop);
+	DDX_Control(pDX, IDC_CHK_MES_USE, m_chkMesUse);
 
-
-
-
-
-
+	for (int i = 0; i < AUTO_COUNT; i++) DDX_Control(pDX, IDC_STC_WORK_CASE_0 + i, m_stcWorkCase[i]);	
 
 	//old 
 
-
-	DDX_Control(pDX, IDC_BTN_MES_CANCEL, m_btnMesCancel);
-	DDX_Control(pDX, IDC_IMG_EQUIPMENT, m_imgEquipment);
-	DDX_Control(pDX, IDC_PIC_UPH_BACK, m_picUphBack);
-
-
-
-	
-
-	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_STC_LOAD_NO_0 + i, m_stcLoadNo[i]);
-	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_STC_ASSY_NO_0 + i, m_stcAssyNo[i]);
-	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_STC_TRANS_NO_0 + i, m_stcTransNo[i]);
-	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_STC_TSTAGE_NO_0 + i, m_stcTStageNo[i]);
-	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_STC_UNLOAD_NO_0 + i, m_stcUnloadNo[i]);
 
 	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_LED_INDEX_DONE_0 + i, m_ledIndexDone[i]);
 	DDX_Control(pDX, IDC_STC_MAIN_INDEX_POS, m_stcIndexPos);
 
 
-	DDX_Control(pDX, IDC_RDO_WORK_START, m_rdoWorkStart);
-	DDX_Control(pDX, IDC_RDO_WORK_STOP, m_rdoWorkStop);
-	DDX_Control(pDX, IDC_LED_INIT_COMPLETE, m_ledInitComplete);
-	DDX_Control(pDX, IDC_LED_LOT_LOAD_ENABLE, m_ledLotLoadEnable);
-	DDX_Control(pDX, IDC_CHK_CYCLE_STOP, m_chkCycleStop);
-	DDX_Control(pDX, IDC_CHK_MES_USE, m_chkMesUse);
-	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_PIC_TRAY_BACK_0 + i, m_picTrayBack[i]);
+	//for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_PIC_TRAY_BACK_0 + i, m_picTrayBack[i]);
 
 
-
-	
-
-	for (int i = 0; i < AUTO_COUNT; i++) DDX_Control(pDX, IDC_STC_WORK_CASE_0 + i, m_stcWorkCase[i]);
-	for (int i = 0; i < 12; i++) DDX_Control(pDX, IDC_STC_PORT_NO_0 + i, m_stcPortNo[i]);
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_STC_TAKT_0 + i, m_stcTakt[i]);
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_STC_UPH_0 + i, m_stcUph[i]);
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_STC_DAY_0 + i, m_stcDay[i]);
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_LED_VISION_STATUS_0 + i, m_ledVisionStatus[i]);
-
 
 }
 
@@ -101,18 +78,11 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MZ_ZIGID_0, IDC_STC_MZ_ZIGID_59, OnStcZigIdClick)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MZ_LENS_CNT_0, IDC_STC_MZ_LENS_CNT_59, OnStcLensCountClick)
-
-
-
-
+	
 	//old 
 	ON_STN_CLICKED(IDC_LBL_LOT_0, &CWorkDlg::OnStnClickedLblLot0)
 	ON_STN_CLICKED(IDC_LBL_LOT_3, &CWorkDlg::OnStnClickedLblLot3)
-	
-
-	
-
-	
+		
 	ON_BN_CLICKED(IDC_RDO_WORK_START, &CWorkDlg::OnBnClickedRdoWorkStart)
 	ON_BN_CLICKED(IDC_RDO_WORK_STOP, &CWorkDlg::OnBnClickedRdoWorkStop)
 	ON_BN_CLICKED(IDC_CHK_CYCLE_STOP, &CWorkDlg::OnBnClickedChkCycleStop)
@@ -130,13 +100,10 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON1, &CWorkDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CWorkDlg::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BTN_MES_CANCEL, &CWorkDlg::OnBnClickedMesCancel)
-	
-	
-
-	
-
-	
+		
 	ON_BN_CLICKED(IDC_BTN_SIMUL1, &CWorkDlg::OnBnClickedBtnSimul1)
+	ON_WM_PAINT()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 // CWorkDlg ¸Þ½ÃÁö Ã³¸®±âÀÔ´Ï´Ù.
@@ -153,17 +120,19 @@ void CWorkDlg::Initial_Controls()
 	//for (int i = 0; i < 3; i++) m_lblLot[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x20, 0x20, 0x80));
 	//for (int i = 3; i < 6; i++) m_lblLot[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x00, 0x80));
 	
-	
-	m_bmpEquipment.LoadBitmap(IDB_EQUIP_WORK);
-	m_imgEquipment.SetBitmap(m_bmpEquipment);
+	m_bmpCtrl.SubclassDlgItem(IDC_STATIC_WORKIMAGE, this);
+	m_bmpCtrl.LoadBmp(IDB_EQUIP_WORK);
+	CRect rcWnd;
+	m_bmpCtrl.GetWindowRect(&rcWnd);
+	ScreenToClient(&rcWnd);
+	m_bmpCtrl.MoveWindow(&rcWnd);
+
+	m_bmpCtrl.SetWindowPos(	&wndBottom,	0, 0, 0, 0,	SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+
+
 	m_picUphBack.Init_Ctrl(COLOR_DEFAULT, COLOR_DEFAULT);
 	
-	for (int i = 0; i < 6; i++) m_stcLoadNo[i].Init_Ctrl("¹ÙÅÁ", 12, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));
-	for (int i = 0; i < 6; i++) m_stcAssyNo[i].Init_Ctrl("¹ÙÅÁ", 12, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));
-	for (int i = 0; i < 6; i++) m_stcTransNo[i].Init_Ctrl("¹ÙÅÁ", 12, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));
-	for (int i = 0; i < 6; i++) m_stcTStageNo[i].Init_Ctrl("¹ÙÅÁ", 12, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));
-	for (int i = 0; i < 6; i++) m_stcUnloadNo[i].Init_Ctrl("¹ÙÅÁ", 12, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));
-
+	
 	for (int i = 0; i < 3; i++) m_ledIndexDone[i].Init_Ctrl("Arial", 10, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em24);
 	m_stcIndexPos.Init_Ctrl("¹ÙÅÁ", 12, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));
 
@@ -171,19 +140,13 @@ void CWorkDlg::Initial_Controls()
 	m_rdoWorkStart.Init_Ctrl("¹ÙÅÁ", 20, TRUE, COLOR_DEFAULT, COLOR_DEFAULT, 0, 0);
 	m_rdoWorkStop.Init_Ctrl("¹ÙÅÁ", 20, TRUE, COLOR_DEFAULT, COLOR_DEFAULT, 0, 0);
 	m_ledInitComplete.Init_Ctrl("¹ÙÅÁ", 12, TRUE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em24);
-	m_ledLotLoadEnable.Init_Ctrl("¹ÙÅÁ", 10, TRUE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em16);
+	
 	m_chkCycleStop.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, COLOR_DEFAULT, 0, 0);
 	m_chkMesUse.Init_Ctrl("Arial", 12, TRUE, RGB(0xFF, 0xFF, 0x00), RGB(0xC0, 0x10, 0x30), CCheckCS::emRed, CCheckCS::emRight);
-	for (int i = 0; i < 4; i++) m_picTrayBack[i].Set_Color(COLOR_DEFAULT, RGB(0xF0, 0xF0, 0x80));
-	
-	m_stcLoadTrayCount.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00));
-	m_stcCapTrayCount.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00));
-	m_stcShipTrayCount.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00));
-	m_stcNGTrayCount.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00));
-
-	
+	//for (int i = 0; i < 4; i++) m_picTrayBack[i].Set_Color(COLOR_DEFAULT, RGB(0xF0, 0xF0, 0x80));
+		
 	for (int i = 0; i < AUTO_COUNT; i++) m_stcWorkCase[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x40, 0x40));
-	for (int i = 0; i < 12; i++) m_stcPortNo[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x40, 0x40));
+
 	for (int i = 0; i < 4; i++) m_stcTakt[i].Init_Ctrl("Arial", 9, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x40, 0x40));
 	for (int i = 0; i < 4; i++) m_stcUph[i].Init_Ctrl("Arial", 9, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x40, 0x40));
 	for (int i = 0; i < 2; i++) m_stcDay[i].Init_Ctrl("Arial", 9, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x40, 0x40));
@@ -262,19 +225,17 @@ void CWorkDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	if (bShow) 
 	{
 		Change_Model();	
-
 		
-
 		EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 		CString strText;
 
 
-#ifndef DRY_RUN_TEST
-		m_bmpEquipment.DeleteObject();
-		if (pEquipData->bUseDoorLock) m_bmpEquipment.LoadBitmap(IDB_EQUIP_WORK);
-		else m_bmpEquipment.LoadBitmap(IDB_EQUIP_DOOR);
-		m_imgEquipment.SetBitmap(m_bmpEquipment);
-#endif		
+//#ifndef DRY_RUN_TEST
+//		m_bmpEquipment.DeleteObject();
+//		if (pEquipData->bUseDoorLock) m_bmpEquipment.LoadBitmap(IDB_EQUIP_WORK);
+//		else m_bmpEquipment.LoadBitmap(IDB_EQUIP_DOOR);
+//		m_imgEquipment.SetBitmap(m_bmpEquipment);
+//#endif		
 		
 
 		m_chkMesUse.SetCheck(pEquipData->bUseMES);
@@ -996,8 +957,6 @@ void CWorkDlg::Change_Model()
 
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
 
 void CWorkDlg::OnBnClickedButton1()
@@ -1009,10 +968,26 @@ void CWorkDlg::OnBnClickedButton2()
 }
 
 
-
 void CWorkDlg::OnBnClickedBtnSimul1()
 {
 	DX_DATA_00* m_pDX00 = g_objAJinAXL.Get_pDX00();
 	m_pDX00->iLoadCVMZExist5 = TRUE;
 	// TODO: ¿©±â¿¡ ÄÁÆ®·Ñ ¾Ë¸² Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
+}
+
+
+
+void CWorkDlg::OnSize(UINT nType, int cx, int cy)
+{
+	CDialogEx::OnSize(nType, cx, cy);
+
+	if (::IsWindow(m_bmpCtrl.GetSafeHwnd()))
+	{
+		m_bmpCtrl.SetWindowPos(
+			&wndBottom,
+			0, 0, 0, 0,
+			SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+	}
+
+	// TODO: ¿©±â¿¡ ¸Þ½ÃÁö Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
 }

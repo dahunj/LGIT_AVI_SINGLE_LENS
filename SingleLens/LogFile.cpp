@@ -404,48 +404,7 @@ void CLogFile::Save_TestLog(CString sLog)
 
 void CLogFile::Save_LotLog(int nPNo)
 {
-	CString sFileName, strFile, strCreDate, sCreFile, sTemp, sData, sInsResult, sBarResult;
-	SYSTEMTIME time;
-	GetLocalTime(&time);
-	int nNo = nPNo-1;
-	if (nNo < 0) nNo = 0;
-
-	if (gLot.sLotID[nNo] == "") gLot.sLotID[nNo] = "LOT_ID_DEFAULT";
-	strCreDate.Format("%04d%02d%02d_%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
-	strFile.Format("LOG/LotData/%04d/%02d/%02d/%s_%s.txt", time.wYear, time.wMonth, time.wDay, gLot.sLotID[nNo], strCreDate);
-	sFileName = strFile;
-
-	sCreFile.Format("%s\\LOG\\LotData\\%04d\\%02d\\%02d\\", gsCurrentDir, time.wYear, time.wMonth, time.wDay);
-	MakeFolder(sCreFile);
-
-	CFile file;
-	if (!file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) return;
-
-	sTemp.Format("LotID,%s,Start_Time,%s,End_Time,%s,Tray_Count,%02d,CM_Count,%04d,Tack,%0.7lf,\r\n\r\n", gLot.sLotID[nNo], gLot.sStartTime[nNo], gLot.sEndTime[nNo], gLot.nTrayCount[nNo], gLot.nCmCount[nNo], gLot.dTackTime);
-	sData.Format("%sTray_No,Pocket_No,ID,Inspection Result,ID Result,\r\n", sTemp);
-	file.Write(sData, sData.GetLength());
-
-	try {
-		int	nCmCount = 0;
-		for (int i = 0; i < 50; i++) {
-			if (nCmCount > gLot.nCmCount[nNo]) break;
-
-			for (int j = 0; j < 12; j++) {
-				nCmCount++;
-				if (nCmCount > gLot.nCmCount[nNo]) break;
-
-				file.SeekToEnd();
-
-				sData.Format("%d,%d,%s,%s,%s,\r\n", i+1, j+1, gMes.sBarID[nNo][i][j], gMes.sJudge[nNo][i][j], gMes.sNGCode[nNo][i][j]);
-				file.Write(sData, sData.GetLength());
-			}
-		}
-
-		file.Close();
-
-	} catch (CFileException *pEx) {
-		pEx->Delete();
-	}
+	
 }
 
 void CLogFile::Save_OperatingRatio(CString sLog)	// ¡Æ¢®¥ì¢¯¡¤u AU¨ú¡À A©¬

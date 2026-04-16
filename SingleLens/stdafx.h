@@ -228,33 +228,22 @@ typedef struct
 
 
 
-	///////////old 
-
-	
+	///////////old 	
 	CString sStartTime[2];
 	CString sEndTime[2];
 	DWORD	dwLotStart[2];
-	DWORD	dwLotEnd[2];
-	int		nTrayCount[2];
-	int		nCmCount[2];
+	DWORD	dwLotEnd[2];	
+
 	double  dTackTime;
 	int		nGoodCount[2];
 	int		nNgCount[2];
-	int		nCapFailCount[2];			// Cap Tilt Error Count
-
-	int		nCapCount[2];
 
 	int		nErrorCount;
 	DWORD	dwRunTime;
 	DWORD	dwStopTime;
 	DWORD	dwErrorTime;
 
-	BOOL	bLotEndComplete[2];
 
-	double	dAverageCycle[15][2][20];
-
-	DWORD	dwTaktData[4];	// 0:Load, 1:Assembly, 2:Unload, 3:Index
-	BOOL	bTaktDone[3];	// 0:Load, 1:Assembly, 2:Unload
 
 } GLOVAL_LOT;
 
@@ -294,10 +283,7 @@ typedef struct {
 	CString		sHostCancelCode;	//Host Cancel 수신 code
 	CString		sHostCancelText;	//Host Cancel 수신 내용
 
-	// 장비 실적 Data	// LJH Port별로 관리해야할지 정해야한다.
-	CString		sBarID[2][50][12];		//Barcode ID(장비) [50]:Tray, [12]:Pocket
-	CString		sJudge[2][50][12];		//N:NG, H:Special NG, M:성능불량(MES NG)
-	CString		sNGCode[2][50][12];		//대표NG Code
+	
 } GLOVAL_MES;
 
 typedef struct{
@@ -319,13 +305,6 @@ typedef struct{
 
 
 
-typedef struct {
-	int			nCapCount;
-	CString		sCapPart[20];
-	int			nShipCount;
-	CString		sShipPart[20];
-} GLOVAL_PART;
-
 
 extern GLOVAL_DATA	gData;
 extern GLOVAL_LOT	gLot;
@@ -333,7 +312,7 @@ extern GLOVAL_ALM	gAlm;
 extern GLOVAL_UPH	gUph;
 extern GLOVAL_MES	gMes;
 extern GLOBAL_DOORLOCK gDoorLock;
-extern GLOVAL_PART		gPart;
+
 
 
 
