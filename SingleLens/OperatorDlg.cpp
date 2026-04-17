@@ -171,6 +171,10 @@ void COperatorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 			m_stcOperDoor[1].Set_Color(RGB(0x00, 0x00, 0x00),RGB(0xFF, 0x00, 0x00));
 		}
 
+#ifndef AJIN_BOARD_USE
+		gData.sOperID = "SimulationMan";
+#endif
+
 		m_stcOperOperId.SetWindowText(gData.sOperID);
 
 		CString strText;
@@ -179,7 +183,7 @@ void COperatorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		if (strText.GetLength() < 1) g_dlgWork.m_stcLotId[0].GetWindowText(strText);
 		m_stcOperLotId.SetWindowText(strText);*/
 
-		m_stcOperModel.SetWindowText("Cap Attach");
+		m_stcOperModel.SetWindowText("Single Lens");
 
 		Display_Status();
 

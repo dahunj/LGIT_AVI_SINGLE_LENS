@@ -112,23 +112,21 @@ typedef struct
 	CString	sOperID;		// Operator
 	CString	sRecipe;		// Recipe Item
 
-	CString	sMZID[4];
-	CString	sZigID[4][10];
-	CString	sZigIDLoading[10];
-	CString sZigIDWaiting[10];
+	CString	sMZID[6];
+	CString	sZigID[6][10];
 
+	int		nMZCnt;
+	int		nLensUseCnt[6][10];
+	int		nLensMaxCnt;
+	
 	//new 
 	int		nTime[10]; //LoopTime Set Value 
 
 	int     nStatus;
 	int		nLanguage;
 
-	int		nMZCnt;
-	int		nLensUseCnt[4][10];
-	int		nLensCntLoading[10];
-	int		nLensCntWaiting[10];
-
-	int		nLensMaxCnt;
+	int		nSlotNoToPick;
+	
 	
 	BOOL	bIndexDone[6]; //0: Load , 1: Clean, 2: Top, 3:empty, 4:btm, 5: Mark
 	
@@ -149,9 +147,6 @@ typedef struct
 	BOOL	bDryRunMode;
 	int		nSpeedOption; // 여러개의 속도 옵션 가지게 바꾸고 싶다. 
 	
-	
-
-
 	CString	sMZIDElev;
 	CString	sZigIDElev;
 	int		nSlotNoElev;

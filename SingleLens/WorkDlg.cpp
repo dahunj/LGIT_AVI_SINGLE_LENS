@@ -40,6 +40,7 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_LBL_LOT_0 + i, m_lblLot[i]);*/
 
 	//new 
+	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_STC_MZID_0 + i, m_stcMZID[i]);
 	for (int i = 0; i < 60; i++) DDX_Control(pDX, IDC_STC_MZ_ZIGID_0 + i, m_stcZigID[i]);
 	for (int i = 0; i < 60; i++) DDX_Control(pDX, IDC_STC_MZ_LENS_CNT_0+ i, m_stcLensCnt[i]);
 
@@ -77,7 +78,8 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_WM_TIMER()
 	ON_WM_ERASEBKGND()
 	ON_WM_CTLCOLOR()
-	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MZ_ZIGID_0, IDC_STC_MZ_ZIGID_59, OnStcZigIdClick)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MZID_0, IDC_STC_MZID_5, OnStcMZIDClick )
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MZ_ZIGID_0, IDC_STC_MZ_ZIGID_59, OnStcZigIDClick)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MZ_LENS_CNT_0, IDC_STC_MZ_LENS_CNT_59, OnStcLensCountClick)
 	
 	//old 
@@ -300,8 +302,12 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 
 
 	if (m_rdoWorkStart.GetCheck()) {
-		if (!m_bAutoRunning) {		// First AutoRun
-			if (!g_objSequenceInit.Get_InitComplete()) { g_objCommon.Show_Error(50); SetTimer(0, 100, NULL); return; }
+		if (!m_bAutoRunning)  // First AutoRun
+		{		
+			if (!g_objSequenceInit.Get_InitComplete()) 
+			{ 
+				g_objCommon.Show_Error(50); SetTimer(0, 100, NULL); return; 
+			}
 
 			if (!Work_Start()) { m_rdoWorkStop.SetCheck(TRUE); SetTimer(0, 100, NULL); return; }
 
@@ -356,10 +362,45 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 
 /////////////////
 
-void CWorkDlg::OnStcZigIdClick(UINT nID)
+void CWorkDlg::OnStcMZIDClick(UINT nID)
 {
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-	if (pEquipData->bUseMES) {
+	if (pEquipData->bUseMES)
+	{
+		AfxMessageBox(_T("MES사용시 Lot정보 수정할 수 없습니다."));
+		return;
+	}
+
+	int ID = nID - IDC_STC_MZID_0;
+
+	if (m_rdoWorkStart.GetCheck()) 
+	{
+		if (gData.nLanguage == 0) g_objCommon.Show_MsgBox(1, "장비 Stop 상태에서 진행이 가능합니다.....");
+		else					  g_objCommon.Show_MsgBox(1, "You can proceed with the equipment stopped.");
+		return;
+	}
+
+	CString strKey, strNew, strMsg;
+	if (g_objCommon.Show_KeyPad(strKey) != IDOK) return;
+
+	m_stcMZID[ID].SetWindowText(strKey);
+
+	//if Running, variable gets lensCnt/ if not  gets at Work_Start() 
+	if (m_rdoWorkStart.GetCheck())
+	{
+		gData.sMZID[ID] = strKey;		
+	}
+
+	strNew.Format("[Work Mode] MZ ID Input(%d-%s)", ID, strKey);
+	g_objLogFile.Save_HandlerLog(strNew);
+}
+
+
+void CWorkDlg::OnStcZigIDClick(UINT nID)
+{
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	if (pEquipData->bUseMES)
+	{
 		AfxMessageBox(_T("MES사용시 Lot정보 수정할 수 없습니다."));
 		return;
 	}
@@ -375,12 +416,12 @@ void CWorkDlg::OnStcZigIdClick(UINT nID)
 
 	CString strKey, strNew, strMsg;
 	if (g_objCommon.Show_KeyPad(strKey) != IDOK) return;
-	if (strKey.Find("_") >= 0) {
+	/*if (strKey.Find("_") >= 0) {
 		if (gData.nLanguage == 0) strMsg.Format("[%s] Lot ID ( _ ) 입력불가...", strKey);
 		else					  strMsg.Format("[%s] Lot ID Unable to endter(_)...", strKey);
 		g_objCommon.Show_MsgBox(1, strMsg);
 		return;
-	}
+	}*/
 
 	m_stcZigID[ID].SetWindowText(strKey);
 
@@ -388,13 +429,13 @@ void CWorkDlg::OnStcZigIdClick(UINT nID)
 	nShare = ID / 10;
 	nRemainder = ID %10;
 
-	//if Running variable gets lensCnt/ if not  gets at Work_Start() 
+	//if Running, variable gets lensCnt/ if not  gets at Work_Start() 
 	if (m_rdoWorkStart.GetCheck())
 	{
 		gData.sZigID[nShare][nRemainder] = strKey;		
 	}
 
-	strNew.Format("[Work Mode] Lot ID Input(%d-%s)", ID, strKey);
+	strNew.Format("[Work Mode] Zig ID Input(%d-%s)", ID, strKey);
 	g_objLogFile.Save_HandlerLog(strNew);
 
 	//OnStcCmsCountSClick(IDC_STC_CMS_COUNT_S_0+ID);	//2018.9.11+
@@ -407,7 +448,7 @@ void CWorkDlg::OnStcLensCountClick(UINT nID)
 {
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	if (pEquipData->bUseMES) {
-		AfxMessageBox(_T("MES사용시 Lot정보 수정할 수 없습니다."));
+		AfxMessageBox(_T("MES 사용시 Lot정보 수정할 수 없습니다."));
 		return;
 	}
 
@@ -446,7 +487,7 @@ void CWorkDlg::OnStcLensCountClick(UINT nID)
 		gData.nLensUseCnt[nShare][nRemainder] = nLensCnt;
 	}
 	
-	strNew.Format("[Work Mode] Module Count Input(%d-%d-%d)", ID, nLensCnt);
+	strNew.Format("[Work Mode] Lens Count Input(%d-%d-%d)", ID, nLensCnt);
 	g_objLogFile.Save_HandlerLog(strNew);
 }
 
@@ -582,13 +623,36 @@ BOOL CWorkDlg::Work_Start()
 
 	if (g_objSequenceMain.Get_IsAutoRun()) return TRUE;	// If Auto Runnning, Skip 
 
+	//Input Info Exist Check  
+	if( SearchMZCVInfo() < 0 )
+	{
+		g_objCommon.Show_MsgBox(1, "Please Input MZ-ID."); return FALSE;
+	}
+	int nZigFlag = -1, nLensFlag = -1;
+	for(int i = 2; i < 6; i++)
+	{
+		if( SearchZigInfo(i) > 0 )
+		{
+			nZigFlag = SearchZigInfo(i);
+		}
+		if( SearchLensCntInfo(i) > 0 )
+		{
+			nLensFlag = SearchLensCntInfo(i);
+		}
+	}
+
+	if(nZigFlag < 0) {g_objCommon.Show_MsgBox(1, "Please Input ZigID."); return FALSE;}
+	if(nLensFlag < 0) {g_objCommon.Show_MsgBox(1, "Please Input Lens Cnt."); return FALSE;}
+
+
+
 	for(int i = 2; i < 6; i++)
 	{
 		gData.sMZID[i - 2].Empty();
 		m_stcZigID[i].GetWindowText(strTemp);
 		if(strTemp != "") gData.sMZID[i - 2] = strTemp;
-	}
 
+	}
 
 	int nShare = 0, nRemainder;
 	for(int i = 0; i < 40; i++)
@@ -599,7 +663,7 @@ BOOL CWorkDlg::Work_Start()
 		m_stcZigID[i].GetWindowText(strTemp);		// Lot ID
 		if(strTemp == "") continue;
 
-		if (strTemp.GetLength() < 2) { g_objCommon.Show_MsgBox(1, "Please Input Lot-ID."); return FALSE; }
+		if (strTemp.GetLength() < 2) { g_objCommon.Show_MsgBox(1, "Please Input Zig-ID."); return FALSE; }
 				
 		gData.sZigID[nShare][nRemainder] = strTemp;
 		
@@ -1060,9 +1124,9 @@ int CWorkDlg::SearchMZReadyInfo()
 	m_stcMZID[1].GetWindowText(sMZInfo);
 	if(sMZInfo != "")
 	{
-		return 1;
+		return -1;
 	}
-	return -1;
+	return 1;
 }
 
 int CWorkDlg::SearchMZCVInfo()
@@ -1082,5 +1146,60 @@ int CWorkDlg::SearchMZCVInfo()
 
 void CWorkDlg::TransferMZInfo(int nFrom, int nTo)
 {
+	CString sMZIDFrom, sMZIDTo, sZigIDFrom, sZigIDTo, sLensCntFrom, sLensCntTo;
+	
+	m_stcMZID[nFrom].GetWindowText(sMZIDFrom);
+	sMZIDTo = sMZIDFrom;
+	m_stcMZID[nTo].SetWindowText(sMZIDTo);
+	m_stcMZID[nFrom].SetWindowText("");
 
+	gData.sMZID[nTo] = gData.sMZID[nFrom]; gData.sMZID[nFrom] = "";
+
+	
+	for(int i = 0; i < 10; i++)
+	{
+		m_stcZigID[nFrom*10 + i].GetWindowText(sZigIDFrom);
+		sZigIDTo = sZigIDFrom;
+		m_stcZigID[nTo*10 + i].SetWindowText(sZigIDTo);
+		m_stcZigID[nFrom+10 +i].SetWindowText("");
+
+		gData.sZigID[nTo][i] = sZigIDTo; gData.sZigID[nFrom][i] = "";
+				
+		m_stcLensCnt[nFrom*10 + i].GetWindowText(sLensCntFrom);
+		sLensCntTo = sLensCntFrom;
+		m_stcLensCnt[nTo*10 +i].SetWindowText(sLensCntTo);
+		m_stcLensCnt[nFrom*10 +i].SetWindowText("");
+
+		gData.nLensUseCnt[nTo][i] = atoi(sLensCntTo);
+		gData.nLensUseCnt[nFrom][i] = 0;
+	}
+}
+
+int CWorkDlg::SearchZigInfo(int nMZNo)
+{
+	for(int i = 0; i < 10; i++) // start from 2 <-- Conveyor 1 pos
+	{
+		CString sZigInfo;
+		m_stcZigID[nMZNo*10 + i].GetWindowText(sZigInfo);
+		if(sZigInfo != "")
+		{
+			return i + 1;
+		}
+	}
+	
+	return -1;
+}
+
+int CWorkDlg::SearchLensCntInfo(int nMZNo)
+{
+	for(int i = 0; i < 10; i++) // start from 2 <-- Conveyor 1 pos
+	{
+		CString sLensCnt;
+		m_stcLensCnt[nMZNo*10 + i].GetWindowText(sLensCnt);
+		if(sLensCnt != "")
+		{
+			return i + 1;
+		}
+	}
+	return -1;
 }

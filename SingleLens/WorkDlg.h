@@ -83,7 +83,8 @@ protected:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 
 	//new 
-	afx_msg void OnStcZigIdClick(UINT nID);
+	afx_msg void OnStcMZIDClick(UINT nID);
+	afx_msg void OnStcZigIDClick(UINT nID);
 	afx_msg void OnStcLensCountClick(UINT nID);	
 
 	//old 
@@ -147,6 +148,10 @@ public:
 	int		SearchMZReadyInfo();
 	int		SearchMZCVInfo();
 	void	TransferMZInfo(int nFrom, int nTo);
+
+	int 	SearchZigInfo(int nMZNo);
+	int		SearchLensCntInfo(int nMZNo);
+
 
 	void Get_MZInfo(int nMZNo);
 	void Set_MZInfo(int nMZNo);

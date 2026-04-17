@@ -73,7 +73,7 @@ private:
 	DWORD		m_dwLoadConveyor;		//  1. (Error : 3100)
 	DWORD		m_dwMZElev;				//  2. (Error : 3400)
 	DWORD		m_nFeeder;				//  3. (Error : 3700)
-	DWORD		m_dwTrayPicker;			//  4. (Error : 4000)
+	DWORD		m_dwZigPicker;			//  4. (Error : 4000)
 	DWORD		m_dwLensCleaner;		//  5. (Error : 4300)
 	DWORD		m_dwTopInspect;			//  6. (Error : 4600)
 	DWORD		m_dwBtmInspect;			//  7. (Error : 4900)
@@ -84,7 +84,7 @@ private:
 	CLoopTimer	m_nLoadConveyorLoop;	//  1. (Error : 3100)
 	CLoopTimer	m_nMZElevLoop;			//  2. (Error : 3400)
 	CLoopTimer	m_nFeederLoop;			//  3. (Error : 3700)
-	CLoopTimer	m_nTrayPickerLoop;		//  4. (Error : 4000)
+	CLoopTimer	m_nZigPickerLoop;		//  4. (Error : 4000)
 	CLoopTimer	m_nLensCleanerLoop;		//  5. (Error : 4300)
 	CLoopTimer	m_nTopInspectLoop;		//  6. (Error : 4600)
 	CLoopTimer	m_nBtmInspectLoop;		//  7. (Error : 4900)
@@ -145,6 +145,9 @@ public:
 	BOOL Select_MarkScanPos(int &nMarkPosX, int &nMarkPosY);
 
 	BOOL Check_InspectDone(const CString& sZigID, int sSlotNo, int sLensNo, DWORD dwStart);
+
+	BOOL Check_MainIndexInfo(int nNo);
+
 
 };
 

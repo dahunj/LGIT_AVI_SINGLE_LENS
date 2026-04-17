@@ -592,7 +592,7 @@ BOOL CCommon::Get_ElevStopper2In()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(pDX00->iMZElevStopper1In && !pDX00->iMZElevStopper1Out)
+	if(pDX00->iMZElevStopper2In && !pDX00->iMZElevStopper2Out)
 	{
 		return TRUE;
 	}
@@ -603,7 +603,7 @@ BOOL CCommon::Get_ElevStopper2Out()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(!pDX00->iMZElevStopper1In && pDX00->iMZElevStopper1Out)
+	if(!pDX00->iMZElevStopper2In && pDX00->iMZElevStopper2Out)
 	{
 		return TRUE;
 	}
@@ -615,7 +615,7 @@ BOOL CCommon::Get_ElevStopper2Up()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(pDX00->iMZElevStopper1UpLeft && !pDX00->iMZElevStopper1Down)
+	if(pDX00->iMZElevStopper2UpRight && !pDX00->iMZElevStopper2Down)
 	{
 		return TRUE;
 	}
@@ -627,7 +627,7 @@ BOOL CCommon::Get_ElevStopper2Down()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(!pDX00->iMZElevStopper1UpLeft && pDX00->iMZElevStopper1Down)
+	if(!pDX00->iMZElevStopper2UpRight && pDX00->iMZElevStopper2Down)
 	{
 		return TRUE;
 	}

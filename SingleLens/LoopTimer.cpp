@@ -30,6 +30,11 @@ BOOL CLoopTimer::Over_LoopTime()
 #ifdef DRY_RUN_TEST
 	return FALSE;	// No Timeout Error
 #endif
+
+#ifndef AJIN_BOARD_USE
+	return FALSE;	// No Timeout Error
+#endif
+
 	DWORD dwTerm = GetTickCount() - m_dwLoopStart;
 	if (dwTerm >= m_dwLoopTerm)
 		return TRUE;

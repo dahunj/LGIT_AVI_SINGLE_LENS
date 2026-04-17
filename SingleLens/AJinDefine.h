@@ -139,10 +139,10 @@ typedef union tag_DX_DATA_00 {
 typedef union tag_DX_DATA_01 {
 	DWORD nValue;
 	struct {
-		DWORD iUnloadCVMZExist4 :1;			// X0100
-		DWORD iUnloadCVMZExist3 :1;			// X0101
-		DWORD iUnloadCVMZExist2 : 1;		// X0102
-		DWORD iUnloadCVMZExist1 : 1;		// X0103
+		DWORD iUnloadCVMZExist1Left :1;			// X0100
+		DWORD iUnloadCVMZExist2 :1;			// X0101
+		DWORD iUnloadCVMZExist3 : 1;		// X0102
+		DWORD iUnloadCVMZExist4 : 1;		// X0103
 		DWORD i0104 : 1;					// X0104
 		DWORD i0105 : 1;					// X0105
 		DWORD iUnloadCVStopperUp : 1;		// X0106
@@ -220,20 +220,20 @@ typedef union tag_DX_DATA_03 {
 		DWORD iEmgSw3 : 1;			// X0302
 		DWORD iEmgSw4 : 1;			// X0303
 		DWORD iMainAir1 : 1;		// X0304
-		DWORD i0305 : 1;		// X0305
-		DWORD i0306 : 1;		// X0306
-		DWORD i0307 : 1;		// X0307
-		DWORD i0308 : 1;		// X0308
-		DWORD i0309 : 1;		// X0309
-		DWORD i0310 : 1;		// X0310
-		DWORD i0311 : 1;		// X0311
-		DWORD iStartSW : 1;		// X0312
-		DWORD i0313 : 1;		// X0313
-		DWORD iStopSW : 1;		// X0314
-		DWORD i0315 : 1;		// X0315
-		DWORD iResetSW : 1;		// X0316
-		DWORD i0317 : 1;		// X0317
-		DWORD iMZLoadOpenSW : 1;		// X0318
+		DWORD i0305 : 1;			// X0305
+		DWORD i0306 : 1;			// X0306
+		DWORD i0307 : 1;			// X0307
+		DWORD i0308 : 1;			// X0308
+		DWORD i0309 : 1;			// X0309
+		DWORD i0310 : 1;			// X0310
+		DWORD i0311 : 1;			// X0311
+		DWORD iStartSW : 1;			// X0312
+		DWORD i0313 : 1;			// X0313
+		DWORD iStopSW : 1;			// X0314
+		DWORD i0315 : 1;			// X0315
+		DWORD iResetSW : 1;			// X0316
+		DWORD i0317 : 1;			// X0317
+		DWORD iMZLoadOpenSW : 1;	// X0318
 		DWORD iMZLoadRunSW : 1;		// X0319
 		DWORD iMZUnloadOpenSW : 1;		// X0320
 		DWORD iMZUnloadRunSW : 1;		// X0321
