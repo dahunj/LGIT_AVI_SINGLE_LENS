@@ -147,7 +147,7 @@
     <ClInclude Include="AJinDefine.h" />
     <ClInclude Include="AlarmDlg.h" />
     <ClInclude Include="BarcodeLot.h" />
-    <ClInclude Include="DataEnums.h" />
+    <ClInclude Include="EnumData.h" />
     <ClInclude Include="SequenceMain.h" />
     <ClInclude Include="SingleLens.h" />
     <ClInclude Include="SingleLensDlg.h" />

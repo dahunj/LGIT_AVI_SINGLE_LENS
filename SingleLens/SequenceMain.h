@@ -92,6 +92,8 @@ private:
 	CLoopTimer	m_nIndexTLoop;			//  9. (Error : 5500) 
 	CLoopTimer	m_nUnloadConveyorLoop;	//  10. (Error : 5800)
 
+	BOOL		m_bLotEnd;
+
 private:
 	BOOL			LoadConveyorRun();		//  1. (Error : 3100)
 	BOOL			MZElevRun();			//  2. (Error : 3400)
@@ -109,8 +111,9 @@ private:
 	BOOL Run_Simulation();
 
 
-	//void Job_LotStart(int nPort);
-	//void Job_LotEnd(int nPort);
+	void Job_LotStart();
+	void Job_LotEnd();
+
 	void Beep_Post(int nState, int nTime);
 
 
@@ -147,6 +150,8 @@ public:
 	BOOL Check_InspectDone(const CString& sZigID, int sSlotNo, int sLensNo, DWORD dwStart);
 
 	BOOL Check_MainIndexInfo(int nNo);
+
+	void Init_MZSlot(int nSlotNo, int nX, int nY);
 
 
 };

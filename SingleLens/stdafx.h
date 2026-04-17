@@ -53,7 +53,7 @@
 #include "CSClientSocket.h"
 #include "CSGrid.h"
 
-#include "DataEnums.h"
+#include "EnumData.h"
 
 #include <math.h>
 #include <iostream>
@@ -125,57 +125,55 @@ typedef struct
 	int     nStatus;
 	int		nLanguage;
 
-	int		nSlotNoToPick;
+	int		nSlotNoToPick;	
 	
-	
-	BOOL	bIndexDone[6]; //0: Load , 1: Clean, 2: Top, 3:empty, 4:btm, 5: Mark
+	BOOL	bIndexDone[7]; 
+	//0: Load , 1: Clean, 2: Top, 3:empty, 4:btm, 5: Mark, 6: Unload 
 	
 	int		nZigX;
 	int		nZigY;
 
-	// Infomation 
+	// Info Processing
+
+	// Lens State 
+	// 0:Empty,1:Good, 2:NG, 3:Top Ready, 4: Top Done, 5: Btm Ready, 6 : Btm Done,  9:Init
+
 	int InfoMagazine[10][ZIG_X][ZIG_Y];
 	int InfoFeeder[ZIG_X][ZIG_Y];
+	int InfoRail[ZIG_X][ZIG_Y]; //if needed 
 	int	InfoZigPick[ZIG_X][ZIG_Y];
-	int InfoMainIndex[6][ZIG_X][ZIG_Y]; // 0:Empty,1:Good, 2:NG, 3:Top Ready, 4: Top Done, 5: Btm Ready, 6 : Btm Done,  9:Init 
+	int InfoMainIndex[7][ZIG_X][ZIG_Y]; 
+	 
 	
 	std::vector<int> nInfoMark[ZIG_X][ZIG_Y];
 
 	int nInfoMZLoad[10];
 	int nInfoMZUnload[10];
-
-	BOOL	bDryRunMode;
-	int		nSpeedOption; // 여러개의 속도 옵션 가지게 바꾸고 싶다. 
-	
+		
 	CString	sMZIDElev;
-	CString	sZigIDElev;
-	int		nSlotNoElev;
-	
+	CString	sZigIDElev[10];
+	//int		nSlotNoElev;
+
+	CString	sMZIDFeeder;
+	CString	sZigIDFeeder;
+	int		nSlotNoFeeder;	
+
+	CString	sMZIDRail;
+	CString	sZigIDRail;
+	int		nSlotNoRail;	
 		
 	CString	sMZIDTrayPick;
 	CString	sZigIDTrayPick;
 	int		nSlotNoTrayPick;
 	
-	CString	sMZIDLoad;
-	CString	sZigIDLoad;
-	int		nSlotNoLoad;
+	CString	sMZIDMainIdex[7];
+	CString	sZigIDMainIndex[7];
+	int		nSlotNoMainIndex[7];
+		
 
-	CString	sMZIDCleaner;
-	CString	sZigIDCleaner;
-	int		nSlotNoCleaner;
 
-	CString	sMZIDTop;
-	CString	sZigIDTop;
-	int		nSlotNoTop;
-
-	CString	sMZIDBtm;
-	CString	sZigIDBtm;
-	int		nSlotNoBtm;
-
-	CString	sMZIDMark;
-	CString	sZigIDMark;
-	int		nSlotNoMark;
-
+	BOOL	bDryRunMode;
+	int		nSpeedOption; // 여러개의 속도 옵션 가지게 바꾸고 싶다. 
 
 	int		nScanReqTop;
 	int		nScanReqBtm;

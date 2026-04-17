@@ -1,12 +1,12 @@
 #pragma once
 
 
-struct LensState
+struct eLensState
 {
 	enum eName
 	{
 		// 0:Empty,1:Good, 2:NG, 3:Top Ready, 4: Top Done, 5: Btm Ready, 6 : Btm Done,  9:Init 
-		nothing = 0,
+		None = 0,
 		Good = 1,
 		NG = 2,
 		TopReady = 3,
@@ -201,7 +201,7 @@ struct Btm_Index_Table_R
 };
 
 
-struct MainIndex
+struct eMainIndex
 {
 	enum JobName
 	{
@@ -211,6 +211,7 @@ struct MainIndex
 		None= 3,
 		Btm = 4,
 		Mark = 5,
+		Unload = 6,
 	};
 
 };

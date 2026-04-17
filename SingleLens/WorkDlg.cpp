@@ -1172,6 +1172,18 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo)
 
 		gData.nLensUseCnt[nTo][i] = atoi(sLensCntTo);
 		gData.nLensUseCnt[nFrom][i] = 0;
+		
+		//Init Lens State 
+		int nCnt = 0;		
+		for(int j = 0; j < ZIG_X; j++)
+		{
+			for(int k = 0; k < ZIG_Y; k++)
+			{
+				nCnt++;
+				if(nCnt <= gData.nLensUseCnt[nTo][i]) gData.InfoMagazine[i][j][k] = (int)eLensState::Init;
+				else gData.InfoMagazine[i][j][k] = eLensState::None;
+			}			
+		}
 	}
 }
 

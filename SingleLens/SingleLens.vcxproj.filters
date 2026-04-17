@@ -294,7 +294,7 @@
     <ClInclude Include="SequenceMain.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="DataEnums.h">
+    <ClInclude Include="EnumData.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

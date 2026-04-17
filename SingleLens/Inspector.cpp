@@ -222,11 +222,11 @@ void CInspector::Get_InspectComplete(CString sGbn, CString sMZID, CString sZigID
 	int nMode = theApp.Get_MainMode();
 	int nPreInfo = gData.nInspectInfo[nSlot][nLens];
 
-	if		(sJudge == "N") { if (nPreInfo < 8 || nPreInfo > 8) gData.nInspectInfo[nSlot][nLens] = LensState::NG; }	// N4
-	else if	(sJudge == "B")  { if (nPreInfo < 7 || nPreInfo > 8) gData.nInspectInfo[nSlot][nLens] = LensState::NG; }	// BS
+	if		(sJudge == "N") { if (nPreInfo < 8 || nPreInfo > 8) gData.nInspectInfo[nSlot][nLens] = eLensState::NG; }	// N4
+	else if	(sJudge == "B")  { if (nPreInfo < 7 || nPreInfo > 8) gData.nInspectInfo[nSlot][nLens] = eLensState::NG; }	// BS
 	else if (sJudge == "G")
 	{
-		gData.nInspectInfo[nSlot][nLens] = LensState::Good;
+		gData.nInspectInfo[nSlot][nLens] = eLensState::Good;
 	}
 
 	gData.byInspectDone[nSlot][nLens] |= (1 << nV);
