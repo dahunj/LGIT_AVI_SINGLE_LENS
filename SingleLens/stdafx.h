@@ -138,17 +138,15 @@ typedef struct
 	// Lens State 
 	// 0:Empty,1:Good, 2:NG, 3:Top Ready, 4: Top Done, 5: Btm Ready, 6 : Btm Done,  9:Init
 
-	int InfoMagazine[10][ZIG_X][ZIG_Y];
+	int InfoMZRight[10][ZIG_X][ZIG_Y];
+	int InfoMZLeft[10][ZIG_X][ZIG_Y];
 	int InfoFeeder[ZIG_X][ZIG_Y];
 	int InfoRail[ZIG_X][ZIG_Y]; //if needed 
 	int	InfoZigPick[ZIG_X][ZIG_Y];
-	int InfoMainIndex[7][ZIG_X][ZIG_Y]; 
-	 
-	
-	std::vector<int> nInfoMark[ZIG_X][ZIG_Y];
+	int InfoMainIndex[7][ZIG_X][ZIG_Y]; 	 	
 
-	int nInfoMZLoad[10];
-	int nInfoMZUnload[10];
+	int InfoMZLoad[10];
+	int InfoMZUnload[10];
 		
 	CString	sMZIDElev;
 	CString	sZigIDElev[10];

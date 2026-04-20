@@ -177,6 +177,7 @@ BOOL CWorkDlg::OnInitDialog()
 
 	Initial_Controls();
 
+
 	
 
 	m_bAutoRunning = FALSE;
@@ -192,19 +193,12 @@ BOOL CWorkDlg::OnInitDialog()
 
 
 #ifndef AJIN_BOARD_USE
-
-
+	m_stcMZID[2].SetWindowText("TTTTT");
+	m_stcZigID[20].SetWindowText("1111");
+	m_stcLensCnt[20].SetWindowText("14");
 
 #else
-	m_BtnCapSW1.ShowWindow(FALSE);
-	m_BtnCapSW2.ShowWindow(FALSE);
-	m_BtnCapSW3.ShowWindow(FALSE);
-	m_BtnCapSW1F.ShowWindow(FALSE);
-	m_BtnCapSWF2.ShowWindow(FALSE);
-	m_BtnUnloadSW1.ShowWindow(FALSE);
-	m_BtnUnloadSW2.ShowWindow(FALSE);
-	m_BtnUnloadSWF1.ShowWindow(FALSE);
-	m_BtnUnloadSWF2.ShowWindow(FALSE);
+	
 
 #endif
 	
@@ -1180,8 +1174,8 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo)
 			for(int k = 0; k < ZIG_Y; k++)
 			{
 				nCnt++;
-				if(nCnt <= gData.nLensUseCnt[nTo][i]) gData.InfoMagazine[i][j][k] = (int)eLensState::Init;
-				else gData.InfoMagazine[i][j][k] = eLensState::None;
+				if(nCnt <= gData.nLensUseCnt[nTo][i]) gData.InfoMZRight[i][j][k] = (int)eLensState::Init;
+				else gData.InfoMZRight[i][j][k] = eLensState::None;
 			}			
 		}
 	}

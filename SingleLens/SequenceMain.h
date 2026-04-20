@@ -45,7 +45,6 @@ protected:
 
 
 public:
-
 	void Begin_MainRunThread();
 	void End_MainRunThread();
 
@@ -134,7 +133,7 @@ public:
 
 	BOOL Check_ZigPickerEmpty();
 	BOOL Check_IndexEmpty(int nPos);
-	BOOL Check_ZigExist();
+	BOOL Check_ZigExistInMZ();
 	
 	void Set_IndexEnd();
 	
@@ -149,12 +148,8 @@ public:
 	BOOL Select_MarkScanPos(int &nMarkPosX, int &nMarkPosY);
 
 	BOOL Check_InspectDone(const CString& sZigID, int sSlotNo, int sLensNo, DWORD dwStart);
-
-	BOOL Check_MainIndexInfo(int nNo);
-
+	
 	void Init_MZSlot(int nSlotNo, int nX, int nY);
-
-
 };
 
 extern CSequenceMain g_objSequenceMain;
