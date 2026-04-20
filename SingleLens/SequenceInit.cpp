@@ -239,6 +239,7 @@ BOOL CSequenceInit::Initial_MainInit()
 	case 90:	// Initial Complete
 		if(m_niMainIndexCase != 90) return TRUE;
 		m_bInitComplete = TRUE;
+		m_niMainInitCase = 0;
 
 		Reset_InitialCase();
 
@@ -247,6 +248,7 @@ BOOL CSequenceInit::Initial_MainInit()
 		g_objSequenceMain.Set_ClearRunData(TRUE);
 		if (gData.bCycleStop) g_dlgWork.PostMessage(UM_RESET_CYCLE_STOP, NULL, NULL);
 
+		
 		g_objLogFile.Save_HandlerLog("[Initial Sequence] MainInit Complete");
 		return FALSE;	// Thread_Initial Á¾·á
 	}

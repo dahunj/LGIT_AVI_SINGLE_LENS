@@ -127,7 +127,7 @@ typedef struct
 
 	int		nSlotNoToPick;	
 	
-	BOOL	bIndexDone[7]; 
+	
 	//0: Load , 1: Clean, 2: Top, 3:empty, 4:btm, 5: Mark, 6: Unload 
 	
 	int		nZigX;
@@ -206,6 +206,12 @@ typedef struct
 	BOOL	bLoadOpenSW;	// LED Switch below doors of machine  
 	BOOL	bUnloadOpenSW;
 	
+	BOOL	bCVMZLoadWait;
+	BOOL	bFeederWorkWait;
+
+	BOOL	bIndexDone[7]; 
+
+
 } GLOVAL_DATA;
 
 

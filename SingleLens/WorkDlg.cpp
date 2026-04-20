@@ -1054,7 +1054,7 @@ void CWorkDlg::OnBnClickedButton2()
 void CWorkDlg::OnBnClickedBtnSimul1()
 {
 	DX_DATA_00* m_pDX00 = g_objAJinAXL.Get_pDX00();
-	m_pDX00->iLoadCVMZExist5 = TRUE;
+	m_pDX00->iLoadCVMZExist1Right = TRUE;
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }
 
@@ -1118,10 +1118,10 @@ HBRUSH CWorkDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 
 
-int CWorkDlg::SearchMZReadyInfo()
+int CWorkDlg::SearchMZElevInfo(int nNo)
 {
 	CString sMZInfo;
-	m_stcMZID[1].GetWindowText(sMZInfo);
+	m_stcMZID[nNo].GetWindowText(sMZInfo);
 	if(sMZInfo != "")
 	{
 		return -1;

@@ -145,7 +145,7 @@ public:
 	void Enable_UserInput(int nNo, BOOL bEnable);
 
 
-	int		SearchMZReadyInfo();
+	int		SearchMZElevInfo(int nNo);
 	int		SearchMZCVInfo();
 	void	TransferMZInfo(int nFrom, int nTo);
 

@@ -122,19 +122,20 @@ public:
 	
 	BOOL Get_IsAutoRun();
 
-	BOOL Check_ModuleEmpty(int nPos);
+	BOOL Check_ElevEmpty(int nPos);
 	BOOL Check_ModuleLotEnd(int nLotNo);
 
 	void Set_ClearRunData(BOOL bInit);
 	void Set_ClearLotData(BOOL bInit, int nLotNo);
 	
 	//Conveyor 
-	int Check_MZSensors();
+	int Check_CVMZSensors();
 	BOOL Check_IndexDone();
 
 	BOOL Check_ZigPickerEmpty();
 	BOOL Check_IndexEmpty(int nPos);
-
+	BOOL Check_ZigExist();
+	
 	void Set_IndexEnd();
 	
 	//////////////////////////////////////////////////////////////////////////
