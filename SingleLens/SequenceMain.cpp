@@ -174,6 +174,9 @@ void CSequenceMain::Set_ClearRunData(BOOL bInit)
 
 	}
 
+	g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZIdx::Load, NULL);
+	g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZIdx::Ready, NULL);
+
 	memset(gData.bIndexDone, 0x00, sizeof(BOOL) * 7);
 }
 
@@ -454,12 +457,14 @@ BOOL CSequenceMain::MZElevRun()
 			if(nTo != -1)
 			{
 				g_dlgWork.TransferMZInfo(nFrom, 0);
-				gData.sMZIDElev = gData.sMZID[eMZIdx::Load];
+				gData.sMZIDElevLoad = gData.sMZID[eMZIdx::Load];
 
 				for(int i = 0; i < 10; i++)
 				{
-					gData.sZigIDElev[i] = gData.sZigID[eMZIdx::Load][i];
+					gData.sZigIDElevLoad[i] = gData.sZigID[eMZIdx::Load][i];
 				}				
+				g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZIdx::Load, NULL);
+
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Stopper2 In Done");
 			}
@@ -514,11 +519,11 @@ BOOL CSequenceMain::MZElevRun()
 			if(nTo != -1)
 			{
 				g_dlgWork.TransferMZInfo(nFrom, 1);
-				gData.sMZIDElev = gData.sMZID[eMZIdx::Ready];
+				gData.sMZIDElevReady = gData.sMZID[eMZIdx::Ready];
 
 				for(int i = 0; i < 10; i++)
 				{
-					gData.sZigIDElev[i] = gData.sZigID[eMZIdx::Ready][i];
+					gData.sZigIDElevReady[i] = gData.sZigID[eMZIdx::Ready][i];
 				}				
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Stopper2 In Done");
@@ -651,11 +656,13 @@ BOOL CSequenceMain::FeederRun()
 		{
 			gData.bFeederWorkWait = FALSE;
 			//Info Processing 		
-			gData.sMZIDFeeder = gData.sMZIDElev; gData.sMZIDElev = "";
-			gData.sZigIDFeeder = gData.sZigIDElev[gData.nSlotNoToPick -1]; gData.sZigIDElev[gData.nSlotNoToPick -1] = "";
+			gData.sMZIDFeeder = gData.sMZIDElevLoad; gData.sMZIDElevLoad = "";
+			gData.sZigIDFeeder = gData.sZigIDElevLoad[gData.nSlotNoToPick -1]; gData.sZigIDElevLoad[gData.nSlotNoToPick -1] = "";
 			gData.nSlotNoFeeder = gData.nSlotNoToPick; 
 			memcpy(gData.InfoFeeder, gData.InfoMZRight[gData.nSlotNoToPick -1], sizeof(int)*ZIG_X*ZIG_Y );
 			memset(gData.InfoMZRight[gData.nSlotNoToPick -1], 0x00, sizeof(int)*ZIG_X*ZIG_Y );
+
+			g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO,eMZIdx::Load, NULL);
 
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, Feeder_X::PickUp);
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);

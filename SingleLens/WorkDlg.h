@@ -6,7 +6,7 @@
 #include "afxwin.h"
 
 #define UM_UPDATE_MODEL			WM_USER+1
-#define UM_UPDATE_TRAY_INFO		WM_USER+2
+#define UM_UPDATE_MZ_INFO		WM_USER+2
 #define UM_UPDATE_BARCODE		WM_USER+3
 #define UM_RESET_CYCLE_STOP		WM_USER+4
 #define UM_UPDATE_UPH			WM_USER+5
@@ -32,10 +32,13 @@ public:
 	//new 
 	CPictureCS		m_picUphBack;
 	
-
 	CStaticCS		m_stcMZID[6];
 	CStaticCS		m_stcZigID[60];
 	CStaticCS		m_stcLensCnt[60];
+
+	CGridCS			m_grdLoadMZ;
+	CGridCS			m_grdUnloadMZ;
+
 		//old 
 
 	CGroupCS		m_Group[10];
@@ -44,12 +47,8 @@ public:
 	CLabelCS		m_lblLot[6];	
 	
 	CComboCS		m_cboStartIndexJig;
-	CStaticCS		m_stcLoadNo[6];
-	CStaticCS		m_stcAssyNo[6];
-	CStaticCS		m_stcTransNo[6];
-	CStaticCS		m_stcTStageNo[6];
-	CStaticCS		m_stcUnloadNo[6];
-	CLedCS			m_ledIndexDone[3];
+
+	CLedCS			m_ledIndexDone[7];
 	CStaticCS		m_stcIndexPos;
 
 	CRadioCS		m_rdoWorkStart;
@@ -99,7 +98,7 @@ protected:
 	afx_msg void OnBnClickedChkMesUse();
 	afx_msg void OnBnClickedMesCancel();
 	afx_msg LRESULT OnUpdateModel(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnUpdateTrayInfo(WPARAM nTray, LPARAM lParam);
+	afx_msg LRESULT OnUpdateMZInfo(WPARAM nTray, LPARAM lParam);
 	afx_msg LRESULT OnUpdateBarcode(WPARAM wParam, LPARAM lParam);
 	
 	afx_msg LRESULT OnResetCycleStop(WPARAM wParam, LPARAM lParam);

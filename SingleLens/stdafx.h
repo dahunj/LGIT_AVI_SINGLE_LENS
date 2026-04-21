@@ -148,9 +148,12 @@ typedef struct
 	int InfoMZLoad[10];
 	int InfoMZUnload[10];
 		
-	CString	sMZIDElev;
-	CString	sZigIDElev[10];
-	//int		nSlotNoElev;
+	CString	sMZIDElevLoad;
+	CString	sZigIDElevLoad[10];
+
+	CString	sMZIDElevReady;
+	CString	sZigIDElevReady[10];
+	
 
 	CString	sMZIDFeeder;
 	CString	sZigIDFeeder;

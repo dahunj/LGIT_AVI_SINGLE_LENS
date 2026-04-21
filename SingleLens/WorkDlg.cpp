@@ -54,14 +54,12 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHK_MES_USE, m_chkMesUse);
 
 	for (int i = 0; i < AUTO_COUNT; i++) DDX_Control(pDX, IDC_STC_WORK_CASE_0 + i, m_stcWorkCase[i]);	
-
-	//old 
-
-
-	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_LED_INDEX_DONE_0 + i, m_ledIndexDone[i]);
+	for (int i = 0; i < 7; i++) DDX_Control(pDX, IDC_LED_INDEX_DONE_0 + i, m_ledIndexDone[i]);
+	
 	DDX_Control(pDX, IDC_STC_MAIN_INDEX_POS, m_stcIndexPos);
 
-
+	DDX_Control(pDX, IDC_GRD_LOAD_MZ, m_grdLoadMZ);
+	DDX_Control(pDX, IDC_GRD_UNLOAD_MZ, m_grdUnloadMZ);
 	//for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_PIC_TRAY_BACK_0 + i, m_picTrayBack[i]);
 
 
@@ -91,7 +89,7 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHK_CYCLE_STOP, &CWorkDlg::OnBnClickedChkCycleStop)
 	ON_BN_CLICKED(IDC_CHK_MES_USE, &CWorkDlg::OnBnClickedChkMesUse)
 	ON_MESSAGE(UM_UPDATE_MODEL, &CWorkDlg::OnUpdateModel)
-	ON_MESSAGE(UM_UPDATE_TRAY_INFO, &CWorkDlg::OnUpdateTrayInfo)
+	ON_MESSAGE(UM_UPDATE_MZ_INFO, &CWorkDlg::OnUpdateMZInfo)
 	ON_MESSAGE(UM_UPDATE_BARCODE, &CWorkDlg::OnUpdateBarcode)
 	
 	ON_MESSAGE(UM_RESET_CYCLE_STOP, &CWorkDlg::OnResetCycleStop)
@@ -123,6 +121,10 @@ void CWorkDlg::Initial_Controls()
 	//for (int i = 0; i < 3; i++) m_lblLot[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x20, 0x20, 0x80));
 	//for (int i = 3; i < 6; i++) m_lblLot[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x00, 0x80));
 	
+	Initial_Grid(&m_grdLoadMZ, SLOT_NO_MAX, 1);
+	Initial_Grid(&m_grdUnloadMZ, SLOT_NO_MAX, 1);
+
+
 	// ºñÆ®¸Ê ·Îµå
 	m_bmpBg.LoadBitmap(IDB_EQUIP_WORK);
 
@@ -146,7 +148,7 @@ void CWorkDlg::Initial_Controls()
 	m_picUphBack.Init_Ctrl(COLOR_DEFAULT, COLOR_DEFAULT);
 	
 	
-	for (int i = 0; i < 3; i++) m_ledIndexDone[i].Init_Ctrl("Arial", 10, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em24);
+	for (int i = 0; i < 7; i++) m_ledIndexDone[i].Init_Ctrl("Arial", 10, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em24);
 	m_stcIndexPos.Init_Ctrl("¹ÙÅÁ", 12, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));
 
 	
@@ -726,6 +728,8 @@ void CWorkDlg::Display_Status()
 	int *pCase = g_objSequenceMain.Get_pMainRunCase();
 	for (int i = 0; i < AUTO_COUNT; i++) { strText.Format("%02d", *(pCase + i)); m_stcWorkCase[i].Set_Text(strText); }
 
+	for (int i = 0; i < 7; i++) m_ledIndexDone[i].Set_On(gData.bIndexDone[i]);
+
 // 	if (g_objMesAgent.Is_Connected()) { m_stcMesConnect.Set_Text("Connected"); m_stcMesConnect.Set_Color(RGB(0x00, 0x00, 0x00), RGB(0x00, 0xFF, 0x00)); }
 // 	else { m_stcMesConnect.Set_Text("Disconnected"); m_stcMesConnect.Set_Color(RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00)); }
 // 
@@ -741,23 +745,10 @@ void CWorkDlg::Display_Status()
 
 	BOOL bInitComplete = g_objSequenceInit.Get_InitComplete();
 	m_ledInitComplete.Set_On(bInitComplete);
-	
-	//BOOL bLotLoadEnable = g_objSequenceMain.Get_LotLoadEnable(0);
-	//m_ledLotLoadEnable.Set_On(bLotLoadEnable);
-
-	/*if (m_nGroupNo == 1) {
-		m_grpLot[0].Init_Ctrl("¹ÙÅÁ", 12, TRUE, RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
-		m_grpLot[1].Init_Ctrl("¹ÙÅÁ", 12, TRUE, RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
-
-	} else {
-		m_grpLot[0].Init_Ctrl("¹ÙÅÁ", 12, TRUE, RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
-		m_grpLot[1].Init_Ctrl("¹ÙÅÁ", 12, TRUE, RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
-	}*/
-
 
 	m_ledVisionStatus[0].Set_On(g_objInspector.Get_VisionStatus());
 	
-	//m_ledVisionStatus[1].Set_On(pEquipData->bUseInlineMode && g_objAviHandler.Is_Opened());
+	
 
 	
 }
@@ -896,10 +887,24 @@ LRESULT CWorkDlg::OnUpdateModel(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-LRESULT CWorkDlg::OnUpdateTrayInfo(WPARAM nTray, LPARAM lParam)
+LRESULT CWorkDlg::OnUpdateMZInfo(WPARAM nTray, LPARAM lParam)
 {
 	CString strText;
 	int nNo = (int)lParam;
+
+	if (nTray == eMZIdx::Load )
+	{		
+		/*strText.Format("%d", gData.nTNoLoadTray[nNo]);
+		m_stcLoadTrayCount.SetWindowText(strText);*/
+		for (int i = 0; i < SLOT_NO_MAX; i++) {
+			for (int j = 0; j < 1; j++) {
+				if		(gData.sZigIDElevLoad[i] != "") m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0x00));	// Reserve
+				else if (gData.sZigIDElevLoad[i] == "") m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
+				else									m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
+			}
+		}
+		//g_dlgOperator.Update_TrayInfo(nTray);
+	}
 
 	return 0;
 }
