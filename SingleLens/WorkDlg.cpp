@@ -1179,8 +1179,8 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo)
 			for(int k = 0; k < ZIG_Y; k++)
 			{
 				nCnt++;
-				if(nCnt <= gData.nLensUseCnt[nTo][i]) gData.InfoMZRight[i][j][k] = (int)eLensState::Init;
-				else gData.InfoMZRight[i][j][k] = eLensState::None;
+				if(nCnt <= gData.nLensUseCnt[nTo][i]) gData.InfoMZLoad[i][j][k] = (int)eLensState::Init;
+				else gData.InfoMZLoad[i][j][k] = eLensState::None;
 			}			
 		}
 	}

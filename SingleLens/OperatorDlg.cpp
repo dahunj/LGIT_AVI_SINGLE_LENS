@@ -466,15 +466,16 @@ void COperatorDlg::Update_TrayInfo(int nTray, int nNo)
 		
 		for (int j = 0; j < SLOT_NO_MAX; j++)
 		{
-			if		(gData.InfoMZLoad[j] == 9) m_grdOperMZLoad.Set_CellBackClr(0, j, RGB(0x00, 0xFF, 0xFF));	// Reserve
-			else if (gData.InfoMZLoad[j] == 0) m_grdOperMZLoad.Set_CellBackClr(0, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
+			if		(gData.InfoZigMZLoad[j] == 9) m_grdOperMZLoad.Set_CellBackClr(0, j, RGB(0x00, 0xFF, 0xFF));	// Reserve
+			else if (gData.InfoZigMZLoad[j] == 0) m_grdOperMZLoad.Set_CellBackClr(0, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
+			else if (gData.InfoZigMZUnload[j] == 9) m_grdOperMZLoad.Set_CellBackClr(0, j, RGB(0xFF, 0xFF, 0x00));	// Empty
 			else									m_grdOperMZLoad.Set_CellBackClr(0, j, RGB(0x80, 0x80, 0x80));	// Error
 		}
 
 		for (int j = 0; j < SLOT_NO_MAX; j++)
 		{
-			if		(gData.InfoMZUnload[j] == 9) m_grdOperMZUnload.Set_CellBackClr(0, j, RGB(0x00, 0xFF, 0xFF));	// Reserve
-			else if (gData.InfoMZUnload[j] == 0) m_grdOperMZUnload.Set_CellBackClr(0, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
+			if		(gData.InfoZigMZUnload[j] == 9) m_grdOperMZUnload.Set_CellBackClr(0, j, RGB(0x00, 0xFF, 0xFF));	// Reserve
+			else if (gData.InfoZigMZUnload[j] == 0) m_grdOperMZUnload.Set_CellBackClr(0, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
 			else									m_grdOperMZUnload.Set_CellBackClr(0, j, RGB(0x80, 0x80, 0x80));	// Error
 		}
 

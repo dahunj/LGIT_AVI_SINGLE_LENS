@@ -46,8 +46,8 @@ struct Feeder_X
 	enum dtName
 	{
 		Ready = 0,
-		MZ1 = 1,
-		MZ2 = 2,
+		MZReady = 1,
+		MZLoad = 2,
 		PickUp = 3,
 	};
 };
@@ -60,7 +60,7 @@ struct Feeder_Y
 		Ready = 0,
 		CheckExist = 1,
 		Grip1 = 2,
-		Grip2 = 3,
+		MZLoad = 3,
 		PickUp = 4,
 	};
 };

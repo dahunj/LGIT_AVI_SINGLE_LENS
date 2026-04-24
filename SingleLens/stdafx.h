@@ -138,18 +138,22 @@ typedef struct
 	// Lens State 
 	// 0:Empty,1:Good, 2:NG, 3:Top Ready, 4: Top Done, 5: Btm Ready, 6 : Btm Done,  9:Init
 
-	int InfoMZRight[10][ZIG_X][ZIG_Y];
-	int InfoMZLeft[10][ZIG_X][ZIG_Y];
+	int InfoMZLoad[10][ZIG_X][ZIG_Y];
+	int InfoMZReady[10][ZIG_X][ZIG_Y];
 	int InfoFeeder[ZIG_X][ZIG_Y];
 	int InfoRail[ZIG_X][ZIG_Y]; //if needed 
 	int	InfoZigPick[ZIG_X][ZIG_Y];
-	int InfoMainIndex[7][ZIG_X][ZIG_Y]; 	 	
+	int InfoMainIndex[7][ZIG_X][ZIG_Y];
+	int InfoMZUnload[10][ZIG_X][ZIG_Y];
 
-	int InfoMZLoad[10];
-	int InfoMZUnload[10];
+	int InfoZigMZLoad[10];
+	int InfoZigMZUnload[10];
 		
 	CString	sMZIDElevLoad;
 	CString	sZigIDElevLoad[10];
+
+	CString	sMZIDElevUnload;
+	CString	sZigIDElevUnload[10];
 
 	CString	sMZIDElevReady;
 	CString	sZigIDElevReady[10];
