@@ -630,7 +630,7 @@ void CLogFile::Save_MCCLog(const CString& sLog)
 {
 	g_csMCCLog.Lock();
 	
-	CString strPath = gsCurrentDir + "\\LOG\\Handler";
+	CString strPath = gsCurrentDir + "\\LOG\\MCC";
 	CString strPath2 = "D:\\Dump\\MCC";
 
 	Create_Folder(strPath);

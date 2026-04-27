@@ -1,19 +1,19 @@
-// ManualCapDlg.h : 헤더 파일
+// ManualCleanDlg.h : 헤더 파일
 //
 #pragma once
 
-// CManualCapDlg 대화 상자입니다.
+// CManualCleanDlg 대화 상자입니다.
 
-class CManualCapDlg : public CDialogEx
+class CManualCleanDlg : public CDialogEx
 {
-	DECLARE_DYNAMIC(CManualCapDlg)
+	DECLARE_DYNAMIC(CManualCleanDlg)
 
 public:
-	CManualCapDlg(CWnd* pParent = NULL);   // 표준 생성자입니다.
-	virtual ~CManualCapDlg();
+	CManualCleanDlg(CWnd* pParent = NULL);   // 표준 생성자입니다.
+	virtual ~CManualCleanDlg();
 
 // 대화 상자 데이터입니다.
-	enum { IDD = IDD_MANUAL_CAP_DLG };
+	enum { IDD = IDD_MANUAL_CLEAN_TOP_DLG };
 	CGroupCS	m_Group[14];
 	CLabelCS	m_Label[8];
 	/*CStaticCS	m_stcAxisPos[8];

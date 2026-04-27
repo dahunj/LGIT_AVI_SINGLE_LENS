@@ -2,7 +2,7 @@
 //
 #include "stdafx.h"
 #include "SingleLens.h"
-#include "ManualUnloadDlg.h"
+#include "ManualBtmDlg.h"
 #include "afxdialogex.h"
 #include "math.h"
 
@@ -13,38 +13,38 @@
 
 // CManualNgDlg 대화 상자입니다.
 
-IMPLEMENT_DYNAMIC(CManualUnloadDlg, CDialogEx)
+IMPLEMENT_DYNAMIC(CManualBtmDlg, CDialogEx)
 
-CManualUnloadDlg::CManualUnloadDlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CManualUnloadDlg::IDD, pParent)
+CManualBtmDlg::CManualBtmDlg(CWnd* pParent /*=NULL*/)
+	: CDialogEx(CManualBtmDlg::IDD, pParent)
 {
 }
 
-CManualUnloadDlg::~CManualUnloadDlg()
+CManualBtmDlg::~CManualBtmDlg()
 {
 }
 
-void CManualUnloadDlg::DoDataExchange(CDataExchange* pDX)
+void CManualBtmDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	for (int i = 0; i < 16; i++) DDX_Control(pDX, IDC_GROUP_0 + i, m_Group[i]);
-	for (int i = 0; i < 10; i++) DDX_Control(pDX, IDC_LABEL_0 + i, m_Label[i]);
+	/*for (int i = 0; i < 16; i++) DDX_Control(pDX, IDC_GROUP_0 + i, m_Group[i]);
+	for (int i = 0; i < 10; i++) DDX_Control(pDX, IDC_LABEL_0 + i, m_Label[i]);*/
 
 }
 
-BEGIN_MESSAGE_MAP(CManualUnloadDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CManualBtmDlg, CDialogEx)
 	ON_WM_SHOWWINDOW()
 
 END_MESSAGE_MAP()
 
-// CManualUnloadDlg 메시지 처리기입니다.
+// CManualBtmDlg 메시지 처리기입니다.
 
-void CManualUnloadDlg::Initial_Controls() 
+void CManualBtmDlg::Initial_Controls() 
 {
 	
 }
 
-BOOL CManualUnloadDlg::OnInitDialog() 
+BOOL CManualBtmDlg::OnInitDialog() 
 {
 	CDialogEx::OnInitDialog();
 
@@ -57,7 +57,7 @@ BOOL CManualUnloadDlg::OnInitDialog()
 	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
 }
 
-BOOL CManualUnloadDlg::PreTranslateMessage(MSG* pMsg) 
+BOOL CManualBtmDlg::PreTranslateMessage(MSG* pMsg) 
 {
 	if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE))
 		return TRUE;
@@ -65,7 +65,7 @@ BOOL CManualUnloadDlg::PreTranslateMessage(MSG* pMsg)
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
-void CManualUnloadDlg::OnShowWindow(BOOL bShow, UINT nStatus) 
+void CManualBtmDlg::OnShowWindow(BOOL bShow, UINT nStatus) 
 {
 	CDialogEx::OnShowWindow(bShow, nStatus);
 
@@ -78,7 +78,7 @@ void CManualUnloadDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	g_objLogFile.Save_HandlerLog(m_strLog);
 }
 
-void CManualUnloadDlg::Display_Status()
+void CManualBtmDlg::Display_Status()
 {
 	
 

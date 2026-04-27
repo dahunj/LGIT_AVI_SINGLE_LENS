@@ -132,6 +132,7 @@ public:
 	BOOL Check_IndexDone();
 
 	BOOL Check_ZigPickerEmpty();
+	BOOL Check_FeederEmpty();
 	BOOL Check_IndexEmpty(int nPos);
 	BOOL Check_ZigExistInMZ();
 	

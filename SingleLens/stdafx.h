@@ -54,6 +54,7 @@
 #include "CSGrid.h"
 
 #include "EnumData.h"
+#include "EnumMoveData.h"
 
 #include <math.h>
 #include <iostream>

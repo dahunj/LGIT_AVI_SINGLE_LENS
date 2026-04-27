@@ -147,7 +147,8 @@ BOOL CSequenceMain::Get_IsAutoRun()
 
 	if (!Check_IndexEmpty(-1)) return TRUE;
 	if (Check_ZigExistInMZ()) return TRUE;
-	//if (!Check_ElevEmpty(1)) return TRUE;
+	if (!Check_ZigPickerEmpty()) return TRUE;
+	if (!Check_FeederEmpty()) return TRUE;
 	if (Check_CVMZSensors() > 0) return TRUE;
 	
 	return FALSE;
@@ -556,8 +557,8 @@ BOOL CSequenceMain::FeederRun()
 	
 	static double dPosZ = 0.0;
 
-	if(gData.bCVMZLoadWait) return TRUE;
-	
+	if(gData.bCVMZLoadWait) return TRUE;	
+
 	switch(m_nFeederCase)
 	{
 	case 0:
@@ -664,13 +665,13 @@ BOOL CSequenceMain::FeederRun()
 
 			g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO,eMZIdx::Load, NULL);
 
-			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, Feeder_X::PickUp);
+			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, Feeder_X::LoadUp);
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 			m_strLog.Format("Feeder X Move (PickUp)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}
 		break;
 	case 13:
-		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_X, Feeder_X::PickUp))
+		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_X, Feeder_X::LoadUp))
 		{
 			m_pDY01->oFeederGripClose = FALSE; m_pDY01->oFeederGripOpen = TRUE;
 			g_objAJinAXL.Write_Output(1);
@@ -689,6 +690,13 @@ BOOL CSequenceMain::FeederRun()
 	case 15:
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, Feeder_Y::Ready))
 		{
+			//Info Processing 
+			gData.sMZIDRail = gData.sMZIDFeeder; gData.sMZIDFeeder.Empty();
+			gData.sZigIDRail = gData.sZigIDFeeder; gData.sZigIDFeeder.Empty();
+			gData.nSlotNoRail = gData.nSlotNoFeeder; gData.nSlotNoFeeder = 0;
+			memcpy( gData.InfoRail, gData.InfoFeeder,  sizeof(int)*ZIG_X*ZIG_Y);
+			memset( gData.InfoFeeder, 0x00, sizeof(int)*ZIG_X*ZIG_Y);	
+
 			gData.nSlotNoToPick++;
 			if(gData.nSlotNoToPick > 10) gData.nSlotNoToPick = 1;
 			m_nZigPickerCase = ZigPickBranch::Load; // Tray Picker load Start 			
@@ -703,7 +711,8 @@ BOOL CSequenceMain::FeederRun()
 		m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		return TRUE;
 	case 31:
-		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, Feeder_Y::Ready) && g_objCommon.Get_FeederOpen())
+		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, Feeder_Y::Ready) && g_objCommon.Check_Position(AX_ZIG_FEEDER_X, Feeder_X::LoadUp)
+			&& g_objCommon.Get_FeederOpen())
 		{
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, Feeder_Y::PickUp);
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
@@ -750,9 +759,7 @@ BOOL CSequenceMain::FeederRun()
 		{
 			g_objCommon.Set_FeederOpen();
 			m_strLog.Format("Feeder Open"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
-			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
-			
-			
+			m_nFeederCase = 38; m_nFeederLoop.Set_LoopTime(5000);			
 		}
 		break;
 	case 38:
@@ -760,7 +767,7 @@ BOOL CSequenceMain::FeederRun()
 		{
 			//Info Processing
 			gData.sMZIDElevUnload = gData.sMZIDFeeder; gData.sMZIDFeeder.Empty();
-			gData.sZigIDElevUnload[gData.nSlotNoFeeder] = gData.sZigIDFeeder; gData.sZigIDFeeder.Empty();
+			gData.sZigIDElevUnload[gData.nSlotNoFeeder - 1] = gData.sZigIDFeeder; gData.sZigIDFeeder.Empty();
 						
 			memcpy( gData.InfoMZUnload[gData.nSlotNoFeeder], gData.InfoFeeder,  sizeof(int)*ZIG_X*ZIG_Y);
 			memset( gData.InfoFeeder, 0x00, sizeof(int)*ZIG_X*ZIG_Y);	
@@ -769,8 +776,10 @@ BOOL CSequenceMain::FeederRun()
 
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, Feeder_Y::Ready);
 
+			g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO,eMZIdx::Load, NULL);
+
 			m_strLog.Format("Feeder Open"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
-			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);			
+			m_nFeederCase = 40; m_nFeederLoop.Set_LoopTime(5000);			
 		}
 		break;
 	case 40:
@@ -841,8 +850,8 @@ BOOL CSequenceMain::ZigPickerRun()
 			gData.sMZIDTrayPick = gData.sMZIDRail; gData.sMZIDRail = "";
 			gData.sZigIDTrayPick =  gData.sZigIDRail; gData.sZigIDRail = "";
 			gData.nSlotNoTrayPick = gData.nSlotNoRail; gData.nSlotNoRail = 0;
-			memcpy(gData.InfoZigPick, gData.InfoFeeder, sizeof(int)*ZIG_X*ZIG_Y);
-			memset( gData.InfoFeeder, 0, sizeof(int)*ZIG_X*ZIG_Y);
+			memcpy(gData.InfoZigPick, gData.InfoRail, sizeof(int)*ZIG_X*ZIG_Y);
+			memset( gData.InfoRail, 0, sizeof(int)*ZIG_X*ZIG_Y);
 			
 			g_objCommon.Move_Position(AX_ZIG_PICKER_Z, Tray_Picker_Z::Ready);
 			m_nZigPickerCase = 10; m_nZigPickerLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
@@ -953,9 +962,9 @@ BOOL CSequenceMain::ZigPickerRun()
 		if(g_objCommon.Get_TrayPickMasterSlaveIn())
 		{
 			//Info Processing
-			gData.sMZIDTrayPick = gData.sMZIDMainIdex[eMainIndex::Load]; gData.sMZIDMainIdex[eMainIndex::Load] = "";
-			gData.sZigIDTrayPick = gData.sZigIDMainIndex[eMainIndex::Load]; gData.sZigIDMainIndex[eMainIndex::Load] = "";
-			gData.nSlotNoTrayPick = gData.nSlotNoMainIndex[eMainIndex::Load]; gData.nSlotNoMainIndex[eMainIndex::Load] = 0;
+			gData.sMZIDTrayPick = gData.sMZIDMainIdex[eMainIndex::Unload]; gData.sMZIDMainIdex[eMainIndex::Unload] = "";
+			gData.sZigIDTrayPick = gData.sZigIDMainIndex[eMainIndex::Unload]; gData.sZigIDMainIndex[eMainIndex::Unload] = "";
+			gData.nSlotNoTrayPick = gData.nSlotNoMainIndex[eMainIndex::Unload]; gData.nSlotNoMainIndex[eMainIndex::Unload] = 0;
 
 			memcpy(gData.InfoZigPick, gData.InfoMainIndex[eMainIndex::Unload], sizeof(int)*ZIG_X*ZIG_Y);
 			memset( gData.InfoMainIndex[eMainIndex::Unload], 0x00, sizeof(int)*ZIG_X*ZIG_Y);
@@ -1558,9 +1567,7 @@ BOOL CSequenceMain::MainIndexRun()
 	{
 	case 0:
 		return TRUE;
-	case 1:
-		if (Check_IndexEmpty(-1) && Check_ZigPickerEmpty()) return TRUE;
-		
+	case 1:		
 		m_nMainIndexCase++; m_nIndexTLoop.Set_LoopTime(5000);
 		m_strLog.Format("MainIdex Start"); m_nFeederLoop.Takt_Save(9, m_nMainIndexCase, m_strLog);
 		break;
@@ -1577,7 +1584,7 @@ BOOL CSequenceMain::MainIndexRun()
 		}
 		break;
 	case 4:
-		if(Check_IndexEmpty(-1) && !Check_ZigExistInMZ()) return TRUE;
+		if(Check_IndexEmpty(-1) && !Check_ZigExistInMZ() && Check_FeederEmpty() && Check_ZigPickerEmpty()) return TRUE;
 				
 		if(!gData.bIndexDone[eMainIndex::Clean]) m_nLensCleanerCase = 1;		
 		if(!gData.bIndexDone[eMainIndex::Top]) m_nTopInspectCase = 1;			
@@ -1607,7 +1614,7 @@ BOOL CSequenceMain::MainIndexRun()
 			m_nFeederCase = FeederBranch::LoadSearch; // Feeder  บฮลอ			
 			m_strLog.Format("Feeder LoadSearch"); m_nFeederLoop.Takt_Save(9, m_nMainIndexCase, m_strLog);
 		}
-		else if(Check_IndexEmpty(eMainIndex::Load) && !Check_ZigExistInMZ() && !gData.bIndexDone[eMainIndex::Load]
+		else if(Check_IndexEmpty(eMainIndex::Load) &&  !gData.bIndexDone[eMainIndex::Load]
 			&& m_nMZElevCase == 20 && m_nFeederCase == 0 && m_nZigPickerCase == 0 && !Check_IndexEmpty(-1))
 		{
 			gData.bIndexDone[eMainIndex::Load] = TRUE;
@@ -1615,8 +1622,7 @@ BOOL CSequenceMain::MainIndexRun()
 		}
 		else if(Check_IndexDone())
 		{
-			m_nMainIndexCase = 10;
-			
+			m_nMainIndexCase = 10;			
 		}
 
 		if(Check_IndexEmpty(-1) && !Check_ZigExistInMZ() && Check_CVMZSensors() <= 0 )
@@ -1629,11 +1635,11 @@ BOOL CSequenceMain::MainIndexRun()
 		
 		if(Check_IndexDone()) // && g_objCommon.Get_IndexLoadAlignIn()
 		{
-			if (Check_IndexEmpty(-1)) 
+			if (Check_IndexEmpty(-1) && m_nMZElevCase == 20 && m_nFeederCase == 0 && m_nZigPickerCase == 0) 
 			{ 
 				Set_IndexEnd();
 				m_nMainIndexCase = 5;
-				
+
 				return TRUE;
 			}
 
@@ -1672,7 +1678,7 @@ BOOL CSequenceMain::MainIndexRun()
 	case 51:		// Check R Home Done
 		if (g_objAJinAXL.Is_Home(AX_MAIN_INDEX_R)) 
 		{
-			m_nMainIndexCase = 1;
+			m_nMainIndexCase = 0;
 		}
 		break;
 	}
@@ -1838,11 +1844,35 @@ BOOL CSequenceMain::Check_ZigPickerEmpty()
 	{
 		for(int j = 0; j < ZIG_Y; j++)
 		{
-			if (gData.InfoZigPick[i] > 0) return FALSE; 
+			if (gData.InfoZigPick[i][j] > 0)
+			{
+				return FALSE;
+			}
 		}		
 	}
 	return TRUE;
 }
+
+BOOL CSequenceMain::Check_FeederEmpty()
+{
+	for (int i = 0; i < ZIG_X; i++) 
+	{
+		for(int j = 0; j < ZIG_Y; j++)
+		{
+			if (gData.InfoFeeder[i][j] > 0) return FALSE; 
+		}		
+	}
+
+	for (int i = 0; i < ZIG_X; i++) 
+	{
+		for(int j = 0; j < ZIG_Y; j++)
+		{
+			if (gData.InfoRail[i][j] > 0) return FALSE; 
+		}		
+	}
+	return TRUE;
+}
+
 
 
 
@@ -2150,6 +2180,31 @@ BOOL CSequenceMain::Run_Simulation()
 	if(m_nFeederCase == 34)
 	{
 		m_pDX01->iFeederZigExist = TRUE;
+	}
+
+	if(m_nZigPickerCase == 11)
+	{
+		m_pDX01->iRailZigExist = TRUE;
+	}
+
+	if(m_nZigPickerCase == 26)
+	{
+		m_pDX01->iZigPickerExist = TRUE;
+	}
+
+	if(m_nZigPickerCase == 31)
+	{
+		m_pDX01->iZigPickerExist = FALSE;
+	}
+
+	if(m_nFeederCase == 36)
+	{
+		m_pDX01->iFeederZigExist = TRUE;
+	}
+
+	if(m_nFeederCase == 38)
+	{
+		m_pDX01->iFeederZigExist = FALSE;
 	}
 
 	return TRUE;

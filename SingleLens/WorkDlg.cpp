@@ -645,7 +645,7 @@ BOOL CWorkDlg::Work_Start()
 	for(int i = 2; i < 6; i++)
 	{
 		gData.sMZID[i - 2].Empty();
-		m_stcZigID[i].GetWindowText(strTemp);
+		m_stcMZID[i].GetWindowText(strTemp);
 		if(strTemp != "") gData.sMZID[i - 2] = strTemp;
 
 	}
@@ -901,6 +901,8 @@ LRESULT CWorkDlg::OnUpdateMZInfo(WPARAM nTray, LPARAM lParam)
 				if		(gData.sZigIDElevLoad[i] != "") m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0x00));	// Reserve
 				else if (gData.sZigIDElevLoad[i] == "") m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
 				else									m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
+
+				if (gData.sZigIDElevUnload[i] != "") m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0x00, 0xFF, 0xFF));	// Empty
 			}
 		}
 		//g_dlgOperator.Update_TrayInfo(nTray);
@@ -1152,7 +1154,7 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo)
 	m_stcMZID[nTo].SetWindowText(sMZIDTo);
 	m_stcMZID[nFrom].SetWindowText("");
 
-	gData.sMZID[nTo] = gData.sMZID[nFrom]; gData.sMZID[nFrom] = "";
+	gData.sMZID[nTo] = sMZIDFrom; gData.sMZID[nFrom] = "";
 
 	
 	for(int i = 0; i < 10; i++)

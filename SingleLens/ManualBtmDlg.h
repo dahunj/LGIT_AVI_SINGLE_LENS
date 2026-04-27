@@ -1,19 +1,19 @@
-// ManualUnloadDlg.h : 헤더 파일
+// ManualBtmDlg.h : 헤더 파일
 //
 #pragma once
 
 // CManualNgDlg 대화 상자입니다.
 
-class CManualUnloadDlg : public CDialogEx
+class CManualBtmDlg : public CDialogEx
 {
-	DECLARE_DYNAMIC(CManualUnloadDlg)
+	DECLARE_DYNAMIC(CManualBtmDlg)
 
 public:
-	CManualUnloadDlg(CWnd* pParent = NULL);   // 표준 생성자입니다.
-	virtual ~CManualUnloadDlg();
+	CManualBtmDlg(CWnd* pParent = NULL);   // 표준 생성자입니다.
+	virtual ~CManualBtmDlg();
 
-// 대화 상자 데이터입니다.
-	enum { IDD = IDD_MANUAL_UNLOAD_DLG };
+	// 대화 상자 데이터입니다.
+	enum { IDD = IDD_MANUAL_BTM_MARK_DLG };
 	CGroupCS	m_Group[16];
 	CLabelCS	m_Label[10];
 	/*CStaticCS	m_stcAxisPos[10];

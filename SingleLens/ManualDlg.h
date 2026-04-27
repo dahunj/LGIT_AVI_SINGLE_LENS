@@ -2,11 +2,11 @@
 //
 #pragma once
 
+#include "ManualElevDlg.h"
 #include "ManualLoadDlg.h"
+#include "ManualCleanDlg.h"
+#include "ManualBtmDlg.h"
 #include "ManualIndexDlg.h"
-#include "ManualCapDlg.h"
-#include "ManualUnloadDlg.h"
-#include "ManualRepeatRunDlg.h"
 
 // CManualDlg 대화 상자입니다.
 
@@ -21,11 +21,12 @@ public:
 // 대화 상자 데이터입니다.
 	enum { IDD = IDD_MANUAL_DLG };
 	CPictureCS	m_picManualBack;
+	CRadioCS	m_rdoManualElev;
 	CRadioCS	m_rdoManualLoad;
+	CRadioCS	m_rdoManualClean;
+	CRadioCS	m_rdoManualBtm;
 	CRadioCS	m_rdoManualIndex;
-	CRadioCS	m_rdoManualCap;
-	CRadioCS	m_rdoManualRepeat;
-	CRadioCS	m_rdoManualUnload;
+
 	CRadioCS	m_rdoManualDoorLock;
 	CRadioCS	m_rdoManualDoorUnlock;
 
@@ -38,19 +39,21 @@ protected:
 	afx_msg void OnDestroy();
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnBnClickedRdoManualElev();
 	afx_msg void OnBnClickedRdoManualLoad();
+	afx_msg void OnBnClickedRdoManualClean();
+	afx_msg void OnBnClickedRdoManualBtm();
 	afx_msg void OnBnClickedRdoManualIndex();
-	afx_msg void OnBnClickedRdoManualCap();
-	afx_msg void OnBnClickedRdoManualUnload();
+
 	afx_msg void OnBnClickedRdoManualDoorLock();
 	afx_msg void OnBnClickedRdoManualDoorUnlock();
 
 public:
-	CManualLoadDlg		*m_pManualLoadDlg;
-	CManualIndexDlg		*m_pManualIndexDlg;
-	CManualCapDlg		*m_pManualCapDlg;
-	CManualUnloadDlg	*m_pManualUnloadDlg;
-	CManualRepeatRunDlg *m_pManualRepeatRunDlg;
+	CManualElevDlg			*m_pManualElevDlg;
+	CManualLoadDlg			*m_pManualLoadDlg;
+	CManualCleanDlg			*m_pManualCleanDlg;
+	CManualBtmDlg			*m_pManualBtmDlg;
+	CManualIndexDlg			*m_pManualIndexDlg;
 
 private:
 	void Initial_Controls();
@@ -59,7 +62,7 @@ private:
 public:
 	void Set_ManualPos(int nPos);
 
-	afx_msg void OnBnClickedRdoManualRepeat();
+	
 };
 
 extern CManualDlg g_dlgManual;

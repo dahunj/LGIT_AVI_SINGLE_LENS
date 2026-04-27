@@ -38,10 +38,7 @@ public:
 	void Get_ZoneMsg(int nZone, int nCase, CString &sZone, CString &sMsg);
 
 
-	void Save_JobListExcel(CString sLog);
-	
-
-		
+	void Save_JobListExcel(CString sLog);		
 };
 
 extern CLogFile g_objLogFile;
