@@ -153,8 +153,8 @@ typedef union tag_DX_DATA_01 {
 		DWORD i0111 : 1;					// X0111
 		DWORD iMagazineZigExist : 1;		// X0112
 		DWORD iRailZigExist : 1;			// X0113
-		DWORD iFeederZigAlignIn : 1;		// X0114
-		DWORD iFeederZigAlignOut : 1;		// X0115
+		DWORD iRailZigAlignIn : 1;		// X0114
+		DWORD iRailZigAlignOut : 1;		// X0115
 		DWORD iZigPickerMasterIn : 1;		// X0116
 		DWORD iZigPickerMasterOut : 1;		// X0117
 		DWORD iZigPickerSlaveIn : 1;		// X0118
@@ -272,20 +272,20 @@ typedef union tag_DY_DATA_00 {
 		DWORD o0013 : 1;	// Y0013
 		DWORD o0014 : 1;		// Y0014
 		DWORD o0015 : 1;	// Y0015
-		DWORD oMZElevCVRun : 1;				// Y0016
-		DWORD oMZElevCVDirCCW : 1;				// Y0017
-		DWORD oMZElevStopper1UpLeft : 1;					// Y0018
-		DWORD oMZElevStopper1Down : 1;					// Y0019
-		DWORD oMZElevStopper1In : 1;					// Y0020
-		DWORD oMZElevStopper1Out : 1;					// Y0021
+		DWORD oElevCVRun : 1;				// Y0016
+		DWORD oElevCVDirCCW : 1;				// Y0017
+		DWORD oElevStopper1UpLeft : 1;					// Y0018
+		DWORD oElevStopper1Down : 1;					// Y0019
+		DWORD oElevStopper1In : 1;					// Y0020
+		DWORD oElevStopper1Out : 1;					// Y0021
 		DWORD o0022 : 1;					// Y0022
 		DWORD o0023 : 1;					// Y0023
 		DWORD o0024 : 1;		// Y0024
 		DWORD o0025 : 1;		// Y0025
-		DWORD oMZElevStopper2UpRight : 1;				// Y0026
-		DWORD oMZElevStopper2Down : 1;				// Y0027
-		DWORD oMZElevStopper2In : 1;					// Y0028
-		DWORD oMZElevStopper2Out : 1;					// Y0029
+		DWORD oElevStopper2UpRight : 1;				// Y0026
+		DWORD oElevStopper2Down : 1;				// Y0027
+		DWORD oElevStopper2In : 1;					// Y0028
+		DWORD oElevStopper2Out : 1;					// Y0029
 		DWORD o0030 : 1;					// Y0030
 		DWORD o0031 : 1;					// Y0031
 	};

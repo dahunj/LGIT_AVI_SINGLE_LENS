@@ -31,21 +31,31 @@ void CManualElevDlg::DoDataExchange(CDataExchange* pDX)
 
 	//for (int i = 0; i < 17; i++) DDX_Control(pDX, IDC_GROUP_0 + i, m_Group[i]);
 	//for (int i = 0; i < 11; i++) DDX_Control(pDX, IDC_LABEL_0 + i, m_Label[i]);
-
+	for (int i = 0; i < 1; i++) DDX_Control(pDX, IDC_STC_AXIS_POS_0 + i, m_stcAxisPos[i]);
 	for (int i = 0; i < 5; i++) DDX_Control(pDX, IDC_LED_LD_CV_EXIST_0 + i, m_LedLdCVIO[i]);
 	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_CHK_LD_CV_R_0 + i, m_ChkLdCVIO[i]);
 
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_LED_LD_CV_STOPPER_0 + i, m_LedLdCVStopper[i]);
 	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_BTN_LD_CV_STOPPER_0 + i, m_BtnLdCVStopper[i]);
-	
 
+	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_LED_ELEV_EXIST_0 + i, m_LedElevIO[i]);
+	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_CHK_ELEV_CV_R_0 + i, m_ChkElevIO[i]);
+
+	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_LED_ELEV_CV_STOPPER_0 + i, m_LedElevStopper[i]);
+	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_BTN_ELEV_CV_STOPPER_0 + i, m_BtnElevStopper[i]);
+
+	for (int i = 0; i < 5; i++) DDX_Control(pDX, IDC_BTN_ELEV_Z_0 + i, m_BtnElevZ[i]);
+	for (int i = 0; i < 5; i++) DDX_Control(pDX, IDC_BTN_ELEVREADY_Z_0 + i, m_BtnElevReadyZ[i]);
 }
 
 BEGIN_MESSAGE_MAP(CManualElevDlg, CDialogEx)
 	ON_WM_SHOWWINDOW()
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_CHK_LD_CV_R_0, IDC_CHK_LD_CV_R_2, OnChkLdCVIOClick)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_LD_CV_STOPPER_0, IDC_BTN_LD_CV_STOPPER_3, OnBtnLdCVStopperClick)
-	//ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_LD_CV_STOPPER_0, IDC_BTN_LD_CV_STOPPER_3, OnBtnLdCVIOClick)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_CHK_ELEV_CV_R_0, IDC_CHK_ELEV_CV_R_2, OnChkElevCVIOClick)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_ELEV_CV_STOPPER_0, IDC_BTN_ELEV_CV_STOPPER_7, OnBtnElevCVStopperClick)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_ELEV_Z_0, IDC_BTN_ELEV_Z_4, OnBtnElevZClick)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_ELEVREADY_Z_0, IDC_BTN_ELEVREADY_Z_4, OnBtnElevReadyZClick)
 END_MESSAGE_MAP()
 
 // CManualElevDlg 메시지 처리기입니다.
@@ -58,6 +68,8 @@ void CManualElevDlg::Initial_Controls()
 	for (int i = 10; i < 13; i++) m_Group[i].Init_Ctrl("Arial", 11, TRUE, RGB(0x00, 0x00, 0xFF), COLOR_DEFAULT);
 	for (int i = 13; i < 17; i++) m_Group[i].Init_Ctrl("Arial", 11, TRUE, RGB(0x30, 0x80, 0x00), COLOR_DEFAULT);
 	for (int i = 0; i < 11; i++) m_Label[i].Init_Ctrl("Arial", 10, FALSE, COLOR_DEFAULT, RGB(0xB0, 0xB0, 0xB0));*/
+
+	for (int i = 0; i <  1; i++) m_stcAxisPos[i].Init_Ctrl("Arial", 10, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x10, 0x10, 0x60));
 	
 }
 
@@ -99,6 +111,11 @@ void CManualElevDlg::Display_Status()
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
 	
+	CString strPos;
+	double dPos = g_objAJinAXL.Get_Position(AX_MZ_ELEVATOR_Z);
+	strPos.Format("%0.3lf", dPos);
+	m_stcAxisPos[0].SetWindowText(strPos);
+		
 	m_LedLdCVIO[0].Set_On(pDX00->iLoadCVMZExist1Right);
 	m_LedLdCVIO[1].Set_On(pDX00->iLoadCVMZExist2);
 	m_LedLdCVIO[2].Set_On(pDX00->iLoadCVMZExist3);
@@ -204,5 +221,239 @@ void CManualElevDlg::OnBtnLdCVStopperClick(UINT nID)
 
 }
 
+void CManualElevDlg::OnChkElevCVIOClick(UINT nID)
+{
+	if (!g_objCommon.Check_MainDoor()) return;
+
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+
+	int nIndex = nID - IDC_CHK_ELEV_CV_R_0;	
+
+	if(nIndex == eElevIO::CW)
+	{
+		if(m_ChkElevIO[eElevIO::CW].GetCheck())
+		{
+			if(m_ChkElevIO[eElevIO::CCW].GetCheck())
+			{
+				m_ChkElevIO[eElevIO::CW].SetCheck(FALSE);
+				AfxMessageBox("Elev CV CCW 회전중, Stop 필요합니다");
+				return;
+			}
+			pDY00->oElevCVRun = TRUE; pDY00->oElevCVDirCCW = FALSE;
+		}
+		else
+		{
+			pDY00->oElevCVRun = FALSE; pDY00->oElevCVDirCCW = FALSE;
+		}
+	}
+
+	if(nIndex == eElevIO::CCW)
+	{
+		if(m_ChkElevIO[eElevIO::CCW].GetCheck())
+		{
+			if(m_ChkElevIO[eElevIO::CW].GetCheck())
+			{
+				m_ChkElevIO[eElevIO::CCW].SetCheck(FALSE);
+				AfxMessageBox("Elev CV CW 회전중, Stop 필요합니다");
+				return;
+			}
+			pDY00->oElevCVRun = TRUE; pDY00->oElevCVDirCCW = TRUE;
+
+		}
+		else
+		{
+			pDY00->oElevCVRun = FALSE; pDY00->oElevCVDirCCW = FALSE;
+		}
+	}
+
+	if(nIndex == eElevIO::Stop)
+	{
+		m_ChkElevIO[eElevIO::CW].SetCheck(FALSE);
+		m_ChkElevIO[eElevIO::CCW].SetCheck(FALSE);	
+		pDY00->oElevCVRun = FALSE; pDY00->oElevCVDirCCW = FALSE;
+	}
+	g_objAJinAXL.Write_Output(0);
+
+	m_strLog.Format("[Manual Elev CV] Elevator CV CW/CCW IO (%d) Click", nIndex);
+	g_objLogFile.Save_HandlerLog(m_strLog);
+}
+
+void CManualElevDlg::OnBtnElevCVStopperClick(UINT nID)
+{
+	if (!g_objCommon.Check_MainDoor()) return;
+
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+
+	int nIndex = nID - IDC_BTN_ELEV_CV_STOPPER_0;
+
+	if(nIndex == eElevStopper::Up1)
+	{
+		pDY00->oElevStopper1UpLeft = TRUE; pDY00->oElevStopper1Down = FALSE;
+	}
+	if(nIndex == eElevStopper::Down1)
+	{
+		pDY00->oElevStopper1UpLeft = FALSE; pDY00->oElevStopper1Down = TRUE;
+	}
+	if(nIndex == eElevStopper::In1)
+	{
+		pDY00->oElevStopper1In = TRUE; pDY00->oElevStopper1Out = FALSE;
+	}
+	if(nIndex == eElevStopper::Out1)
+	{
+		pDY00->oElevStopper1In = FALSE; pDY00->oElevStopper1Out = TRUE;
+	}
+
+
+	if(nIndex == eElevStopper::Up2)
+	{
+		pDY00->oElevStopper2UpRight = TRUE; pDY00->oElevStopper2Down = FALSE;
+	}
+	if(nIndex == eElevStopper::Down2)
+	{
+		pDY00->oElevStopper2UpRight = FALSE; pDY00->oElevStopper2Down = TRUE;
+	}
+	if(nIndex == eElevStopper::In2)
+	{
+		pDY00->oElevStopper2In = TRUE; pDY00->oElevStopper2Out = FALSE;
+	}
+	if(nIndex == eElevStopper::Out2)
+	{
+		pDY00->oElevStopper2In = FALSE; pDY00->oElevStopper2Out = TRUE;
+	}
+
+	g_objAJinAXL.Write_Output(0);
+
+	m_strLog.Format("[Manual Elevator Stopper] Elevator Stoppper (%d) Click", nIndex);
+	g_objLogFile.Save_HandlerLog(m_strLog);
+}
+
+
+
+void CManualElevDlg::OnBtnElevZClick(UINT nID)
+{
+	if (!g_objAJinAXL.Is_Home(AX_MZ_ELEVATOR_Z)) return;
+	if (!g_objCommon.Check_MainDoor()) return;
+	if(!g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready))
+	{
+		AfxMessageBox("Feeder Y Ready 위치가 아닙니다. 확인 후 진행하세요."); return;
+	}
+	if(!g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZLoad) 
+		&& !g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZReady))
+	{
+		AfxMessageBox("Feeder Y Ready 위치가 아닙니다. 확인 후 진행하세요."); return;
+	}
+	
+	
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	int nIndex = nID - IDC_BTN_ELEV_Z_0;
+
+
+	if(nIndex == eElev_Z::Ready)
+	{
+		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElev_Z::Ready);
+	}
+
+	if(nIndex == eElev_Z::Down)
+	{
+		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElev_Z::Down);
+	}
+
+	if(nIndex == eElev_Z::Up)
+	{
+		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElev_Z::Up);
+	}
+
+	if(nIndex == eElev_Z::Pitch)
+	{
+		double dPitchZ = pEquipData->dElevPitchZ;
+		g_objAJinAXL.Move_Relative(AX_MZ_ELEVATOR_Z, dPitchZ);		
+	}
+
+	if(nIndex == eElev_Z::PitchMinus)
+	{
+		double dPitchZ = pEquipData->dElevPitchZ;
+		g_objAJinAXL.Move_Relative(AX_MZ_ELEVATOR_Z, -dPitchZ);	
+	}	
+
+	m_strLog.Format("[Manual Elevator Z] Elevator Z (%d) Click", nIndex);
+	g_objLogFile.Save_HandlerLog(m_strLog);
+}
+
+
+
+void CManualElevDlg::OnBtnElevReadyZClick(UINT nID)
+{
+	if (!g_objAJinAXL.Is_Home(AX_MZ_ELEVATOR_Z)) return;
+	if (!g_objCommon.Check_MainDoor()) return;
+	if(!g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready))
+	{
+		AfxMessageBox("Feeder Y Ready 위치가 아닙니다. 확인 후 진행하세요."); return;
+	}
+	if(!g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZLoad) 
+		&& !g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZReady))
+	{
+		AfxMessageBox("Feeder Y Ready 위치가 아닙니다. 확인 후 진행하세요."); return;
+	}
+
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	int nIndex = nID - IDC_BTN_ELEV_Z_0;
+	if(nIndex == eElevReady_Z::Ready)
+	{
+		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElevReady_Z::Ready);
+	}
+
+	if(nIndex == eElevReady_Z::Down)
+	{
+		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElevReady_Z::Down);
+	}
+
+	if(nIndex == eElevReady_Z::Up)
+	{
+		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElevReady_Z::Up);
+	}
+
+	if(nIndex == eElevReady_Z::Pitch)
+	{
+		double dPitchZ = pEquipData->dElevPitchZReady;
+		g_objAJinAXL.Move_Relative(AX_MZ_ELEVATOR_Z, dPitchZ);		
+	}
+
+	if(nIndex == eElevReady_Z::PitchMinus)
+	{
+		double dPitchZ = pEquipData->dElevPitchZReady;
+		g_objAJinAXL.Move_Relative(AX_MZ_ELEVATOR_Z, -dPitchZ);	
+	}	
+
+	m_strLog.Format("[Manual Elevator Z] Elevator Ready Z (%d) Click", nIndex);
+	g_objLogFile.Save_HandlerLog(m_strLog);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
+
+
+//BOOL CManualElevDlg::Manual_ElevatorRun()
+//{
+//	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
+//
+//	switch (m_nRunCase)
+//	{
+//	case 0:
+//		m_tElevLoop.Set_LoopTime(5000);
+//		break;
+//	case 1:
+//		m_nRunCase = 5; m_tElevLoop.Set_LoopTime(5000);
+//		break;
+//	case 5:
+//		if(g_objAJinAXL.Is_Done(AX_MZ_ELEVATOR_Z))
+//		{
+//			m_nRunCase++; m_tElevLoop.Set_LoopTime(5000);
+//		}
+//		break;
+//	case 6:
+//		
+//	}
+//}
+

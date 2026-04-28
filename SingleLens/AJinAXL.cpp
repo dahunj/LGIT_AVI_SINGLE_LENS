@@ -838,15 +838,15 @@ void CAJinAXL::Sim_SetOutToIn(int nNo)
 		m_DX00.iLoadCVStopper2Up = m_DY00.oLoadCVStopper2Up;
 		m_DX00.iLoadCVStopper2Down = m_DY00.oLoadCVStopper2Down;
 
-		m_DX00.iMZElevStopper1UpLeft = m_DY00.oMZElevStopper1UpLeft;
-		m_DX00.iMZElevStopper1Down = m_DY00.oMZElevStopper1Down;
-		m_DX00.iMZElevStopper1In = m_DY00.oMZElevStopper1In;
-		m_DX00.iMZElevStopper1Out = m_DY00.oMZElevStopper1Out;
+		m_DX00.iMZElevStopper1UpLeft = m_DY00.oElevStopper1UpLeft;
+		m_DX00.iMZElevStopper1Down = m_DY00.oElevStopper1Down;
+		m_DX00.iMZElevStopper1In = m_DY00.oElevStopper1In;
+		m_DX00.iMZElevStopper1Out = m_DY00.oElevStopper1Out;
 
-		m_DX00.iMZElevStopper2UpRight =		m_DY00.oMZElevStopper2UpRight;
-		m_DX00.iMZElevStopper2Down =	m_DY00.oMZElevStopper2Down;
-		m_DX00.iMZElevStopper2In =		m_DY00.oMZElevStopper2In;
-		m_DX00.iMZElevStopper2Out =		m_DY00.oMZElevStopper2Out;
+		m_DX00.iMZElevStopper2UpRight =		m_DY00.oElevStopper2UpRight;
+		m_DX00.iMZElevStopper2Down =		m_DY00.oElevStopper2Down;
+		m_DX00.iMZElevStopper2In =			m_DY00.oElevStopper2In;
+		m_DX00.iMZElevStopper2Out =			m_DY00.oElevStopper2Out;
 	}
 
 	if(nNo == 1)
@@ -857,8 +857,8 @@ void CAJinAXL::Sim_SetOutToIn(int nNo)
 		m_DX01.iFeederGripOpen =		m_DY01.oFeederGripOpen;
 		m_DX01.iFeederGripClose =		m_DY01.oFeederGripClose;
 
-		m_DX01.iFeederZigAlignIn =		m_DY01.oFeederZigAlignIn;
-		m_DX01.iFeederZigAlignOut =		m_DY01.oFeederZigAlignOut;
+		m_DX01.iRailZigAlignIn =		m_DY01.oFeederZigAlignIn;
+		m_DX01.iRailZigAlignOut =		m_DY01.oFeederZigAlignOut;
 		m_DX01.iZigPickerMasterIn =		m_DY01.oZigPickerMasterIn;
 		m_DX01.iZigPickerMasterOut =	m_DY01.oZigPickerMasterOut;
 		m_DX01.iZigPickerSlaveIn =		m_DY01.oZigPickerSlaveIn;

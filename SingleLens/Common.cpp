@@ -464,8 +464,8 @@ void CCommon::Set_ElevStopper1In()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oMZElevStopper1In = TRUE;
-	pDY00->oMZElevStopper1Out = FALSE;
+	pDY00->oElevStopper1In = TRUE;
+	pDY00->oElevStopper1Out = FALSE;
 	g_objAJinAXL.Write_Output(0);
 
 }
@@ -474,8 +474,8 @@ void CCommon::Set_ElevStopper1Out()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oMZElevStopper1In = FALSE;
-	pDY00->oMZElevStopper1Out = TRUE;
+	pDY00->oElevStopper1In = FALSE;
+	pDY00->oElevStopper1Out = TRUE;
 	g_objAJinAXL.Write_Output(0);
 }
 
@@ -483,8 +483,8 @@ void CCommon::Set_ElevStopper1Up()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oMZElevStopper1UpLeft = TRUE;
-	pDY00->oMZElevStopper1Down = FALSE;
+	pDY00->oElevStopper1UpLeft = TRUE;
+	pDY00->oElevStopper1Down = FALSE;
 	g_objAJinAXL.Write_Output(0);
 
 }
@@ -493,8 +493,8 @@ void CCommon::Set_ElevStopper1Down()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oMZElevStopper1UpLeft = FALSE;
-	pDY00->oMZElevStopper1Down = TRUE;
+	pDY00->oElevStopper1UpLeft = FALSE;
+	pDY00->oElevStopper1Down = TRUE;
 	g_objAJinAXL.Write_Output(0);
 
 }
@@ -553,8 +553,8 @@ void CCommon::Set_ElevStopper2In()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oMZElevStopper2In = TRUE;
-	pDY00->oMZElevStopper2Out = FALSE;
+	pDY00->oElevStopper2In = TRUE;
+	pDY00->oElevStopper2Out = FALSE;
 	g_objAJinAXL.Write_Output(0);
 
 }
@@ -563,8 +563,8 @@ void CCommon::Set_ElevStopper2Out()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oMZElevStopper2In = FALSE;
-	pDY00->oMZElevStopper2Out = TRUE;
+	pDY00->oElevStopper2In = FALSE;
+	pDY00->oElevStopper2Out = TRUE;
 	g_objAJinAXL.Write_Output(0);
 }
 
@@ -572,8 +572,8 @@ void CCommon::Set_ElevStopper2Up()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oMZElevStopper2UpRight = TRUE;
-	pDY00->oMZElevStopper2Down = FALSE;
+	pDY00->oElevStopper2UpRight = TRUE;
+	pDY00->oElevStopper2Down = FALSE;
 	g_objAJinAXL.Write_Output(0);
 
 }
@@ -582,8 +582,8 @@ void CCommon::Set_ElevStopper2Down()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oMZElevStopper2UpRight = FALSE;
-	pDY00->oMZElevStopper2Down = TRUE;
+	pDY00->oElevStopper2UpRight = FALSE;
+	pDY00->oElevStopper2Down = TRUE;
 	g_objAJinAXL.Write_Output(0);
 
 }
@@ -827,24 +827,24 @@ void CCommon::Set_UnloadCVStop()
 void CCommon::Set_ElevCVRunCCW()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
-	pDY00->oMZElevCVRun = TRUE;
-	pDY00->oMZElevCVDirCCW = TRUE;
+	pDY00->oElevCVRun = TRUE;
+	pDY00->oElevCVDirCCW = TRUE;
 	g_objAJinAXL.Write_Output(0);
 }
 
 void CCommon::Set_ElevCVRunCW()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
-	pDY00->oMZElevCVRun = TRUE;
-	pDY00->oMZElevCVDirCCW = FALSE;
+	pDY00->oElevCVRun = TRUE;
+	pDY00->oElevCVDirCCW = FALSE;
 	g_objAJinAXL.Write_Output(0);
 }
 
 void CCommon::Set_ElevCVStop()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
-	pDY00->oMZElevCVRun = FALSE;
-	pDY00->oMZElevCVDirCCW = FALSE;
+	pDY00->oElevCVRun = FALSE;
+	pDY00->oElevCVDirCCW = FALSE;
 	g_objAJinAXL.Write_Output(0);
 }
 

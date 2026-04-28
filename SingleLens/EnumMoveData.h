@@ -21,70 +21,125 @@ struct eLdCV_Stopper
 	};
 };
 
-
-struct MZ_Elev_Z
+struct eElevIO
 {
 	enum dtName
 	{
-		Ready = 0,
-		Bottom = 1,
-		Top = 2,
-		JigPitch = 3, 
+		CW = 0,
+		CCW = 1,
+		Stop = 2, 
+	};
+};
+
+struct eElevStopper 
+{
+	enum dtName
+	{
+		Up1 = 0,
+		Down1 = 1,
+		In1 = 2,
+		Out1 = 3,
+		Up2 = 4,
+		Down2 = 5,
+		In2 = 6,
+		Out2 = 7, 
 	};
 };
 
 
-struct Feeder_X
+struct eElev_Z
+{
+	enum dtName
+	{
+		Ready = 0,
+		Down = 1,
+		Up = 2,		
+		Pitch = 3,
+		PitchMinus = 4,
+	
+	};
+};
+
+struct eElevReady_Z
+{
+	enum dtName
+	{
+		Ready = 0,
+		Down = 5,
+		Up = 6,		
+		Pitch = 7,
+		PitchMinus = 8,
+	};
+};
+
+struct eFeeder_X
 {
 	enum dtName
 	{
 		Ready = 0,
 		MZReady = 1,
 		MZLoad = 2,
-		LoadUp= 3,
+		PickerUp= 3,
 	};
 };
 
+struct eFeeder_Y
+{
+	enum dtName
+	{
+		Ready = 0,		
+		MZReady = 1,
+		MZLoad = 2,
+		PickerUp = 3,
+	};
+};
 
-struct Feeder_Y
+struct eFeeder_IO
+{
+	enum dtName
+	{
+		GripOpen = 0,
+		GripClose = 1,
+		RailAlignIn = 2,
+		RailAlignOut = 3,
+		ExistInFeeder = 4,
+		ExistOnRail = 5,
+		ExistInMZ = 6,
+	};
+};
+
+struct eZigPicker_Y
 {
 	enum dtName
 	{
 		Ready = 0,
-		CheckExist = 1,
-		Grip1 = 2,
-		MZLoad = 3,
-		PickUp = 4,
-	};
-};
-
-
-
-struct Tray_Picker_Y
-{
-	enum dtName
-	{
-		Ready = 0,
-		Rail = 1,
+		Load = 1,
 		Index = 2,
 		MaxCnt,
 	};
 };
 
-
-
-struct Tray_Picker_Z
+struct eZigPicker_Z
 {
 	enum dtName
 	{
 		Ready = 0,
-
-		Rail = 1, 
+		LoadDown = 1, 
 		Index = 2,
 	};
 };
 
 
+struct ePicker_IO
+{
+	enum dtName
+	{
+		MasterIn = 0,
+		MasterOut = 1,
+		SlaveIn = 2,
+		SlaveOut = 3,	
+	};
+};
 
 struct Top_Inspector_X
 {
@@ -95,8 +150,6 @@ struct Top_Inspector_X
 	};
 };
 
-
-
 struct Top_Inspector_Y
 {
 	enum dtName
@@ -105,8 +158,6 @@ struct Top_Inspector_Y
 		ScanStart = 1,
 	};
 };
-
-
 
 struct Top_Inspector_Z
 {

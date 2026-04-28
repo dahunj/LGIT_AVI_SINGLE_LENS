@@ -16,20 +16,18 @@ public:
 	enum { IDD = IDD_MANUAL_LOAD_DLG };
 	CGroupCS	m_Group[9];
 	CLabelCS	m_Label[6];
-	//CStaticCS	m_stcAxisPos[6];
-	//CStaticCS	m_stcMainIndexPos;
-	//CButtonCS	m_btnMainIndexR[2];
-	//CLedCS		m_ledMainIndexPos[2];
-	//CButtonCS	m_btnMainIndexIo[38];
-	//CLedCS		m_ledMainIndexIo[22];
-	//CButtonCS	m_btnVisionCmX[4];
-	//CButtonCS	m_btnVisionCapY[3];
-	//CButtonCS	m_btnAssyPickerX[7];
-	//CButtonCS	m_btnAssyPickerY[7];
-	//CButtonCS	m_btnAssyPickerZ[7];
-	//CButtonCS	m_btnAssyPickerIo[31];
-	//CLedCS		m_ledAssyPickerIo[27];
-	//CStaticCS	m_stcAssyLoadCell[6];
+	
+	CStaticCS	m_stcAxisPos[4];
+
+	CButtonCS	m_BtnFeederX[4];
+	CButtonCS	m_BtnFeederY[4];
+	CButtonCS	m_BtnFeederIO[4];
+	CLedCS		m_LedFeederIO[7];
+	
+	CButtonCS	m_BtnPickerY[3];
+	CButtonCS	m_BtnPickerZ[3];
+	CButtonCS	m_BtnPickerIO[4];
+	CLedCS		m_LedPickerIO[5];
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
@@ -38,16 +36,16 @@ protected:
 	virtual BOOL OnInitDialog();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
-	//afx_msg void OnBtnMainIndexRClick(UINT nID);
-	//afx_msg void OnBtnMainIndexIoClick(UINT nID);
-	//afx_msg void OnBtnVisionCmClick(UINT nID);
-	//afx_msg void OnBtnVisionCapYClick(UINT nID);
-	//afx_msg void OnBtnAssyPickerXClick(UINT nID);
-	//afx_msg void OnBtnAssyPickerYClick(UINT nID);
-	//afx_msg void OnBtnAssyPickerZClick(UINT nID);
-	//afx_msg void OnBtnAssyPickerIoClick(UINT nID);
+	
+	afx_msg void OnBtnFeederXClick(UINT nID);
+	afx_msg void OnBtnFeederYClick(UINT nID);
+	afx_msg void OnBtnFeederIOClick(UINT nID);
 
-private:
+	afx_msg void OnBtnPickerYClick(UINT nID);
+	afx_msg void OnBtnPickerZClick(UINT nID);
+	afx_msg void OnBtnPickerIOClick(UINT nID);
+	
+	private:
 	CString m_strLog;
 	void Initial_Controls();
 

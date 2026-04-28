@@ -6,8 +6,9 @@
 // Equip Data
 typedef struct tag_EQUIP_DATA {
 	
-	double	dMZPitchLeftZ;
-	double	dMZPitchRightZ;
+	double	dElevPitchZ;
+	double	dElevPitchZReady;
+	
 	BOOL	bUseCleaner;
 	BOOL	bUseTopVision;
 	BOOL	bUseBtmVision;
@@ -19,7 +20,10 @@ typedef struct tag_EQUIP_DATA {
 	BOOL	bUseInspectSkip;
 	
 	
-/////////////////////	
+
+
+
+///////////////////// old 	
 	CString sEquipName;
 	CString sModel;
 	int		nLotBarcodePort;
