@@ -79,6 +79,9 @@ public:
 	int Get_Random(int nStart, int nEnd);
 	void Backup_File(CString strPath, CString strName);	// System Folder
 
+
+	void  Get_MainIndexPos(int nPos);
+
 	///////////////////////////////////////////////////////////////////////////
 	void Set_ElevStopper1In();
 	void Set_ElevStopper1Out();

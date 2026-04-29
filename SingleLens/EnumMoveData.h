@@ -185,10 +185,12 @@ struct eMark_Z
 
 
 
-struct Btm_Index_Table_R
+struct eIndex_R
 {
 	enum dtName
 	{
 		Ready = 0,
+		MoveP = 1,
+		MoveM = 2,
 	};
 };

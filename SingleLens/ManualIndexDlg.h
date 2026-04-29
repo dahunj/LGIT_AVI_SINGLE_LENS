@@ -33,7 +33,7 @@ private:
 	void Initial_Controls();
 
 protected:
-	CString m_strTemp;
+	void Display_Status();
 	
 public:
 	
@@ -45,5 +45,8 @@ public:
 	afx_msg void OnDestroy();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 
+	afx_msg void OnBtnIndexRClick(UINT nID);
+	afx_msg void OnBtmIndexIOClick(UINT nID);
+	
 	
 };

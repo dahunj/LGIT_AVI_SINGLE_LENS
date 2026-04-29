@@ -177,9 +177,9 @@ typedef union tag_DX_DATA_01 {
 typedef union tag_DX_DATA_02 {
 	DWORD nValue;
 	struct {
-		DWORD iIndexTPosBit0			: 1;		// X0200
-		DWORD iIndexTPosBit1 			: 1;		// X0201
-		DWORD iIndexTPosBit2		: 1;		// X0202
+		DWORD iIndexPosBit0			: 1;		// X0200
+		DWORD iIndexPosBit1 			: 1;		// X0201
+		DWORD iIndexPosBit2		: 1;		// X0202
 		DWORD i0203		: 1;		// X0203
 		DWORD iMainIndexZigAlignOut		: 1;		// X0204
 		DWORD iMainIndexZigAlignIn		: 1;	    // X0205

@@ -47,6 +47,9 @@ BEGIN_MESSAGE_MAP(CManualIndexDlg, CDialogEx)
 	ON_WM_DESTROY()
 	ON_WM_TIMER()
 	ON_WM_SHOWWINDOW()	
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_INDEX_R_0, IDC_BTN_INDEX_R_3, OnBtnIndexRClick)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_INDEX_IO_0, IDC_BTN_INDEX_IO_1, OnBtmIndexIOClick)	
+
 END_MESSAGE_MAP()
 
 
@@ -109,3 +112,68 @@ void CManualIndexDlg::Initial_Controls()
 	m_Group[0].Init_Ctrl("Arial", 11, TRUE, COLOR_DEFAULT, COLOR_DEFAULT);	
 }
 
+
+void CManualIndexDlg::Display_Status()
+{
+	CString strPos;
+
+	double dAngle = 0.0;
+	double dPos = g_objAJinAXL.Get_Position(AX_MAIN_INDEX_R);
+	
+	dAngle = (dPos/7200.0);
+	if(dAngle > 360) dAngle = fmod(dAngle, 360.0);
+	strPos.Format("%0.3lf", dAngle);
+	m_stcAxisPos[0].SetWindowText(strPos);
+	
+	//int nPos = g_objCommon.Get_MainIndexPos(0);
+	strPos.Format("%d", gData.nIndexPos);
+	m_stcAxisPos[1].SetWindowText(strPos);
+	
+	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
+	for (int i = 0; i < 3; i++) m_LedIndexPos[i].Set_On((pDX02->nValue >> i) & 1);					// Index Position
+}
+
+
+
+void CManualIndexDlg::OnBtnIndexRClick(UINT nID)
+{
+	if (!g_objCommon.Check_MainDoor()) return;
+
+	int nIndex = nID - IDC_BTN_INDEX_R_0;
+
+	if(nIndex == eIndex_R::Ready)
+	{
+		g_objCommon.Move_Position(AX_MAIN_INDEX_R, eIndex_R::Ready);
+	}
+	if(nIndex == eIndex_R::MoveP)
+	{
+		g_objAJinAXL.Move_Relative(AX_MAIN_INDEX_R, 7200*60 ); //60 degree 
+	}
+	if(nIndex == eIndex_R::MoveM)
+	{		
+		g_objAJinAXL.Move_Relative(AX_MAIN_INDEX_R, -7200*60 ); //60 degree 
+	}	
+	m_strLog.Format("[Manual Index R X] R (%d) Click", nIndex);
+	g_objLogFile.Save_HandlerLog(m_strLog);
+}
+
+void CManualIndexDlg::OnBtmIndexIOClick(UINT nID)
+{
+	if (!g_objCommon.Check_MainDoor()) return;
+		
+	int nIndex = nID - IDC_BTN_INDEX_IO_0;
+
+	DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
+
+	if(nIndex == eIndexIO::AlignIn)
+	{
+		pDY02->oMainIndexZigAlignIn = TRUE; pDY02->oMainIndexZigAlignOut = FALSE;
+	}
+	if(nIndex == eIndexIO::AlignOut)
+	{
+		pDY02->oMainIndexZigAlignIn = FALSE; pDY02->oMainIndexZigAlignOut = TRUE;
+	}
+	
+	m_strLog.Format("[Manual Index IO ] I/O (%d) Click", nIndex);
+	g_objLogFile.Save_HandlerLog(m_strLog);
+}

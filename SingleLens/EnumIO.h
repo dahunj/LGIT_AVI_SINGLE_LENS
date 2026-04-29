@@ -100,3 +100,13 @@ struct eMarkUnit
 		PenOut = 1,		
 	};
 };
+
+
+struct eIndexIO
+{
+	enum dtName
+	{
+		AlignIn = 0,
+		AlignOut = 1,		
+	};
+};

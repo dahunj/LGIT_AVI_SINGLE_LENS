@@ -218,7 +218,7 @@ typedef struct
 
 	BOOL	bIndexDone[7]; 
 
-
+	int		nIndexPos;
 } GLOVAL_DATA;
 
 
