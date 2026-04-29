@@ -33,6 +33,13 @@ void CManualIndexDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_GROUP_0, m_Group[0]);	
+	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_STC_AXIS_POS_0 + i, m_stcAxisPos[i]);
+
+	for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_BTN_INDEX_R_0 + i, m_BtnIndexR[i]);
+	for (int i = 0; i <  3; i++) DDX_Control(pDX, IDC_LED_INDEX_POS_0 + i, m_LedIndexPos[i]);
+
+	for (int i = 0; i <  2; i++) DDX_Control(pDX, IDC_BTN_INDEX_IO_0 + i, m_BtnIndexIO[i]);
+	for (int i = 0; i <  2; i++) DDX_Control(pDX, IDC_LED_INDEX_IO_0 + i, m_LedIndexIO[i]);
 }
 
 

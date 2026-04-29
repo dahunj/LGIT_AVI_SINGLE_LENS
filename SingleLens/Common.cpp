@@ -464,8 +464,8 @@ void CCommon::Set_ElevStopper1In()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oElevStopper1In = TRUE;
-	pDY00->oElevStopper1Out = FALSE;
+	pDY00->oElvStpr1In = TRUE;
+	pDY00->oElvStpr1Out = FALSE;
 	g_objAJinAXL.Write_Output(0);
 
 }
@@ -474,8 +474,8 @@ void CCommon::Set_ElevStopper1Out()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oElevStopper1In = FALSE;
-	pDY00->oElevStopper1Out = TRUE;
+	pDY00->oElvStpr1In = FALSE;
+	pDY00->oElvStpr1Out = TRUE;
 	g_objAJinAXL.Write_Output(0);
 }
 
@@ -483,8 +483,8 @@ void CCommon::Set_ElevStopper1Up()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oElevStopper1UpLeft = TRUE;
-	pDY00->oElevStopper1Down = FALSE;
+	pDY00->oElvStpr1UpL = TRUE;
+	pDY00->oElvStpr1Dn = FALSE;
 	g_objAJinAXL.Write_Output(0);
 
 }
@@ -493,8 +493,8 @@ void CCommon::Set_ElevStopper1Down()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oElevStopper1UpLeft = FALSE;
-	pDY00->oElevStopper1Down = TRUE;
+	pDY00->oElvStpr1UpL = FALSE;
+	pDY00->oElvStpr1Dn = TRUE;
 	g_objAJinAXL.Write_Output(0);
 
 }
@@ -503,7 +503,7 @@ BOOL CCommon::Get_ElevStopper1In()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(pDX00->iMZElevStopper1In && !pDX00->iMZElevStopper1Out)
+	if(pDX00->iElvStpr1In && !pDX00->iElvStpr1Out)
 	{
 		return TRUE;
 	}
@@ -514,7 +514,7 @@ BOOL CCommon::Get_ElevStopper1Out()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(!pDX00->iMZElevStopper1In && pDX00->iMZElevStopper1Out)
+	if(!pDX00->iElvStpr1In && pDX00->iElvStpr1Out)
 	{
 		return TRUE;
 	}
@@ -526,7 +526,7 @@ BOOL CCommon::Get_ElevStopper1Up()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(pDX00->iMZElevStopper1UpLeft && !pDX00->iMZElevStopper1Down)
+	if(pDX00->iElvStpr1UpL && !pDX00->iElvStpr1Dn)
 	{
 		return TRUE;
 	}
@@ -538,7 +538,7 @@ BOOL CCommon::Get_ElevStopper1Down()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(!pDX00->iMZElevStopper1UpLeft && pDX00->iMZElevStopper1Down)
+	if(!pDX00->iElvStpr1UpL && pDX00->iElvStpr1Dn)
 	{
 		return TRUE;
 	}
@@ -553,8 +553,8 @@ void CCommon::Set_ElevStopper2In()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oElevStopper2In = TRUE;
-	pDY00->oElevStopper2Out = FALSE;
+	pDY00->oElvStpr2In = TRUE;
+	pDY00->oElvStpr2Out = FALSE;
 	g_objAJinAXL.Write_Output(0);
 
 }
@@ -563,8 +563,8 @@ void CCommon::Set_ElevStopper2Out()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oElevStopper2In = FALSE;
-	pDY00->oElevStopper2Out = TRUE;
+	pDY00->oElvStpr2In = FALSE;
+	pDY00->oElvStpr2Out = TRUE;
 	g_objAJinAXL.Write_Output(0);
 }
 
@@ -572,8 +572,8 @@ void CCommon::Set_ElevStopper2Up()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oElevStopper2UpRight = TRUE;
-	pDY00->oElevStopper2Down = FALSE;
+	pDY00->oElvStpr2UpR = TRUE;
+	pDY00->oElvStpr2Dn = FALSE;
 	g_objAJinAXL.Write_Output(0);
 
 }
@@ -582,8 +582,8 @@ void CCommon::Set_ElevStopper2Down()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
-	pDY00->oElevStopper2UpRight = FALSE;
-	pDY00->oElevStopper2Down = TRUE;
+	pDY00->oElvStpr2UpR = FALSE;
+	pDY00->oElvStpr2Dn = TRUE;
 	g_objAJinAXL.Write_Output(0);
 
 }
@@ -592,7 +592,7 @@ BOOL CCommon::Get_ElevStopper2In()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(pDX00->iMZElevStopper2In && !pDX00->iMZElevStopper2Out)
+	if(pDX00->iElvStpr2In && !pDX00->iElvStpr2Out)
 	{
 		return TRUE;
 	}
@@ -603,7 +603,7 @@ BOOL CCommon::Get_ElevStopper2Out()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(!pDX00->iMZElevStopper2In && pDX00->iMZElevStopper2Out)
+	if(!pDX00->iElvStpr2In && pDX00->iElvStpr2Out)
 	{
 		return TRUE;
 	}
@@ -615,7 +615,7 @@ BOOL CCommon::Get_ElevStopper2Up()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(pDX00->iMZElevStopper2UpRight && !pDX00->iMZElevStopper2Down)
+	if(pDX00->iElvStpr2UpR && !pDX00->iElvStpr2Dn)
 	{
 		return TRUE;
 	}
@@ -627,7 +627,7 @@ BOOL CCommon::Get_ElevStopper2Down()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(!pDX00->iMZElevStopper2UpRight && pDX00->iMZElevStopper2Down)
+	if(!pDX00->iElvStpr2UpR && pDX00->iElvStpr2Dn)
 	{
 		return TRUE;
 	}
@@ -687,16 +687,16 @@ BOOL CCommon::Get_IndexLoadAlignOut()
 void CCommon::Set_CleanerClose()
 {
 	DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
-	pDY02->oLensCleanerTopDown = TRUE; pDY02->oLensCleanerTopUp = FALSE;
-	pDY02->oLensCleanerBtmUp = TRUE; pDY02->oLensCleanerBtmDown = FALSE;
+	pDY02->oCleanerTopDn = TRUE; pDY02->oCleanerTopUp = FALSE;
+	pDY02->oCleanerBtmUp = TRUE; pDY02->oCleanerBtmDn = FALSE;
 	g_objAJinAXL.Write_Output(2);
 }
 
 void CCommon::Set_CleanerOpen()
 {
 	DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
-	pDY02->oLensCleanerTopDown = FALSE; pDY02->oLensCleanerTopUp = TRUE;
-	pDY02->oLensCleanerBtmUp = FALSE; pDY02->oLensCleanerBtmDown = TRUE;
+	pDY02->oCleanerTopDn = FALSE; pDY02->oCleanerTopUp = TRUE;
+	pDY02->oCleanerBtmUp = FALSE; pDY02->oCleanerBtmDn = TRUE;
 	g_objAJinAXL.Write_Output(2);
 }
 
@@ -704,8 +704,8 @@ BOOL CCommon::Get_CleanerClose()
 {
 	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
 
-	if(pDX02->iLensCleanerTopDown && !pDX02->iLensCleanerTopUp
-		&& !pDX02->iLensCleanerBtmDown && pDX02->iLensCleanerBtmUp)
+	if(pDX02->iCleanerTopDn && !pDX02->iCleanerTopUp
+		&& !pDX02->iCleanerBtmDn && pDX02->iCleanerBtmUp)
 	{
 		return TRUE;
 	}
@@ -716,8 +716,8 @@ BOOL CCommon::Get_CleanerOpen()
 {
 	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
 
-	if(!pDX02->iLensCleanerTopDown && pDX02->iLensCleanerTopUp
-		&& pDX02->iLensCleanerBtmDown && !pDX02->iLensCleanerBtmUp)
+	if(!pDX02->iCleanerTopDn && pDX02->iCleanerTopUp
+		&& pDX02->iCleanerBtmDn && !pDX02->iCleanerBtmUp)
 	{
 		return TRUE;
 	}
@@ -731,24 +731,24 @@ BOOL CCommon::Get_CleanerOpen()
 void CCommon::Set_CleanerForward()
 {
 	DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
-	pDY02->oLensCleanerTopForward = TRUE; pDY02->oLensCleanerTopBackward = FALSE;
-	pDY02->oLensCleanerBtmForward = TRUE; pDY02->oLensCleanerBtmBackward = FALSE;
+	pDY02->oCleanerTopFwd = TRUE; pDY02->oCleanerTopBwd = FALSE;
+	pDY02->oCleanerBtmFwd = TRUE; pDY02->oCleanerBtmBwd = FALSE;
 	g_objAJinAXL.Write_Output(2);
 }
 
 void CCommon::Set_CleanerBackward()
 {
 	DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
-	pDY02->oLensCleanerTopForward = FALSE; pDY02->oLensCleanerTopBackward = TRUE;
-	pDY02->oLensCleanerBtmForward = FALSE; pDY02->oLensCleanerBtmBackward = TRUE;
+	pDY02->oCleanerTopFwd = FALSE; pDY02->oCleanerTopBwd = TRUE;
+	pDY02->oCleanerBtmFwd = FALSE; pDY02->oCleanerBtmBwd = TRUE;
 	g_objAJinAXL.Write_Output(2);
 }
 
 BOOL CCommon::Get_CleanerForwardDone()
 {
 	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
-	if(pDX02->iLensCleanerBtmForward && !pDX02->iLensCleanerBtmBackward
-		&& pDX02->iLensCleanerTopForward && !pDX02->iLensCleanerTopBackward)
+	if(pDX02->iCleanerBtmFwd && !pDX02->iCleanerBtmBwd
+		&& pDX02->iCleanerTopFwd && !pDX02->iCleanerTopBwd)
 	{
 		return TRUE;
 	}
@@ -758,8 +758,8 @@ BOOL CCommon::Get_CleanerForwardDone()
 BOOL CCommon::Get_CleanerBackwardDone()
 {
 	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
-	if(!pDX02->iLensCleanerBtmForward && pDX02->iLensCleanerBtmBackward
-		&& !pDX02->iLensCleanerTopForward && pDX02->iLensCleanerTopBackward)
+	if(!pDX02->iCleanerBtmFwd && pDX02->iCleanerBtmBwd
+		&& !pDX02->iCleanerTopFwd && pDX02->iCleanerTopBwd)
 	{
 		return TRUE;
 	}
@@ -800,8 +800,8 @@ void CCommon::Set_LoadCVStop()
 void CCommon::Set_UnloadCVRunCCW()
 {
 	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
-	pDY01->oUnloadCVRun = TRUE;
-	pDY01->oUnloadCVDirCCW = TRUE;
+	pDY01->oUldCvRun = TRUE;
+	pDY01->oUldCvDirCCW = TRUE;
 
 	g_objAJinAXL.Write_Output(1);
 }
@@ -809,8 +809,8 @@ void CCommon::Set_UnloadCVRunCCW()
 void CCommon::Set_UnloadCVRunCW()
 {
 	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
-	pDY01->oUnloadCVRun = TRUE;
-	pDY01->oUnloadCVDirCCW = FALSE;
+	pDY01->oUldCvRun = TRUE;
+	pDY01->oUldCvDirCCW = FALSE;
 
 	g_objAJinAXL.Write_Output(1);
 }
@@ -818,8 +818,8 @@ void CCommon::Set_UnloadCVRunCW()
 void CCommon::Set_UnloadCVStop()
 {
 	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
-	pDY01->oUnloadCVRun = FALSE;
-	pDY01->oUnloadCVDirCCW = FALSE;
+	pDY01->oUldCvRun = FALSE;
+	pDY01->oUldCvDirCCW = FALSE;
 
 	g_objAJinAXL.Write_Output(1);
 }
@@ -827,24 +827,24 @@ void CCommon::Set_UnloadCVStop()
 void CCommon::Set_ElevCVRunCCW()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
-	pDY00->oElevCVRun = TRUE;
-	pDY00->oElevCVDirCCW = TRUE;
+	pDY00->oElvCvRun = TRUE;
+	pDY00->oElvCvDirCCW = TRUE;
 	g_objAJinAXL.Write_Output(0);
 }
 
 void CCommon::Set_ElevCVRunCW()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
-	pDY00->oElevCVRun = TRUE;
-	pDY00->oElevCVDirCCW = FALSE;
+	pDY00->oElvCvRun = TRUE;
+	pDY00->oElvCvDirCCW = FALSE;
 	g_objAJinAXL.Write_Output(0);
 }
 
 void CCommon::Set_ElevCVStop()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
-	pDY00->oElevCVRun = FALSE;
-	pDY00->oElevCVDirCCW = FALSE;
+	pDY00->oElvCvRun = FALSE;
+	pDY00->oElvCvDirCCW = FALSE;
 	g_objAJinAXL.Write_Output(0);
 }
 

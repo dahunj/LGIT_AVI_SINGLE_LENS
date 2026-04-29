@@ -180,7 +180,7 @@ BOOL CSequenceInit::Initial_MainInit()
 
 	// Load
 	case 2:		
-		if (!m_pDX00->iMZElevMZExist1 && !m_pDX00->iMZElevMZExist2) 
+		if (!m_pDX00->iElvMZExist1 && !m_pDX00->iElvMZExist2) 
 		{
 			m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
 		}
@@ -297,7 +297,7 @@ BOOL CSequenceInit::Initial_MZ_Elevator()
 	case 0:
 		return TRUE;
 	case 1:
-		if (!m_pDX00->iMZElevMZExist1 && !m_pDX00->iMZElevMZExist2) 
+		if (!m_pDX00->iElvMZExist1 && !m_pDX00->iElvMZExist2) 
 		{			
 			g_objAJinAXL.Set_EncoderType(AX_MZ_ELEVATOR_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_MZ_ELEVATOR_Z, 1);	// Abs
@@ -586,11 +586,11 @@ BOOL CSequenceInit::Initial_TopInspector()
 		break;
 	case 4:
 		if(!m_tiTopInspectorLoop.Waiting_Time(100)) break;
-		g_objCommon.Move_Position(AX_TOP_INSPECTOR_Z, Top_Inspector_Z::Ready);
+		g_objCommon.Move_Position(AX_TOP_INSPECTOR_Z, eTopInspect_Z::Ready);
 		m_niTopInspectorCase = 10; m_tiTopInspectorLoop.Set_LoopTime(5000);
 		break;
 	case 10:
-		if(g_objCommon.Check_Position(AX_TOP_INSPECTOR_Z, Top_Inspector_Z::Ready))
+		if(g_objCommon.Check_Position(AX_TOP_INSPECTOR_Z, eTopInspect_Z::Ready))
 		{
 			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(5000);
 		}
@@ -606,10 +606,10 @@ BOOL CSequenceInit::Initial_TopInspector()
 		}
 		break;
 	case 13:
-		g_objCommon.Move_Position(AX_TOP_INSPECTOR_Y, Top_Inspector_Y::Ready);
+		g_objCommon.Move_Position(AX_TOP_INSPECTOR_Y, eTopInspect_Y::Ready);
 		m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(5000);
 	case 14:
-		if(g_objCommon.Check_Position(AX_TOP_INSPECTOR_Y, Top_Inspector_Y::Ready))
+		if(g_objCommon.Check_Position(AX_TOP_INSPECTOR_Y, eTopInspect_Y::Ready))
 		{
 			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(5000);
 		}
@@ -621,12 +621,12 @@ BOOL CSequenceInit::Initial_TopInspector()
 	case 16:		// Tray Picker Slave Out 
 		if(g_objAJinAXL.Is_Home(AX_TOP_INSPECTOR_X))
 		{			
-			g_objCommon.Move_Position(AX_TOP_INSPECTOR_X, Top_Inspector_X::Ready);
+			g_objCommon.Move_Position(AX_TOP_INSPECTOR_X, eTopInspect_X::Ready);
 			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 17:
-		if(g_objCommon.Check_Position(AX_TOP_INSPECTOR_X, Top_Inspector_X::Ready))
+		if(g_objCommon.Check_Position(AX_TOP_INSPECTOR_X, eTopInspect_X::Ready))
 		{
 			g_objLogFile.Save_HandlerLog("[Initial Sequence] - Top Inspector Complete");
 			m_niTopInspectorCase = 90; m_tiTopInspectorLoop.Set_LoopTime(5000);
@@ -678,11 +678,11 @@ BOOL CSequenceInit::Initial_BtmInspector()
 		break;
 	case 4:
 		if(!m_tiBtmInspectorLoop.Waiting_Time(100)) break;
-		g_objCommon.Move_Position(AX_BTM_INSPECTOR_Z, Btm_Inspector_Z::Ready);
+		g_objCommon.Move_Position(AX_BTM_INSPECTOR_Z, eBtmInspect_Z::Ready);
 		m_niBtmInspectorCase = 10; m_tiBtmInspectorLoop.Set_LoopTime(5000);
 		break;
 	case 10:
-		if(g_objCommon.Check_Position(AX_BTM_INSPECTOR_Z, Btm_Inspector_Z::Ready))
+		if(g_objCommon.Check_Position(AX_BTM_INSPECTOR_Z, eBtmInspect_Z::Ready))
 		{
 			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(5000);
 		}
@@ -698,10 +698,10 @@ BOOL CSequenceInit::Initial_BtmInspector()
 		}
 		break;
 	case 13:
-		g_objCommon.Move_Position(AX_BTM_INSPECTOR_Y, Btm_Inspector_Y::Ready);
+		g_objCommon.Move_Position(AX_BTM_INSPECTOR_Y, eBtmInspect_Y::Ready);
 		m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(5000);
 	case 14:
-		if(g_objCommon.Check_Position(AX_BTM_INSPECTOR_Y, Btm_Inspector_Y::Ready))
+		if(g_objCommon.Check_Position(AX_BTM_INSPECTOR_Y, eBtmInspect_Y::Ready))
 		{
 			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(5000);
 		}
@@ -713,12 +713,12 @@ BOOL CSequenceInit::Initial_BtmInspector()
 	case 16:		// Tray Picker Slave Out 
 		if(g_objAJinAXL.Is_Home(AX_BTM_INSPECTOR_X))
 		{			
-			g_objCommon.Move_Position(AX_BTM_INSPECTOR_X, Btm_Inspector_X::Ready);
+			g_objCommon.Move_Position(AX_BTM_INSPECTOR_X, eBtmInspect_X::Ready);
 			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 17:
-		if(g_objCommon.Check_Position(AX_BTM_INSPECTOR_X, Btm_Inspector_X::Ready))
+		if(g_objCommon.Check_Position(AX_BTM_INSPECTOR_X, eBtmInspect_X::Ready))
 		{
 			g_objLogFile.Save_HandlerLog("[Initial Sequence] - Btm Inspector Complete");
 			m_niBtmInspectorCase = 90; m_tiBtmInspectorLoop.Set_LoopTime(5000);
@@ -768,11 +768,11 @@ BOOL CSequenceInit::Initial_MarkUnit()
 		break;
 	case 4:
 		if(!m_tiMarkUnitLoop.Waiting_Time(100)) break;
-		g_objCommon.Move_Position(AX_MARK_UNIT_Z, Marker_Z::Ready);
+		g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::Ready);
 		m_niMarkUnitCase++; m_tiMarkUnitLoop.Set_LoopTime(5000);
 		break;
 	case 5:
-		if(g_objCommon.Check_Position(AX_MARK_UNIT_Z, Marker_Z::Ready))
+		if(g_objCommon.Check_Position(AX_MARK_UNIT_Z, eMark_Z::Ready))
 		{
 			m_niMarkUnitCase++; m_tiMarkUnitLoop.Set_LoopTime(5000);
 		}
@@ -788,10 +788,10 @@ BOOL CSequenceInit::Initial_MarkUnit()
 		}
 		break;
 	case 8:
-		g_objCommon.Move_Position(AX_MARK_UNIT_Y, Marker_Y::Ready);
+		g_objCommon.Move_Position(AX_MARK_UNIT_Y, eMark_Y::Ready);
 		m_niMarkUnitCase++; m_tiMarkUnitLoop.Set_LoopTime(5000);
 	case 9:
-		if(g_objCommon.Check_Position(AX_MARK_UNIT_Y, Marker_Y::Ready))
+		if(g_objCommon.Check_Position(AX_MARK_UNIT_Y, eMark_Y::Ready))
 		{
 			m_niMarkUnitCase++; m_tiMarkUnitLoop.Set_LoopTime(5000);
 		}
@@ -803,12 +803,12 @@ BOOL CSequenceInit::Initial_MarkUnit()
 	case 11:		// Tray Picker Slave Out 
 		if(g_objAJinAXL.Is_Home(AX_MARK_UNIT_X))
 		{			
-			g_objCommon.Move_Position(AX_MARK_UNIT_X, Marker_X::Ready);
+			g_objCommon.Move_Position(AX_MARK_UNIT_X, eMark_X::Ready);
 			m_niMarkUnitCase++; m_tiMarkUnitLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 12:
-		if(g_objCommon.Check_Position(AX_MARK_UNIT_X, Marker_X::Ready))
+		if(g_objCommon.Check_Position(AX_MARK_UNIT_X, eMark_X::Ready))
 		{
 			g_objLogFile.Save_HandlerLog("[Initial Sequence] - Marker Complete");
 			m_niMarkUnitCase = 90; m_tiMarkUnitLoop.Set_LoopTime(5000);
@@ -861,8 +861,8 @@ BOOL CSequenceInit::Initial_MainIndex()
 		break;
 	case 4:
 		if(g_objCommon.Check_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Ready)
-			&& g_objCommon.Check_Position(AX_TOP_INSPECTOR_Z, Top_Inspector_Z::Ready)
-			&& g_objCommon.Check_Position(AX_BTM_INSPECTOR_Z, Btm_Inspector_Z::Ready)
+			&& g_objCommon.Check_Position(AX_TOP_INSPECTOR_Z, eTopInspect_Z::Ready)
+			&& g_objCommon.Check_Position(AX_BTM_INSPECTOR_Z, eBtmInspect_Z::Ready)
 			&& g_objCommon.Get_CleanerOpen() && g_objCommon.Get_CleanerBackwardDone()) //Interlock 
 		{
 			g_objAJinAXL.Home_Search(AX_MAIN_INDEX_R);

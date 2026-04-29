@@ -16,29 +16,15 @@ public:
 	enum { IDD = IDD_MANUAL_CLEAN_TOP_DLG };
 	CGroupCS	m_Group[14];
 	CLabelCS	m_Label[8];
-	/*CStaticCS	m_stcAxisPos[8];
-	CButtonCS	m_btnCapPort1Io[4];
-	CLedCS		m_ledCapPort1Io[10];
-	CButtonCS	m_btnCapPort2Io[4];
-	CLedCS		m_ledCapPort2Io[10];
-	CButtonCS	m_btnCapStage1X[5];
-	CButtonCS	m_btnCapStage1Z[4];
-	CButtonCS	m_btnCapStage1Io[4];
-	CLedCS		m_ledCapStage1Io[5];
-	CButtonCS	m_btnCapStage2X[5];
-	CButtonCS	m_btnCapStage2Z[4];
-	CButtonCS	m_btnCapStage2Io[4];
-	CLedCS		m_ledCapStage2Io[5];
-	CButtonCS	m_btnCapPickerY[15];
-	CButtonCS	m_btnCapPickerZ[4];
-	CButtonCS	m_btnCapPickerP[2];
-	CButtonCS	m_btnCapPickerIo[42];
-	CLedCS		m_ledCapPickerIo[24];
-	CButtonCS	m_btnCapBufferY[6];
-	CButtonCS	m_btnCapBufferIo[18];
-	CLedCS		m_ledCapBufferIo[4];*/
+	CStaticCS	m_stcAxisPos[3];
 
-	
+	CButtonCS	m_BtnCleanerIO[12];
+	CLedCS		m_LedCleanerIO[8];
+
+	CButtonCS	m_BtnTopInspectX[4];
+	CButtonCS	m_BtnTopInspectY[4];
+	CButtonCS	m_BtnTopInspectZ[4];
+		
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
@@ -46,21 +32,12 @@ protected:
 	virtual BOOL OnInitDialog();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
-	//afx_msg void OnBtnCapPort1IoClick(UINT nID);
-	//afx_msg void OnBtnCapPort2IoClick(UINT nID);
-	//afx_msg void OnBtnCapStage1XClick(UINT nID);
-	//afx_msg void OnBtnCapStage1ZClick(UINT nID);
-	//afx_msg void OnBtnCapStage1IoClick(UINT nID);
-	//afx_msg void OnBtnCapStage2XClick(UINT nID);
-	//afx_msg void OnBtnCapStage2ZClick(UINT nID);
-	//afx_msg void OnBtnCapStage2IoClick(UINT nID);
-	//afx_msg void OnBtnCapPickerYClick(UINT nID);
-	//afx_msg void OnBtnCapPickerZClick(UINT nID);
-	//afx_msg void OnBtnCapPickerPClick(UINT nID);
-	//afx_msg void OnBtnCapPickerIoClick(UINT nID);
-	//afx_msg void OnBtnCapBufferYClick(UINT nID);
-	//afx_msg void OnBtnCapBufferIoClick(UINT nID);
 
+	afx_msg void OnBtnCleanerIOClick(UINT nID);
+	afx_msg void OnBtnTopInspectXClick(UINT nID);
+	afx_msg void OnBtnTopInspectYClick(UINT nID);
+	afx_msg void OnBtnTopInspectZClick(UINT nID);
+	
 private:
 	CString m_strLog;
 	void Initial_Controls();

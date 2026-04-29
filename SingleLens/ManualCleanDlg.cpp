@@ -30,12 +30,20 @@ void CManualCleanDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	//for (int i = 0; i < 14; i++) DDX_Control(pDX, IDC_GROUP_0 + i, m_Group[i]);
 	//for (int i = 0; i <  8; i++) DDX_Control(pDX, IDC_LABEL_0 + i, m_Label[i]);
-
+	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_STC_AXIS_POS_0 + i, m_stcAxisPos[i]);
+	for (int i = 0; i <  12; i++) DDX_Control(pDX, IDC_BTN_CLEANER_IO_0 + i, m_BtnCleanerIO[i]);
+	for (int i = 0; i <  8; i++) DDX_Control(pDX, IDC_LED_CLEANER_IO_0 + i, m_LedCleanerIO[i]);
+	for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_BTN_TOP_INSPECT_X_0 + i, m_BtnTopInspectX[i]);
+	for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_BTN_TOP_INSPECT_Y_0 + i, m_BtnTopInspectY[i]);
+	for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_BTN_TOP_INSPECT_Z_0 + i, m_BtnTopInspectZ[i]);
 }
 
 BEGIN_MESSAGE_MAP(CManualCleanDlg, CDialogEx)
 	ON_WM_SHOWWINDOW()
-
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_CLEANER_IO_0, IDC_BTN_CLEANER_IO_11, OnBtnCleanerIOClick)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_TOP_INSPECT_X_0, IDC_BTN_TOP_INSPECT_X_3, OnBtnTopInspectXClick)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_TOP_INSPECT_Y_0, IDC_BTN_TOP_INSPECT_Y_3, OnBtnTopInspectYClick)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_TOP_INSPECT_Z_0, IDC_BTN_TOP_INSPECT_Z_3, OnBtnTopInspectZClick)
 	END_MESSAGE_MAP()
 
 // CManualCleanDlg 메시지 처리기입니다.
@@ -88,9 +96,168 @@ void CManualCleanDlg::Display_Status()
 {
 	CString strPos;
 	
-
+	double dPos = g_objAJinAXL.Get_Position(AX_TOP_INSPECTOR_X);
+	strPos.Format("%0.3lf", dPos);
+	m_stcAxisPos[0].SetWindowText(strPos);
 	
+	dPos = g_objAJinAXL.Get_Position(AX_TOP_INSPECTOR_Y);
+	strPos.Format("%0.3lf", dPos);
+	m_stcAxisPos[1].SetWindowText(strPos);
+
+	dPos = g_objAJinAXL.Get_Position(AX_TOP_INSPECTOR_Z);
+	strPos.Format("%0.3lf", dPos);
+	m_stcAxisPos[2].SetWindowText(strPos);
+
+	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
+
+	m_LedCleanerIO[0].Set_On(pDX02->iCleanerTopDn);
+	m_LedCleanerIO[1].Set_On(pDX02->iCleanerTopUp);
+	m_LedCleanerIO[2].Set_On(pDX02->iCleanerTopFwd);
+	m_LedCleanerIO[3].Set_On(pDX02->iCleanerTopBwd);
+	m_LedCleanerIO[4].Set_On(pDX02->iCleanerBtmDn);
+	m_LedCleanerIO[5].Set_On(pDX02->iCleanerBtmUp);
+	m_LedCleanerIO[6].Set_On(pDX02->iCleanerBtmFwd);
+	m_LedCleanerIO[7].Set_On(pDX02->iCleanerBtmBwd);
 }
+
+
+
+void CManualCleanDlg::OnBtnCleanerIOClick(UINT nID)
+{
+	if (!g_objCommon.Check_MainDoor()) return;
+
+	DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
+
+	int nIndex = nID - IDC_BTN_CLEANER_IO_0;
+
+	if(nIndex == eCleanerIO::TopDn)
+	{
+		pDY02->oCleanerTopDn = TRUE; pDY02->oCleanerTopUp = FALSE;
+	}
+	if(nIndex == eCleanerIO::TopUp)
+	{
+		pDY02->oCleanerTopDn = FALSE; pDY02->oCleanerTopUp = TRUE;
+	}
+	if(nIndex == eCleanerIO::TopFwd)
+	{
+		pDY02->oCleanerTopFwd = TRUE; pDY02->oCleanerTopBwd = FALSE;
+	}
+	if(nIndex == eCleanerIO::TopBwd)
+	{
+		pDY02->oCleanerTopFwd = FALSE; pDY02->oCleanerTopBwd = TRUE;
+	}
+	if(nIndex == eCleanerIO::BtmDn)
+	{
+		pDY02->oCleanerBtmDn = TRUE; pDY02->oCleanerBtmUp = FALSE;
+	}
+	if(nIndex == eCleanerIO::BtmUp)
+	{
+		pDY02->oCleanerBtmDn = FALSE; pDY02->oCleanerBtmUp = TRUE;
+	}
+	if(nIndex == eCleanerIO::BtmFwd)
+	{
+		pDY02->oCleanerBtmFwd = TRUE; pDY02->oCleanerBtmBwd = FALSE;
+	}
+	if(nIndex == eCleanerIO::BtmBwd)
+	{
+		pDY02->oCleanerBtmFwd = FALSE; pDY02->oCleanerBtmBwd = TRUE;
+	}
+	g_objAJinAXL.Write_Output(2);
+
+	m_strLog.Format("[Manual Cleaner IO] Cleaner IO (%d) Click", nIndex);
+	g_objLogFile.Save_HandlerLog(m_strLog);
+}
+
+void CManualCleanDlg::OnBtnTopInspectXClick(UINT nID)
+{
+	if (!g_objCommon.Check_MainDoor()) return;
+	
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	int nIndex = nID - IDC_BTN_TOP_INSPECT_X_0;
+	
+	if(nIndex == eTopInspect_X::Ready)
+	{
+		g_objCommon.Move_Position(AX_TOP_INSPECTOR_X, eTopInspect_X::Ready);
+	}
+	if(nIndex == eTopInspect_X::ScanStart)
+	{
+		g_objCommon.Move_Position(AX_TOP_INSPECTOR_X, eTopInspect_X::ScanStart);
+	}
+	if(nIndex == eTopInspect_X::PitchP)
+	{		
+		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorZ[eTopInspect_X::PitchP];
+		g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_X, dPitch);
+	}
+	if(nIndex == eTopInspect_X::PitchM)
+	{
+		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorZ[eTopInspect_X::PitchM];
+		g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_X, dPitch);
+	}
+	m_strLog.Format("[Manual Top Inspector X] X (%d) Click", nIndex);
+	g_objLogFile.Save_HandlerLog(m_strLog);
+}
+
+void CManualCleanDlg::OnBtnTopInspectYClick(UINT nID)
+{
+	if (!g_objCommon.Check_MainDoor()) return;
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	int nIndex = nID - IDC_BTN_TOP_INSPECT_Y_0;
+
+	if(nIndex == eTopInspect_Y::Ready)
+	{
+		g_objCommon.Move_Position(AX_TOP_INSPECTOR_Y, eTopInspect_Y::Ready);
+	}
+	if(nIndex == eTopInspect_Y::ScanStart)
+	{
+		g_objCommon.Move_Position(AX_TOP_INSPECTOR_Y, eTopInspect_Y::ScanStart);
+	}
+	if(nIndex == eTopInspect_Y::PitchP)
+	{		
+		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorY[eTopInspect_Y::PitchP];
+		g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_Y, dPitch);
+	}
+	if(nIndex == eTopInspect_Y::PitchM)
+	{
+		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorY[eTopInspect_X::PitchM];
+		g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_Y, dPitch);
+	}
+	m_strLog.Format("[Manual Top Inspector Y] Y (%d) Click", nIndex);
+	g_objLogFile.Save_HandlerLog(m_strLog);
+}
+
+void CManualCleanDlg::OnBtnTopInspectZClick(UINT nID)
+{
+	if (!g_objCommon.Check_MainDoor()) return;
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	int nIndex = nID - IDC_BTN_TOP_INSPECT_Z_0;
+
+	if(nIndex == eTopInspect_Z::Ready)
+	{
+		g_objCommon.Move_Position(AX_TOP_INSPECTOR_Z, eTopInspect_Z::Ready);
+	}
+	if(nIndex == eTopInspect_Z::ScanStart)
+	{
+		g_objCommon.Move_Position(AX_TOP_INSPECTOR_Z, eTopInspect_Z::ScanStart);
+	}
+	/*if(nIndex == eTopInspect_Z::Dummy1)
+	{		
+	double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorZ[eTopInspect_Z::Dummy1];
+	g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_Z, dPitch);
+	}
+	if(nIndex == eTopInspect_Z::Dummy2)
+	{
+	double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorZ[eTopInspect_Z::Dummy2];
+	g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_Z, dPitch);
+	}*/
+	m_strLog.Format("[Manual Top Inspector Z] Z (%d) Click", nIndex);
+	g_objLogFile.Save_HandlerLog(m_strLog);
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 

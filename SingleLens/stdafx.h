@@ -55,6 +55,7 @@
 
 #include "EnumData.h"
 #include "EnumMoveData.h"
+#include "EnumIO.h"
 
 #include <math.h>
 #include <iostream>

@@ -116,16 +116,16 @@ void CManualElevDlg::Display_Status()
 	strPos.Format("%0.3lf", dPos);
 	m_stcAxisPos[0].SetWindowText(strPos);
 		
-	m_LedLdCVIO[0].Set_On(pDX00->iLoadCVMZExist1Right);
-	m_LedLdCVIO[1].Set_On(pDX00->iLoadCVMZExist2);
-	m_LedLdCVIO[2].Set_On(pDX00->iLoadCVMZExist3);
-	m_LedLdCVIO[3].Set_On(pDX00->iLoadCVMZExist4);
-	m_LedLdCVIO[4].Set_On(pDX00->iLoadCVMZExist5);
+	m_LedLdCVIO[0].Set_On(pDX00->iLdCVMZExist1R);
+	m_LedLdCVIO[1].Set_On(pDX00->iLdCVMZExist2);
+	m_LedLdCVIO[2].Set_On(pDX00->iLdCVMZExist3);
+	m_LedLdCVIO[3].Set_On(pDX00->iLdCVMZExist4);
+	m_LedLdCVIO[4].Set_On(pDX00->iLdCVMZExist5);
 
-	m_LedLdCVStopper[0].Set_On(pDX00->iLoadCVStopper1UpRight);
-	m_LedLdCVStopper[1].Set_On(pDX00->iLoadCVStopper1Down);
-	m_LedLdCVStopper[2].Set_On(pDX00->iLoadCVStopper2Up);
-	m_LedLdCVStopper[3].Set_On(pDX00->iLoadCVStopper2Down);
+	m_LedLdCVStopper[0].Set_On(pDX00->iLdCVStpr1UpR);
+	m_LedLdCVStopper[1].Set_On(pDX00->iLdCVStpr1Dn);
+	m_LedLdCVStopper[2].Set_On(pDX00->iLdCVStpr2Up);
+	m_LedLdCVStopper[3].Set_On(pDX00->iLdCVStpr2Dn);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -195,24 +195,24 @@ void CManualElevDlg::OnBtnLdCVStopperClick(UINT nID)
 
 	int nIndex = nID - IDC_BTN_LD_CV_STOPPER_0;
 
-	if(nIndex == eLdCV_Stopper::Up1)
+	if(nIndex == eLdCVStpr::Up1)
 	{
-		pDY00->oLoadCVStopper1UpRight = TRUE; pDY00->oLoadCVStopper1Down = FALSE;
+		pDY00->oLdCvStpr1UpR = TRUE; pDY00->oLdCvStpr1Dn = FALSE;
 	}
 
-	if(nIndex == eLdCV_Stopper::Down1)
+	if(nIndex == eLdCVStpr::Down1)
 	{
-		pDY00->oLoadCVStopper1UpRight = FALSE; pDY00->oLoadCVStopper1Down = TRUE;
+		pDY00->oLdCvStpr1UpR = FALSE; pDY00->oLdCvStpr1Dn = TRUE;
 	}
 
-	if(nIndex == eLdCV_Stopper::Up2)
+	if(nIndex == eLdCVStpr::Up2)
 	{
-		pDY00->oLoadCVStopper2Up = TRUE; pDY00->oLoadCVStopper2Down = FALSE;
+		pDY00->oLdCvStpr2Up = TRUE; pDY00->oLdCvStpr2Dn = FALSE;
 	}
 
-	if(nIndex == eLdCV_Stopper::Down2)
+	if(nIndex == eLdCVStpr::Down2)
 	{
-		pDY00->oLoadCVStopper2Up = FALSE; pDY00->oLoadCVStopper2Down = TRUE;
+		pDY00->oLdCvStpr2Up = FALSE; pDY00->oLdCvStpr2Dn = TRUE;
 	}
 	g_objAJinAXL.Write_Output(0);
 
@@ -239,11 +239,11 @@ void CManualElevDlg::OnChkElevCVIOClick(UINT nID)
 				AfxMessageBox("Elev CV CCW 회전중, Stop 필요합니다");
 				return;
 			}
-			pDY00->oElevCVRun = TRUE; pDY00->oElevCVDirCCW = FALSE;
+			pDY00->oElvCvRun = TRUE; pDY00->oElvCvDirCCW = FALSE;
 		}
 		else
 		{
-			pDY00->oElevCVRun = FALSE; pDY00->oElevCVDirCCW = FALSE;
+			pDY00->oElvCvRun = FALSE; pDY00->oElvCvDirCCW = FALSE;
 		}
 	}
 
@@ -257,12 +257,12 @@ void CManualElevDlg::OnChkElevCVIOClick(UINT nID)
 				AfxMessageBox("Elev CV CW 회전중, Stop 필요합니다");
 				return;
 			}
-			pDY00->oElevCVRun = TRUE; pDY00->oElevCVDirCCW = TRUE;
+			pDY00->oElvCvRun = TRUE; pDY00->oElvCvDirCCW = TRUE;
 
 		}
 		else
 		{
-			pDY00->oElevCVRun = FALSE; pDY00->oElevCVDirCCW = FALSE;
+			pDY00->oElvCvRun = FALSE; pDY00->oElvCvDirCCW = FALSE;
 		}
 	}
 
@@ -270,7 +270,7 @@ void CManualElevDlg::OnChkElevCVIOClick(UINT nID)
 	{
 		m_ChkElevIO[eElevIO::CW].SetCheck(FALSE);
 		m_ChkElevIO[eElevIO::CCW].SetCheck(FALSE);	
-		pDY00->oElevCVRun = FALSE; pDY00->oElevCVDirCCW = FALSE;
+		pDY00->oElvCvRun = FALSE; pDY00->oElvCvDirCCW = FALSE;
 	}
 	g_objAJinAXL.Write_Output(0);
 
@@ -286,39 +286,39 @@ void CManualElevDlg::OnBtnElevCVStopperClick(UINT nID)
 
 	int nIndex = nID - IDC_BTN_ELEV_CV_STOPPER_0;
 
-	if(nIndex == eElevStopper::Up1)
+	if(nIndex == eElvStpr::Up1)
 	{
-		pDY00->oElevStopper1UpLeft = TRUE; pDY00->oElevStopper1Down = FALSE;
+		pDY00->oElvStpr1UpL = TRUE; pDY00->oElvStpr1Dn = FALSE;
 	}
-	if(nIndex == eElevStopper::Down1)
+	if(nIndex == eElvStpr::Down1)
 	{
-		pDY00->oElevStopper1UpLeft = FALSE; pDY00->oElevStopper1Down = TRUE;
+		pDY00->oElvStpr1UpL = FALSE; pDY00->oElvStpr1Dn = TRUE;
 	}
-	if(nIndex == eElevStopper::In1)
+	if(nIndex == eElvStpr::In1)
 	{
-		pDY00->oElevStopper1In = TRUE; pDY00->oElevStopper1Out = FALSE;
+		pDY00->oElvStpr1In = TRUE; pDY00->oElvStpr1Out = FALSE;
 	}
-	if(nIndex == eElevStopper::Out1)
+	if(nIndex == eElvStpr::Out1)
 	{
-		pDY00->oElevStopper1In = FALSE; pDY00->oElevStopper1Out = TRUE;
+		pDY00->oElvStpr1In = FALSE; pDY00->oElvStpr1Out = TRUE;
 	}
 
 
-	if(nIndex == eElevStopper::Up2)
+	if(nIndex == eElvStpr::Up2)
 	{
-		pDY00->oElevStopper2UpRight = TRUE; pDY00->oElevStopper2Down = FALSE;
+		pDY00->oElvStpr2UpR = TRUE; pDY00->oElvStpr2Dn = FALSE;
 	}
-	if(nIndex == eElevStopper::Down2)
+	if(nIndex == eElvStpr::Down2)
 	{
-		pDY00->oElevStopper2UpRight = FALSE; pDY00->oElevStopper2Down = TRUE;
+		pDY00->oElvStpr2UpR = FALSE; pDY00->oElvStpr2Dn = TRUE;
 	}
-	if(nIndex == eElevStopper::In2)
+	if(nIndex == eElvStpr::In2)
 	{
-		pDY00->oElevStopper2In = TRUE; pDY00->oElevStopper2Out = FALSE;
+		pDY00->oElvStpr2In = TRUE; pDY00->oElvStpr2Out = FALSE;
 	}
-	if(nIndex == eElevStopper::Out2)
+	if(nIndex == eElvStpr::Out2)
 	{
-		pDY00->oElevStopper2In = FALSE; pDY00->oElevStopper2Out = TRUE;
+		pDY00->oElvStpr2In = FALSE; pDY00->oElvStpr2Out = TRUE;
 	}
 
 	g_objAJinAXL.Write_Output(0);

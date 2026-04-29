@@ -12,7 +12,13 @@ public:
 	virtual ~CManualIndexDlg();
 
 	CGroupCS	m_Group[1];
+	CStaticCS	m_stcAxisPos[2];
+	CButtonCS	m_BtnIndexR[4];
 
+	CLedCS		m_LedIndexPos[3];
+
+	CButtonCS	m_BtnIndexIO[2];
+	CLedCS		m_LedIndexIO[2];
 
 // 대화 상자 데이터입니다.
 	enum { IDD = IDD_MANUAL_MAIN_INDEX_DLG };
@@ -30,8 +36,7 @@ protected:
 	CString m_strTemp;
 	
 public:
-
-
+	
 
 public:
 	virtual BOOL OnInitDialog();

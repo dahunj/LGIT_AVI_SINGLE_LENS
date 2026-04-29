@@ -1,52 +1,5 @@
 #pragma once
 
-struct eLdCV_IO
-{
-	enum dtName
-	{
-		CW = 0,
-		CCW = 1,
-		Stop = 2,
-	};
-};
-
-struct eLdCV_Stopper
-{
-	enum dtName
-	{
-		Up1 = 0,
-		Down1 = 1,
-		Up2 = 2,
-		Down2 = 3,
-	};
-};
-
-struct eElevIO
-{
-	enum dtName
-	{
-		CW = 0,
-		CCW = 1,
-		Stop = 2, 
-	};
-};
-
-struct eElevStopper 
-{
-	enum dtName
-	{
-		Up1 = 0,
-		Down1 = 1,
-		In1 = 2,
-		Out1 = 3,
-		Up2 = 4,
-		Down2 = 5,
-		In2 = 6,
-		Out2 = 7, 
-	};
-};
-
-
 struct eElev_Z
 {
 	enum dtName
@@ -94,19 +47,6 @@ struct eFeeder_Y
 	};
 };
 
-struct eFeeder_IO
-{
-	enum dtName
-	{
-		GripOpen = 0,
-		GripClose = 1,
-		RailAlignIn = 2,
-		RailAlignOut = 3,
-		ExistInFeeder = 4,
-		ExistOnRail = 5,
-		ExistInMZ = 6,
-	};
-};
 
 struct eZigPicker_Y
 {
@@ -130,107 +70,116 @@ struct eZigPicker_Z
 };
 
 
-struct ePicker_IO
-{
-	enum dtName
-	{
-		MasterIn = 0,
-		MasterOut = 1,
-		SlaveIn = 2,
-		SlaveOut = 3,	
-	};
-};
 
-struct Top_Inspector_X
+struct eTopInspect_X
 {
 	enum dtName
 	{
 		Ready = 0,
 		ScanStart = 1,
+		PitchP = 2,
+		PitchM = 3,
 	};
 };
 
-struct Top_Inspector_Y
+struct eTopInspect_Y
 {
 	enum dtName
 	{
 		Ready = 0,
 		ScanStart = 1,
+		PitchP = 2,
+		PitchM = 3,
 	};
 };
 
-struct Top_Inspector_Z
+struct eTopInspect_Z
 {
 	enum dtName
 	{
 		Ready = 0,
 		ScanStart = 1,
+		Dummy1 = 2,
+		Dummy2 = 3,
 	};
 };
 
 
 
-struct Btm_Inspector_X
+struct eBtmInspect_X
 {
 	enum dtName
 	{
 		Ready = 0,
+		ScanStart = 1,
+		PitchP = 2,
+		PitchM = 3,
 	};
 };
 
 
 
-struct Btm_Inspector_Y
+struct eBtmInspect_Y
 {
 	enum dtName
 	{
 		Ready = 0,
+		ScanStart = 1,
+		PitchP = 2,
+		PitchM = 3,
 	};
 };
 
 
 
-struct Btm_Inspector_Z
+struct eBtmInspect_Z
 {
 	enum dtName
 	{
 		Ready = 0,
-
+		ScanStart = 1,
+		Dummy1 = 2,
+		Dummy2 = 3,
 	};
 };
 
 
 
 
-struct Marker_X
+struct eMark_X
 {
 	enum dtName
 	{
 		Ready = 0,
-		LeftTop = 1,
+		ScanStart = 1,
+		PitchP = 2,
+		PitchM = 3,
 	};
 };
 
 
 
-struct Marker_Y
+struct eMark_Y
 {
 	enum dtName
 	{
 		Ready = 0,
-		LeftTop = 1,
+		ScanStart = 1,
+		PitchP = 2,
+		PitchM = 3,
 	};
 };
 
 
 
-struct Marker_Z
+struct eMark_Z
 {
 	enum dtName
 	{
 		Ready = 0,
-		LeftTop = 1,
+		ScanStart = 1,
 		Mark = 2,
+		Dummy = 3,
 	};
 };
 
