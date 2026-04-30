@@ -128,8 +128,6 @@ typedef struct
 	int		nLanguage;
 
 	int		nSlotNoToPick;	
-	
-	
 	//0: Load , 1: Clean, 2: Top, 3:empty, 4:btm, 5: Mark, 6: Unload 
 	
 	int		nZigX;
@@ -143,13 +141,18 @@ typedef struct
 	int InfoMZLoad[10][ZIG_X][ZIG_Y];
 	int InfoMZReady[10][ZIG_X][ZIG_Y];
 	int InfoFeeder[ZIG_X][ZIG_Y];
-	int InfoRail[ZIG_X][ZIG_Y]; //if needed 
+	int InfoRail[ZIG_X][ZIG_Y];			//if needed 
 	int	InfoZigPick[ZIG_X][ZIG_Y];
 	int InfoMainIndex[7][ZIG_X][ZIG_Y];
 	int InfoMZUnload[10][ZIG_X][ZIG_Y];
 
-	int InfoZigMZLoad[10];
-	int InfoZigMZUnload[10];
+	int	InfoCtZigLoad[10];
+	int	InfoCtZigRdy[10];
+	int	InfoCtZigUnload[10];
+	
+	BOOL	ZigMap[2][10];
+	int		LensMap[2][10][ZIG_X][ZIG_Y];
+	
 		
 	CString	sMZIDElevLoad;
 	CString	sZigIDElevLoad[10];
@@ -176,8 +179,6 @@ typedef struct
 	CString	sMZIDMainIdex[7];
 	CString	sZigIDMainIndex[7];
 	int		nSlotNoMainIndex[7];
-		
-
 
 	BOOL	bDryRunMode;
 	int		nSpeedOption; // 여러개의 속도 옵션 가지게 바꾸고 싶다. 
@@ -186,7 +187,6 @@ typedef struct
 	int		nScanReqBtm;
 	
 	BOOL    bScanDone[2];            // 0:Top 1: Btm
-
 
 	char	cJudgeCode[10][ZIG_X*ZIG_Y][2];	
 	int     nInspectInfo[10][ZIG_X*ZIG_Y];    // ????? (0:Empty, 1:Good, 2:NG, 3:NoResult, 7:Request, 8:NG, 9:Init)

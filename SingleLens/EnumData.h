@@ -70,11 +70,16 @@ struct MainIndexBranch
 	};
 };
 
-struct ElevBranch
+struct ElvBranch
 {
 	enum Name
 	{
-		name = 0, 
+		Load = 0,
+		Work = 1,
+		LoadMZ = 3, 
+		RdyMZ = 11,
+		Unload = 31,
+		SlideOver = 51, 
 	};
 };
 
@@ -135,15 +140,12 @@ struct delay
 
 
 
-struct eMZIdx
+struct eMZ
 {
 	enum Name
 	{
 		Load = 0,
 		Ready = 1,
-		CV1 = 2,
-		CV2 = 3,
-		CV3 = 4,
-		CV4 = 5, 
+		Unload = 2,
 	};
 };

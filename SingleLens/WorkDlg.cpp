@@ -892,7 +892,7 @@ LRESULT CWorkDlg::OnUpdateMZInfo(WPARAM nTray, LPARAM lParam)
 	CString strText;
 	int nNo = (int)lParam;
 
-	if (nTray == eMZIdx::Load )
+	if (nTray == eMZ::Load )
 	{		
 		/*strText.Format("%d", gData.nTNoLoadTray[nNo]);
 		m_stcLoadTrayCount.SetWindowText(strText);*/
@@ -1176,13 +1176,26 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo)
 		
 		//Init Lens State 
 		int nCnt = 0;		
+
+		gData.ZigMap[eMZ::Load][i] = FALSE;
+
 		for(int j = 0; j < ZIG_X; j++)
 		{
 			for(int k = 0; k < ZIG_Y; k++)
 			{
 				nCnt++;
-				if(nCnt <= gData.nLensUseCnt[nTo][i]) gData.InfoMZLoad[i][j][k] = (int)eLensState::Init;
-				else gData.InfoMZLoad[i][j][k] = eLensState::None;
+				if(nCnt <= gData.nLensUseCnt[nTo][i])
+				{
+					gData.ZigMap[eMZ::Load][i] = TRUE; // Zig Á¸ÀçÇÔ 
+
+					gData.InfoMZLoad[i][j][k] = (int)eLensState::Init;
+					gData.LensMap[eMZ::Load][i][j][k] = eLensState::Init;
+				}
+				else
+				{
+					gData.InfoMZLoad[i][j][k] = eLensState::None;
+					gData.LensMap[eMZ::Load][i][j][k] = eLensState::None;
+				}
 			}			
 		}
 	}
@@ -1198,8 +1211,7 @@ int CWorkDlg::SearchZigInfo(int nMZNo)
 		{
 			return i + 1;
 		}
-	}
-	
+	}	
 	return -1;
 }
 

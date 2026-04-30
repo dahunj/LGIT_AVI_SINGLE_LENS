@@ -289,8 +289,6 @@ void CInspector::Get_HeartBeat()
 void CInspector::Get_ReloadRequest( )
 {
 	
-
-
 }
 
 void CInspector::Get_ZMoveRequest(int nInspector, CString sGbn, CString sZ)

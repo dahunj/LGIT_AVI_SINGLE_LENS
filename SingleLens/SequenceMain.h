@@ -134,10 +134,11 @@ public:
 	BOOL Check_ZigPickerEmpty();
 	BOOL Check_FeederEmpty();
 	BOOL Check_IndexEmpty(int nPos);
-	BOOL Check_ZigExistInMZ();
+	BOOL Check_CtZigInMZ(int nPos);
 	
 	void Set_IndexEnd();
-	
+
+	BOOL CheckCtZigAllReturn();	
 	//////////////////////////////////////////////////////////////////////////
 	void Init_TopZig();
 	BOOL Select_TopScanPos(int &nTopPosX, int &nTopPosY);

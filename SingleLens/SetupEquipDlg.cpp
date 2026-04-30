@@ -32,53 +32,24 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 7; i++) DDX_Control(pDX, IDC_LABEL_0 + i,  m_Label[i]);
 
 	DDX_Control(pDX, IDC_STC_EQUIP_NAME, m_stcEquipName);
-	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_RDO_MODEL_0 + i, m_rdoModel[i]);
 	DDX_Control(pDX, IDC_CBO_LOT_BARCODE_PORT, m_cboLotBarcodePort);
-	DDX_Control(pDX, IDC_CBO_LOAD_CELL_PORT_0, m_cboAssyLoadCellPort);
-	DDX_Control(pDX, IDC_CBO_LOAD_CELL_PORT_1, m_cboUnloadLoadCellPort);
+	
 	DDX_Control(pDX, IDC_STC_MOTION_CHECK, m_stcMotionCheck);
 	DDX_Control(pDX, IDC_LBL_DOOR_LOCK, m_lblDoorLock);	
 	DDX_Control(pDX, IDC_LBL_DOOR_LOCK2, m_lblDoorLock2);
 	DDX_Control(pDX, IDC_STC_DOORLOCK_TIME, m_stcDoorLockTime);
 
-	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_RDO_DOOR_LOCK_0 + i, m_rdoDoorLock[i]);
-	DDX_Control(pDX, IDC_CBO_MOVE_DATA_SEL, m_cboMoveDataSelection);
-
-	DDX_Control(pDX, IDC_CHK_USE_INLINE_MODE, m_chkUseInlineMode);
-	DDX_Control(pDX, IDC_CHK_USE_VISION_CAP_DIR, m_chkUseVisionCapDir);
-	DDX_Control(pDX, IDC_CHK_USE_VISION_CM_ALIGN, m_chkUseVisionCmAlign);
-	DDX_Control(pDX, IDC_CHK_USE_VISION_ALIGN_ALARM, m_chkUseVisionAlignAlarm);
-	DDX_Control(pDX, IDC_CHK_USE_VISION_ALIGN_OFFSET, m_chkUseVisionAlignOffset);
-
-	DDX_Control(pDX, IDC_CHK_USE_TRAY_PICKER_TURN, m_chkUseTrayPickerTurn);
-	DDX_Control(pDX, IDC_CHK_USE_CAP_PICKER_TURN, m_chkUseCapPickerTurn);
-	DDX_Control(pDX, IDC_CHK_ASSY_PICKER_TILT, m_chkAssyPickerTilt);
-
-	DDX_Control(pDX, IDC_CHK_CAP_PICK_UP_MULTI, m_chkCapPickUpMulti);
-	DDX_Control(pDX, IDC_CHK_USE_MES_CAP_REG, m_chkUseMesCapReg);
-	DDX_Control(pDX, IDC_CHK_USE_MES_SHIP_REG, m_chkUseMesShipReg);
-	DDX_Control(pDX, IDC_CHK_USE_INDEX_ASSY_VAC, m_chkUseIndexAssyVac);
-	
+	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_RDO_DOOR_LOCK_0 + i, m_rdoDoorLock[i]);		
 	for (int i = 0; i < 13; i++) DDX_Control(pDX, IDC_LBL_MODEL_0 + i,  m_lblModel[i]);
-	for (int i = 0; i < 1; i++) DDX_Control(pDX, IDC_STC_INDEX_DATA_0 + i, m_stcIndexData[i]);
-	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_STC_LOAD_TRAY_DATA_0 + i, m_stcLoadTrayData[i]);
-	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_STC_CAP_TRAY_DATA_0 + i, m_stcCapTrayData[i]);
-	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_STC_SHIP_TRAY_DATA_0 + i, m_stcShipTrayData[i]);
-
+	
+	
 	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_LBL_PICKER_VAC_OFF_0 + i,  m_lblPickerVacOff[i]);
-	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_STC_VAC_OFF_DELAY_0 + i, m_stcVacOffDelay[i]);
-
+	
 	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_LBL_DELAY_ADD_0 + i,  m_lblDelayAdd[i]);
 	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_STC_DELAY_ADD_0 + i, m_stcDelayAdd[i]);
 
 	DDX_Control(pDX, IDC_LBL_AVI_IP, m_lblAviIp);
 	DDX_Control(pDX, IDC_IPA_AVI_IP, m_ipaAviIp);
-
-	DDX_Control(pDX, IDC_LBL_ALIGN_OFFSET, m_lblAlignOffset);
-	DDX_Control(pDX, IDC_STC_ALIGN_OFFSET, m_stcAlignOffset);
-
-	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_STC_LOAD_CELL_RANGE_0 + i, m_stcLoadCellRange[i]);
-
 	DDX_Control(pDX, IDC_GRP_TOWER, m_grpTower);
 	for (int i = 0; i < 10; i++) DDX_Control(pDX, IDC_LBL_TOWER_0 + i,  m_lblTower[i]);
 	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) DDX_Control(pDX, IDC_CHK_TOWER_0_0 + i * 4 + j,  m_chkTower[i][j]);
@@ -91,9 +62,7 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STC_PASSWORD_MT, m_stcPasswordMt);
 	DDX_Control(pDX, IDC_LBL_PASSWORD_SI, m_lblPasswordSi);
 	DDX_Control(pDX, IDC_EDT_PASSWORD_SI, m_edtPasswordSi);
-
-	for(int i = 0; i < 3; i++) DDX_Control(pDX, IDC_LBL_VISION_0 +i, m_lblCMVision[i] );
-	for(int i = 0; i < 3; i++) DDX_Control(pDX, IDC_STC_CM_VISION_0 +i, m_stcCMVision[i]);
+		
 
 	DDX_Control(pDX, IDC_GRP_RESULT_TEST, m_grpResultTest);
 	DDX_Control(pDX, IDC_LBL_RESULT_TEST, m_lblResultTest);
@@ -105,26 +74,11 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
 	ON_WM_SHOWWINDOW()
 	ON_STN_CLICKED(IDC_STC_EQUIP_NAME, &CSetupEquipDlg::OnStnClickedStcEquipName)
-	ON_CONTROL_RANGE(BN_CLICKED, IDC_RDO_MODEL_0, IDC_RDO_MODEL_1, OnRdoModelClick)
 	ON_STN_CLICKED(IDC_STC_MOTION_CHECK, &CSetupEquipDlg::OnStnClickedStcMotionCheck)
-
-	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_INDEX_DATA_0, IDC_STC_INDEX_DATA_0, OnStcIndexDataClick)
-	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_LOAD_TRAY_DATA_0, IDC_STC_LOAD_TRAY_DATA_3, OnStcLoadTrayDataClick)
-	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_CAP_TRAY_DATA_0, IDC_STC_CAP_TRAY_DATA_3, OnStcCapTrayDataClick)
-	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_SHIP_TRAY_DATA_0, IDC_STC_SHIP_TRAY_DATA_3, OnStcShipTrayDataClick)
-
-	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_VAC_OFF_DELAY_0, IDC_STC_VAC_OFF_DELAY_2, OnStcVacOffDelayClick)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_DELAY_ADD_0, IDC_STC_DELAY_ADD_5, OnStcDelayAddClick)
-
-	ON_STN_CLICKED(IDC_STC_ALIGN_OFFSET, &CSetupEquipDlg::OnStcAlignOffsetClick)
-	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_LOAD_CELL_RANGE_0, IDC_STC_LOAD_CELL_RANGE_1, OnStcLoadCellRangeClick)
-
 	ON_STN_CLICKED(IDC_STC_SHOW_HIDDEN, &CSetupEquipDlg::OnStnClickedStcShowHidden)
 	ON_STN_CLICKED(IDC_STC_PASSWORD_MT, &CSetupEquipDlg::OnStnClickedStcPasswordMt)
-
-	ON_STN_CLICKED(IDC_STC_CM_VISION_0, &CSetupEquipDlg::OnStnClickedStcCmVision0)
-	ON_STN_CLICKED(IDC_STC_CM_VISION_1, &CSetupEquipDlg::OnStnClickedStcCmVision1)
-	ON_STN_CLICKED(IDC_STC_CM_VISION_2, &CSetupEquipDlg::OnStnClickedStcCmVision2)
+	
 	ON_STN_CLICKED(IDC_STC_DOORLOCK_TIME, &CSetupEquipDlg::OnStnClickedStcDoorlockTime)
 END_MESSAGE_MAP()
 
@@ -295,60 +249,6 @@ void CSetupEquipDlg::OnStnClickedStcMotionCheck()
 	m_stcMotionCheck.SetWindowText(strNew);
 }
 
-void CSetupEquipDlg::OnStcIndexDataClick(UINT nID)
-{
-	int ID = nID - IDC_STC_INDEX_DATA_0;
-
-	CString strOld, strNew;
-	m_stcIndexData[ID].GetWindowText(strOld);
-	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
-
-	m_stcIndexData[ID].SetWindowText(strNew);
-}
-
-void CSetupEquipDlg::OnStcLoadTrayDataClick(UINT nID)
-{
-	int ID = nID - IDC_STC_LOAD_TRAY_DATA_0;
-
-	CString strOld, strNew;
-	m_stcLoadTrayData[ID].GetWindowText(strOld);
-	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
-
-	m_stcLoadTrayData[ID].SetWindowText(strNew);
-}
-
-void CSetupEquipDlg::OnStcCapTrayDataClick(UINT nID)
-{
-	int ID = nID - IDC_STC_CAP_TRAY_DATA_0;
-
-	CString strOld, strNew;
-	m_stcCapTrayData[ID].GetWindowText(strOld);
-	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
-
-	m_stcCapTrayData[ID].SetWindowText(strNew);
-}
-
-void CSetupEquipDlg::OnStcShipTrayDataClick(UINT nID)
-{
-	int ID = nID - IDC_STC_SHIP_TRAY_DATA_0;
-
-	CString strOld, strNew;
-	m_stcShipTrayData[ID].GetWindowText(strOld);
-	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
-
-	m_stcShipTrayData[ID].SetWindowText(strNew);
-}
-
-void CSetupEquipDlg::OnStcVacOffDelayClick(UINT nID)
-{
-	int ID = nID - IDC_STC_VAC_OFF_DELAY_0;
-
-	CString strOld, strNew;
-	m_stcVacOffDelay[ID].GetWindowText(strOld);
-	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
-
-	m_stcVacOffDelay[ID].SetWindowText(strNew);
-}
 
 void CSetupEquipDlg::OnStcDelayAddClick(UINT nID)
 {
@@ -361,25 +261,7 @@ void CSetupEquipDlg::OnStcDelayAddClick(UINT nID)
 	m_stcDelayAdd[ID].SetWindowText(strNew);
 }
 
-void CSetupEquipDlg::OnStcAlignOffsetClick()
-{
-	CString strOld, strNew;
-	m_stcAlignOffset.GetWindowText(strOld);
-	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
 
-	m_stcAlignOffset.SetWindowText(strNew);
-}
-
-void CSetupEquipDlg::OnStcLoadCellRangeClick(UINT nID)
-{
-	int ID = nID - IDC_STC_LOAD_CELL_RANGE_0;
-
-	CString strOld, strNew;
-	m_stcLoadCellRange[ID].GetWindowText(strOld);
-	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
-
-	m_stcLoadCellRange[ID].SetWindowText(strNew);
-}
 
 void CSetupEquipDlg::OnStnClickedStcPasswordMt()
 {
@@ -456,35 +338,6 @@ void CSetupEquipDlg::Cancel_EquipData()
 
 
 
-
-void CSetupEquipDlg::OnStnClickedStcCmVision0()
-{
-	CString strOld, strNew;
-	m_stcCMVision[0].GetWindowText(strOld);
-	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
-
-	m_stcCMVision[0].SetWindowText(strNew);
-}
-
-
-void CSetupEquipDlg::OnStnClickedStcCmVision1()
-{
-	CString strOld, strNew;
-	m_stcCMVision[1].GetWindowText(strOld);
-	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
-
-	m_stcCMVision[1].SetWindowText(strNew);
-}
-
-
-void CSetupEquipDlg::OnStnClickedStcCmVision2()
-{
-	CString strOld, strNew;
-	m_stcCMVision[2].GetWindowText(strOld);
-	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
-
-	m_stcCMVision[2].SetWindowText(strNew);
-}
 
 
 void CSetupEquipDlg::OnStnClickedStcDoorlockTime()

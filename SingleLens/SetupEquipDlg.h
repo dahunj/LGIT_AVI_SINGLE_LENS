@@ -96,18 +96,7 @@ protected:
 	afx_msg void OnStnClickedStcEquipName();
 	afx_msg void OnRdoModelClick(UINT nID);
 	afx_msg void OnStnClickedStcMotionCheck();
-
-	afx_msg void OnStcIndexDataClick(UINT nID);
-	afx_msg void OnStcLoadTrayDataClick(UINT nID);
-	afx_msg void OnStcCapTrayDataClick(UINT nID);
-	afx_msg void OnStcShipTrayDataClick(UINT nID);
-
-	afx_msg void OnStcVacOffDelayClick(UINT nID);
 	afx_msg void OnStcDelayAddClick(UINT nID);
-
-	afx_msg void OnStcAlignOffsetClick();
-	afx_msg void OnStcLoadCellRangeClick(UINT nID);
-
 	afx_msg void OnStnClickedStcShowHidden();
 	afx_msg void OnStnClickedStcPasswordMt();
 
@@ -121,9 +110,6 @@ public:
 	void Save_EquipData();
 	void Cancel_EquipData();
 
-	afx_msg void OnStnClickedStcCmVision0();
-	afx_msg void OnStnClickedStcCmVision1();
-	afx_msg void OnStnClickedStcCmVision2();
 	afx_msg void OnStnClickedStcDoorlockTime();
 };
 
