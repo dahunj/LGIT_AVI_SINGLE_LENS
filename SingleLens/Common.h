@@ -83,6 +83,17 @@ public:
 	void  Get_MainIndexPos(int nPos);
 
 	///////////////////////////////////////////////////////////////////////////
+	void Set_LdStopper1Up();
+	void Set_LdStopper1Down();
+	BOOL Get_LdStopper1Up();
+	BOOL Get_LdStopper1Down();
+	
+	void Set_LdStopper2Up();
+	void Set_LdStopper2Down();
+	BOOL Get_LdStopper2Up();
+	BOOL Get_LdStopper2Down();
+	
+	
 	void Set_ElevStopper1In();
 	void Set_ElevStopper1Out();
 	void Set_ElevStopper1Up();
@@ -91,6 +102,9 @@ public:
 	BOOL Get_ElevStopper1Out();
 	BOOL Get_ElevStopper1Up();
 	BOOL Get_ElevStopper1Down();
+
+
+
 
 	void Set_ElevStopper2In();
 	void Set_ElevStopper2Out();

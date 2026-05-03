@@ -291,32 +291,93 @@ void CSequenceMain::Beep_Post(int nState, int nTime)
 //  1. (Error : 3100)
 BOOL CSequenceMain::LoadConveyorRun()
 {
-	static int nMZCnt = 0; //Conveyor 위의 매거진 개수 
+	static int nDetectCnt[6] = {0, 0, 0, 0, 0, 0}; 
+
+	if(gData.bLdOMZWait || gData.bElvWorking) return TRUE;
 
 	switch(m_nLoadConveyorCase)
 	{
 	case 0:
-		
 		return TRUE;
-	
+	case 1:		
+#ifndef AJIN_BOARD_USE
+		m_pDX00->iLdCVMZExist5 = FALSE;
+		m_pDX00->iLdCVMZExist4 = FALSE;
+		m_pDX00->iLdCVMZExist3 = FALSE;
+		m_pDX00->iLdCVMZExist2 = FALSE;
+		m_pDX00->iLdCVMZExist1R = FALSE;	
 
-	//case 2:
-	//	m_pDY00->oLoadCVStopperUp = FALSE; m_pDY00->oLoadCVStopperDown = TRUE;
-	//	g_objAJinAXL.Write_Output(0);
+		m_pDX00->iElvMZExist1 = FALSE;
+		m_pDX00->iElvMZExist2 = FALSE;
+#endif
 
-	//	if(!m_pDX00->iLoadCVStopperUp && m_pDX00->iLoadCVStopperDown)
-	//	{
-	//			
-	//	}
-	//	break;
-	//case 2:
-	//	if(m_pDX00->iMZElevExistRight)
-	//	{
-	//		m_pDY00->oLoadCVCCW = FALSE; m_pDY00->oLoadCVCW = FALSE;
-	//		g_objAJinAXL.Write_Output(0);
-	//		m_nLoadConveyorCase++; m_nLoadConveyorLoop.Set_LoopTime(5000);
-	//	}
-
+		if(m_pDX00->iLdCVMZExist1R )
+		{
+			nDetectCnt[0]++; nDetectCnt[1] = 0; nDetectCnt[2] = 0;
+			if(nDetectCnt[0] < 5) break;
+			m_nLoadConveyorCase = 5; m_nLoadConveyorLoop.Set_LoopTime(5000);
+		}
+		else if(!m_pDX00->iLdCVMZExist1R &&
+			( m_pDX00->iLdCVMZExist3 || m_pDX00->iLdCVMZExist4 || m_pDX00->iLdCVMZExist5))
+		{
+			nDetectCnt[1]++;nDetectCnt[0] = 0; nDetectCnt[2] = 0;
+			if(nDetectCnt[1] < 5) break;
+			g_objCommon.Set_LdStopper1Up();
+			m_nLoadConveyorCase++; m_nLoadConveyorLoop.Set_LoopTime(5000);
+		}
+		else if(!m_pDX00->iLdCVMZExist1R && m_pDX00->iLdCVMZExist2 )
+		{
+			nDetectCnt[2]++; nDetectCnt[0] = 0; nDetectCnt[1] = 0;
+			if(nDetectCnt[2] < 5) break;			
+			m_nLoadConveyorCase++; m_nLoadConveyorLoop.Set_LoopTime(5000);
+		}
+		else
+		{
+			//case that all sensors not detected, think later 
+			nDetectCnt[0] = 0; nDetectCnt[1] = 0; nDetectCnt[2] = 0;
+		}
+		return TRUE;
+	case 2:
+		if(m_pDX00->iLdCVMZExist2)
+		{
+			m_nLoadConveyorCase++; m_nLoadConveyorLoop.Set_LoopTime(5000);
+		}
+		else if(g_objCommon.Get_LdStopper1Up() )
+		{
+			g_objCommon.Set_LoadCVRunCW();
+			m_nLoadConveyorCase++; m_nLoadConveyorLoop.Set_LoopTime(5000);
+		}		
+		break;
+	case 3:
+		if(m_pDX00->iLdCVMZExist2)
+		{
+			g_objCommon.Set_LoadCVStop();
+			m_nLoadConveyorCase++; m_nLoadConveyorLoop.Set_LoopTime(5000);
+		}		
+		break;
+	case 4:
+		m_nLoadConveyorCase++; m_nLoadConveyorLoop.Set_LoopTime(5000);
+		break;
+	case 5:
+		if(!m_pDX00->iElvMZExist1 || !m_pDX00->iElvMZExist2)
+		{
+			nDetectCnt[0]++;nDetectCnt[1] = 0; 
+			if(nDetectCnt[0] < 5) break;
+			g_objCommon.Set_LdStopper1Down();
+			m_nMZElevCase = ElvBranch::Work;
+			m_nLoadConveyorCase = 1; m_nLoadConveyorLoop.Set_LoopTime(5000);
+		}		
+		else if(m_pDX00->iElvMZExist1 && m_pDX00->iElvMZExist2)
+		{
+			nDetectCnt[1]++; nDetectCnt[0] = 0; 
+			if(nDetectCnt[1] < 5) break;
+			m_nLoadConveyorCase = 1; m_nLoadConveyorLoop.Set_LoopTime(5000);
+		}
+		else
+		{
+			for(int i = 0; i < 3; i++) nDetectCnt[i] = 0;
+		}
+		break;	
 	}
 	
 	// 1. (Error : 3100)
@@ -336,14 +397,14 @@ BOOL CSequenceMain::MZElevRun()
 	static int	nMZDetectCnt[6] = {0,0,0,0,0,0};
 	DWORD dwTick1 = 0, dwTick2 = 0;
 	
-	if(Check_CVMZSensors() > 0 && (m_nMZElevCase == 0 || m_nMZElevCase == 20) && !gData.bFeederWorkWait)
-	{
-		nMZCnt++;
-		gData.bCVMZLoadWait = TRUE;
-		nMZDetectCnt[0] = 0; nMZDetectCnt[1] = 0; nMZDetectCnt[5] = 0;
-		m_nMZElevCase = 1; m_nMZElevLoop.Set_LoopTime(5000);
-		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load MZ to Elev Start");
-	}
+	//if(Check_CVMZSensors() > 0 && (m_nMZElevCase == 0 || m_nMZElevCase == 20) && !gData.bFeederWorkWait)
+	//{
+	//	nMZCnt++;
+	//	gData.bCVMZLoadWait = TRUE;
+	//	nMZDetectCnt[0] = 0; nMZDetectCnt[1] = 0; nMZDetectCnt[5] = 0;
+	//	m_nMZElevCase = 1; m_nMZElevLoop.Set_LoopTime(5000);
+	//	m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load MZ to Elev Start");
+	//}
 		
 	//Suppose MZ on Right of Elev
 	switch(m_nMZElevCase)
@@ -351,17 +412,9 @@ BOOL CSequenceMain::MZElevRun()
 	case 0:
 		return TRUE;
 	case 1:
-#ifndef AJIN_BOARD_USE
-		m_pDX00->iLdCVMZExist5 = FALSE;
-		m_pDX00->iLdCVMZExist4 = FALSE;
-		m_pDX00->iLdCVMZExist3 = FALSE;
-		m_pDX00->iLdCVMZExist2 = FALSE;
-		m_pDX00->iLdCVMZExist1R = FALSE;	
 
-		m_pDX00->iElvMZExist1 = FALSE;
-		m_pDX00->iElvMZExist2 = FALSE;
-#endif
-		if(nMZCnt > 0 && !gData.bCycleStop)
+		//if(nMZCnt > 0 && !gData.bCycleStop)
+		if(g_objCommon.Get_LdStopper1Down())
 		{
 			/*if (!m_nMZElevLoop.Waiting_Time(100)) break;*/						
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);

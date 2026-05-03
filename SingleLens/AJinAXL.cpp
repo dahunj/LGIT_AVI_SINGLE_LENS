@@ -833,10 +833,10 @@ void CAJinAXL::Sim_SetOutToIn(int nNo)
 	
 	if(nNo == 0)
 	{
-		m_DX00.iLdCVStpr1UpR = m_DY00.oLdCvStpr1UpR;
-		m_DX00.iLdCVStpr1Dn = m_DY00.oLdCvStpr1Dn;
-		m_DX00.iLdCVStpr2Up = m_DY00.oLdCvStpr2Up;
-		m_DX00.iLdCVStpr2Dn = m_DY00.oLdCvStpr2Dn;
+		m_DX00.iLdCVStpr1UpR = m_DY00.oLdCVStpr1UpR;
+		m_DX00.iLdCVStpr1Dn = m_DY00.oLdCVStpr1Dn;
+		m_DX00.iLdCVStpr2Up = m_DY00.oLdCVStpr2Up;
+		m_DX00.iLdCVStpr2Dn = m_DY00.oLdCVStpr2Dn;
 
 		m_DX00.iElvStpr1UpL = m_DY00.oElvStpr1UpL;
 		m_DX00.iElvStpr1Dn = m_DY00.oElvStpr1Dn;

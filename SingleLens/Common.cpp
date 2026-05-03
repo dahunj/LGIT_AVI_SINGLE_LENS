@@ -508,7 +508,81 @@ void CCommon::Get_MainIndexPos(int nPos)
 	
 }
 
+////////////////////////////////////////////////
 
+
+void CCommon::Set_LdStopper1Up()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+
+	pDY00->oLdCVStpr1UpR = TRUE;
+	pDY00->oLdCVStpr1Dn = FALSE;
+	g_objAJinAXL.Write_Output(0);
+
+}
+
+void CCommon::Set_LdStopper1Down()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+
+	pDY00->oLdCVStpr1UpR = FALSE;
+	pDY00->oLdCVStpr1Dn = TRUE;
+	g_objAJinAXL.Write_Output(0);
+
+}
+
+
+
+BOOL CCommon::Get_LdStopper1Up()
+{
+	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
+
+	if(pDX00->iLdCVStpr1UpR && !pDX00->iLdCVStpr1Dn)
+	{
+		return TRUE;
+	}
+	return FALSE;	
+}
+
+
+
+void CCommon::Set_LdStopper2Up()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+
+	pDY00->oLdCVStpr2Up = TRUE;
+	pDY00->oLdCVStpr2Dn = FALSE;
+	g_objAJinAXL.Write_Output(0);
+
+}
+
+void CCommon::Set_LdStopper2Down()
+{
+	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
+
+	pDY00->oLdCVStpr2Up = FALSE;
+	pDY00->oLdCVStpr2Dn = TRUE;
+	g_objAJinAXL.Write_Output(0);
+
+}
+
+
+
+BOOL CCommon::Get_LdStopper2Up()
+{
+	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
+
+	if(pDX00->iLdCVStpr2Up && !pDX00->iLdCVStpr2Dn)
+	{
+		return TRUE;
+	}
+	return FALSE;	
+}
+
+
+
+
+/////////////
 void CCommon::Set_ElevStopper1In()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();

@@ -293,9 +293,8 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 		
 		return;
 	}
-
+	Check_Lamp();
 	Display_Status();
-
 
 	if (m_rdoWorkStart.GetCheck()) {
 		if (!m_bAutoRunning)  // First AutoRun
@@ -716,6 +715,18 @@ void CWorkDlg::Check_Lamp()
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01(); DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
 	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02(); DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
 	DX_DATA_03 *pDX03 = g_objAJinAXL.Get_pDX03(); DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
+
+
+	if (pDX03->iStartSw && !m_rdoWorkStart.GetCheck()) {
+		g_objLogFile.Save_HandlerLog("[Work Mode] START S/W push");
+		m_rdoWorkStart.SetCheck(TRUE);
+		g_objSequenceMain.Set_LotError("START", 903, "Start");
+	} else if (pDX03->iStopSw && !m_rdoWorkStop.GetCheck()) {
+		g_objLogFile.Save_HandlerLog("[Work Mode] STOP S/W push");
+		MachineStopLog("STOP_BUTTON_PUSH");
+		m_rdoWorkStop.SetCheck(TRUE);
+		g_objSequenceMain.Set_LotError("STOP", 904, "Stop");
+	}
 	
 	
 }

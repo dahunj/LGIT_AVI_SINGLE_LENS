@@ -264,10 +264,10 @@ typedef union tag_DY_DATA_00 {
 		DWORD o0005 : 1;					// Y0005
 		DWORD o0006 : 1;			// Y0006
 		DWORD o0007 : 1;		// Y0007
-		DWORD oLdCvStpr1UpR : 1;				// Y0008
-		DWORD oLdCvStpr1Dn : 1;				// Y0009
-		DWORD oLdCvStpr2Up : 1;		// Y0010
-		DWORD oLdCvStpr2Dn : 1;	// Y0011
+		DWORD oLdCVStpr1UpR : 1;				// Y0008
+		DWORD oLdCVStpr1Dn : 1;				// Y0009
+		DWORD oLdCVStpr2Up : 1;		// Y0010
+		DWORD oLdCVStpr2Dn : 1;	// Y0011
 		DWORD o0012 : 1;		// Y0012
 		DWORD o0013 : 1;	// Y0013
 		DWORD o0014 : 1;		// Y0014

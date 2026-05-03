@@ -219,6 +219,10 @@ typedef struct
 	BOOL	bIndexDone[7]; 
 
 	int		nIndexPos;
+
+	BOOL	bElvWorking;
+	BOOL	bLdOMZWait;
+	BOOL	bUldMZWait;
 } GLOVAL_DATA;
 
 

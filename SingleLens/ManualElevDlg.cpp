@@ -197,22 +197,22 @@ void CManualElevDlg::OnBtnLdCVStopperClick(UINT nID)
 
 	if(nIndex == eLdCVStpr::Up1)
 	{
-		pDY00->oLdCvStpr1UpR = TRUE; pDY00->oLdCvStpr1Dn = FALSE;
+		pDY00->oLdCVStpr1UpR = TRUE; pDY00->oLdCVStpr1Dn = FALSE;
 	}
 
 	if(nIndex == eLdCVStpr::Down1)
 	{
-		pDY00->oLdCvStpr1UpR = FALSE; pDY00->oLdCvStpr1Dn = TRUE;
+		pDY00->oLdCVStpr1UpR = FALSE; pDY00->oLdCVStpr1Dn = TRUE;
 	}
 
 	if(nIndex == eLdCVStpr::Up2)
 	{
-		pDY00->oLdCvStpr2Up = TRUE; pDY00->oLdCvStpr2Dn = FALSE;
+		pDY00->oLdCVStpr2Up = TRUE; pDY00->oLdCVStpr2Dn = FALSE;
 	}
 
 	if(nIndex == eLdCVStpr::Down2)
 	{
-		pDY00->oLdCvStpr2Up = FALSE; pDY00->oLdCvStpr2Dn = TRUE;
+		pDY00->oLdCVStpr2Up = FALSE; pDY00->oLdCVStpr2Dn = TRUE;
 	}
 	g_objAJinAXL.Write_Output(0);
 
