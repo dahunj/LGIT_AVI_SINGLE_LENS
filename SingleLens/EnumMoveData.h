@@ -1,6 +1,6 @@
 #pragma once
 
-struct eElev_Z
+struct eElv_Z
 {
 	enum dtName
 	{

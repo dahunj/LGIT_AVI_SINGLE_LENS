@@ -213,15 +213,18 @@ typedef struct
 	BOOL	bLoadOpenSW;	// LED Switch below doors of machine  
 	BOOL	bUnloadOpenSW;
 	
-	BOOL	bCVMZLoadWait;
-	BOOL	bFeederWorkWait;
+	
 
 	BOOL	bIndexDone[7]; 
 
 	int		nIndexPos;
 
-	BOOL	bElvWorking;
-	BOOL	bLdOMZWait;
+	BOOL	bLdCVWorkWait;
+	BOOL	bElvWorkWait;
+	BOOL	bFeederWorkWait;
+		
+	
+	BOOL	bLdMZWait;
 	BOOL	bUldMZWait;
 } GLOVAL_DATA;
 

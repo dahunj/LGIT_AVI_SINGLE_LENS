@@ -349,28 +349,28 @@ void CManualElevDlg::OnBtnElevZClick(UINT nID)
 	int nIndex = nID - IDC_BTN_ELEV_Z_0;
 
 
-	if(nIndex == eElev_Z::Ready)
+	if(nIndex == eElv_Z::Ready)
 	{
-		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElev_Z::Ready);
+		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Ready);
 	}
 
-	if(nIndex == eElev_Z::Down)
+	if(nIndex == eElv_Z::Down)
 	{
-		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElev_Z::Down);
+		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Down);
 	}
 
-	if(nIndex == eElev_Z::Up)
+	if(nIndex == eElv_Z::Up)
 	{
-		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElev_Z::Up);
+		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Up);
 	}
 
-	if(nIndex == eElev_Z::Pitch)
+	if(nIndex == eElv_Z::Pitch)
 	{
 		double dPitchZ = pEquipData->dElevPitchZ;
 		g_objAJinAXL.Move_Relative(AX_MZ_ELEVATOR_Z, dPitchZ);		
 	}
 
-	if(nIndex == eElev_Z::PitchMinus)
+	if(nIndex == eElv_Z::PitchMinus)
 	{
 		double dPitchZ = pEquipData->dElevPitchZ;
 		g_objAJinAXL.Move_Relative(AX_MZ_ELEVATOR_Z, -dPitchZ);	

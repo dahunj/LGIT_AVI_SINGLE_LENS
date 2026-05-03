@@ -75,9 +75,10 @@ struct ElvBranch
 	enum Name
 	{
 		Load = 0,
-		Work = 1,
+		Start = 1,
 		LoadMZ = 3, 
 		RdyMZ = 11,
+		Working = 20,
 		Unload = 31,
 		SlideOver = 51, 
 	};
