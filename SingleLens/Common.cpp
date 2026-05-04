@@ -531,8 +531,6 @@ void CCommon::Set_LdStopper1Down()
 
 }
 
-
-
 BOOL CCommon::Get_LdStopper1Up()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
@@ -544,7 +542,16 @@ BOOL CCommon::Get_LdStopper1Up()
 	return FALSE;	
 }
 
+BOOL CCommon::Get_LdStopper1Down()
+{
+	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
+	if(!pDX00->iLdCVStpr1UpR && pDX00->iLdCVStpr1Dn)
+	{
+		return TRUE;
+	}
+	return FALSE;	
+}
 
 void CCommon::Set_LdStopper2Up()
 {

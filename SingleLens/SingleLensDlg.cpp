@@ -626,40 +626,68 @@ void CSingleLensDlg::Set_BuzzerFlicker(BOOL bEnable)
 	
 }
 
-void CSingleLensDlg::Set_LampFlicker_LoadOpen(BOOL bEnable)
+void CSingleLensDlg::Set_LampFlicker_LdOpen(BOOL bEnable)
 {
-	
+	DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
+
+	if (m_bLampOnLdOpen || !bEnable) {
+		m_bLampOnLdOpen = FALSE;
+		pDY03->oLdOpenLamp = FALSE;
+		//		if (!bEnable) KillTimer(TIMER_LOAD_LAMP_FLKR);
+
+	} else {
+		m_bLampOnLdOpen = TRUE;
+		pDY03->oLdOpenLamp = TRUE;
+	}
+	g_objAJinAXL.Write_Output(3);
 }
 
-void CSingleLensDlg::Set_LampFlicker_Load2(BOOL bEnable)
+void CSingleLensDlg::Set_LampFlicker_LdRun(BOOL bEnable)
 {
-	
+	DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
+
+	if (m_bLampOnLdRun || !bEnable) {
+		m_bLampOnLdRun = FALSE;
+		pDY03->oLdRunLamp = FALSE;
+		//		if (!bEnable) KillTimer(TIMER_LOAD_LAMP_FLKR);
+
+	} else {
+		m_bLampOnLdRun = TRUE;
+		pDY03->oLdRunLamp = TRUE;
+	}
+	g_objAJinAXL.Write_Output(3);
 }
 
-void CSingleLensDlg::Set_LampFlicker_Load3(BOOL bEnable)
+void CSingleLensDlg::Set_LampFlicker_UldRun(BOOL bEnable)
 {
-	
+	DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
+	if (m_bLampOnUldRun || !bEnable) {
+		m_bLampOnUldRun = FALSE;
+		pDY03->oUldRunLamp = FALSE;
+		//		if (!bEnable) KillTimer(TIMER_LOAD_LAMP_FLKR);
+
+	} else {
+		m_bLampOnUldRun = TRUE;
+		pDY03->oUldRunLamp = TRUE;
+	}
+	g_objAJinAXL.Write_Output(3);
 }
 
-void CSingleLensDlg::Set_LampFlicker_Cap1(BOOL bEnable)
+void CSingleLensDlg::Set_LampFlicker_UldOpen(BOOL bEnable)
 {
-	
+	DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
+	if (m_bLampOnUldOpen || !bEnable) {
+		m_bLampOnUldOpen = FALSE;
+		pDY03->oUldOpenLamp = FALSE;
+		//		if (!bEnable) KillTimer(TIMER_LOAD_LAMP_FLKR);
+
+	} else {
+		m_bLampOnUldOpen = TRUE;
+		pDY03->oUldOpenLamp = TRUE;
+	}
+	g_objAJinAXL.Write_Output(3);
 }
 
-void CSingleLensDlg::Set_LampFlicker_Cap2(BOOL bEnable)
-{
-	
-}
-
-void CSingleLensDlg::Set_LampFlicker_Unload1(BOOL bEnable)
-{
-	
-}
-
-void CSingleLensDlg::Set_LampFlicker_Unload2(BOOL bEnable)
-{
-	
-}
 
 void CSingleLensDlg::Enable_ModeButton(BOOL bEnable)
 {
@@ -688,13 +716,13 @@ void CSingleLensDlg::Display_DateTime()
 	CString strTime = datetime.Format("%H:%M:%S");
 	m_stcMainTime.SetWindowText(strTime);
 
-	/*DY_DATA_12 *pDY12 = g_objAJinAXL.Get_pDY12();
-	COLORREF crTowerR = (pDY12->oTowerRed ? RGB(0xFF, 0x00, 0x00) : RGB(0xF0, 0xF0, 0xF0));
-	COLORREF crTowerY = (pDY12->oTowerYellow ? RGB(0xFF, 0xFF, 0x00) : RGB(0xF0, 0xF0, 0xF0));
-	COLORREF crTowerG = (pDY12->oTowerGreen ? RGB(0x00, 0xFF, 0x00) : RGB(0xF0, 0xF0, 0xF0));
+	DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
+	COLORREF crTowerR = (pDY03->oTowerRed ? RGB(0xFF, 0x00, 0x00) : RGB(0xF0, 0xF0, 0xF0));
+	COLORREF crTowerY = (pDY03->oTowerYellow ? RGB(0xFF, 0xFF, 0x00) : RGB(0xF0, 0xF0, 0xF0));
+	COLORREF crTowerG = (pDY03->oTowerGreen ? RGB(0x00, 0xFF, 0x00) : RGB(0xF0, 0xF0, 0xF0));
 	m_stcMainTower[0].Set_Color(COLOR_DEFAULT, crTowerR);
 	m_stcMainTower[1].Set_Color(COLOR_DEFAULT, crTowerY);
-	m_stcMainTower[2].Set_Color(COLOR_DEFAULT, crTowerG);*/
+	m_stcMainTower[2].Set_Color(COLOR_DEFAULT, crTowerG);
 
 	static int nUphClear = 0;
 	if (datetime.GetHour() == 7) {	// Å¬¸®¾î
@@ -739,9 +767,9 @@ void CSingleLensDlg::Exit_System(int nExitNo)
 	g_objInspector.Set_StatusUpdate(0);
 	
 
-	/*DY_DATA_13 *pDY13 = g_objAJinAXL.Get_pDY13();
-	pDY13->oInsideLight = FALSE;
-	g_objAJinAXL.Write_Output(13);*/
+	DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
+	pDY03->oInsideLight = FALSE;
+	g_objAJinAXL.Write_Output(3);
 
 	g_objBarcodeLot.Terminate();
 	g_objLoadCell.Terminate();

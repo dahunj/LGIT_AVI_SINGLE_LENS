@@ -123,12 +123,13 @@ private:
 	BOOL	m_bMesManual;
 
 	int		m_nTimer;
-	BOOL	m_bLoadSw3On;
-	BOOL	m_bCapSw1On;
-	BOOL	m_bCapSw2On;
-	BOOL	m_bUnloadSw1On;
+	BOOL	m_bLdOpenSwOn;
+	BOOL	m_bLdRunSwOn;
+	BOOL	m_bUldOpenSwOn;
+	BOOL	m_bUldRunSwOn;
 
-
+	
+	
 private:
 	BOOL Work_Start();
 	void Initial_Controls();

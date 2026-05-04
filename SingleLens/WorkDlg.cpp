@@ -274,25 +274,23 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 	
 	DX_DATA_03 *pDX03 = g_objAJinAXL.Get_pDX03();
 
-	if (pDX03->iStartSW && !m_rdoWorkStart.GetCheck()) 
+	if (pDX03->iStartSw && !m_rdoWorkStart.GetCheck()) 
 	{
 		g_objLogFile.Save_HandlerLog("[Work Mode] START S/W push");
 		m_rdoWorkStart.SetCheck(TRUE);
-		pMainDlg->Set_LotErrorLog("START", 903, "Start");
-		SetTimer(0, 100, NULL);
-		
-		return;
+		//pMainDlg->Set_LotErrorLog("START", 903, "Start");
+
 	} 
-	else if (pDX03->iStopSW && !m_rdoWorkStop.GetCheck()) 
+	else if (pDX03->iStopSw && !m_rdoWorkStop.GetCheck()) 
 	{
 		g_objLogFile.Save_HandlerLog("[Work Mode] STOP S/W push");
 		MachineStopLog("STOP_BUTTON_PUSH");
 		m_rdoWorkStop.SetCheck(TRUE);
-		pMainDlg->Set_LotErrorLog("STOP", 904, "Stop");
-		
-		
-		return;
+		//pMainDlg->Set_LotErrorLog("STOP", 904, "Stop");
 	}
+
+	if (pDX03->iResetSw) g_objCommon.Show_Alarm("", STATE_ALARM, FALSE);
+
 	Check_Lamp();
 	Display_Status();
 
@@ -716,18 +714,106 @@ void CWorkDlg::Check_Lamp()
 	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02(); DY_DATA_02 *pDY02 = g_objAJinAXL.Get_pDY02();
 	DX_DATA_03 *pDX03 = g_objAJinAXL.Get_pDX03(); DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
 
+	//Before Auto Run, Door is opened 
+	if (g_objSequenceMain.Get_IsAutoRun()) 
+	{		
+		if (pDX03->iLoadOpenSw) 
+		{
+			if (!pEquipData->bUseDoorLock || !pDX03->iDoor08Unlock) // 안전 확인.
+			{	
+				if (!gData.bLdMZWait && !m_bLdOpenSwOn) 
+				{
+					pMainDlg->Set_LampFlicker_LdOpen(TRUE);
+					pMainDlg->Set_LampFlicker_LdRun(FALSE);	
+					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = TRUE; g_objAJinAXL.Write_Output(3); }
+					gData.bLdMZWait = TRUE;
+					m_bLdOpenSwOn = TRUE; m_bLdRunSwOn = FALSE;
+				}
+				/*else if (gData.bLdMZWait && m_bLdOpenSwOn)
+				{
+					pMainDlg->Set_LampFlicker_LdOpen(FALSE);
+					pMainDlg->Set_LampFlicker_LdRun(TRUE);	
+					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = FALSE; g_objAJinAXL.Write_Output(33); }
+					gData.bLdMZWait = FALSE;
+					m_bLdOpenSwOn = FALSE; m_bLdRunSwOn = TRUE;
+				}*/
+			}
+		} 	
 
-	if (pDX03->iStartSw && !m_rdoWorkStart.GetCheck()) {
-		g_objLogFile.Save_HandlerLog("[Work Mode] START S/W push");
-		m_rdoWorkStart.SetCheck(TRUE);
-		g_objSequenceMain.Set_LotError("START", 903, "Start");
-	} else if (pDX03->iStopSw && !m_rdoWorkStop.GetCheck()) {
-		g_objLogFile.Save_HandlerLog("[Work Mode] STOP S/W push");
-		MachineStopLog("STOP_BUTTON_PUSH");
-		m_rdoWorkStop.SetCheck(TRUE);
-		g_objSequenceMain.Set_LotError("STOP", 904, "Stop");
+
+		if (pDX03->iLoadRunSw) 
+		{
+			if (!pEquipData->bUseDoorLock || pDX03->iDoor08Unlock) // 안전 확인.
+			{	
+				if (gData.bLdMZWait && !m_bLdRunSwOn) 
+				{
+					pMainDlg->Set_LampFlicker_LdOpen(FALSE);
+					pMainDlg->Set_LampFlicker_LdRun(TRUE);	
+					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = FALSE; g_objAJinAXL.Write_Output(3); }
+					gData.bLdMZWait = FALSE;
+					m_bLdOpenSwOn = FALSE; m_bLdRunSwOn = TRUE;
+				}
+				/*else if (!gData.bLdMZWait && m_bLdRunSwOn)
+				{
+					pMainDlg->Set_LampFlicker_LdOpen(TRUE);
+					pMainDlg->Set_LampFlicker_LdRun(FALSE);	
+					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = FALSE; g_objAJinAXL.Write_Output(33); }
+					gData.bLdMZWait = TRUE;
+					m_bLdOpenSwOn = TRUE; m_bLdRunSwOn = FALSE;
+				}*/
+			}
+		} 
+
+
+
+		if (pDX03->iUnloadOpenSw) 
+		{
+			if (!pEquipData->bUseDoorLock || !pDX03->iDoor03Unlock) // 안전 확인.
+			{	
+				if (!gData.bUldMZWait && !m_bUldOpenSwOn) 
+				{
+					pMainDlg->Set_LampFlicker_UldOpen(TRUE);
+					pMainDlg->Set_LampFlicker_UldRun(FALSE);	
+					if (pEquipData->bUseDoorLock) { pDY03->oDoor03Unlock = TRUE; g_objAJinAXL.Write_Output(3); }
+					gData.bUldMZWait = TRUE;
+					m_bUldOpenSwOn = TRUE; m_bUldRunSwOn = FALSE;
+				}
+				/*else if (gData.bLdMZWait && m_bLdOpenSwOn)
+				{
+					pMainDlg->Set_LampFlicker_LdOpen(FALSE);
+					pMainDlg->Set_LampFlicker_LdRun(TRUE);	
+					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = FALSE; g_objAJinAXL.Write_Output(33); }
+					gData.bLdMZWait = FALSE;
+					m_bLdOpenSwOn = FALSE; m_bLdRunSwOn = TRUE;
+				}*/
+			}
+		} 	
+
+
+		if (pDX03->iUnloadRunSw) 
+		{
+			if (!pEquipData->bUseDoorLock || pDX03->iDoor03Unlock) // 안전 확인.
+			{	
+				if (gData.bUldMZWait && !m_bUldRunSwOn) 
+				{
+					pMainDlg->Set_LampFlicker_UldOpen(FALSE);
+					pMainDlg->Set_LampFlicker_UldRun(TRUE);	
+					if (pEquipData->bUseDoorLock) { pDY03->oDoor03Unlock = FALSE; g_objAJinAXL.Write_Output(3); }
+					gData.bUldMZWait = FALSE;
+					m_bUldOpenSwOn = FALSE; m_bUldRunSwOn = TRUE;
+				}
+				/*else if (!gData.bLdMZWait && m_bLdRunSwOn)
+				{
+					pMainDlg->Set_LampFlicker_LdOpen(TRUE);
+					pMainDlg->Set_LampFlicker_LdRun(FALSE);	
+					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = FALSE; g_objAJinAXL.Write_Output(33); }
+					gData.bLdMZWait = TRUE;
+					m_bLdOpenSwOn = TRUE; m_bLdRunSwOn = FALSE;
+				}*/
+			}
+		} 	
+
 	}
-	
 	
 }
 

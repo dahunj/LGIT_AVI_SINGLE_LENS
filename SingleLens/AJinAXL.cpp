@@ -883,13 +883,13 @@ void CAJinAXL::Sim_SetOutToIn(int nNo)
 
 	if(nNo == 3)
 	{
-		m_DX03.iDoor01UnlockF1 =			m_DY03.oDoor01UnlockF1; 	
-		m_DX03.iDoor02UnlockF2 =			m_DY03.oDoor02UnlockF2; 	
-		m_DX03.iDoor03UnlockR1 =			m_DY03.oDoor03UnlockR1; 	
-		m_DX03.iDoor04UnlockR2 =			m_DY03.oDoor04UnlockR2; 	
-		m_DX03.iDoor05UnlockR1 =			m_DY03.oDoor05UnlockR1; 	
-		m_DX03.iDoor06UnlockR2 =			m_DY03.oDoor06UnlockR2; 	
-		m_DX03.iDoor07UnlockL1 =			m_DY03.oDoor07UnlockL1;	
-		m_DX03.iDoor08UnlockL2 =			m_DY03.oDoor08UnlockL2;	
+		m_DX03.iDoor01Unlock =			m_DY03.oDoor01Unlock; 	
+		m_DX03.iDoor02Unlock =			m_DY03.oDoor02Unlock; 	
+		m_DX03.iDoor03Unlock =			m_DY03.oDoor03Unlock; 	
+		m_DX03.iDoor04Unlock =			m_DY03.oDoor04Unlock; 	
+		m_DX03.iDoor05Unlock =			m_DY03.oDoor05Unlock; 	
+		m_DX03.iDoor06Unlock =			m_DY03.oDoor06Unlock; 	
+		m_DX03.iDoor07Unlock =			m_DY03.oDoor07Unlock;	
+		m_DX03.iDoor08Unlock =			m_DY03.oDoor08Unlock;	
 	}	
 }

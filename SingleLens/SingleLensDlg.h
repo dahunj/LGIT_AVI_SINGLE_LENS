@@ -85,13 +85,11 @@ private:
 	BOOL m_bInsideLight;	// Y0008 : Inside Light
 	BOOL m_bTowerOn;
 	BOOL m_bBuzzerOn;
-	BOOL m_bLampOnLoad1;
-	BOOL m_bLampOnLoad2;
-	BOOL m_bLampOnLoad3;
-	BOOL m_bLampOnCap1;
-	BOOL m_bLampOnCap2;
-	BOOL m_bLampOnUnload1;
-	BOOL m_bLampOnUnload2;
+
+	BOOL	m_bLampOnLdOpen;
+	BOOL	m_bLampOnLdRun;
+	BOOL	m_bLampOnUldOpen;
+	BOOL	m_bLampOnUldRun;
 
 	DWORD	m_dwEquipRunStart;
 	DWORD	m_dwEquipProcTime;	// MachineERROR 로그 사용 (2018.06.05)
@@ -115,14 +113,11 @@ public:
 	void Set_TowerFlicker(BOOL bEnable);
 	void Set_BuzzerFlicker(BOOL bEnable);
 
-	void Set_LampFlicker_LoadOpen(BOOL bEnable);
-	void Set_LampFlicker_Load2(BOOL bEnable);
-	void Set_LampFlicker_Load3(BOOL bEnable);
-	void Set_LampFlicker_Cap1(BOOL bEnable);
-	void Set_LampFlicker_Cap2(BOOL bEnable);
-	void Set_LampFlicker_Unload1(BOOL bEnable);
-	void Set_LampFlicker_Unload2(BOOL bEnable);
-
+	void Set_LampFlicker_LdOpen(BOOL bEnable);
+	void Set_LampFlicker_LdRun(BOOL bEnable);
+	void Set_LampFlicker_UldOpen(BOOL bEnable);
+	void Set_LampFlicker_UldRun(BOOL bEnable);
+	
 	void Enable_ModeButton(BOOL bEnable);
 
 	void Display_EquipName();

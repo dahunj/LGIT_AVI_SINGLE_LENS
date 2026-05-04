@@ -215,8 +215,8 @@ BOOL CSequenceMain::LotEnd_Run()
 	gData.bFirstLotStart = FALSE;
 	
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
-	//pMainDlg->Set_LampFlicker_Load3(FALSE);
-	//pMainDlg->Set_LampFlicker_Cap1(FALSE);
+	//pMainDlg->Set_LampFlicker_UldRun(FALSE);
+	//pMainDlg->Set_LampFlicker_UldOpen(FALSE);
 	//pMainDlg->Set_LampFlicker_Cap2(FALSE);
 	//pMainDlg->Set_LampFlicker_Ship1(FALSE);
 	//pMainDlg->Set_LampFlicker_Ship2(FALSE);
@@ -1828,8 +1828,6 @@ case 15:
 // 9. (Error : 5500)
 BOOL CSequenceMain::MainIndexRun()
 {	
-	
-
 	switch(m_nMainIndexCase)
 	{
 	case 0:

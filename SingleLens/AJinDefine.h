@@ -227,24 +227,24 @@ typedef union tag_DX_DATA_03 {
 		DWORD i0309 : 1;			// X0309
 		DWORD i0310 : 1;			// X0310
 		DWORD i0311 : 1;			// X0311
-		DWORD iStartSW : 1;			// X0312
+		DWORD iStartSw : 1;			// X0312
 		DWORD i0313 : 1;			// X0313
-		DWORD iStopSW : 1;			// X0314
+		DWORD iStopSw : 1;			// X0314
 		DWORD i0315 : 1;			// X0315
-		DWORD iResetSW : 1;			// X0316
+		DWORD iResetSw : 1;			// X0316
 		DWORD i0317 : 1;			// X0317
-		DWORD iMZLoadOpenSW : 1;	// X0318
-		DWORD iMZLoadRunSW : 1;		// X0319
-		DWORD iMZUnloadOpenSW : 1;		// X0320
-		DWORD iMZUnloadRunSW : 1;		// X0321
-		DWORD iDoor01UnlockF1 : 1;	// X0322
-		DWORD iDoor02UnlockF2 : 1;	// X0323
-		DWORD iDoor03UnlockR1 : 1;		// X0324
-		DWORD iDoor04UnlockR2 : 1;		// X0325
-		DWORD iDoor05UnlockR1 : 1;		// X0326
-		DWORD iDoor06UnlockR2 : 1;		// X0327
-		DWORD iDoor07UnlockL1 : 1;				// X0328
-		DWORD iDoor08UnlockL2 : 1;				// X0329
+		DWORD iLoadOpenSw : 1;	// X0318
+		DWORD iLoadRunSw : 1;		// X0319
+		DWORD iUnloadOpenSw : 1;		// X0320
+		DWORD iUnloadRunSw : 1;		// X0321
+		DWORD iDoor01Unlock : 1;	// X0322
+		DWORD iDoor02Unlock : 1;	// X0323
+		DWORD iDoor03Unlock : 1;		// X0324
+		DWORD iDoor04Unlock : 1;		// X0325
+		DWORD iDoor05Unlock : 1;		// X0326
+		DWORD iDoor06Unlock : 1;		// X0327
+		DWORD iDoor07Unlock : 1;				// X0328
+		DWORD iDoor08Unlock : 1;				// X0329
 		DWORD i0330 : 1;				// X0330
 		DWORD i0331 : 1;				// X0331
 	};
@@ -382,24 +382,24 @@ typedef union tag_DY_DATA_03 {
 		DWORD oSafetyReset : 1;				// Y0309
 		DWORD oModeSelect : 1;					// Y0310
 		DWORD oDustPowerOn : 1;					// Y0311
-		DWORD oStartLampGreenFrontRight : 1;					// Y0312
-		DWORD oStartLampGreenRearLeft : 1;					// Y0313
-		DWORD oStopLampRedFrontRight : 1;					// Y0314
-		DWORD oStopLampRedRearLeft : 1;					// Y0315
-		DWORD oResetLampYellowFrontRight : 1;	// Y0316
-		DWORD oResetLampYellowRearLeft : 1;	// Y0317
-		DWORD MZLoadLampOpen : 1;					// Y0318
-		DWORD MZLoadLampRun : 1;					// Y0319
-		DWORD MZUnloadLampOpen : 1;								// Y0320
-		DWORD MZUnloadLampRun : 1;								// Y0321
-		DWORD oDoor01UnlockF1 : 1;						// Y0322
-		DWORD oDoor02UnlockF2 : 1;						// Y0323
-		DWORD oDoor03UnlockR1 : 1;						// Y0324
-		DWORD oDoor04UnlockR2 : 1;						// Y0325
-		DWORD oDoor05UnlockR1 : 1;						// Y0326
-		DWORD oDoor06UnlockR2 : 1;						// Y0327
-		DWORD oDoor07UnlockL1 : 1;						// Y0328
-		DWORD oDoor08UnlockL2 : 1;						// Y0329
+		DWORD oStartLamp1: 1;					// Y0312
+		DWORD oStartLamp2 : 1;					// Y0313
+		DWORD oStopLamp1: 1;					// Y0314
+		DWORD oStopLamp2 : 1;					// Y0315
+		DWORD oResetLamp1 : 1;	// Y0316
+		DWORD oResetLamp2 : 1;	// Y0317
+		DWORD oLdOpenLamp   : 1;					// Y0318
+		DWORD oLdRunLamp    : 1;					// Y0319
+		DWORD oUldOpenLamp  : 1;								// Y0320
+		DWORD oUldRunLamp   : 1;								// Y0321
+		DWORD oDoor01Unlock : 1;						// Y0322
+		DWORD oDoor02Unlock : 1;						// Y0323
+		DWORD oDoor03Unlock : 1;						// Y0324
+		DWORD oDoor04Unlock : 1;						// Y0325
+		DWORD oDoor05Unlock : 1;						// Y0326
+		DWORD oDoor06Unlock : 1;						// Y0327
+		DWORD oDoor07Unlock : 1;						// Y0328
+		DWORD oDoor08Unlock : 1;						// Y0329
 		DWORD o0330 : 1;					// Y0330
 		DWORD o0331 : 1;					// Y0331
 	};
