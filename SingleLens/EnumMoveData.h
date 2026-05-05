@@ -32,7 +32,7 @@ struct eFeeder_X
 		Ready = 0,
 		MZReady = 1,
 		MZLoad = 2,
-		PickerUp= 3,
+		TrayGrip= 3,
 	};
 };
 
@@ -43,7 +43,7 @@ struct eFeeder_Y
 		Ready = 0,		
 		MZReady = 1,
 		MZLoad = 2,
-		PickerUp = 3,
+		TrayGrip = 3,
 	};
 };
 

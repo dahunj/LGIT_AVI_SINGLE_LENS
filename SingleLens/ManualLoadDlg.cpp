@@ -161,9 +161,9 @@ void CManualLoadDlg::OnBtnFeederXClick(UINT nID)
 	{
 		g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZLoad);
 	}
-	if(nIndex == eFeeder_X::PickerUp)
+	if(nIndex == eFeeder_X::TrayGrip)
 	{
-		g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::PickerUp);
+		g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
 	}	
 
 	m_strLog.Format("[Manual Feeder X] LD CV Stoppper (%d) Click", nIndex);
@@ -193,9 +193,9 @@ void CManualLoadDlg::OnBtnFeederYClick(UINT nID)
 	{
 		g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad);
 	}
-	if(nIndex == eFeeder_Y::PickerUp)
+	if(nIndex == eFeeder_Y::TrayGrip)
 	{
-		g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::PickerUp);
+		g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::TrayGrip);
 	}	
 
 	m_strLog.Format("[Manual Feeder Y] Feeder Y (%d) Click", nIndex);

@@ -293,24 +293,17 @@ BOOL CSequenceMain::LoadConveyorRun()
 {
 	static int nDetectCnt[6] = {0, 0, 0, 0, 0, 0}; 
 
-	if(gData.bLdMZWait || gData.bElvWorkWait || gData.bFeederWorkWait) return TRUE;
+	if(gData.bLdMZWait || gData.bElvLoadWait || gData.bFeederWorkWait)
+	{
+		g_objCommon.Set_LoadCVStop();
+		return TRUE;
+	}
 
 	switch(m_nLoadConveyorCase)
 	{
 	case 0:
 		return TRUE;
 	case 1:		
-#ifndef AJIN_BOARD_USE
-		m_pDX00->iLdCVMZExist5 = FALSE;
-		m_pDX00->iLdCVMZExist4 = FALSE;
-		m_pDX00->iLdCVMZExist3 = FALSE;
-		m_pDX00->iLdCVMZExist2 = FALSE;
-		m_pDX00->iLdCVMZExist1R = FALSE;	
-
-		m_pDX00->iElvMZExist1 = FALSE;
-		m_pDX00->iElvMZExist2 = FALSE;
-#endif
-
 		if(m_pDX00->iLdCVMZExist1R || m_pDX00->iLdCVMZExist2 )
 		{
 			nDetectCnt[0]++; nDetectCnt[1] = 0; nDetectCnt[2] = 0;
@@ -333,6 +326,18 @@ BOOL CSequenceMain::LoadConveyorRun()
 			//case that all sensors not detected, think later 
 			for(int i = 0; i < 5; i++) nDetectCnt[i] = 0;
 		}
+
+#ifndef AJIN_BOARD_USE
+		m_pDX00->iLdCVMZExist5 = FALSE;
+		m_pDX00->iLdCVMZExist4 = FALSE;
+		m_pDX00->iLdCVMZExist3 = FALSE;
+		m_pDX00->iLdCVMZExist2 = FALSE;
+		m_pDX00->iLdCVMZExist1R = FALSE;	
+
+		m_pDX00->iElvMZExist1 = FALSE;
+		m_pDX00->iElvMZExist2 = FALSE;
+#endif
+
 		return TRUE;
 	case 2:	
 		if(g_objCommon.Get_LdStopper1Up() )
@@ -401,7 +406,7 @@ BOOL CSequenceMain::MZElevRun()
 	//if(Check_CVMZSensors() > 0 && (m_nMZElevCase == 0 || m_nMZElevCase == 20) && !gData.bFeederWorkWait)
 	//{
 	//	nMZCnt++;
-	//	gData.bElvWorkWait = TRUE;
+	//	gData.bElvLoadWait = TRUE;
 	//	nMZDetectCnt[0] = 0; nMZDetectCnt[1] = 0; nMZDetectCnt[5] = 0;
 	//	m_nMZElevCase = 1; m_nMZElevLoop.Set_LoopTime(5000);
 	//	m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load MZ to Elev Start");
@@ -420,7 +425,7 @@ BOOL CSequenceMain::MZElevRun()
 		if(g_objCommon.Get_LdStopper1Down() && g_objCommon.Check_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Ready))
 		{
 			if (!m_nMZElevLoop.Waiting_Time(100)) break;
-			gData.bElvWorkWait = TRUE;
+			gData.bElvLoadWait = TRUE;
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load MZ to Elev Start");
 		}	
@@ -618,7 +623,7 @@ BOOL CSequenceMain::MZElevRun()
 
 	case 20: // working 
 		//If additional M/Z added from operator with UI, case can be changed 
-		gData.bElvWorkWait = FALSE;
+		gData.bElvLoadWait = FALSE;
 		return TRUE;
 
 	case ElvBranch::Unload:
@@ -628,60 +633,62 @@ BOOL CSequenceMain::MZElevRun()
 		}			
 		break;
 	case 32:
-		nMZDetectCnt[4]++;
+		
 		if(m_pDX01->iUldCvMZExist1L)
 		{
 			nMZDetectCnt[0]++;
-			if(nMZDetectCnt[0] > 5){ nMZCnt++; nMZDetectCnt[0] = 0;}
+			if(nMZDetectCnt[0] > 5){ nMZCnt++; for(int i = 0; i < 6; i++) nMZDetectCnt[i] = 0;}
 		}
 		if(m_pDX01->iUldCvMZExist2)
 		{
 			nMZDetectCnt[1]++;
-			if(nMZDetectCnt[1] > 5){ nMZCnt++; nMZDetectCnt[1] = 0;}
+			if(nMZDetectCnt[1] > 5){ nMZCnt++; for(int i = 0; i < 6; i++) nMZDetectCnt[i] = 0;}
 		}
 		if(m_pDX01->iUldCvMZExist3)
 		{
 			nMZDetectCnt[2]++;
-			if(nMZDetectCnt[2] > 5){ nMZCnt++; nMZDetectCnt[2] = 0;}
+			if(nMZDetectCnt[2] > 5){ nMZCnt++; for(int i = 0; i < 6; i++) nMZDetectCnt[i] = 0;}
 		}
 		if(m_pDX01->iUldCvMZExist4)
 		{
 			nMZDetectCnt[3]++;
-			if(nMZDetectCnt[3] > 5){ nMZCnt++; nMZDetectCnt[3] = 0;}
+			if(nMZDetectCnt[3] > 5){ nMZCnt++; for(int i = 0; i < 6; i++) nMZDetectCnt[i] = 0;}
 		}
-		if(nMZDetectCnt[4] > 9)
+		nMZDetectCnt[5]++;
+		if(nMZDetectCnt[5] > 9)
 		{
-			for(int i = 0; i < 5; i++) nMZDetectCnt[i] = 0;
+			for(int i = 0; i < 6; i++) nMZDetectCnt[i] = 0;
 			m_nMZElevCase++;m_nMZElevLoop.Set_LoopTime(5000);
 		}		
 		break;
 	case 33:
 		if(nMZCnt >= 4)
 		{
-			nMZDetectCnt[4] = 0;
+			nMZDetectCnt[5] = 0;
 			m_nMZElevCase = ElvBranch::Unload;			
 		}
 		else if(nMZCnt < 4 && m_pDX01->iUldCvMZExist1L)
 		{
-			nMZDetectCnt[4] = 0;
+			nMZDetectCnt[5] = 0; // Wait 
 			m_nMZElevCase = ElvBranch::Unload;	
 		}
 		else if(nMZCnt < 4 && !m_pDX01->iUldCvMZExist1L )
 		{
-			nMZDetectCnt[4]++;
-			if(nMZDetectCnt[4] > 5) // over 5 times 
+			nMZDetectCnt[5]++;
+			if(nMZDetectCnt[5] > 5) // over 5 times 
 			{
 				m_nMZElevCase++;m_nMZElevLoop.Set_LoopTime(5000);
 			}					
 		}		
 		else
 		{
-			nMZDetectCnt[4] = 0;
+			nMZDetectCnt[5] = 0;
 		}
 		return TRUE;				
 	case 34:
 		if(m_pDX00->iElvMZExist2 && g_objCommon.Get_ElevStopper2Up() && g_objCommon.Get_ElevStopper2In())
 		{
+			gData.bElvUnloadWait = TRUE;
 			g_objCommon.Set_ElevStopper2Out();
 			m_nMZElevCase++;m_nMZElevLoop.Set_LoopTime(5000);
 		}
@@ -713,8 +720,8 @@ BOOL CSequenceMain::MZElevRun()
 		{
 			g_objCommon.Set_ElevCVStop();
 			Sleep(5);
-			g_objCommon.Set_UnloadCVStop();
-			m_nUnloadConveyorCase = 1; m_nUnloadConveyorLoop.Set_LoopTime(5000);
+			g_objCommon.Set_UnloadCVStop();	
+			gData.bElvUnloadWait = FALSE;
 			m_nMZElevCase = 51;m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
@@ -811,7 +818,7 @@ BOOL CSequenceMain::FeederRun()
 		return TRUE;
 
 	case (int) FeederBranch::LoadSearch:	
-		if(!gData.bElvWorkWait)
+		if(!gData.bElvLoadWait)
 		{
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		}
@@ -899,13 +906,13 @@ BOOL CSequenceMain::FeederRun()
 //			gData.sZigIDElev = m_strLog;
 //#endif
 			//gData.sZigIDElev = Get barcode 
-			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::PickerUp);
+			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::TrayGrip);
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 			m_strLog.Format("Feeder Y Move (PickUp)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}
 		break;
 	case 12:
-		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::PickerUp))
+		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::TrayGrip))
 		{
 			gData.bFeederWorkWait = FALSE;
 			//Info Processing 		
@@ -917,13 +924,13 @@ BOOL CSequenceMain::FeederRun()
 
 			g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO,eMZ::Load, NULL);
 
-			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::PickerUp);
+			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 			m_strLog.Format("Feeder X Move (PickUp)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}
 		break;
 	case 13:
-		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::PickerUp))
+		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip))
 		{
 			m_pDY01->oFeederGripClose = FALSE; m_pDY01->oFeederGripOpen = TRUE;
 			g_objAJinAXL.Write_Output(1);
@@ -965,16 +972,16 @@ BOOL CSequenceMain::FeederRun()
 		return TRUE;
 	case 31:
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready) 
-			&& g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::PickerUp)
+			&& g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip)
 			&& g_objCommon.Get_FeederOpen())
 		{
-			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::PickerUp);
+			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::TrayGrip);
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 			m_strLog.Format("Feeder Y Move (To Pick) "); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}
 		break;
 	case 32:
-		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::PickerUp) && g_objCommon.Get_FeederOpen())
+		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::TrayGrip) && g_objCommon.Get_FeederOpen())
 		{
 			g_objCommon.Set_FeederClose();
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
@@ -1001,7 +1008,7 @@ BOOL CSequenceMain::FeederRun()
 		}
 		break;
 	case 35:
-		if(!gData.bElvWorkWait)
+		if(!gData.bElvLoadWait)
 		{
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		}
@@ -1052,7 +1059,9 @@ BOOL CSequenceMain::FeederRun()
 			gData.bFeederWorkWait = FALSE;
 
 			if(CheckCtZigAllReturn())
-
+			{
+				m_nMZElevCase = ElvBranch::Unload;
+			}
 			m_strLog.Format("Back to Branch"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 			m_nFeederCase = 0; m_nFeederLoop.Set_LoopTime(5000);			
 		}		
@@ -1453,6 +1462,7 @@ BOOL CSequenceMain::TopInspectorRun()
 	switch(m_nTopInspectCase)
 	{
 	case 0:
+		m_nTopInspectLoop.Set_LoopTime(5000);
 		return TRUE;
 	case 1:
 		if(!gData.bIndexDone[eMainIndex::Top] && !Check_IndexEmpty(eMainIndex::Top)  )
@@ -1581,6 +1591,9 @@ BOOL CSequenceMain::BtmInspectorRun()
 
 	switch(m_nBtmInspectCase)
 	{
+	case 0:
+		m_nBtmInspectLoop.Set_LoopTime(5000);
+		return TRUE;
 	case 1:
 		if(!gData.bIndexDone[eMainIndex::Btm] && !Check_IndexEmpty(eMainIndex::Btm) )
 		{
@@ -1958,11 +1971,50 @@ BOOL CSequenceMain::MainIndexRun()
 
 BOOL CSequenceMain::UnloadConveyorRun()
 {
+	static int nDetectCnt[5] = {0,0,0,0,0};
+
+	if(gData.bUldMZWait || gData.bElvUnloadWait)
+	{
+		g_objCommon.Set_UnloadCVStop();
+		return TRUE;
+	}
+
 	switch(m_nUnloadConveyorCase)
 	{
 	case 0:
 		return TRUE;
-	
+	case 1:
+		if((m_pDX01->iUldCvMZExist1L || m_pDX01->iUldCvMZExist2 || m_pDX01->iUldCvMZExist3) && !m_pDX01->iUldCvMZExist4 )
+		{
+			nDetectCnt[0]++;
+			if(nDetectCnt[0] > 5)
+			{
+				nDetectCnt[0] = 0;
+				m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(5000);
+			}
+		}
+		else
+		{
+			nDetectCnt[0] = 0;
+		}
+		break;
+	case 2:
+		g_objCommon.Set_UnloadCVRunCW();
+		m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(5000);
+		break;
+	case 3:
+		m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(5000);
+		break;
+	case 4:
+		if(m_pDX01->iUldCvMZExist4)
+		{
+			g_objCommon.Set_UnloadCVStop();
+			m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(5000);
+		}		
+		break;
+	case 5:
+		m_nUnloadConveyorCase = 1; m_nUnloadConveyorLoop.Set_LoopTime(5000);
+		break;	
 
 	}
 
@@ -1978,8 +2030,9 @@ BOOL CSequenceMain::UnloadConveyorRun()
 void CSequenceMain::Begin_MainRunThread()
 {
 	if (m_nMainIndexCase == 0 )		m_nMainIndexCase = 1;
-	/*if (m_nLoadConveyorCase == 0)	m_nLoadConveyorCase = 1;
-	if (m_nMZElevCase == 0)			m_nMZElevCase = 1;
+	if (m_nLoadConveyorCase == 0)	m_nLoadConveyorCase = 1;
+	if (m_nUnloadConveyorCase == 0) m_nUnloadConveyorCase = 1;
+	/*if (m_nMZElevCase == 0)			m_nMZElevCase = 1;
 	if (m_nFeederCase == 0)			m_nFeederCase = 1;
 	if (m_nZigPickerCase == 0)		m_nZigPickerCase = 1;
 	if (m_nLensCleanerCase == 0)	m_nLensCleanerCase = 1;
@@ -1987,7 +2040,7 @@ void CSequenceMain::Begin_MainRunThread()
 	if (m_nBtmInspectCase == 0 )	m_nBtmInspectCase = 1;
 	if (m_nMarkUnitCase == 0)			m_nMarkUnitCase = 1;
 	if (m_nMainIndexCase == 0 )		m_nMainIndexCase = 1;
-	if (m_nUnloadConveyorCase == 0) m_nUnloadConveyorCase = 1;*/
+	;*/
 
 	if (m_pThreadMainRun) End_MainRunThread();
 	m_bThreadMainRun = TRUE;
@@ -2015,51 +2068,54 @@ int CSequenceMain::Check_CVMZSensors()
 		if (m_pDX00->iLdCVMZExist1R )
 		{
 			nSensingCnt[0]++;
-			if(nSensingCnt[0] > 10)
+			if(nSensingCnt[0] > 5)
 			{
-				nMZCnt++;
+				nMZCnt++;for(int i = 0; i < 6; i++) nSensingCnt[i] = 0;
 				break;
 			}			
 		}
 		else if (m_pDX00->iLdCVMZExist2)
 		{
 			nSensingCnt[1]++;
-			if(nSensingCnt[1] > 10)
+			if(nSensingCnt[1] > 5)
 			{
-				nMZCnt++;
+				nMZCnt++;for(int i = 0; i < 6; i++) nSensingCnt[i] = 0;
 				break;
 			}			
 		}
 		else if (m_pDX00->iLdCVMZExist3 )
 		{
 			nSensingCnt[2]++;
-			if(nSensingCnt[2] > 10)
+			if(nSensingCnt[2] > 5)
 			{
-				nMZCnt++;
+				nMZCnt++;for(int i = 0; i < 6; i++) nSensingCnt[i] = 0;
 				break;
 			}			
 		}
 		else if (m_pDX00->iLdCVMZExist4 )
 		{
 			nSensingCnt[3]++;
-			if(nSensingCnt[3] > 10)
+			if(nSensingCnt[3] > 5)
 			{
-				nMZCnt++;
+				nMZCnt++;for(int i = 0; i < 6; i++) nSensingCnt[i] = 0;
 				break;
 			}			
 		}
 		else if (m_pDX00->iLdCVMZExist5 )
 		{
 			nSensingCnt[4]++;
-			if(nSensingCnt[4] > 10)
+			if(nSensingCnt[4] > 5)
 			{
-				nMZCnt++;
+				nMZCnt++;for(int i = 0; i < 6; i++) nSensingCnt[i] = 0;
 				break;
 			}			
 		}
 		else
 		{
-			for(int i = 0; i < 5; i++) nSensingCnt[i] = 0;
+			nSensingCnt[5]++;
+			if(nSensingCnt[5] < 8) continue;
+			for(int i = 0; i < 6; i++) nSensingCnt[i] = 0;
+			break;
 		}		
 	}
 	

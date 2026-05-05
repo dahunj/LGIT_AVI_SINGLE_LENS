@@ -191,22 +191,7 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		pMainDlg->Set_LotErrorLog("ERROR", m_nErrCode, m_strErrMsg);
 
 		m_nBackColorLoop = 0;
-		if		(m_nErrNo > 3100 && m_nErrNo < 3200) m_nErrorPos =  1;	//  1.Tray Picker
-		else if (m_nErrNo > 3200 && m_nErrNo < 3400) m_nErrorPos =  2;	//  2.Load Stage
-		else if (m_nErrNo > 3400 && m_nErrNo < 3500) m_nErrorPos =  3;	//  3.Load Picker
-
-		else if (m_nErrNo > 3500 && m_nErrNo < 3800) m_nErrorPos =  4;	//  4.Main Index & Vision
-		else if (m_nErrNo > 4200 && m_nErrNo < 4300) m_nErrorPos =  8;	//  8.Assy Picker
-
-		else if (m_nErrNo > 3800 && m_nErrNo < 4000) m_nErrorPos =  5;	//  5.Cap Stage		
-		else if (m_nErrNo > 4000 && m_nErrNo < 4100) m_nErrorPos =  6;	//  6.Cap Picker
-		else if (m_nErrNo > 4100 && m_nErrNo < 4200) m_nErrorPos =  7;	//  7.Cap Buffer		
 		
-		else if (m_nErrNo > 4300 && m_nErrNo < 4400) m_nErrorPos =  9;	//  9.Trans Stage
-		else if (m_nErrNo > 4400 && m_nErrNo < 4500) m_nErrorPos = 10;	// 10.Unload Picker
-		else if (m_nErrNo > 4500 && m_nErrNo < 4700) m_nErrorPos = 11;	// 11.Unload Stage
-
-		else										 m_nErrorPos =  0;
 		m_stcErrPos[m_nErrorPos].Set_Color(RGB(0xFF, 0xFF, 0xFF), RGB(0xFF, 0x00, 0x00));
 
 		SetTimer(0, 100, NULL);

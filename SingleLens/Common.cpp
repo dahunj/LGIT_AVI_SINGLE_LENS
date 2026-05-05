@@ -244,9 +244,7 @@ BOOL CCommon::Check_MainEmgAir()
 
 BOOL CCommon::Check_MainDoor(BOOL bAuto)
 {
-#ifdef DRY_RUN_TEST
-	return TRUE;
-#endif
+
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
 #ifdef AJIN_BOARD_USE

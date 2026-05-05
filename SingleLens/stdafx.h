@@ -220,7 +220,8 @@ typedef struct
 	int		nIndexPos;
 
 	BOOL	bLdCVWorkWait;
-	BOOL	bElvWorkWait;
+	BOOL	bElvLoadWait;
+	BOOL	bElvUnloadWait;
 	BOOL	bFeederWorkWait;
 		
 	
