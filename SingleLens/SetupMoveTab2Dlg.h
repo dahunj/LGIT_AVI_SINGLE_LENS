@@ -14,23 +14,20 @@ public:
 
 // 대화 상자 데이터입니다.
 	enum { IDD = IDD_SETUP_MOVE_TAB2_DLG };
-	CGroupCS	m_Group[14];
-	CLabelCS	m_Label[62];
-	//CStaticCS	m_stcMainIndexR[1];			
-	//CStaticCS	m_stcVisionCmX[2];	
-	//CStaticCS	m_stcCapStage1X[3];		
-	//CStaticCS	m_stcCapStage1Z[4];
-	//CStaticCS	m_stcCapStage2X[3];		
-	//CStaticCS	m_stcCapStage2Z[4];		
-	//CStaticCS	m_stcCapPickerY[13];		
-	//CStaticCS	m_stcCapPickerZ[4];		
-	//CStaticCS	m_stcCapPickerP[2];		
-	//CStaticCS	m_stcCapBufferY[4];		
-	//CStaticCS	m_stcVisionCapY[1];	
-	//CStaticCS	m_stcAssyPickerX[7];		
-	//CStaticCS	m_stcAssyPickerY[7];		
-	//CStaticCS	m_stcAssyPickerZ[7];		
+	CGroupCS	m_Group[9];
+	CLabelCS	m_Label[45];
 
+	CStaticCS	m_stcTopInspectX[5];
+	CStaticCS	m_stcTopInspectY[5];
+	CStaticCS	m_stcTopInspectZ[5];
+	CStaticCS	m_stcBtmInspectX[5];
+	CStaticCS	m_stcBtmInspectY[5];
+	CStaticCS	m_stcBtmInspectZ[5];
+	CStaticCS	m_stcMarkUnitX[5];
+	CStaticCS	m_stcMarkUnitY[5];
+	CStaticCS	m_stcMarkUnitZ[5];
+	
+	
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
@@ -38,21 +35,16 @@ protected:
 	virtual BOOL OnInitDialog();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
-	/*afx_msg void OnStcMainIndexRlick(UINT nID);
-	afx_msg void OnStcVisionCmXClick(UINT nID);
-	afx_msg void OnStcCapStage1XClick(UINT nID);
-	afx_msg void OnStcCapStage1ZClick(UINT nID);
-	afx_msg void OnStcCapStage2XClick(UINT nID);
-	afx_msg void OnStcCapStage2ZClick(UINT nID);
-	afx_msg void OnStcCapPickerYClick(UINT nID);
-	afx_msg void OnStcCapPickerZClick(UINT nID);
-	afx_msg void OnStcCapPickerPClick(UINT nID);
-	afx_msg void OnStcCapBufferYClick(UINT nID);
-	afx_msg void OnStcVisionCapYClick(UINT nID);
-	afx_msg void OnStcAssyPickerXClick(UINT nID);
-	afx_msg void OnStcAssyPickerYClick(UINT nID);
-	afx_msg void OnStcAssyPickerZClick(UINT nID);
-	*/
+	afx_msg void OnStcTopInspectXClick(UINT nID);
+	afx_msg void OnStcTopInspectYClick(UINT nID);
+	afx_msg void OnStcTopInspectZClick(UINT nID);
+	afx_msg void OnStcBtmInspectXClick(UINT nID);
+	afx_msg void OnStcBtmInspectYClick(UINT nID);
+	afx_msg void OnStcBtmInspectZClick(UINT nID);
+	afx_msg void OnStcMarkUnitXClick(UINT nID);
+	afx_msg void OnStcMarkUnitYClick(UINT nID);
+	afx_msg void OnStcMarkUnitZClick(UINT nID);
+	
 private:
 	void Initial_Controls();
 	void Display_MoveData();

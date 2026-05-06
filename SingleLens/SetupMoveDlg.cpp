@@ -35,9 +35,9 @@ END_MESSAGE_MAP()
 
 void CSetupMoveDlg::Initial_Controls() 
 {
-	m_tabSetupMove.InsertItem(0, "Load");
-	m_tabSetupMove.InsertItem(1, "Index / Vision / Cap / Assembly");
-	m_tabSetupMove.InsertItem(2, "Trans / Unload");
+	m_tabSetupMove.InsertItem(0, "Elv / Feeder / Picker");
+	m_tabSetupMove.InsertItem(1, "Top / Btm / Mark");
+	m_tabSetupMove.InsertItem(2, "Main Index");
 
 	m_tabSetupMove.SetItemSize(CSize(560, 60));
 	m_tabSetupMove.Init_Ctrl("πŸ≈¡", 14, TRUE, RGB(0x00, 0x00, 0xFF), COLOR_DEFAULT);

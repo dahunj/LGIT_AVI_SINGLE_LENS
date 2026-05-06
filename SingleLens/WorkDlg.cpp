@@ -1152,7 +1152,7 @@ void CWorkDlg::OnBnClickedButton2()
 void CWorkDlg::OnBnClickedBtnSimul1()
 {
 	DX_DATA_00* m_pDX00 = g_objAJinAXL.Get_pDX00();
-	m_pDX00->iLdCVMZExist1R = TRUE;
+	m_pDX00->iLdCVMZExist5 = TRUE;
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }
 

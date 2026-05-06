@@ -232,12 +232,12 @@ int CCommon::Show_Password(int &nUser)
 BOOL CCommon::Check_MainEmgAir()
 {
 #ifdef AJIN_BOARD_USE
-	DX_DATA_12 *pDX12 = g_objAJinAXL.Get_pDX12();
-	if (pDX12->iEmgSw1)		{ Show_Error(1); return FALSE; }
-	if (pDX12->iEmgSw2)		{ Show_Error(2); return FALSE; }
-	if (pDX12->iEmgSw3)		{ Show_Error(3); return FALSE; }
-	if (!pDX12->iMainAir1)	{ Show_Error(7); return FALSE; }
-	if (!pDX12->iMainAir2)	{ Show_Error(8); return FALSE; }
+	DX_DATA_03 *pDX03 = g_objAJinAXL.Get_pDX03();
+	if (pDX03->iEmgSw1)		{ Show_Error(1); return FALSE; }
+	if (pDX03->iEmgSw2)		{ Show_Error(2); return FALSE; }
+	if (pDX03->iEmgSw3)		{ Show_Error(3); return FALSE; }
+	if (!pDX03->iMainAir1)	{ Show_Error(7); return FALSE; }
+	
 #endif
 	return TRUE;
 }
@@ -262,14 +262,14 @@ BOOL CCommon::Check_MainDoor(BOOL bAuto)
 		if (!pEquipData->bUseDoorLock) return TRUE;
 
 		// temp
-		if (pDX03->iDoor01UnlockFront1 )						{ Show_Alarm("Main 01번 Door(X0322) Opened."); return FALSE; }
-		if (pDX03->iDoor02UnlockFront2)							{ Show_Alarm("Main 02번 Door(X0323) Opened."); return FALSE; }
-		if (pDX03->iDoor03UnlockRight1 && !gData.bUnloadOpenSW)	{ Show_Alarm("Main 03번 Door(X0324) Opened."); return FALSE; }
-		if (pDX03->iDoor04UnlockRight2)							{ Show_Alarm("Main 04번 Door(X0325) Opened."); return FALSE; }
-		if (pDX03->iDoor05UnlockRear1)							{ Show_Alarm("Main 05번 Door(X0326) Opened."); return FALSE; }
-		if (pDX03->iDoor06UnlockRear2)							{ Show_Alarm("Main 06번 Door(X0327) Opened."); return FALSE; }
-		if (pDX03->iDoor07UnlockLeft1 && !gData.bLoadOpenSW)	{ Show_Alarm("Main 07번 Door(X0328) Opened."); return FALSE; }
-		if (pDX03->iDoor08UnlockLeft2)							{ Show_Alarm("Main 08번 Door(X0329) Opened."); return FALSE; }
+		if (pDX03->iDoor01Unlock )						{ Show_Alarm("Main 01번 Door(X0322) Opened."); return FALSE; }
+		if (pDX03->iDoor02Unlock)							{ Show_Alarm("Main 02번 Door(X0323) Opened."); return FALSE; }
+		if (pDX03->iDoor03Unlock && !gData.bUnloadOpenSW)	{ Show_Alarm("Main 03번 Door(X0324) Opened."); return FALSE; }
+		if (pDX03->iDoor04Unlock)							{ Show_Alarm("Main 04번 Door(X0325) Opened."); return FALSE; }
+		if (pDX03->iDoor05Unlock)							{ Show_Alarm("Main 05번 Door(X0326) Opened."); return FALSE; }
+		if (pDX03->iDoor06Unlock)							{ Show_Alarm("Main 06번 Door(X0327) Opened."); return FALSE; }
+		if (pDX03->iDoor07Unlock && !gData.bLoadOpenSW)	{ Show_Alarm("Main 07번 Door(X0328) Opened."); return FALSE; }
+		if (pDX03->iDoor08Unlock)							{ Show_Alarm("Main 08번 Door(X0329) Opened."); return FALSE; }
 		
 	}
 #endif
@@ -284,36 +284,7 @@ BOOL CCommon::Check_TrayFull()
 	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
 	DX_DATA_03 *pDX03 = g_objAJinAXL.Get_pDX03();
 
-	if (pDX01->iLoadPort3HighCheck)		
-	{ 
-		Show_MsgBox(1,"Load Port3 Full Sensor Checked.");
-		//Show_Alarm("Load Port3 Full Sensor Checked.");
-		return FALSE; 
-	}
-	if (pDX02->iCapPort1HighCheck)		
-	{ 
-		Show_MsgBox(1,"Cap Port1 Full Sensor Checked.");
-		//Show_Alarm("Cap Port1 Full Sensor Checked.", STATE_CAPTRAY);
-		return FALSE;
-	}
-	if (pDX02->iCapPort2HighCheck)		
-	{ 
-		Show_MsgBox(1,"Cap Port2 Full Sensor Checked.");
-		//Show_Alarm("Cap Port1 Full Sensor Checked.", STATE_CAPTRAY);
-		return FALSE;
-	}
-	if (pDX03->iUnloadPort1HighCheck)	
-	{ 
-		Show_MsgBox(1,"Unload Port1 Full Sensor Checked.");
-		//Show_Alarm("Unload Port2 Full Sensor Checked.", STATE_SHIPTRAY); 
-		return FALSE;
-	}
-	if (pDX03->iUnloadPort2HighCheck)	
-	{ 
-		Show_MsgBox(1,"Unload Port2 Full Sensor Checked.");
-		//Show_Alarm("Unload Port2 Full Sensor Checked.", STATE_SHIPTRAY); 
-		return FALSE;
-	}
+	
 #endif
 	return TRUE;
 }
@@ -362,8 +333,8 @@ BOOL CCommon::Check_HomeDone()
 {
 #ifdef AJIN_BOARD_USE
 	for (int i = 0; i < AXIS_COUNT; i++) {
-		if (i == AX_NO_AXIS) continue;
- 		if (i == AX_MAIN_INDEX_R && g_objSequenceMain.Get_MainRunCase(AUTO_MAIN_INDEX) > 20) continue;
+		
+ 		//if (i == AX_MAIN_INDEX_R && g_objSequenceMain.Get_MainRunCase(AUTO_MAIN_INDEX) > 20) continue;
 		if (!g_objAJinAXL.Get_HomeDone(i)) { Show_Error(i + 500); return FALSE; }
 	}
 #endif

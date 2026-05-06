@@ -28,62 +28,56 @@ CSetupMoveTab2Dlg::~CSetupMoveTab2Dlg()
 void CSetupMoveTab2Dlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	for (int i = 0; i < 14; i++) DDX_Control(pDX, IDC_GROUP_0 + i, m_Group[i]);
-	for (int i = 0; i < 62; i++) DDX_Control(pDX, IDC_LABEL_0 + i, m_Label[i]);
-	//for (int i = 0; i <  1; i++) DDX_Control(pDX, IDC_STC_MAIN_INDEX_R_0 + i	, m_stcMainIndexR[i]);
-	//for (int i = 0; i <  2; i++) DDX_Control(pDX, IDC_STC_VISION_CM_X_0 + i		, m_stcVisionCmX[i]);
-	//for (int i = 0; i <  3; i++) DDX_Control(pDX, IDC_STC_CAP_STAGE1_X_0 + i	, m_stcCapStage1X[i]);
-	//for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_STC_CAP_STAGE1_Z_0 + i	, m_stcCapStage1Z[i]);
-	//for (int i = 0; i <  3; i++) DDX_Control(pDX, IDC_STC_CAP_STAGE2_X_0 + i	, m_stcCapStage2X[i]);
-	//for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_STC_CAP_STAGE2_Z_0 + i	, m_stcCapStage2Z[i]);
-	//for (int i = 0; i < 13; i++) DDX_Control(pDX, IDC_STC_CAP_PICKER_Y_0 + i	, m_stcCapPickerY[i]);
-	//for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_STC_CAP_PICKER_Z_0 + i	, m_stcCapPickerZ[i]);
-	//for (int i = 0; i <  2; i++) DDX_Control(pDX, IDC_STC_CAP_PICKER_P_0 + i	, m_stcCapPickerP[i]);
-	//for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_STC_CAP_BUFFER_Y_0  + i	, m_stcCapBufferY[i]);
-	//for (int i = 0; i <  1; i++) DDX_Control(pDX, IDC_STC_VISION_CAP_Y_0 + i	, m_stcVisionCapY[i]);
-	//for (int i = 0; i <  7; i++) DDX_Control(pDX, IDC_STC_ASSY_PICKER_X_0 + i	, m_stcAssyPickerX[i]);
-	//for (int i = 0; i <  7; i++) DDX_Control(pDX, IDC_STC_ASSY_PICKER_Y_0 + i	, m_stcAssyPickerY[i]);
-	//for (int i = 0; i <  7; i++) DDX_Control(pDX, IDC_STC_ASSY_PICKER_Z_0 + i	, m_stcAssyPickerZ[i]);
+	for (int i = 0; i < 9; i++) DDX_Control(pDX, IDC_GROUP_0 + i, m_Group[i]);
+	for (int i = 0; i < 45; i++) DDX_Control(pDX, IDC_LABEL_0 + i, m_Label[i]);
+	for (int i = 0; i < 5; i++) DDX_Control(pDX, IDC_STC_TOP_INSPECT_X_0 + i, m_stcTopInspectX[i]);
+	for (int i = 0; i < 5; i++) DDX_Control(pDX, IDC_STC_TOP_INSPECT_Y_0 + i, m_stcTopInspectY[i]);
+	for (int i = 0; i < 5; i++) DDX_Control(pDX, IDC_STC_TOP_INSPECT_Z_0 + i, m_stcTopInspectZ[i]);
+
+	for (int i = 0; i < 5; i++) DDX_Control(pDX, IDC_STC_BTM_INSPECT_X_0 + i, m_stcBtmInspectX[i]);
+	for (int i = 0; i < 5; i++) DDX_Control(pDX, IDC_STC_BTM_INSPECT_Y_0 + i, m_stcBtmInspectY[i]);
+	for (int i = 0; i < 5; i++) DDX_Control(pDX, IDC_STC_BTM_INSPECT_Z_0 + i, m_stcBtmInspectZ[i]);
+
+	for (int i = 0; i < 5; i++) DDX_Control(pDX, IDC_STC_MARK_UNIT_X_0 + i, m_stcMarkUnitX[i]);
+	for (int i = 0; i < 5; i++) DDX_Control(pDX, IDC_STC_MARK_UNIT_Y_0 + i, m_stcMarkUnitY[i]);
+	for (int i = 0; i < 5; i++) DDX_Control(pDX, IDC_STC_MARK_UNIT_Z_0 + i, m_stcMarkUnitZ[i]);
+
 }
 
 BEGIN_MESSAGE_MAP(CSetupMoveTab2Dlg, CDialogEx)
 	ON_WM_SHOWWINDOW()
-	//ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MAIN_INDEX_R_0	, IDC_STC_MAIN_INDEX_R_0	, OnStcMainIndexRlick)
-	//ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_VISION_CM_X_0		, IDC_STC_VISION_CM_X_1		, OnStcVisionCmXClick)
-	//ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_CAP_STAGE1_X_0	, IDC_STC_CAP_STAGE1_X_2	, OnStcCapStage1XClick)
-	//ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_CAP_STAGE1_Z_0	, IDC_STC_CAP_STAGE1_Z_3	, OnStcCapStage1ZClick)
-	//ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_CAP_STAGE2_X_0	, IDC_STC_CAP_STAGE2_X_2	, OnStcCapStage2XClick)
-	//ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_CAP_STAGE2_Z_0	, IDC_STC_CAP_STAGE2_Z_3	, OnStcCapStage2ZClick)
-	//ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_CAP_PICKER_Y_0	, IDC_STC_CAP_PICKER_Y_12	, OnStcCapPickerYClick)
-	//ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_CAP_PICKER_Z_0	, IDC_STC_CAP_PICKER_Z_3	, OnStcCapPickerZClick)
-	//ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_CAP_PICKER_P_0	, IDC_STC_CAP_PICKER_P_1	, OnStcCapPickerPClick)
-	//ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_CAP_BUFFER_Y_0	, IDC_STC_CAP_BUFFER_Y_3	, OnStcCapBufferYClick)
-	//ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_VISION_CAP_Y_0	, IDC_STC_VISION_CAP_Y_0	, OnStcVisionCapYClick)
-	//ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_ASSY_PICKER_X_0	, IDC_STC_ASSY_PICKER_X_6	, OnStcAssyPickerXClick)
-	//ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_ASSY_PICKER_Y_0	, IDC_STC_ASSY_PICKER_Y_6	, OnStcAssyPickerYClick)
-	//ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_ASSY_PICKER_Z_0	, IDC_STC_ASSY_PICKER_Z_6	, OnStcAssyPickerZClick)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_TOP_INSPECT_X_0, IDC_STC_TOP_INSPECT_X_4, OnStcTopInspectXClick)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_TOP_INSPECT_Y_0, IDC_STC_TOP_INSPECT_Y_4, OnStcTopInspectYClick)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_TOP_INSPECT_Z_0, IDC_STC_TOP_INSPECT_Z_4, OnStcTopInspectZClick)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_BTM_INSPECT_X_0, IDC_STC_BTM_INSPECT_X_4, OnStcBtmInspectXClick)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_BTM_INSPECT_Y_0, IDC_STC_BTM_INSPECT_Y_4, OnStcBtmInspectYClick)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_BTM_INSPECT_Z_0, IDC_STC_BTM_INSPECT_Z_4, OnStcBtmInspectZClick)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MARK_UNIT_X_0, IDC_STC_MARK_UNIT_X_4, OnStcMarkUnitXClick)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MARK_UNIT_Y_0, IDC_STC_MARK_UNIT_Y_4, OnStcMarkUnitYClick)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MARK_UNIT_Z_0, IDC_STC_MARK_UNIT_Z_4, OnStcMarkUnitZClick)
+	
 END_MESSAGE_MAP()
 
 // CSetupMoveTab2Dlg ¸Þ½ÃÁö Ã³¸®±âÀÔ´Ï´Ù.
 
 void CSetupMoveTab2Dlg::Initial_Controls() 
 {
-	for (int i = 0; i < 14; i++) m_Group[i].Init_Ctrl("¹ÙÅÁ", 12, TRUE, COLOR_DEFAULT, COLOR_DEFAULT);
-	for (int i = 0; i < 62; i++) m_Label[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60));
+	for (int i = 0; i < 9; i++) m_Group[i].Init_Ctrl("¹ÙÅÁ", 12, TRUE, COLOR_DEFAULT, COLOR_DEFAULT);
+	for (int i = 0; i < 45; i++) m_Label[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60));
+
+	for (int i = 0; i < 5; i++)  m_stcTopInspectX[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xA0, 0xF0, 0xC0));
+	for (int i = 0; i < 5; i++)  m_stcTopInspectY[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xA0, 0xF0, 0xC0));
+	for (int i = 0; i < 5; i++)  m_stcTopInspectZ[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xA0, 0xF0, 0xC0));
+
+	for (int i = 0; i < 5; i++)  m_stcBtmInspectX[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xA0, 0xF0, 0xC0));
+	for (int i = 0; i < 5; i++)  m_stcBtmInspectY[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xA0, 0xF0, 0xC0));
+	for (int i = 0; i < 5; i++)  m_stcBtmInspectZ[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xA0, 0xF0, 0xC0));
+
+	for (int i = 0; i < 5; i++)  m_stcMarkUnitX[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xA0, 0xF0, 0xC0));
+	for (int i = 0; i < 5; i++)  m_stcMarkUnitY[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xA0, 0xF0, 0xC0));
+	for (int i = 0; i < 5; i++)  m_stcMarkUnitZ[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xA0, 0xF0, 0xC0));
 	//for (int i = 0; i < 1; i++) m_stcMainIndexR[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xA0, 0xF0, 0xC0));
-	//for (int i = 0; i < 2; i++) m_stcVisionCmX[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xEF, 0xD5));
-	//for (int i = 0; i < 3; i++) m_stcCapStage1X[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xE0, 0xE0));
-	//for (int i = 0; i < 4; i++) m_stcCapStage1Z[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xE0, 0xE0));
-	//for (int i = 0; i < 3; i++) m_stcCapStage2X[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xC0, 0xFF, 0xF0));
-	//for (int i = 0; i < 4; i++) m_stcCapStage2Z[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xC0, 0xFF, 0xF0));
-	//for (int i = 0; i < 13; i++) m_stcCapPickerY[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xFF, 0xA0));
-	//for (int i = 0; i < 4; i++) m_stcCapPickerZ[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xFF, 0xA0));
-	//for (int i = 0; i < 2; i++) m_stcCapPickerP[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xFF, 0xA0));
-	//for (int i = 0; i < 4; i++) m_stcCapBufferY[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0x40, 0xC0, 0xF0));
-	//for (int i = 0; i < 1; i++) m_stcVisionCapY[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xEF, 0xD5));
-	//for (int i = 0; i < 7; i++) m_stcAssyPickerX[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xB0, 0xC0, 0xFF));
-	//for (int i = 0; i < 7; i++) m_stcAssyPickerY[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xB0, 0xC0, 0xFF));
-	//for (int i = 0; i < 7; i++) m_stcAssyPickerZ[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xB0, 0xC0, 0xFF));
+	
 }
 
 BOOL CSetupMoveTab2Dlg::OnInitDialog() 
@@ -117,160 +111,6 @@ void CSetupMoveTab2Dlg::OnShowWindow(BOOL bShow, UINT nStatus)
 
 	g_objLogFile.Save_HandlerLog("[Setup Move] Show Window - Tab2");
 }
-//
-//void CSetupMoveTab2Dlg::OnStcMainIndexRlick(UINT nID)
-//{
-//	int ID = nID - IDC_STC_MAIN_INDEX_R_0;
-//
-//	CString strOld, strNew;
-//	m_stcMainIndexR[ID].GetWindowText(strOld);
-//	if (g_objCommon.Show_NumPad(strOld, strNew, AX_MAIN_INDEX_R) != IDOK) return;
-//
-//	m_stcMainIndexR[ID].SetWindowText(strNew);
-//}
-//
-//void CSetupMoveTab2Dlg::OnStcVisionCmXClick(UINT nID)
-//{
-//	int ID = nID - IDC_STC_VISION_CM_X_0;
-//
-//	CString strOld, strNew;
-//	m_stcVisionCmX[ID].GetWindowText(strOld);
-//	if (g_objCommon.Show_NumPad(strOld, strNew, AX_VISION_CM_X) != IDOK) return;
-//
-//	m_stcVisionCmX[ID].SetWindowText(strNew);
-//}
-//
-//void CSetupMoveTab2Dlg::OnStcCapStage1XClick(UINT nID)
-//{
-//	int ID = nID - IDC_STC_CAP_STAGE1_X_0;
-//
-//	CString strOld, strNew;
-//	m_stcCapStage1X[ID].GetWindowText(strOld);
-//	if (g_objCommon.Show_NumPad(strOld, strNew, AX_CAP_STAGE1_X) != IDOK) return;
-//
-//	m_stcCapStage1X[ID].SetWindowText(strNew);
-//}
-//
-//void CSetupMoveTab2Dlg::OnStcCapStage1ZClick(UINT nID)			
-//{
-//	int ID = nID - IDC_STC_CAP_STAGE1_Z_0;
-//
-//	CString strOld, strNew;
-//	m_stcCapStage1Z[ID].GetWindowText(strOld);
-//	if (g_objCommon.Show_NumPad(strOld, strNew, AX_CAP_STAGE1_Z) != IDOK) return;
-//
-//	m_stcCapStage1Z[ID].SetWindowText(strNew);
-//}
-//
-//void CSetupMoveTab2Dlg::OnStcCapStage2XClick(UINT nID)			
-//{
-//	int ID = nID - IDC_STC_CAP_STAGE2_X_0;
-//
-//	CString strOld, strNew;
-//	m_stcCapStage2X[ID].GetWindowText(strOld);
-//	if (g_objCommon.Show_NumPad(strOld, strNew, AX_CAP_STAGE2_X) != IDOK) return;
-//
-//	m_stcCapStage2X[ID].SetWindowText(strNew);
-//}
-//
-//void CSetupMoveTab2Dlg::OnStcCapStage2ZClick(UINT nID)
-//{
-//	int ID = nID - IDC_STC_CAP_STAGE2_Z_0;
-//
-//	CString strOld, strNew;
-//	m_stcCapStage2Z[ID].GetWindowText(strOld);
-//	if (g_objCommon.Show_NumPad(strOld, strNew, AX_CAP_STAGE2_Z) != IDOK) return;
-//
-//	m_stcCapStage2Z[ID].SetWindowText(strNew);
-//}
-//
-//void CSetupMoveTab2Dlg::OnStcCapPickerYClick(UINT nID)
-//{
-//	int ID = nID - IDC_STC_CAP_PICKER_Y_0;
-//
-//	CString strOld, strNew;
-//	m_stcCapPickerY[ID].GetWindowText(strOld);
-//	if (g_objCommon.Show_NumPad(strOld, strNew, AX_CAP_PICKER_Y) != IDOK) return;
-//
-//	m_stcCapPickerY[ID].SetWindowText(strNew);
-//}
-//
-//void CSetupMoveTab2Dlg::OnStcCapPickerZClick(UINT nID)
-//{
-//	int ID = nID - IDC_STC_CAP_PICKER_Z_0;
-//
-//	CString strOld, strNew;
-//	m_stcCapPickerZ[ID].GetWindowText(strOld);
-//	if (g_objCommon.Show_NumPad(strOld, strNew, AX_CAP_PICKER_Z) != IDOK) return;
-//
-//	m_stcCapPickerZ[ID].SetWindowText(strNew);
-//}
-//
-//void CSetupMoveTab2Dlg::OnStcCapPickerPClick(UINT nID)
-//{
-//	int ID = nID - IDC_STC_CAP_PICKER_P_0;
-//
-//	CString strOld, strNew;
-//	m_stcCapPickerP[ID].GetWindowText(strOld);
-//	if (g_objCommon.Show_NumPad(strOld, strNew, AX_CAP_PICKER_P) != IDOK) return;
-//
-//	m_stcCapPickerP[ID].SetWindowText(strNew);
-//}
-//
-//void CSetupMoveTab2Dlg::OnStcCapBufferYClick(UINT nID)			
-//{
-//	int ID = nID - IDC_STC_CAP_BUFFER_Y_0;
-//
-//	CString strOld, strNew;
-//	m_stcCapBufferY[ID].GetWindowText(strOld);
-//	if (g_objCommon.Show_NumPad(strOld, strNew, AX_CAP_BUFFER_Y) != IDOK) return;
-//
-//	m_stcCapBufferY[ID].SetWindowText(strNew);
-//}
-//
-//void CSetupMoveTab2Dlg::OnStcVisionCapYClick(UINT nID)			
-//{
-//	int ID = nID - IDC_STC_VISION_CAP_Y_0;
-//
-//	CString strOld, strNew;
-//	m_stcVisionCapY[ID].GetWindowText(strOld);
-//	if (g_objCommon.Show_NumPad(strOld, strNew, AX_VISION_CAP_Y) != IDOK) return;
-//
-//	m_stcVisionCapY[ID].SetWindowText(strNew);
-//}
-//
-//void CSetupMoveTab2Dlg::OnStcAssyPickerXClick(UINT nID)			
-//{
-//	int ID = nID - IDC_STC_ASSY_PICKER_X_0;
-//
-//	CString strOld, strNew;
-//	m_stcAssyPickerX[ID].GetWindowText(strOld);
-//	if (g_objCommon.Show_NumPad(strOld, strNew, AX_ASSY_PICKER_X) != IDOK) return;
-//
-//	m_stcAssyPickerX[ID].SetWindowText(strNew);
-//}
-//
-//void CSetupMoveTab2Dlg::OnStcAssyPickerYClick(UINT nID)			
-//{
-//	int ID = nID - IDC_STC_ASSY_PICKER_Y_0;
-//
-//	CString strOld, strNew;
-//	m_stcAssyPickerY[ID].GetWindowText(strOld);
-//	if (g_objCommon.Show_NumPad(strOld, strNew, AX_ASSY_PICKER_Y) != IDOK) return;
-//
-//	m_stcAssyPickerY[ID].SetWindowText(strNew);
-//}
-//
-//void CSetupMoveTab2Dlg::OnStcAssyPickerZClick(UINT nID)			
-//{
-//	int ID = nID - IDC_STC_ASSY_PICKER_Z_0;
-//
-//	CString strOld, strNew;
-//	m_stcAssyPickerZ[ID].GetWindowText(strOld);
-//	if (g_objCommon.Show_NumPad(strOld, strNew, AX_ASSY_PICKER_Z) != IDOK) return;
-//
-//	m_stcAssyPickerZ[ID].SetWindowText(strNew);
-//}
 
 ///////////////////////////////////////////////////////////////////////////////
 // User Functions
@@ -280,20 +120,16 @@ void CSetupMoveTab2Dlg::Display_MoveData()
 	MOVE_DATA *pMoveData = g_objDataManager.Get_pMoveData();
 	CString strData;
 
-	/*for (int i = 0; i < 1; i++) { strData.Format("%0.3lf", pMoveData->dMainIndexR[i]);	m_stcMainIndexR[i].SetWindowText(strData); }
-	for (int i = 0; i < 2; i++) { strData.Format("%0.3lf", pMoveData->dVisionCmX[i]);	m_stcVisionCmX[i].SetWindowText(strData); }
-	for (int i = 0; i < 3; i++) { strData.Format("%0.3lf", pMoveData->dCapStage1X[i]);	m_stcCapStage1X[i].SetWindowText(strData); }
-	for (int i = 0; i < 4; i++) { strData.Format("%0.3lf", pMoveData->dCapStage1Z[i]);	m_stcCapStage1Z[i].SetWindowText(strData); }
-	for (int i = 0; i < 3; i++) { strData.Format("%0.3lf", pMoveData->dCapStage2X[i]);	m_stcCapStage2X[i].SetWindowText(strData); }
-	for (int i = 0; i < 4; i++) { strData.Format("%0.3lf", pMoveData->dCapStage2Z[i]);	m_stcCapStage2Z[i].SetWindowText(strData); }
-	for (int i = 0; i < 13; i++) { strData.Format("%0.3lf", pMoveData->dCapPickerY[i]);	m_stcCapPickerY[i].SetWindowText(strData); }
-	for (int i = 0; i < 4; i++) { strData.Format("%0.3lf", pMoveData->dCapPickerZ[i]);	m_stcCapPickerZ[i].SetWindowText(strData); }
-	for (int i = 0; i < 2; i++) { strData.Format("%0.3lf", pMoveData->dCapPickerP[i]);	m_stcCapPickerP[i].SetWindowText(strData); }
-	for (int i = 0; i < 4; i++) { strData.Format("%0.3lf", pMoveData->dCapBufferY[i]);	m_stcCapBufferY[i].SetWindowText(strData); }
-	for (int i = 0; i < 1; i++) { strData.Format("%0.3lf", pMoveData->dVisionCapY[i]);	m_stcVisionCapY[i].SetWindowText(strData); }
-	for (int i = 0; i < 7; i++) { strData.Format("%0.3lf", pMoveData->dAssyPickerX[i]);	m_stcAssyPickerX[i].SetWindowText(strData); }
-	for (int i = 0; i < 7; i++) { strData.Format("%0.3lf", pMoveData->dAssyPickerY[i]);	m_stcAssyPickerY[i].SetWindowText(strData); }
-	for (int i = 0; i < 7; i++) { strData.Format("%0.3lf", pMoveData->dAssyPickerZ[i]);	m_stcAssyPickerZ[i].SetWindowText(strData); }*/
+	for (int i = 0; i < 5; i++) { strData.Format("%0.3lf", pMoveData->dTopInspectorX[i]);	m_stcTopInspectX[i].SetWindowText(strData); }
+	for (int i = 0; i < 5; i++) { strData.Format("%0.3lf", pMoveData->dTopInspectorY[i]);	m_stcTopInspectY[i].SetWindowText(strData); }
+	for (int i = 0; i < 5; i++) { strData.Format("%0.3lf", pMoveData->dTopInspectorZ[i]);	m_stcTopInspectZ[i].SetWindowText(strData); }
+	for (int i = 0; i < 5; i++) { strData.Format("%0.3lf", pMoveData->dBtmInspectorX[i]);	m_stcBtmInspectX[i].SetWindowText(strData); }
+	for (int i = 0; i < 5; i++) { strData.Format("%0.3lf", pMoveData->dBtmInspectorY[i]);	m_stcBtmInspectY[i].SetWindowText(strData); }
+	for (int i = 0; i < 5; i++) { strData.Format("%0.3lf", pMoveData->dBtmInspectorZ[i]);	m_stcBtmInspectZ[i].SetWindowText(strData); }
+	for (int i = 0; i < 5; i++) { strData.Format("%0.3lf", pMoveData->dMarkUnitX[i]);	m_stcMarkUnitX[i].SetWindowText(strData); }
+	for (int i = 0; i < 5; i++) { strData.Format("%0.3lf", pMoveData->dMarkUnitY[i]);	m_stcMarkUnitY[i].SetWindowText(strData); }
+	for (int i = 0; i < 5; i++) { strData.Format("%0.3lf", pMoveData->dMarkUnitZ[i]);	m_stcMarkUnitZ[i].SetWindowText(strData); }
+	
 }
 
 void CSetupMoveTab2Dlg::Save_MoveData()
@@ -303,31 +139,21 @@ void CSetupMoveTab2Dlg::Save_MoveData()
 
 	g_objCommon.Backup_File(gsCurrentDir + "\\System", "MoveData");
 
+	CString strKey, strData;
+	double dData;
 
-
-	//for (int i = 0; i <  1; i++) { strKey.Format("%02d", i);	m_stcMainIndexR[i].GetWindowText(strData);	dData = atof(strData);	INI.Set_Double("11_INDEX_R", strKey, dData, "%0.3lf"); }
-	//for (int i = 0; i <  2; i++) { strKey.Format("%02d", i);	m_stcVisionCmX[i].GetWindowText(strData);	dData = atof(strData);	INI.Set_Double("12_VISION_CM_ALIGN_X", strKey, dData, "%0.3lf"); }
-	//for (int i = 0; i <  3; i++) { strKey.Format("%02d", i);	m_stcCapStage1X[i].GetWindowText(strData);	dData = atof(strData);	INI.Set_Double("13_CAP_STAGE1_X", strKey, dData, "%0.3lf"); }
-	//for (int i = 0; i <  4; i++) { strKey.Format("%02d", i);	m_stcCapStage1Z[i].GetWindowText(strData);	dData = atof(strData);	INI.Set_Double("14_CAP_STAGE1_Z", strKey, dData, "%0.3lf"); }
-	//for (int i = 0; i <  3; i++) { strKey.Format("%02d", i);	m_stcCapStage2X[i].GetWindowText(strData);	dData = atof(strData);	INI.Set_Double("15_CAP_STAGE2_X", strKey, dData, "%0.3lf"); }
-	//for (int i = 0; i <  4; i++) { strKey.Format("%02d", i);	m_stcCapStage2Z[i].GetWindowText(strData);	dData = atof(strData);	INI.Set_Double("16_CAP_STAGE2_Z", strKey, dData, "%0.3lf"); }
-	//for (int i = 0; i < 13; i++) { strKey.Format("%02d", i);	m_stcCapPickerY[i].GetWindowText(strData);	dData = atof(strData);	INI.Set_Double("17_CAP_PICKER_Y", strKey, dData, "%0.3lf"); }
-	//for (int i = 0; i <  4; i++) { strKey.Format("%02d", i);	m_stcCapPickerZ[i].GetWindowText(strData);	dData = atof(strData);	INI.Set_Double("18_CAP_PICKER_Z", strKey, dData, "%0.3lf"); }
-	//for (int i = 0; i <  2; i++) { strKey.Format("%02d", i);	m_stcCapPickerP[i].GetWindowText(strData);	dData = atof(strData);	INI.Set_Double("19_CAP_PICKER_P", strKey, dData, "%0.3lf"); }
-	//for (int i = 0; i <  4; i++) { strKey.Format("%02d", i);	m_stcCapBufferY[i].GetWindowText(strData);	dData = atof(strData);	INI.Set_Double("20_CAP_BUFFER_STAGE_Y", strKey, dData, "%0.3lf"); }
-	//for (int i = 0; i <  1; i++) { strKey.Format("%02d", i);	m_stcVisionCapY[i].GetWindowText(strData);	dData = atof(strData);	INI.Set_Double("21_VISION_CAP_ALIGN_Y", strKey, dData, "%0.3lf"); }
-	//for (int i = 0; i <  7; i++) { strKey.Format("%02d", i);	m_stcAssyPickerX[i].GetWindowText(strData);	dData = atof(strData);	INI.Set_Double("22_ASSEMBLY_PICKER_X", strKey, dData, "%0.3lf"); }
-	//for (int i = 0; i <  7; i++) { strKey.Format("%02d", i);	m_stcAssyPickerY[i].GetWindowText(strData);	dData = atof(strData);	INI.Set_Double("23_ASSEMBLY_PICKER_Y", strKey, dData, "%0.3lf"); }
-	//
-	//for (int i = 0; i <  7; i++) {
-	//	strKey.Format("%02d", i);	m_stcAssyPickerZ[i].GetWindowText(strData);		dData = atof(strData);	INI.Set_Double("24_ASSEMBLY_PICKER_Z", strKey, dData, "%0.3lf");
-
-	//	// RMS Ç×¸ñ ÀúÀå
-	//	if (i == 3) g_objMES.Save_AviRmsData("Cap-Assembly Picker Z Assembly Down Position", strData);
-	//	if (i == 4) g_objMES.Save_AviRmsData("Cap-Assembly Picker Z Cap Press Position", strData);
-	//	if (i == 4) g_objMES.Save_AviRmsData("Cap Attach Z-Pos", strData);
-	//}
-
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i);	m_stcTopInspectX[i].GetWindowText(strData);		dData = atof(strData);	INI.Set_Double("05_TOP_INSPECTOR_X", strKey, dData, "%0.3lf"); }
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i);	m_stcTopInspectY[i].GetWindowText(strData);		dData = atof(strData);	INI.Set_Double("06_TOP_INSPECTOR_Y", strKey, dData, "%0.3lf"); }
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i);	m_stcTopInspectZ[i].GetWindowText(strData);		dData = atof(strData);	INI.Set_Double("07_TOP_INSPECTOR_Z", strKey, dData, "%0.3lf"); }
+	
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i);	m_stcBtmInspectX[i].GetWindowText(strData);		dData = atof(strData);	INI.Set_Double("08_BTM_INSPECTOR_X", strKey, dData, "%0.3lf"); }
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i);	m_stcBtmInspectY[i].GetWindowText(strData);		dData = atof(strData);	INI.Set_Double("09_BTM_INSPECTOR_Y", strKey, dData, "%0.3lf"); }
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i);	m_stcBtmInspectZ[i].GetWindowText(strData);		dData = atof(strData);	INI.Set_Double("10_BTM_INSPECTOR_Z", strKey, dData, "%0.3lf"); }
+	
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i);	m_stcMarkUnitX[i].GetWindowText(strData);		dData = atof(strData);	INI.Set_Double("11_MARK_UNIT_X", strKey, dData, "%0.3lf"); }
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i);	m_stcMarkUnitY[i].GetWindowText(strData);		dData = atof(strData);	INI.Set_Double("12_MARK_UNIT_Y", strKey, dData, "%0.3lf"); }
+	for (int i = 0; i < 5; i++) { strKey.Format("%02d", i);	m_stcMarkUnitZ[i].GetWindowText(strData);		dData = atof(strData);	INI.Set_Double("13_MARK_UNIT_Z", strKey, dData, "%0.3lf"); }
+	
 	g_objLogFile.Save_HandlerLog("[Setup - MoveTab Dialog 2] save");
 
 	Cancel_MoveData();
@@ -340,3 +166,104 @@ void CSetupMoveTab2Dlg::Cancel_MoveData()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+void CSetupMoveTab2Dlg::OnStcTopInspectXClick(UINT nID)
+{
+	int ID = nID - IDC_STC_TOP_INSPECT_X_0;
+
+	CString strOld, strNew;
+	m_stcTopInspectX[ID].GetWindowText(strOld);
+	if (g_objCommon.Show_NumPad(strOld, strNew, AX_TOP_INSPECTOR_X) != IDOK) return;
+
+	m_stcTopInspectX[ID].SetWindowText(strNew);
+}
+
+void CSetupMoveTab2Dlg::OnStcTopInspectYClick(UINT nID)
+{
+	int ID = nID - IDC_STC_TOP_INSPECT_Y_0;
+
+	CString strOld, strNew;
+	m_stcTopInspectY[ID].GetWindowText(strOld);
+	if (g_objCommon.Show_NumPad(strOld, strNew, AX_TOP_INSPECTOR_Y) != IDOK) return;
+
+	m_stcTopInspectY[ID].SetWindowText(strNew);
+}
+
+void CSetupMoveTab2Dlg::OnStcTopInspectZClick(UINT nID)
+{
+	int ID = nID - IDC_STC_TOP_INSPECT_Z_0;
+
+	CString strOld, strNew;
+	m_stcTopInspectZ[ID].GetWindowText(strOld);
+	if (g_objCommon.Show_NumPad(strOld, strNew, AX_TOP_INSPECTOR_Z) != IDOK) return;
+
+	m_stcTopInspectZ[ID].SetWindowText(strNew);
+}
+
+
+void CSetupMoveTab2Dlg::OnStcBtmInspectXClick(UINT nID)
+{
+	int ID = nID - IDC_STC_BTM_INSPECT_X_0;
+
+	CString strOld, strNew;
+	m_stcBtmInspectX[ID].GetWindowText(strOld);
+	if (g_objCommon.Show_NumPad(strOld, strNew, AX_BTM_INSPECTOR_X) != IDOK) return;
+
+	m_stcBtmInspectX[ID].SetWindowText(strNew);
+}
+
+void CSetupMoveTab2Dlg::OnStcBtmInspectYClick(UINT nID)
+{
+	int ID = nID - IDC_STC_BTM_INSPECT_Y_0;
+
+	CString strOld, strNew;
+	m_stcBtmInspectY[ID].GetWindowText(strOld);
+	if (g_objCommon.Show_NumPad(strOld, strNew, AX_BTM_INSPECTOR_Y) != IDOK) return;
+
+	m_stcBtmInspectY[ID].SetWindowText(strNew);
+}
+
+void CSetupMoveTab2Dlg::OnStcBtmInspectZClick(UINT nID)
+{
+	int ID = nID - IDC_STC_BTM_INSPECT_Z_0;
+
+	CString strOld, strNew;
+	m_stcBtmInspectZ[ID].GetWindowText(strOld);
+	if (g_objCommon.Show_NumPad(strOld, strNew, AX_BTM_INSPECTOR_Z) != IDOK) return;
+
+	m_stcBtmInspectZ[ID].SetWindowText(strNew);
+}
+
+
+void CSetupMoveTab2Dlg::OnStcMarkUnitXClick(UINT nID)
+{
+	int ID = nID - IDC_STC_MARK_UNIT_X_0;
+
+	CString strOld, strNew;
+	m_stcMarkUnitX[ID].GetWindowText(strOld);
+	if (g_objCommon.Show_NumPad(strOld, strNew, AX_MARK_UNIT_X) != IDOK) return;
+
+	m_stcMarkUnitX[ID].SetWindowText(strNew);
+}
+
+void CSetupMoveTab2Dlg::OnStcMarkUnitYClick(UINT nID)
+{
+	int ID = nID - IDC_STC_MARK_UNIT_Y_0;
+
+	CString strOld, strNew;
+	m_stcMarkUnitY[ID].GetWindowText(strOld);
+	if (g_objCommon.Show_NumPad(strOld, strNew, AX_MARK_UNIT_Y) != IDOK) return;
+
+	m_stcMarkUnitY[ID].SetWindowText(strNew);
+}
+
+void CSetupMoveTab2Dlg::OnStcMarkUnitZClick(UINT nID)
+{
+	int ID = nID - IDC_STC_MARK_UNIT_Z_0;
+
+	CString strOld, strNew;
+	m_stcMarkUnitZ[ID].GetWindowText(strOld);
+	if (g_objCommon.Show_NumPad(strOld, strNew, AX_MARK_UNIT_Z) != IDOK) return;
+
+	m_stcMarkUnitZ[ID].SetWindowText(strNew);
+}

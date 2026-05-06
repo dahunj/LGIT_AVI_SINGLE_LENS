@@ -135,6 +135,8 @@ public:
 	BOOL Check_FeederEmpty();
 	BOOL Check_IndexEmpty(int nPos);
 	BOOL Check_CtZigInMZ(int nPos);
+
+	int Search_ZigSlotNo(int nPos, int nSlot);
 	
 	void Set_IndexEnd();
 

@@ -299,6 +299,13 @@ BOOL CSequenceMain::LoadConveyorRun()
 		return TRUE;
 	}
 
+#ifndef AJIN_BOARD_USE
+	if(m_pDX00->iLdCVMZExist5)
+	{
+		m_pDX00->iLdCVMZExist1R = TRUE; m_pDX00->iLdCVMZExist5 = FALSE;
+	}
+#endif
+
 	switch(m_nLoadConveyorCase)
 	{
 	case 0:
@@ -326,18 +333,6 @@ BOOL CSequenceMain::LoadConveyorRun()
 			//case that all sensors not detected, think later 
 			for(int i = 0; i < 5; i++) nDetectCnt[i] = 0;
 		}
-
-#ifndef AJIN_BOARD_USE
-		m_pDX00->iLdCVMZExist5 = FALSE;
-		m_pDX00->iLdCVMZExist4 = FALSE;
-		m_pDX00->iLdCVMZExist3 = FALSE;
-		m_pDX00->iLdCVMZExist2 = FALSE;
-		m_pDX00->iLdCVMZExist1R = FALSE;	
-
-		m_pDX00->iElvMZExist1 = FALSE;
-		m_pDX00->iElvMZExist2 = FALSE;
-#endif
-
 		return TRUE;
 	case 2:	
 		if(g_objCommon.Get_LdStopper1Up() )
@@ -403,15 +398,6 @@ BOOL CSequenceMain::MZElevRun()
 	static int	nMZDetectCnt[6] = {0,0,0,0,0,0};
 	DWORD dwTick1 = 0, dwTick2 = 0;
 	
-	//if(Check_CVMZSensors() > 0 && (m_nMZElevCase == 0 || m_nMZElevCase == 20) && !gData.bFeederWorkWait)
-	//{
-	//	nMZCnt++;
-	//	gData.bElvLoadWait = TRUE;
-	//	nMZDetectCnt[0] = 0; nMZDetectCnt[1] = 0; nMZDetectCnt[5] = 0;
-	//	m_nMZElevCase = 1; m_nMZElevLoop.Set_LoopTime(5000);
-	//	m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load MZ to Elev Start");
-	//}
-
 	if(gData.bFeederWorkWait) return TRUE;
 		
 	//Suppose MZ on Right of Elev
@@ -495,6 +481,13 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		break;
 	case 3:
+#ifndef AJIN_BOARD_USE
+		if(m_pDX00->iLdCVMZExist1R)
+		{
+			m_pDX00->iElvMZExist1 = TRUE; m_pDX00->iLdCVMZExist1R = FALSE;
+		}
+#endif
+
 		if(m_pDX00->iElvMZExist1)
 		{
 			g_objCommon.Set_LoadCVStop(); Sleep(5);
@@ -505,6 +498,13 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		break;
 	case 4:
+
+#ifndef AJIN_BOARD_USE
+		if(m_pDX00->iElvMZExist1)
+		{
+			m_pDX00->iElvMZExist2 = TRUE; m_pDX00->iElvMZExist1 = FALSE;
+		}
+#endif
 		if(m_pDX00->iElvMZExist2)
 		{
 			g_objCommon.Set_ElevCVStop(); Sleep(5);
@@ -686,6 +686,7 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		return TRUE;				
 	case 34:
+
 		if(m_pDX00->iElvMZExist2 && g_objCommon.Get_ElevStopper2Up() && g_objCommon.Get_ElevStopper2In())
 		{
 			gData.bElvUnloadWait = TRUE;
@@ -716,6 +717,8 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		break;
 	case 39:
+
+
 		if(m_pDX01->iUldCvMZExist1L)
 		{
 			g_objCommon.Set_ElevCVStop();
@@ -1040,7 +1043,7 @@ BOOL CSequenceMain::FeederRun()
 			gData.sMZIDElevUnload = gData.sMZIDFeeder; gData.sMZIDFeeder.Empty();
 			gData.sZigIDElevUnload[gData.nSlotNoFeeder - 1] = gData.sZigIDFeeder; gData.sZigIDFeeder.Empty();
 						
-			memcpy( gData.InfoMZUnload[gData.nSlotNoFeeder], gData.InfoFeeder,  sizeof(int)*ZIG_X*ZIG_Y);
+			memcpy( gData.InfoMZUnload[gData.nSlotNoFeeder-1], gData.InfoFeeder,  sizeof(int)*ZIG_X*ZIG_Y);
 			memset( gData.InfoFeeder, 0x00, sizeof(int)*ZIG_X*ZIG_Y);	
 
 			gData.nSlotNoFeeder = 0;
@@ -2466,11 +2469,36 @@ BOOL CSequenceMain::Check_CtZigInMZ(int nPos)
 	return FALSE;
 }
 
+
+
+
+int CSequenceMain::Search_ZigSlotNo(int nPos, int nSlot)
+{
+
+	for(int j = 0;  j < ZIG_X; j++)
+	{
+		for(int k = 0; k < ZIG_Y; k++)
+		{
+			if(nPos == eMZ::Load)  if(gData.InfoMZLoad[nSlot-1][j][k] > 0 )  return nSlot; 
+			if(nPos == eMZ::Ready)  if(gData.InfoMZReady[nSlot-1][j][k] > 0 )  return nSlot; 
+			if(nPos == eMZ::Unload)  if(gData.InfoMZUnload[nSlot-1][j][k] > 0 )  return nSlot;
+		}
+	}		
+
+	return -1;
+}
+
 BOOL CSequenceMain::CheckCtZigAllReturn()
 {
 	for(int i = 0; i < 10; i++ )
 	{
-		if(gData.ZigMap[eMZ::Load][i] != Check_CtZigInMZ(eMZ::Unload)) return FALSE;		
+		if(gData.ZigMap[eMZ::Load][i])
+		{
+			if(Search_ZigSlotNo(eMZ::Unload, i + 1) < 0)
+			{
+				return FALSE;
+			}
+		}					
 	}
 	return TRUE;
 }
@@ -2493,16 +2521,10 @@ BOOL CSequenceMain::Run_Simulation()
 	if(m_nMZElevCase == 2)
 	{
 		
-	}
-
-	if(m_nMZElevCase == 3)
-	{
-		m_pDX00->iElvMZExist1 = TRUE;
-	}
+	}		
 
 	if(m_nMZElevCase == 4)
-	{
-		m_pDX00->iElvMZExist2 = TRUE;
+	{	
 		g_objCommon.Set_ElevStopper2Down();
 	}
 
