@@ -118,10 +118,10 @@ void CAJinAXL::Read_Input()
 void CAJinAXL::Read_Output()
 {
 #ifdef AJIN_BOARD_USE
-	AxdoReadOutportDword(14, 0, &m_DY00.nValue);
-	AxdoReadOutportDword(15, 0, &m_DY01.nValue);
-	AxdoReadOutportDword(16, 0, &m_DY02.nValue);
-	AxdoReadOutportDword(17, 0, &m_DY03.nValue);
+	AxdoReadOutportDword(4, 0, &m_DY00.nValue);
+	AxdoReadOutportDword(5, 0, &m_DY01.nValue);
+	AxdoReadOutportDword(6, 0, &m_DY02.nValue);
+	AxdoReadOutportDword(7, 0, &m_DY03.nValue);
 
 #endif
 }
@@ -129,10 +129,10 @@ void CAJinAXL::Read_Output()
 void CAJinAXL::Write_Output(int nModule)
 {
 #ifdef AJIN_BOARD_USE
-	if (nModule ==  0) AxdoWriteOutportDword(14, 0, m_DY00.nValue);
-	if (nModule ==  1) AxdoWriteOutportDword(15, 0, m_DY01.nValue);
-	if (nModule ==  2) AxdoWriteOutportDword(16, 0, m_DY02.nValue);
-	if (nModule ==  3) AxdoWriteOutportDword(17, 0, m_DY03.nValue);
+	if (nModule ==  0) AxdoWriteOutportDword(4, 0, m_DY00.nValue);
+	if (nModule ==  1) AxdoWriteOutportDword(5, 0, m_DY01.nValue);
+	if (nModule ==  2) AxdoWriteOutportDword(6, 0, m_DY02.nValue);
+	if (nModule ==  3) AxdoWriteOutportDword(7, 0, m_DY03.nValue);
 
 #else
 	Sim_SetOutToIn(nModule);
