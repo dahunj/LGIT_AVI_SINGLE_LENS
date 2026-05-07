@@ -248,13 +248,32 @@ void CSetupEquipDlg::OnStnClickedStcShowHidden()
 
 void CSetupEquipDlg::Display_EquipData()
 {
+	CString strData;
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	
+	m_rdoDoorLock[(int)pEquipData->bUseDoorLock].SetCheck(TRUE);
+	strData.Format("%d", gData.nDoorLockTime);	m_stcDoorLockTime.SetWindowText(strData);
 
+	strData.Format("%0.3lf", gAlm.dMotionChkPos);	 m_stcMotionCheck.SetWindowText(strData);
 }
 
 void CSetupEquipDlg::Save_EquipData()
 {
-	
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	CString strKey, strData, strModel;
+	int nData;
+	double dData;
+
+	CIniFileCS INI(gsCurrentDir + "\\System\\EquipData.ini");
+	if (!INI.Check_File()) { AfxMessageBox("EquipData.ini File Not Found!!!"); return ; }
+
+
+	m_stcMotionCheck.GetWindowText(strData); dData = atof(strData); INI.Set_Double("EQUIPMENT", "MOTION_CHECK", dData, "%0.3lf");
+	INI.Set_Bool("EQUIPMENT", "DOOR_LOCK", m_rdoDoorLock[1].GetCheck());
+	m_stcDoorLockTime.GetWindowText(strData);
+	gData.nDoorLockTime = atoi(strData);
+	INI.Set_Integer("EQUIPMENT", "DOOR_LOCK_TIME", gData.nDoorLockTime);
 }
 
 void CSetupEquipDlg::Cancel_EquipData()

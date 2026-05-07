@@ -25,7 +25,6 @@
 
 #include "Inspector.h"
 #include "BarcodeLot.h"
-#include "LoadCell.h"
 #include "MESInterface.h"
 
 
@@ -146,9 +145,7 @@ BOOL CSingleLensDlg::OnInitDialog()
 	g_objCommon.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
 	g_objInspector.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
 	g_objBarcodeLot.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
-	g_objLoadCell.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
-
-
+	
 	g_dlgOperator.Create(COperatorDlg::IDD, this);
 	g_dlgInitial.Create(CInitialDlg::IDD, this);
 	g_dlgWork.Create(CWorkDlg::IDD, this);
@@ -255,8 +252,7 @@ void CSingleLensDlg::OnDestroy()
 
 	g_objInspector.DestroyWindow();
 	g_objBarcodeLot.DestroyWindow();
-	g_objLoadCell.DestroyWindow();
-
+	
 	g_objCommon.DestroyWindow();
 		
 }
@@ -289,8 +285,7 @@ void CSingleLensDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	
 	gData.sOperID = "";
 	g_objMES.Initialize(pEquipData->bUseMES);
-
-	if (!g_objLoadCell.Initialize()) { AfxMessageBox("LoadCell Connect Fail!!!"); }
+		
 	if (!g_objBarcodeLot.Initialize()) { Exit_System(EXIT_SYSTEM_BARCODE); return; }
 
 	char myCom[256];
@@ -301,8 +296,8 @@ void CSingleLensDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	strVersion.Format("%s", MAIN_VERSION);
 	m_stcMainVer.SetWindowText(strVersion);
 
-	g_objInspector.Set_StatusUpdate(0);
-	g_objInspector.Set_LightOff();
+	//g_objInspector.Set_StatusUpdate(0);
+	//g_objInspector.Set_LightOff();
 
 	
 	theApp.uSleep(1000);
@@ -763,16 +758,14 @@ void CSingleLensDlg::Exit_System(int nExitNo)
 
 	Set_CurrentState(STATE_NONE);
 
-	g_objInspector.Set_LightOff();
-	g_objInspector.Set_StatusUpdate(0);
+	g_objInspector.Set_StatusUpdate(VISION_PC1, 0);
 	
 
 	DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
 	pDY03->oInsideLight = FALSE;
 	g_objAJinAXL.Write_Output(3);
 
-	g_objBarcodeLot.Terminate();
-	g_objLoadCell.Terminate();
+	g_objBarcodeLot.Terminate();	
 	
 	g_objInspector.Terminate();
 	g_objAJinAXL.Terminate();

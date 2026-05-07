@@ -90,6 +90,7 @@ struct FeederBranch
 	{
 		Ready = 0,
 		LoadSearch = 1,
+		RdySearch = 51,
 		Unload = 30,
 	};
 };

@@ -150,6 +150,7 @@
     <ClInclude Include="EnumData.h" />
     <ClInclude Include="EnumIO.h" />
     <ClInclude Include="EnumMoveData.h" />
+    <ClInclude Include="InspectV1.h" />
     <ClInclude Include="SequenceMain.h" />
     <ClInclude Include="SingleLens.h" />
     <ClInclude Include="SingleLensDlg.h" />
@@ -160,7 +161,6 @@
     <ClInclude Include="InitialDlg.h" />
     <ClInclude Include="Inspector.h" />
     <ClInclude Include="KeyPadDlg.h" />
-    <ClInclude Include="LoadCell.h" />
     <ClInclude Include="LogFile.h" />
     <ClInclude Include="LoopTimer.h" />
     <ClInclude Include="ManualLoadDlg.h" />
@@ -204,6 +204,7 @@
     <ClCompile Include="AJinAXL.cpp" />
     <ClCompile Include="AlarmDlg.cpp" />
     <ClCompile Include="BarcodeLot.cpp" />
+    <ClCompile Include="InspectV1.cpp" />
     <ClCompile Include="SequenceMain.cpp" />
     <ClCompile Include="SingleLens.cpp" />
     <ClCompile Include="SingleLensDlg.cpp" />
@@ -214,7 +215,6 @@
     <ClCompile Include="InitialDlg.cpp" />
     <ClCompile Include="Inspector.cpp" />
     <ClCompile Include="KeyPadDlg.cpp" />
-    <ClCompile Include="LoadCell.cpp" />
     <ClCompile Include="LogFile.cpp" />
     <ClCompile Include="LoopTimer.cpp" />
     <ClCompile Include="ManualLoadDlg.cpp" />

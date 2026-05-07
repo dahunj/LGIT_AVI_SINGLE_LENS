@@ -261,9 +261,6 @@
     <ClInclude Include="WorkInfoDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="LoadCell.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="MESInterface.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -301,6 +298,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="EnumIO.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="InspectV1.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -422,9 +422,6 @@
     <ClCompile Include="WorkInfoDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="LoadCell.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="MESInterface.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -453,6 +450,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ManualIndexDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="InspectV1.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

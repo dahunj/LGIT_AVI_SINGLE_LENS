@@ -11,7 +11,7 @@
 #include "DataManager.h"
 #include "Common.h"
 #include "SequenceMain.h"
-#include "LoadCell.h"
+
 
 // CManualLoadDlg 대화 상자입니다.
 

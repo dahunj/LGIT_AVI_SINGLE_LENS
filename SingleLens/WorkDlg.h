@@ -148,9 +148,12 @@ public:
 	int		SearchMZElevInfo(int nNo);
 	int		SearchMZCVInfo();
 	void	TransferMZInfo(int nFrom, int nTo);
-
+		
 	int 	SearchZigInfo(int nMZNo);
 	int		SearchLensCntInfo(int nMZNo);
+
+	int		CheckZigExistInMZ(int nMZ, int nSlot);
+
 
 
 	void Get_MZInfo(int nMZNo);

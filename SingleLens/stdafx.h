@@ -52,6 +52,7 @@
 #include "CSUdpSocket.h"
 #include "CSClientSocket.h"
 #include "CSGrid.h"
+#include "CSServerSocket.h"
 
 #include "EnumData.h"
 #include "EnumMoveData.h"
@@ -72,6 +73,7 @@
 	#pragma comment(lib, "CSComPortD.lib")
 	#pragma comment(lib, "CSUdpSocketD.lib")
 	#pragma comment(lib, "CSClientSocketD.lib")
+	#pragma comment(lib, "CSServerSocketD.lib")
 	#pragma comment(lib, "CSGridD.lib")
 #else
 	#pragma comment(lib, "CSControlsR.lib")
@@ -79,12 +81,13 @@
 	#pragma comment(lib, "CSComPortR.lib")
 	#pragma comment(lib, "CSUdpSocketR.lib")
 	#pragma comment(lib, "CSClientSocketR.lib")
+	#pragma comment(lib, "CSServerSocketR.lib")
 	#pragma comment(lib, "CSGridR.lib")
 #endif
 
 #define MAIN_VERSION	_T("V 0.0.0.1b")
 //
-#define AJIN_BOARD_USE
+//#define AJIN_BOARD_USE
 //#define LOT_BARCODE_USE
 //#define LOAD_CELL_USE
 
@@ -222,6 +225,7 @@ typedef struct
 	BOOL	bLdCVWorkWait;
 	BOOL	bElvLoadWait;
 	BOOL	bElvUnloadWait;
+	BOOL	bElvSlideOverWait;
 	BOOL	bFeederWorkWait;
 		
 	

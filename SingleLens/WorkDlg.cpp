@@ -10,7 +10,6 @@
 
 #include "Inspector.h"
 #include "BarcodeLot.h"
-#include "LoadCell.h"
 #include "MESInterface.h"
 #include "SequenceInit.h"
 #include "SequenceMain.h"
@@ -197,8 +196,73 @@ BOOL CWorkDlg::OnInitDialog()
 #ifndef AJIN_BOARD_USE
 	m_stcMZID[2].SetWindowText("TTTTT");
 	m_stcZigID[20].SetWindowText("1111");
-	m_stcLensCnt[20].SetWindowText("14");
+	m_stcZigID[21].SetWindowText("11112");
+	m_stcZigID[22].SetWindowText("11113");
+	m_stcZigID[23].SetWindowText("11114");
+	m_stcZigID[24].SetWindowText("11115");
+	m_stcZigID[25].SetWindowText("11116");
+	m_stcZigID[26].SetWindowText("11117");
+	m_stcZigID[27].SetWindowText("11118");
+	m_stcZigID[28].SetWindowText("11119");
 
+
+	m_stcLensCnt[20].SetWindowText("14");
+	m_stcLensCnt[21].SetWindowText("14");
+	m_stcLensCnt[22].SetWindowText("14");
+	m_stcLensCnt[23].SetWindowText("14");
+	m_stcLensCnt[24].SetWindowText("14");
+	m_stcLensCnt[25].SetWindowText("14");
+	m_stcLensCnt[26].SetWindowText("14");
+	m_stcLensCnt[27].SetWindowText("14");
+	m_stcLensCnt[28].SetWindowText("14");
+
+
+
+	m_stcMZID[3].SetWindowText("MMMMM");
+	m_stcZigID[30].SetWindowText("1111");
+	m_stcZigID[31].SetWindowText("11112");
+	m_stcZigID[32].SetWindowText("11113");
+	m_stcZigID[33].SetWindowText("11114");
+	m_stcZigID[34].SetWindowText("11115");
+	m_stcZigID[35].SetWindowText("11116");
+	m_stcZigID[36].SetWindowText("11117");
+	m_stcZigID[37].SetWindowText("11118");
+	m_stcZigID[38].SetWindowText("11119");
+
+
+	m_stcLensCnt[30].SetWindowText("14");
+	m_stcLensCnt[31].SetWindowText("14");
+	m_stcLensCnt[32].SetWindowText("14");
+	m_stcLensCnt[33].SetWindowText("14");
+	m_stcLensCnt[34].SetWindowText("14");
+	m_stcLensCnt[35].SetWindowText("14");
+	m_stcLensCnt[36].SetWindowText("14");
+	m_stcLensCnt[37].SetWindowText("14");
+	m_stcLensCnt[38].SetWindowText("14");
+
+
+
+	m_stcMZID[4].SetWindowText("MMMMM3");
+	m_stcZigID[40].SetWindowText("1111");
+	m_stcZigID[41].SetWindowText("11112");
+	m_stcZigID[42].SetWindowText("11113");
+	m_stcZigID[43].SetWindowText("11114");
+	m_stcZigID[44].SetWindowText("11115");
+	m_stcZigID[45].SetWindowText("11116");
+	m_stcZigID[46].SetWindowText("11117");
+	m_stcZigID[47].SetWindowText("11118");
+	m_stcZigID[48].SetWindowText("11119");
+
+
+	m_stcLensCnt[40].SetWindowText("14");
+	m_stcLensCnt[41].SetWindowText("14");
+	m_stcLensCnt[42].SetWindowText("14");
+	m_stcLensCnt[43].SetWindowText("14");
+	m_stcLensCnt[44].SetWindowText("14");
+	m_stcLensCnt[45].SetWindowText("14");
+	m_stcLensCnt[46].SetWindowText("14");
+	m_stcLensCnt[47].SetWindowText("14");
+	m_stcLensCnt[48].SetWindowText("14");
 #else
 	
 
@@ -467,9 +531,7 @@ void CWorkDlg::OnStcLensCountClick(UINT nID)
 	}
 	strValue.Format("%d", nLensCnt);
 	m_stcLensCnt[ID].SetWindowText(strValue);
-
-
-	
+		
 	int nShare = 0, nRemainder = 0;
 	nShare = ID / 10;
 	nRemainder = ID %10;
@@ -843,7 +905,7 @@ void CWorkDlg::Display_Status()
 	BOOL bInitComplete = g_objSequenceInit.Get_InitComplete();
 	m_ledInitComplete.Set_On(bInitComplete);
 
-	m_ledVisionStatus[0].Set_On(g_objInspector.Get_VisionStatus());
+	//m_ledVisionStatus[0].Set_On(g_objInspector.Get_VisionStatus());
 	
 	
 
@@ -989,21 +1051,39 @@ LRESULT CWorkDlg::OnUpdateMZInfo(WPARAM nTray, LPARAM lParam)
 	CString strText;
 	int nNo = (int)lParam;
 
-	if (nTray == eMZ::Load )
+	if (nTray == eMZ::Load)
 	{		
-		/*strText.Format("%d", gData.nTNoLoadTray[nNo]);
-		m_stcLoadTrayCount.SetWindowText(strText);*/
-		for (int i = 0; i < SLOT_NO_MAX; i++) {
-			for (int j = 0; j < 1; j++) {
+		
+		for (int i = 0; i < SLOT_NO_MAX; i++)
+		{
+			for (int j = 0; j < 1; j++) 
+			{
 				if		(gData.sZigIDElevLoad[i] != "") m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0x00));	// Reserve
 				else if (gData.sZigIDElevLoad[i] == "") m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
 				else									m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
 
 				if (gData.sZigIDElevUnload[i] != "") m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0x00, 0xFF, 0xFF));	// Empty
+
 			}
 		}
 		//g_dlgOperator.Update_TrayInfo(nTray);
 	}
+
+	if (nTray==eMZ::Unload)
+	{		
+		/*strText.Format("%d", gData.nTNoLoadTray[nNo]);
+		m_stcLoadTrayCount.SetWindowText(strText);*/
+		for (int i = 0; i < SLOT_NO_MAX; i++)
+		{
+			for (int j = 0; j < 1; j++) 
+			{
+				if (gData.sZigIDElevUnload[i] != "") m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0x00, 0xFF, 0xFF));	// Empty
+				else if (gData.sZigIDElevUnload[i] == "") m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
+			}
+		}
+		//g_dlgOperator.Update_TrayInfo(nTray);
+	}
+
 
 	return 0;
 }
@@ -1246,6 +1326,23 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo)
 {
 	CString sMZIDFrom, sMZIDTo, sZigIDFrom, sZigIDTo, sLensCntFrom, sLensCntTo;
 	
+	if(nTo == -1)
+	{
+		m_stcMZID[nFrom].SetWindowText("");
+		gData.sMZID[nFrom] = "";
+
+		for(int i = 0; i < 10; i++)
+		{
+			m_stcZigID[nFrom*10 +i].SetWindowText("");
+			gData.sZigID[nFrom][i] = "";
+
+			m_stcLensCnt[nFrom*10 +i].SetWindowText("");
+			gData.nLensUseCnt[nFrom][i] = 0;
+		}
+		return ;
+	}
+
+
 	m_stcMZID[nFrom].GetWindowText(sMZIDFrom);
 	sMZIDTo = sMZIDFrom;
 	m_stcMZID[nTo].SetWindowText(sMZIDTo);
@@ -1259,7 +1356,7 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo)
 		m_stcZigID[nFrom*10 + i].GetWindowText(sZigIDFrom);
 		sZigIDTo = sZigIDFrom;
 		m_stcZigID[nTo*10 + i].SetWindowText(sZigIDTo);
-		m_stcZigID[nFrom+10 +i].SetWindowText("");
+		m_stcZigID[nFrom*10 +i].SetWindowText("");
 
 		gData.sZigID[nTo][i] = sZigIDTo; gData.sZigID[nFrom][i] = "";
 				
@@ -1322,6 +1419,18 @@ int CWorkDlg::SearchLensCntInfo(int nMZNo)
 		{
 			return i + 1;
 		}
+	}
+	return -1;
+}
+
+
+int CWorkDlg::CheckZigExistInMZ(int nMZNo, int nSlot)
+{
+	CString sZigInfo;
+	m_stcZigID[nMZNo*10 + (nSlot -1)].GetWindowText(sZigInfo);
+	if(sZigInfo != "")
+	{
+		return nSlot;
 	}
 	return -1;
 }

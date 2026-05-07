@@ -8,28 +8,26 @@
 #include "Common.h"
 #include "DataManager.h"
 
+#include "SequenceInit.h"
 #include "SequenceMain.h"
-#include "MESInterface.h"
 
 
-#define UDP_VPC_HOST_IP	"192.168.25.23"
 
-#define UDP_VPC_LPORT	21000
-#define UDP_VPC_HPORT	21001
 
 IMPLEMENT_DYNAMIC(CInspector, CWnd)
 
 CInspector g_objInspector;
 
-CCriticalSection g_csInspector;	// Send_Command 문제 해결하기 위함
-
+CCriticalSection g_csInspectSend;	// Send_Command 문제 해결하기 위함
+CCriticalSection g_csInspectRecv;	// Receive_Command 문제 해결하기 위함
 // CInspector
 
 CInspector::CInspector()
 {
-	m_strRecvCmd = "";
-	m_nStatusVPC = 0;		// Vision 상태 (0:Not Ready, 1:Ready)
-	m_bLotReady = FALSE;
+	m_nStatusPC1 = 0;		// Vision PC1 상태 (0:Not Ready, 1:Ready, 2:Run)
+	
+
+	m_bLotReady1 = FALSE;	
 }
 
 CInspector::~CInspector()
@@ -37,446 +35,311 @@ CInspector::~CInspector()
 }
 
 BEGIN_MESSAGE_MAP(CInspector, CWnd)
-	ON_WM_TIMER()
-	ON_MESSAGE(UM_UDP_RECEIVE, OnUdpReceive)
+
+	
 END_MESSAGE_MAP()
 
 // CInspector 메시지 처리기입니다.
 
 void CInspector::Initialize()
 {
-	BOOL bOpened;
-#ifndef AJIN_BOARD_USE
-	bOpened = m_UdpVisionPC.Open_Socket(7000, 7001, "127.0.0.1", this);
-#else
-	bOpened = m_UdpVisionPC.Open_Socket(UDP_VPC_LPORT, UDP_VPC_HPORT, UDP_VPC_HOST_IP, this);
-#endif
-	if (bOpened) Set_ConnectRequest();
+	m_Vision1.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
+
+	m_Vision1.Init_Socket();
 }
 
 void CInspector::Terminate()
 {
-	Set_ConnectEnd();
-	m_UdpVisionPC.Close_Socket();
+	m_Vision1.Exit_Socket();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // UDP Socket Message
 
-void CInspector::OnTimer(UINT_PTR nIDEvent)
+
+void CInspector::Receive_Command(int nVPc, CString sCommand)
 {
-	KillTimer(nIDEvent);
-	m_nStatusVPC = 0;
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	
+	g_csInspectRecv.Lock();
 
-	CWnd::OnTimer(nIDEvent);
-}
+	char chSep = ',';
+	CString strCmd, strOp, strLog;
 
-LRESULT CInspector::OnUdpReceive(WPARAM wLocalPort, LPARAM lParam)
-{
-	UINT nPort = (UINT)wLocalPort;
-	BYTE byRecv[1024] = { 0 };
-	CString strLog;
+	AfxExtractSubString(strCmd, sCommand, 0, chSep);
+	AfxExtractSubString(strOp, sCommand, 1, chSep);
 
-	int nLen = m_UdpVisionPC.Read_Socket(byRecv);
+	// Inspector Log ////////////////////////////////////////
+	strLog.Format("[H<-V%d] : %s", nVPc, sCommand);
+	g_objLogFile.Save_InspectorLog(strLog);
+	/////////////////////////////////////////////////////////
+	CString strA[7];
+	for (int i = 0; i < 7; i++) AfxExtractSubString(strA[i], sCommand, i + 2, chSep);
 
-	if (nLen < 1) {
-		strLog.Format("[H<-V] : Local Port (%d) Mismatch or Receive Data Zero (%d)", nPort, nLen);
-		g_objLogFile.Save_InspectorLog(strLog);
-		return 0;
+	if (strCmd == "STATUS") {
+		if (strOp == "REQUEST") Get_StatusRequest(nVPc);
+		if (strOp == "REPLY")	Get_StatusReply(nVPc, strA[0]);
+		if (strOp == "UPDATE")	Get_StatusUpdate(nVPc, strA[0]);
+
+	} else if (strCmd == "LOT") {
+		if (strOp == "READY") Get_LotReady(nVPc, strA[0], strA[1]);
+
+	} else if (strCmd == "SCAN") {
+		if (strOp == "COMPLETE") Get_ScanComplete(nVPc, strA[0], strA[1], strA[2], strA[3], strA[4]);
+
+	} else if (strCmd == "INSPECT") {
+		if (strOp == "COMPLETE") Get_InspectComplete(nVPc, strA[0], strA[1], strA[2], strA[3], strA[4], strA[5], strA[6]);
+
+	} else if (strCmd == "AMOVE") {
+		if (strOp == "REQUEST") Get_AMoveRequest(nVPc, strA[0], strA[1], strA[2], strA[3], strA[4], strA[5], strA[6]);
+
+	} else if (strCmd == "POSITION") {
+		if (strOp == "REQUEST") Get_PositionRequest(nVPc, strA[0]);
+	
+	} else if (strCmd == "RELOAD") {
+		if (strOp == "REQUEST") Get_ReloadRequest(nVPc, strA[0]);
+
+	} else if (strCmd == "ERROR") {
+		if (strOp == "REQUEST") Get_ErrorRequest(nVPc, strA[0], strA[1], strA[2], strA[3], strA[4], strA[5], strA[6]);
 	}
 
-	CString strRecvSocket;
-	strRecvSocket.Format("%s", byRecv);
-	m_strRecvCmd += strRecvSocket;
-
-	while (!m_strRecvCmd.IsEmpty()) {
-		int nStart = m_strRecvCmd.Find("@");
-		int nEnd = m_strRecvCmd.Find("\n");
-
-		if (nEnd < 0) break;	// 버퍼에 들어오는 중...
-
-		if (nStart < 0 || nStart > nEnd) {
-			strLog.Format("[H<-V] : <<Error>> %s : Start(%d), End(%d)", m_strRecvCmd, nStart, nEnd);
-			g_objLogFile.Save_InspectorLog(strLog);
-			m_strRecvCmd.Delete(0, nEnd + 1);	// 쓰레기값이 채워져 있어서...
-			continue;
-		}
-
-		CString strRecv = m_strRecvCmd.Mid(nStart + 1, nEnd - nStart - 1);
-		m_strRecvCmd.Delete(0, nEnd + 1);
-
-		char chSep = ',';
-		CString strCmd, strOp;
-
-		AfxExtractSubString(strCmd, strRecv, 0, chSep);
-		AfxExtractSubString(strOp, strRecv, 1, chSep);
-
-		// Inspector Log ////////////////////////////////////////
-		if (strCmd != "HEART" && strOp != "BEAT") {
-			strLog.Format("[H<-V] : %s", strRecv);
-			g_objLogFile.Save_InspectorLog(strLog);
-		}
-		/////////////////////////////////////////////////////////
-
-		EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
- 		if (!pEquipData->bUseVisionCapDir && !pEquipData->bUseVisionCmAlign) return 0;
-
-		CString strArg[11];
-		for (int i = 0; i < 11; i++) AfxExtractSubString(strArg[i], strRecv, i + 2, chSep);
-
-		if (strCmd == "CONNECT") {
-			if (strOp == "REQUEST")	Get_ConnectRequest();
-			else if (strOp == "REPLY") Get_ConnectReply();
-			else if (strOp == "END") Get_ConnectEnd();
-
-		} else if (strCmd == "STATUS") {
-			if (strOp == "REQUEST")	Get_StatusRequest();
-			else if (strOp == "REPLY") Get_StatusReply(strArg[0]);
-			else if (strOp == "UPDATE") Get_StatusUpdate(strArg[0]);
-
-		} else if (strCmd == "LOT") {
-			if (strOp == "READY") Get_LotReady(strArg[0], strArg[1]);
-
-		} else if (strCmd == "INSPECT") {
-			if (strOp == "COMPLETE") Get_InspectComplete(strArg[0], strArg[1], strArg[2], strArg[3], strArg[4], strArg[5], strArg[6]);
-
-		} else if (strCmd == "SCAN") {
-			if (strOp == "COMPLETE") Get_ScanComplete(strArg[0], strArg[1], strArg[2], strArg[3], strArg[4]);
-
-		}else if (strCmd == "ERROR") {
-			if (strOp == "REQUEST") Get_ErrorRequest(strArg[0], strArg[1], strArg[2], strArg[3], strArg[4], strArg[5]);
-
-		} else if (strCmd == "HEART") {
-			if (strOp == "BEAT") Get_HeartBeat();
-		}
-		else if (strCmd == "RELOAD")
-		{
-			if(strOp == "REQUEST") Get_ReloadRequest();
-		}
-	}
-
-	return 1;
+	g_csInspectRecv.Unlock();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Get Command
 
-void CInspector::Get_ConnectRequest()
+void CInspector::Get_StatusRequest(int nVPc)
 {
-	Set_ConnectReply();
+	BOOL bInit = g_objSequenceInit.Get_InitComplete();
+	BOOL bRun = g_objSequenceMain.Is_MainThreadRun();
+	int nStatus = bRun ? 2 : bInit ? 1 : 0;
+	Set_StatusReply(nVPc, nStatus);
 }
 
-void CInspector::Get_ConnectReply()
+void CInspector::Get_StatusReply(int nVPc, CString sStatus)
 {
+	if (nVPc == VISION_PC1) m_nStatusPC1 = atoi(sStatus);
+	
 }
 
-void CInspector::Get_ConnectEnd()
+void CInspector::Get_StatusUpdate(int nVPc, CString sStatus)
 {
+	if (nVPc == VISION_PC1) m_nStatusPC1 = atoi(sStatus);
+
 }
 
-void CInspector::Get_StatusRequest()
+void CInspector::Get_LotReady(int nVPc, CString sLotId, CString sLotNo)
 {
+	int nLx = atoi(sLotNo) - 1;
+	if (nLx < 0 || nLx > 4) return;
+
+	/*if (sLotId != gData.sLotID[nLx]) return;
+	if (nVPc == VISION_PC1) m_bLotReady1 = TRUE;*/
+
 }
 
-void CInspector::Get_StatusReply(CString sStatus)
+void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sLotId, CString sLotNo, CString sTrayNo, CString sCmNo)
 {
-	m_nStatusVPC = atoi(sStatus);
+	int nLx = atoi(sLotNo) - 1;		// Lot Index
+	int nTx = atoi(sTrayNo) - 1;	// Tray Index
+	int	nCx = atoi(sCmNo) - 1;		// CM Index
+	
 }
 
-void CInspector::Get_StatusUpdate(CString sStatus)
+void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sLotId, CString sLotNo, CString sTrayNo, CString sCmNo, CString sJudge, CString sCode)
 {
-	KillTimer(0);
-	m_nStatusVPC = atoi(sStatus);
-	SetTimer(0, 15000, NULL);
+	int nLx = atoi(sLotNo) - 1;		// Lot Index
+	int nTx = atoi(sTrayNo) - 1;	// Tray Index
+	int	nCx = atoi(sCmNo) - 1;		// CM Index
+	
 }
 
-void CInspector::Get_LotReady(CString sLotId, CString sPortNo)
+void CInspector::Get_AMoveRequest(int nVPc, CString sGbn, CString sZ1, CString sZ2, CString sX, CString sY, CString sT, CString sR)
 {
-	/*int nPortNo = atoi(sPortNo);
-	if (sLotId != gData.sZigID[nPortNo-1]) return;
-	m_bLotReady = TRUE;*/
-}
+	if (!g_objSequenceInit.Get_InitComplete()) { g_objCommon.Show_Error(50); return; }
 
-void CInspector::Get_InspectComplete(CString sGbn, CString sMZID, CString sZigID, CString sSlotNo, CString sLensNo, CString sJudge, CString sNgCode)
-{
-	int	nSlot = atoi(sSlotNo) - 1;
-	int	nLens = atoi(sLensNo) - 1;
-	if ( nSlot < 0 || nSlot > 29 || nLens < 0 || nLens > 39) { g_objCommon.Show_Error(6101); return; }
-
-
-	int nV = (sGbn == "T1" ? 0 : 1);
-	if (nV == -1) { g_objCommon.Show_Error(6102); return; }
-
-
-	gData.cJudgeCode[nSlot][nLens][nV] = *(LPSTR)(LPCTSTR)sJudge;
-
-
-	if (sJudge != "G" && sNgCode.GetLength() < 2) sNgCode = "NON";	// Good 일때 NG Code는 Space(" ")
-
-
-	if (sJudge == "N1" || sJudge == "N2" || sJudge == "N3" || sJudge == "N4")
-	{
-		
-	}
+	double dZ1 = atof(sZ1);
+	double dZ2 = atof(sZ2);
+	double dX  = atof(sX);
+	double dY  = atof(sY);
+	double dT  = atof(sT);
+	double dR  = atof(sR);
 
 	int nMode = theApp.Get_MainMode();
-	int nPreInfo = gData.nInspectInfo[nSlot][nLens];
-
-	if		(sJudge == "N") { if (nPreInfo < 8 || nPreInfo > 8) gData.nInspectInfo[nSlot][nLens] = eLensState::NG; }	// N4
-	else if	(sJudge == "B")  { if (nPreInfo < 7 || nPreInfo > 8) gData.nInspectInfo[nSlot][nLens] = eLensState::NG; }	// BS
-	else if (sJudge == "G")
-	{
-		gData.nInspectInfo[nSlot][nLens] = eLensState::Good;
-	}
-
-	gData.byInspectDone[nSlot][nLens] |= (1 << nV);
-
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
-	if (pEquipData->bUseTopVision && ((gData.byInspectDone[nSlot][nLens] >> 0) & 1) == 0) return;	// T1
-	if (pEquipData->bUseBtmVision  && ((gData.byInspectDone[nSlot][nLens] >> 1) & 1) == 0) return;	// B1
 	
 }
 
-void CInspector::Get_ScanComplete(CString sGbn, CString sMZId, CString sLotId, CString sSlotNo, CString sLensNo)
+void CInspector::Get_PositionRequest(int nVPc, CString sGbn)
 {
-	if (sGbn == "T1")
-	{
-		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_TOP_INSPECT);
-		if (nCase != 10) { Exception_Log("Scan Complete", sGbn, nCase); return; }
-		m_nT1ScanCnt++;
-		if (m_nT1ScanCnt < m_nT1ScanReq) return;
-		gData.bScanDone[0] = TRUE; 
-		g_objSequenceMain.Set_MainRunCase(AUTO_TOP_INSPECT, 10);
-
-	}
-	else if(sGbn == "B1")
-	{
-		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_BTM_INSPECT);
-		if (nCase != 10) { Exception_Log("Scan Complete", sGbn, nCase); return; }
-		m_nB1ScanCnt++;
-		if (m_nB1ScanCnt < m_nB1ScanReq) return;
-		gData.bScanDone[1] = TRUE; 
-		g_objSequenceMain.Set_MainRunCase(AUTO_BTM_INSPECT, 10);
-	}
+	if (!g_objSequenceInit.Get_InitComplete()) { g_objCommon.Show_Error(50); return; }
+		
 }
 
-void CInspector::Get_ErrorRequest(CString sGbn, CString sLotId, CString sPortNo, CString sTrayNo, CString sCmNo, CString sErrNo)
+
+void CInspector::Get_ReloadRequest(int nVPc, CString sPc)
 {
-	int	nTNo = atoi(sTrayNo) - 1;
-	int	nCNo = atoi(sCmNo) - 1;
-	int nPNo = atoi(sPortNo) - 1;
-	if (nTNo < 0 || nTNo > 99 || nCNo < 0 || nCNo > 200 || nPNo < 0 || nPNo > 2) { g_objCommon.Show_Error(6101); return; }
+	// bScanDone[4][5] --> [4]=>0:B1,1:B2,2:T1,3:T2 / [5]=>0:C1,1:C2,2:C3,3:C4,4:C5
+	CString strVPC;
+	strVPC.Format("PC%d", nVPc);
+	if (sPc != strVPC) return;
+		
+	Set_ReloadComplete(1, sPc);
+}
 
-	int nErrNo = atoi(sErrNo);	// 6120 : Mirror Z Axis Error, 6130: Btm2 Picker Module Error
-
-	CString strErrMsg;
-	strErrMsg.Format(" ==> Vision:%s. LotID:%s. PortNo:%d. Tray:%d. CM:%d", sGbn, sLotId, nPNo+1, nTNo+1, nCNo+1);
-
-	g_objCommon.Set_ErrorSubMessage(strErrMsg);
-
+void CInspector::Get_ErrorRequest(int nVPc, CString sGbn, CString sLotId, CString sLotNo, CString sTrayNo, CString sCmNo, CString sErrNo, CString sErrMsg)
+{
+	int nLx = atoi(sLotNo) - 1;		// Lot Index
+	int nTx = atoi(sTrayNo) - 1;	// Tray Index
+	int	nCx = atoi(sCmNo) - 1;		// CM Index
+	
 	int nMode = theApp.Get_MainMode();
-	if (nErrNo != 6120 && (nMode == MODE_WORK || nMode == MODE_OPERATOR)) g_objCommon.Show_Error(nErrNo);
-}
-
-void CInspector::Get_HeartBeat()
-{
-	KillTimer(0);
-	m_nStatusVPC = 1;
-	SetTimer(0, 15000, NULL);
-}
-
-void CInspector::Get_ReloadRequest( )
-{
 	
 }
 
-void CInspector::Get_ZMoveRequest(int nInspector, CString sGbn, CString sZ)
-{
-	double dZ = atof(sZ);
-	CString strLog = "";
-
-	int nMode = theApp.Get_MainMode();
-
-	if (sGbn == "T1") 
-	{
-		if (nMode == MODE_WORK || nMode == MODE_OPERATOR) 
-		{	
-			// AutoRun
-			int nCase1 = g_objSequenceMain.Get_MainRunCase(AUTO_TOP_INSPECT);
-			
-			if (nCase1 != TopBranch::VisionWait ) { Exception_Log("ZMove Request", sGbn, nCase1); return; }
-			g_objSequenceMain.m_dTop1Z = dZ;
-			g_objSequenceMain.Set_MainRunCase(AUTO_TOP_INSPECT, 6);
-
-		} 
-		/*else if (nMode == MODE_MANUAL)
-		{
-			if (!g_objAJinAXL.Is_Home(AX_TOP_INSPECTOR_Z) || dZ < 0.0) return;
-			g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, dZ);
-			DWORD dwStart = GetTickCount();
-			while (!g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_Z, dZ)) {
-				if (GetTickCount() - dwStart > 10000) return;
-				DoEvents();
-			}
-			Set_MoveComplete(nInspector, sGbn);
-		}*/
-	}
-
-}
-
-void CInspector::Exception_Log(CString sFunc, CString sGbn, int nCase)
+void CInspector::Exception_Log(int nVPc, CString sFunc, CString sGbn, int nLotNo, int nTrayNo, int nCmNo, int nCase)
 {
 	CString strLog;
-	strLog.Format("%s Exception ==> Vision:%s, Case:%d", sFunc, sGbn, nCase);
-	g_objLogFile.Save_InspectorLog(strLog);
+	strLog.Format("%s Exception ==> PC:%d, Vision:%s, LotNo:%d, TrayNo:%d, CmNo:%d, Case:%d", sFunc, nVPc, sGbn, nLotNo, nTrayNo, nCmNo, nCase);
+	
 }
+
+
+
+
+
 
 /////////////////////////////////////////////////////////////////////////////
 // Set Command
 
-void CInspector::Set_ConnectRequest()
-{
-	CString	strSendCmd;
-	strSendCmd.Format("CONNECT,REQUEST");
-	Send_Command(strSendCmd);
-}
-
-void CInspector::Set_ConnectReply()
-{
-	CString	strSendCmd;
-	strSendCmd.Format("CONNECT,REPLY");
-	Send_Command(strSendCmd);
-}
-
-void CInspector::Set_ConnectEnd()
-{
-	CString	strSendCmd;
-	strSendCmd.Format("CONNECT,END");
-	Send_Command(strSendCmd);
-}
-
-void CInspector::Set_StatusRequest()
+void CInspector::Set_StatusRequest(int nVPc)
 {
 	CString	strSendCmd;
 	strSendCmd.Format("STATUS,REQUEST");
-	Send_Command(strSendCmd);
+	Send_Command(nVPc, strSendCmd);
 }
 
-void CInspector::Set_StatusReply(int nStatus)
+void CInspector::Set_StatusReply(int nVPc, int nStatus)
 {
 	CString	strSendCmd;
 	strSendCmd.Format("STATUS,REPLY,%d", nStatus);
-	Send_Command(strSendCmd);
+	Send_Command(nVPc, strSendCmd);
 }
 
-void CInspector::Set_StatusUpdate(int nStatus)
+void CInspector::Set_StatusUpdate(int nVPc, int nStatus)
 {
 	CString	strSendCmd;
 	strSendCmd.Format("STATUS,UPDATE,%d", nStatus);
-	Send_Command(strSendCmd);
+	Send_Command(nVPc, strSendCmd);
 }
 
-void CInspector::Set_LotStart(CString sLotId, int nPortNo)
+void CInspector::Set_LotStart(int nVPc, CString sLotId, int nLotNo, int nTrayCount, int nCmCount, CString sModel)
 {
-	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	m_bLotReady1 = FALSE;
 
-	m_bLotReady = FALSE;
-	CString	strSendCmd;
-	//strSendCmd.Format("LOT,START,%s,%d,%d,%d,%s", sLotId, nPortNo, gData.nTrayUseCount[nPortNo-1], gData.nCmUseCount[nPortNo-1], gData.sRecipe);
-	Send_Command(strSendCmd);
+	CString strSendCmd;
+	strSendCmd.Format("LOT,START,%s,%d,%d,%d,%s", sLotId, nLotNo, nTrayCount, nCmCount, sModel);
+	Send_Command(nVPc, strSendCmd);
 }
 
-void CInspector::Set_LotEnd(CString sLotId, int nPortNo)
+void CInspector::Set_LotEnd(int nVPc, CString sLotId, int nLotNo)
 {
 	CString	strSendCmd;
-	strSendCmd.Format("LOT,END,%s,%d", sLotId, nPortNo);
-	Send_Command(strSendCmd);
+	strSendCmd.Format("LOT,END,%s,%d", sLotId, nLotNo);
+	Send_Command(nVPc, strSendCmd);
 }
 
-void CInspector::Set_LoadComplete(int nInspector, CString sGbn, CString sZigID, CString sMZID, int nSlotNo, int nLensNo)
+void CInspector::Set_LoadComplete(int nVPc, CString sGbn, CString sLotId, int nLotNo, int nTrayNo, int nCmNo, double dHeight)
 {
 	CString	strSendCmd, strTemp;
-
-	if (sGbn == "T1" || sGbn == "B1" ) {
-		int nScanReq = 0;
-		
-		if (sGbn == "T1") { m_nT1ScanReq = gData.nScanReqTop; m_nT1ScanCnt = 0; gData.bScanDone[0] = FALSE; }
-		if (sGbn == "B1") { m_nB1ScanReq = gData.nScanReqBtm; m_nB1ScanCnt = 0; gData.bScanDone[1] = FALSE; }
-	}
-	strSendCmd.Format("LOAD,COMPLETE,%s,%s,%s,%d,%d", sGbn, sZigID, sMZID, nSlotNo, nLensNo);
-	Send_Command(strSendCmd);
+	strSendCmd.Format("LOAD,COMPLETE,%s,%s,%d,%d,%d,%0.3lf", sGbn, sLotId, nLotNo, nTrayNo, nCmNo, dHeight);
+	Send_Command(nVPc, strSendCmd);
 }
 
-void CInspector::Set_InitialRequest()
+void CInspector::Set_MoveComplete(int nVPc, CString sGbn)
+{
+	CString	strSendCmd;
+	strSendCmd.Format("MOVE,COMPLETE,%s", sGbn);
+	Send_Command(nVPc, strSendCmd);
+}
+
+void CInspector::Set_PositionReply(int nVPc, CString sGbn, double dZ1, double dZ2, double dX, double dY, double dT, double dR)
+{
+	CString	strSendCmd;
+	strSendCmd.Format("POSITION,REPLY,%s,%0.3lf,%0.3lf,%0.3lf,%0.3lf,%0.3lf,%0.3lf", sGbn, dZ1, dZ2, dX, dY, dT, dR);
+	Send_Command(nVPc, strSendCmd);
+}
+
+
+
+void CInspector::Set_ReloadComplete(int nVPc, CString sPc)
+{
+	CString	strSendCmd;
+	strSendCmd.Format("RELOAD,COMPLETE,%s", sPc);
+	Send_Command(nVPc, strSendCmd);
+}
+
+void CInspector::Set_InitialRequest(int nVPc)
 {
 	CString	strSendCmd;
 	strSendCmd.Format("INITIAL,REQUEST");
-	Send_Command(strSendCmd);
+	Send_Command(nVPc, strSendCmd);
 }
 
-void CInspector::Set_LightOff()
+void CInspector::Set_TimeUpdate(int nVPc)
 {
-	CString strSendCmd;
-	strSendCmd.Format("LIGHT,OFF");
-	Send_Command(strSendCmd);
-}
-void CInspector::Set_ReloadComplete()
-{
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+
+	CString strTime;
+	strTime.Format("%04d-%02d-%02d %02d:%02d:%02d.%03d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+
 	CString	strSendCmd;
-	strSendCmd.Format("RELOAD,COMPLETE");
-	Send_Command(strSendCmd);
-}
-
-
-void CInspector::Set_ZMoveComplete(int nInspector, CString sGbn)
-{
-	CString	strSendCmd;
-	strSendCmd.Format("ZMOVE,COMPLETE,%s", sGbn);
-	Send_Command(strSendCmd);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-int CInspector::Get_VisionStatus()
-{
-	return m_nStatusVPC;
-}
-
-BOOL CInspector::Check_LotReady()
-{
-	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-#ifdef DRY_RUN_TEST
-	m_bLotReady = TRUE;
-#else
-	if (!pEquipData->bUseVisionCapDir && !pEquipData->bUseVisionCmAlign) m_bLotReady = TRUE;
-#endif
-	return m_bLotReady;
+	strSendCmd.Format("TIME,UPDATE,%s", strTime);
+	Send_Command(nVPc, strSendCmd);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // UDP Socket Send Message
 
-void CInspector::Send_Command(CString strSend)
+void CInspector::Send_Command(int nVPc, CString sCommand)
 {
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	// 	if (!pEquipData->bUseInspectBtm && !pEquipData->bUseInspectTop) return;
+
+	g_csInspectSend.Lock();	// Critical Section
+
 	// Inspector Log //////////////////////////////////////
 	CString strLog;
-	strLog.Format("[H->V] : %s", strSend);
-	g_objLogFile.Save_InspectorLog(strLog);
-	///////////////////////////////////////////////////////
+	strLog.Format("[H->V%d] : %s", nVPc, sCommand);
+	if (nVPc == VISION_ALL || nVPc == VISION_PC1) g_objLogFile.Save_InspectorLog(strLog);
 
-	g_csInspector.Lock();	// Critical Section
 
-	CString strSendSocket;
-	strSendSocket.Format("@%s\n", strSend);
+	if (nVPc == VISION_ALL || nVPc == VISION_PC1) m_Vision1.Send_Message(sCommand);
+	
 
-	char chSend[1024] = { 0 };
-	int nLength = strSendSocket.GetLength();
-	memcpy(chSend, (LPSTR)(LPCSTR)strSendSocket, nLength);
+	g_csInspectSend.Unlock();	// Critical Section
+}
 
-	m_UdpVisionPC.Write_Socket((BYTE*)chSend, nLength);
+///////////////////////////////////////////////////////////////////////////////
 
-	g_csInspector.Unlock();	// Critical Section
+BOOL CInspector::Check_Connect(int nVPc)
+{
+	if (nVPc == VISION_PC1) return m_Vision1.Is_Connected();
+
+	
+	return FALSE;
+}
+
+BOOL CInspector::Check_LotReady()
+{
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	/*if (!pEquipData->bUseInspectBtm && !pEquipData->bUseInspectTop) m_bLotReady1 = m_bLotReady2 = m_bLotReady3 = m_bLotReady4 = m_bLotReady5 = TRUE;
+	return (m_bLotReady1 && m_bLotReady2 && m_bLotReady3 && m_bLotReady4 && m_bLotReady5);*/
+
+	return FALSE;
 }
 
 /////////////////////////////////////////////////////////////////////////////

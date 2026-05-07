@@ -160,14 +160,15 @@ void CInitialDlg::OnTimer(UINT_PTR nIDEvent)
 
 	if (m_rdoInitStart.GetCheck()) {
 		if (!m_bInitialRunning) {	// First Start
-			if (g_objCommon.Show_MsgBox(2, "Do you want to Initialize?") == IDOK) {
+			if (g_objCommon.Show_MsgBox(2, "Do you want to Initialize?") == IDOK) 
+			{
 				m_bInitialRunning = TRUE;
 
 				g_objCommon.Locking_MainDoor(TRUE);
 				pMainDlg->Set_CurrentState(STATE_INIT);
 				pMainDlg->Enable_ModeButton(FALSE);
 
-				g_objInspector.Set_InitialRequest();
+				g_objInspector.Set_InitialRequest(VISION_PC1);
 
 				m_rdoInitStart.Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
 				m_rdoInitStop.Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
@@ -177,8 +178,9 @@ void CInitialDlg::OnTimer(UINT_PTR nIDEvent)
 				for (int i = 1; i < 8; i++) Set_StatusColor(i, 0);	// White
 
 				g_objSequenceInit.Begin_InitialThread();
-
-			} else {
+			}
+			else
+			{
 				m_rdoInitStop.SetCheck(TRUE);
 			}
 
