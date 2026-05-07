@@ -36,7 +36,9 @@ CSequenceMain::CSequenceMain(void)
 
 	m_bThreadMainRun = FALSE;
 	m_pThreadMainRun = NULL;
-	gData.nSlotNoToPick = 1;
+	gData.nSlotNoToPick[eMZ::Load] = 1;
+	gData.nSlotNoToPick[eMZ::Ready] = 1;
+	
 
 	Reset_MainRunCase();
 }
@@ -131,15 +133,10 @@ BOOL CSequenceMain::Get_IsAutoRun()
 {
 	int *pCase = Get_pMainRunCase();
 	for (int i = 0; i < AUTO_COUNT; i++) 
-	{
-		/*if (i == AUTO_LOAD_BUFFER1 && m_nLoadBuff1Case == 50) continue;
-		if (i == AUTO_LOAD_BUFFER2 && m_nLoadBuff2Case == 50) continue;
-		if (i == AUTO_TRANS_BUFFER1 && m_nTransBuff1Case == 50) continue;
-		if (i == AUTO_TRANS_BUFFER2 && m_nTransBuff2Case == 50) continue;
-		if (i == AUTO_NG_STAGE1 && m_nNgStage1Case == 50) continue;
-		if (i == AUTO_NG_STAGE2 && m_nNgStage2Case == 50) continue;
-		if (i == AUTO_OK_STAGE1 && m_nOkStage1Case == 50) continue;
-		if (i == AUTO_OK_STAGE2 && m_nOkStage2Case == 50) continue;*/
+	{		
+		if(i == AUTO_LD_CONVEYOR && m_nLoadConveyorCase == 1) continue;
+		if(i == AUTO_UL_CONVEYOR && m_nUnloadConveyorCase == 1) continue;
+		if(i == AUTO_MZ_ELEVATOR && m_nMZElevCase == 20) continue;
 		if(i == AUTO_MZ_ELEVATOR && m_nMZElevCase == 20) continue;
 		if(i == AUTO_INDEX_TABLE && m_nMainIndexCase == 5) continue;
 		if (*(pCase + i) > 0) return TRUE;
@@ -401,6 +398,8 @@ BOOL CSequenceMain::MZElevRun()
 	
 	if(gData.bFeederWorkWait) return TRUE;
 		
+	
+
 	//Suppose MZ on Right of Elev
 	switch(m_nMZElevCase)
 	{
@@ -491,11 +490,20 @@ BOOL CSequenceMain::MZElevRun()
 
 		if(m_pDX00->iElvMZExist1)
 		{
+			nMZDetectCnt[0]++; nMZDetectCnt[5] = 0;
+			if(nMZDetectCnt[0] < 5) break;
+
 			g_objCommon.Set_LoadCVStop(); Sleep(5);
 			g_objCommon.Set_LoadCVRunCCW(); Sleep(5);
 			g_objCommon.Set_ElevCVRunCW();
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load CV CW Stop & Elev CV CW Start");
+		}
+		else
+		{
+			nMZDetectCnt[5]++;
+			if(nMZDetectCnt[5] < 8) break;
+			m_nMZElevCase = 0; m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 4:
@@ -544,7 +552,7 @@ BOOL CSequenceMain::MZElevRun()
 
 			if(nTo != -1)
 			{
-				g_dlgWork.TransferMZInfo(nFrom, 0);
+				g_dlgWork.TransferMZInfo(nFrom, eMZ::Load);
 				gData.sMZIDElevLoad = gData.sMZID[eMZ::Load];
 
 				for(int i = 0; i < 10; i++)
@@ -559,7 +567,6 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		break;
 	case 8:
-		gData.nSlotNoToPick = 1;		
 		m_nMZElevCase = 20;	m_nMZElevLoop.Set_LoopTime(5000);	
 		break;
 	
@@ -623,6 +630,8 @@ BOOL CSequenceMain::MZElevRun()
 				{
 					gData.sZigIDElevReady[i] = gData.sZigID[eMZ::Ready][i];
 				}				
+				g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Ready, NULL);
+
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Stopper2 In Done");
 			}
@@ -747,7 +756,7 @@ BOOL CSequenceMain::MZElevRun()
 	case ElvBranch::SlideOver:		
 		if(m_pDX00->iElvMZExist1)
 		{
-			nMZDetectCnt[0]++; nMZDetectCnt[0] = 0; 
+			nMZDetectCnt[0]++; nMZDetectCnt[1] = 0; 
 			if(nMZDetectCnt[0] < 5) break;
 
 			g_objCommon.Set_ElevStopper1Out();
@@ -832,10 +841,16 @@ BOOL CSequenceMain::MZElevRun()
 				for(int i = 0; i < 10; i++)
 				{
 					gData.sZigIDElevLoad[i] = gData.sZigID[eMZ::Load][i];
+					gData.sZigIDElevReady[i].Empty();
 				}				
+				g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Load, NULL);
+				g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Ready, NULL);
+
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Stopper2 In Done");
 			}
+
+			gData.bElvSlideOverWait = FALSE;
 			m_nMZElevCase = 20; m_nMZElevLoop.Set_LoopTime(5000);
 		}		
 		break;
@@ -855,8 +870,9 @@ BOOL CSequenceMain::FeederRun()
 {	
 	static double dPosZ = 0.0;
 
+	
 	if(gData.bElvLoadWait || gData.bElvSlideOverWait || gData.bElvUnloadWait) return TRUE;
-
+	
 	switch(m_nFeederCase)
 	{
 	case 0:
@@ -872,7 +888,7 @@ BOOL CSequenceMain::FeederRun()
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready))
 		{
 			//아래 부터 검사 
-			dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] - m_pEquipData->dElevPitchZ * (gData.nSlotNoToPick - 1) ;
+			dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] - m_pEquipData->dElevPitchZ * (gData.nSlotNoToPick[eMZ::Load] - 1) ;
 			g_objAJinAXL.Move_Absolute(AX_MZ_ELEVATOR_Z, dPosZ);
 
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZLoad);
@@ -899,11 +915,11 @@ BOOL CSequenceMain::FeederRun()
 			gData.bFeederWorkWait = TRUE; // load Start
 
 			int nExist = -1;
-			nExist = g_dlgWork.CheckZigExistInMZ(0, gData.nSlotNoToPick);
+			nExist = g_dlgWork.CheckZigExistInMZ(0, gData.nSlotNoToPick[eMZ::Load]);
 #ifndef AJIN_BOARD_USE
 			m_pDX01->iMagazineZigExist = TRUE;
 #endif
-			if(m_pDX01->iMagazineZigExist && nExist == gData.nSlotNoToPick)
+			if(m_pDX01->iMagazineZigExist && nExist == gData.nSlotNoToPick[eMZ::Load])
 			{				
 				g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad);
 				m_nFeederCase = 10; m_nFeederLoop.Set_LoopTime(5000);
@@ -914,15 +930,15 @@ BOOL CSequenceMain::FeederRun()
 				//Z Pitch Move 
 				//g_objAJinAXL.Move_Relative(AX_MZ_ELEVATOR_Z, -m_pEquipData->dMZPitchRightZ*(1.0)); 
 
-				if(gData.nSlotNoToPick > 10) 
+				if(gData.nSlotNoToPick[eMZ::Load] > 10) 
 				{	
-					gData.nSlotNoToPick = 1;
+					gData.nSlotNoToPick[eMZ::Load] = 1;
 					m_nFeederCase = 0; m_nFeederLoop.Set_LoopTime(5000);
 					m_strLog.Format("Elev Z Move to search Finish"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 				}
 				else
 				{
-					gData.nSlotNoToPick++;
+					gData.nSlotNoToPick[eMZ::Load]++;
 					m_nFeederCase = FeederBranch::LoadSearch; m_nFeederLoop.Set_LoopTime(5000);
 					m_strLog.Format("Elev Z Move to search Zig"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 				}
@@ -960,10 +976,10 @@ BOOL CSequenceMain::FeederRun()
 			gData.bFeederWorkWait = FALSE;
 			//Info Processing 		
 			gData.sMZIDFeeder = gData.sMZIDElevLoad; gData.sMZIDElevLoad = "";
-			gData.sZigIDFeeder = gData.sZigIDElevLoad[gData.nSlotNoToPick -1]; gData.sZigIDElevLoad[gData.nSlotNoToPick -1] = "";
-			gData.nSlotNoFeeder = gData.nSlotNoToPick; 
-			memcpy(gData.InfoFeeder, gData.InfoMZLoad[gData.nSlotNoToPick -1], sizeof(int)*ZIG_X*ZIG_Y );
-			memset(gData.InfoMZLoad[gData.nSlotNoToPick -1], 0x00, sizeof(int)*ZIG_X*ZIG_Y );
+			gData.sZigIDFeeder = gData.sZigIDElevLoad[gData.nSlotNoToPick[eMZ::Load] -1]; gData.sZigIDElevLoad[gData.nSlotNoToPick[eMZ::Load] -1] = "";
+			gData.nSlotNoFeeder = gData.nSlotNoToPick[eMZ::Load]; 
+			memcpy(gData.InfoFeeder, gData.InfoMZLoad[gData.nSlotNoToPick[eMZ::Load] -1], sizeof(int)*ZIG_X*ZIG_Y );
+			memset(gData.InfoMZLoad[gData.nSlotNoToPick[eMZ::Load] -1], 0x00, sizeof(int)*ZIG_X*ZIG_Y );
 
 			g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO,eMZ::Load, NULL);
 
@@ -999,8 +1015,8 @@ BOOL CSequenceMain::FeederRun()
 			memcpy( gData.InfoRail, gData.InfoFeeder,  sizeof(int)*ZIG_X*ZIG_Y);
 			memset( gData.InfoFeeder, 0x00, sizeof(int)*ZIG_X*ZIG_Y);	
 
-			gData.nSlotNoToPick++;
-			if(gData.nSlotNoToPick > 10) gData.nSlotNoToPick = 1;
+			gData.nSlotNoToPick[eMZ::Load]++;
+			if(gData.nSlotNoToPick[eMZ::Load] > 10) gData.nSlotNoToPick[eMZ::Load] = 1;
 			m_nZigPickerCase = ZigPickBranch::Load; // Tray Picker load Start 			
 			m_nFeederCase = 0; m_nFeederLoop.Set_LoopTime(5000);
 			m_strLog.Format("Zig Picker load Start "); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
@@ -1121,7 +1137,7 @@ BOOL CSequenceMain::FeederRun()
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready))
 		{
 			//아래 부터 검사 
-			dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] - m_pEquipData->dElevPitchZ * (gData.nSlotNoToPick - 1) ;
+			dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] - m_pEquipData->dElevPitchZ * (gData.nSlotNoToPick[eMZ::Ready] - 1) ;
 			g_objAJinAXL.Move_Absolute(AX_MZ_ELEVATOR_Z, dPosZ);
 
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZReady);
@@ -1130,32 +1146,31 @@ BOOL CSequenceMain::FeederRun()
 			m_strLog.Format("Elev Z pitch Move, SlotNo : %d", gData.nSlotNoToPick); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}		
 		break;
-	case 3:
-		if(g_objAJinAXL.Is_MoveDone(AX_MZ_ELEVATOR_Z, dPosZ) && g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZLoad))
+	case 53:
+		if(g_objAJinAXL.Is_MoveDone(AX_MZ_ELEVATOR_Z, dPosZ) && g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZReady))
 		{
-
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 			m_strLog.Format("FeederUnit X Move (MZ2), %d"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}
 		break;
-	case 4:
+	case 54:
 		m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		m_strLog.Format("Feeder Y Move (Zig Exist) "); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		break;
-	case 5:
+	case 55:
 		//if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::CheckExist))
 		{
 			gData.bFeederWorkWait = TRUE; // load Start
 
 			int nExist = -1;
-			nExist = g_dlgWork.CheckZigExistInMZ(0, gData.nSlotNoToPick);
+			nExist = g_dlgWork.CheckZigExistInMZ(eMZ::Ready, gData.nSlotNoToPick[eMZ::Ready]);
 #ifndef AJIN_BOARD_USE
 			m_pDX01->iMagazineZigExist = TRUE;
 #endif
-			if(m_pDX01->iMagazineZigExist && nExist == gData.nSlotNoToPick)
+			if(m_pDX01->iMagazineZigExist && nExist == gData.nSlotNoToPick[eMZ::Ready])
 			{				
-				g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad);
-				m_nFeederCase = 10; m_nFeederLoop.Set_LoopTime(5000);
+				g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZReady);
+				m_nFeederCase = 60; m_nFeederLoop.Set_LoopTime(5000);
 				m_strLog.Format("Feeder Y Move (Grip Zig)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 			}
 			else
@@ -1163,25 +1178,24 @@ BOOL CSequenceMain::FeederRun()
 				//Z Pitch Move 
 				//g_objAJinAXL.Move_Relative(AX_MZ_ELEVATOR_Z, -m_pEquipData->dMZPitchRightZ*(1.0)); 
 
-				if(gData.nSlotNoToPick > 10) 
+				if(gData.nSlotNoToPick[eMZ::Ready] > 10) 
 				{	
-					gData.nSlotNoToPick = 1;
+					gData.nSlotNoToPick[eMZ::Ready] = 1;
 					m_nFeederCase = 0; m_nFeederLoop.Set_LoopTime(5000);
 					m_strLog.Format("Elev Z Move to search Finish"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 				}
 				else
 				{
-					gData.nSlotNoToPick++;
-					m_nFeederCase = FeederBranch::LoadSearch; m_nFeederLoop.Set_LoopTime(5000);
+					gData.nSlotNoToPick[eMZ::Ready]++;
+					m_nFeederCase = FeederBranch::RdySearch; m_nFeederLoop.Set_LoopTime(5000);
 					m_strLog.Format("Elev Z Move to search Zig"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 				}
-
 			}
 		}
 		break;
 
-	case 10:
-		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad))
+	case 60:
+		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZReady))
 		{
 			m_pDY01->oFeederGripClose = TRUE; m_pDY01->oFeederGripOpen = FALSE;
 			g_objAJinAXL.Write_Output(1);
@@ -1189,10 +1203,9 @@ BOOL CSequenceMain::FeederRun()
 			m_strLog.Format("Feeder Grip Close"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}
 		break;
-	case 11:
+	case 61:
 		if(m_pDX01->iFeederGripClose && !m_pDX01->iFeederGripOpen)
 		{
-
 			//#ifndef AJIN_BOARD_USE
 			//			m_strLog.Format("%d", gData.nSlotNoElev++);
 			//			gData.sZigIDElev = m_strLog;
@@ -1203,25 +1216,26 @@ BOOL CSequenceMain::FeederRun()
 			m_strLog.Format("Feeder Y Move (PickUp)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}
 		break;
-	case 12:
+	case 62:
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::TrayGrip))
 		{
-			gData.bFeederWorkWait = FALSE;
+			gData.bFeederWorkWait = FALSE;	
+		
 			//Info Processing 		
-			gData.sMZIDFeeder = gData.sMZIDElevLoad; gData.sMZIDElevLoad = "";
-			gData.sZigIDFeeder = gData.sZigIDElevLoad[gData.nSlotNoToPick -1]; gData.sZigIDElevLoad[gData.nSlotNoToPick -1] = "";
-			gData.nSlotNoFeeder = gData.nSlotNoToPick; 
-			memcpy(gData.InfoFeeder, gData.InfoMZLoad[gData.nSlotNoToPick -1], sizeof(int)*ZIG_X*ZIG_Y );
-			memset(gData.InfoMZLoad[gData.nSlotNoToPick -1], 0x00, sizeof(int)*ZIG_X*ZIG_Y );
+			gData.sMZIDFeeder = gData.sMZIDElevReady; gData.sMZIDElevReady = "";
+			gData.sZigIDFeeder = gData.sZigIDElevReady[gData.nSlotNoToPick[eMZ::Ready] -1]; gData.sZigIDElevReady[gData.nSlotNoToPick[eMZ::Ready] -1] = "";
+			gData.nSlotNoFeeder = gData.nSlotNoToPick[eMZ::Ready]; 
+			memcpy(gData.InfoFeeder, gData.InfoMZReady[gData.nSlotNoToPick[eMZ::Ready] -1], sizeof(int)*ZIG_X*ZIG_Y );
+			memset(gData.InfoMZReady[gData.nSlotNoToPick[eMZ::Ready] -1], 0x00, sizeof(int)*ZIG_X*ZIG_Y );
 
-			g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO,eMZ::Load, NULL);
+			g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO,eMZ::Ready, NULL);
 
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 			m_strLog.Format("Feeder X Move (PickUp)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}
 		break;
-	case 13:
+	case 63:
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip))
 		{
 			m_pDY01->oFeederGripClose = FALSE; m_pDY01->oFeederGripOpen = TRUE;
@@ -1230,7 +1244,7 @@ BOOL CSequenceMain::FeederRun()
 			m_strLog.Format("Feeder Open"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}
 		break;
-	case 14:
+	case 64:
 		if(m_pDX01->iFeederGripOpen && !m_pDX01->iFeederGripClose)
 		{
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready);
@@ -1238,7 +1252,7 @@ BOOL CSequenceMain::FeederRun()
 			m_strLog.Format("Feeder Y Move (Ready)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}
 		break;
-	case 15:
+	case 65:
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready))
 		{
 			//Info Processing 
@@ -1248,16 +1262,13 @@ BOOL CSequenceMain::FeederRun()
 			memcpy( gData.InfoRail, gData.InfoFeeder,  sizeof(int)*ZIG_X*ZIG_Y);
 			memset( gData.InfoFeeder, 0x00, sizeof(int)*ZIG_X*ZIG_Y);	
 
-			gData.nSlotNoToPick++;
-			if(gData.nSlotNoToPick > 10) gData.nSlotNoToPick = 1;
+			gData.nSlotNoToPick[eMZ::Ready]++;
+			if(gData.nSlotNoToPick[eMZ::Ready] > 10) gData.nSlotNoToPick[eMZ::Ready] = 1;
 			m_nZigPickerCase = ZigPickBranch::Load; // Tray Picker load Start 			
 			m_nFeederCase = 0; m_nFeederLoop.Set_LoopTime(5000);
 			m_strLog.Format("Zig Picker load Start "); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}
 		break;
-	case 20: // Tray Pick working 
-		return TRUE;
-
 	}
 	
 	// 3. (Error : 3700)
@@ -2228,8 +2239,13 @@ BOOL CSequenceMain::UnloadConveyorRun()
 			for(int i = 0; i < 10; i++) gData.sZigIDElevUnload[i].Empty();
 			memset( gData.InfoMZUnload, 0x00, sizeof(int)*10*ZIG_X*ZIG_Y);	
 			
-			g_dlgWork.TransferMZInfo(0, -1); // From Load To Out(-1)
+			g_dlgWork.TransferMZInfo(eMZ::Load, -1); // From Load To Out(-1)
 			g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO,eMZ::Unload, NULL);
+			
+
+			g_objCommon.Set_LdStopper1Down();
+			g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Ready);
+			m_nMZElevCase = ElvBranch::Start; // Slide over Check 
 
 			g_objCommon.Set_UnloadCVStop();
 			m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(5000);

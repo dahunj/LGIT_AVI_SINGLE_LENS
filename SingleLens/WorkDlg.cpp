@@ -58,7 +58,7 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STC_MAIN_INDEX_POS, m_stcIndexPos);
 
 	DDX_Control(pDX, IDC_GRD_LOAD_MZ, m_grdLoadMZ);
-	DDX_Control(pDX, IDC_GRD_UNLOAD_MZ, m_grdUnloadMZ);
+	DDX_Control(pDX, IDC_GRD_UNLOAD_MZ, m_grdRdyMZ);
 	//for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_PIC_TRAY_BACK_0 + i, m_picTrayBack[i]);
 
 
@@ -121,7 +121,7 @@ void CWorkDlg::Initial_Controls()
 	//for (int i = 3; i < 6; i++) m_lblLot[i].Init_Ctrl("바탕", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x00, 0x80));
 	
 	Initial_Grid(&m_grdLoadMZ, SLOT_NO_MAX, 1);
-	Initial_Grid(&m_grdUnloadMZ, SLOT_NO_MAX, 1);
+	Initial_Grid(&m_grdRdyMZ, SLOT_NO_MAX, 1);
 
 
 	// 비트맵 로드
@@ -1058,11 +1058,11 @@ LRESULT CWorkDlg::OnUpdateMZInfo(WPARAM nTray, LPARAM lParam)
 		{
 			for (int j = 0; j < 1; j++) 
 			{
-				if		(gData.sZigIDElevLoad[i] != "") m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0x00));	// Reserve
-				else if (gData.sZigIDElevLoad[i] == "") m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
+				if		(g_objSequenceMain.Search_ZigSlotNo(eMZ::Load, i+1) > 0 ) m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0x00));	// Reserve
+				else if (g_objSequenceMain.Search_ZigSlotNo(eMZ::Load, i+1) < 0) m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
 				else									m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
 
-				if (gData.sZigIDElevUnload[i] != "") m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0x00, 0xFF, 0xFF));	// Empty
+				if (g_objSequenceMain.Search_ZigSlotNo(eMZ::Unload, i+1) > 0 ) m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0x00, 0xFF, 0xFF));	// Empty
 
 			}
 		}
@@ -1077,12 +1077,28 @@ LRESULT CWorkDlg::OnUpdateMZInfo(WPARAM nTray, LPARAM lParam)
 		{
 			for (int j = 0; j < 1; j++) 
 			{
-				if (gData.sZigIDElevUnload[i] != "") m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0x00, 0xFF, 0xFF));	// Empty
-				else if (gData.sZigIDElevUnload[i] == "") m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
+				if (g_objSequenceMain.Search_ZigSlotNo(eMZ::Unload, i+1) > 0) m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0x00, 0xFF, 0xFF));	// Empty
+				else if (g_objSequenceMain.Search_ZigSlotNo(eMZ::Unload, i+1) < 0) m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
 			}
 		}
 		//g_dlgOperator.Update_TrayInfo(nTray);
 	}
+
+
+	if (nTray == eMZ::Ready)
+	{		
+		for (int i = 0; i < SLOT_NO_MAX; i++)
+		{
+			for (int j = 0; j < 1; j++) 
+			{
+				if		(g_objSequenceMain.Search_ZigSlotNo(eMZ::Ready, i+1) > 0) m_grdRdyMZ.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0x00));	// Reserve
+				else if (g_objSequenceMain.Search_ZigSlotNo(eMZ::Ready, i+1) < 0) m_grdRdyMZ.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
+				else									m_grdRdyMZ.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
+			}
+		}
+		//g_dlgOperator.Update_TrayInfo(nTray);
+	}
+
 
 
 	return 0;
@@ -1371,27 +1387,66 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo)
 		//Init Lens State 
 		int nCnt = 0;		
 
-		gData.ZigMap[eMZ::Load][i] = FALSE;
-
-		for(int j = 0; j < ZIG_X; j++)
+		if(nTo == eMZ::Load && nFrom != eMZ::Ready)
 		{
-			for(int k = 0; k < ZIG_Y; k++)
-			{
-				nCnt++;
-				if(nCnt <= gData.nLensUseCnt[nTo][i])
-				{
-					gData.ZigMap[eMZ::Load][i] = TRUE; // Zig 존재함 
+			gData.nSlotNoToPick[eMZ::Load] = 1;
+			gData.ZigMap[eMZ::Load][i] = FALSE;
 
-					gData.InfoMZLoad[i][j][k] = (int)eLensState::Init;
-					gData.LensMap[eMZ::Load][i][j][k] = eLensState::Init;
-				}
-				else
+			for(int j = 0; j < ZIG_X; j++)
+			{
+				for(int k = 0; k < ZIG_Y; k++)
 				{
-					gData.InfoMZLoad[i][j][k] = eLensState::None;
-					gData.LensMap[eMZ::Load][i][j][k] = eLensState::None;
-				}
-			}			
+					nCnt++;
+					if(nCnt <= gData.nLensUseCnt[nTo][i])
+					{
+						gData.ZigMap[eMZ::Load][i] = TRUE; // Zig 존재함 
+
+						gData.InfoMZLoad[i][j][k] = (int)eLensState::Init;
+						gData.LensMap[eMZ::Load][i][j][k] = eLensState::Init;
+					}
+					else
+					{
+						gData.InfoMZLoad[i][j][k] = eLensState::None;
+						gData.LensMap[eMZ::Load][i][j][k] = eLensState::None;
+					}
+				}			
+			}
 		}
+		else if(nTo == eMZ::Ready)
+		{
+			gData.nSlotNoToPick[eMZ::Ready] = 1;
+			gData.ZigMap[eMZ::Ready][i] = FALSE;
+
+			for(int j = 0; j < ZIG_X; j++)
+			{
+				for(int k = 0; k < ZIG_Y; k++)
+				{
+					nCnt++;
+					if(nCnt <= gData.nLensUseCnt[nTo][i])
+					{
+						gData.ZigMap[eMZ::Ready][i] = TRUE; // Zig 존재함 
+
+						gData.InfoMZReady[i][j][k] = (int)eLensState::Init;
+						gData.LensMap[eMZ::Ready][i][j][k] = eLensState::Init;
+					}
+					else
+					{
+						gData.InfoMZReady[i][j][k] = eLensState::None;
+						gData.LensMap[eMZ::Ready][i][j][k] = eLensState::None;
+					}
+				}			
+			}
+		}
+		else if(nTo == eMZ::Load && nFrom == eMZ::Ready)
+		{
+			gData.nSlotNoToPick[eMZ::Load] = gData.nSlotNoToPick[eMZ::Ready];
+			gData.ZigMap[eMZ::Load][i] = gData.ZigMap[eMZ::Ready][i];
+			
+			memcpy(gData.InfoMZLoad[i], gData.InfoMZReady[i], sizeof(int)*ZIG_X*ZIG_Y);
+			memset(gData.InfoMZReady[i], 0x00, sizeof(int)*ZIG_X*ZIG_Y);
+			memcpy(gData.LensMap[eMZ::Load][i], gData.LensMap[eMZ::Ready][i], sizeof(int)*ZIG_X*ZIG_Y);
+			memset(gData.LensMap[eMZ::Ready][i], 0x00, sizeof(int)*ZIG_X*ZIG_Y);
+		}		
 	}
 }
 

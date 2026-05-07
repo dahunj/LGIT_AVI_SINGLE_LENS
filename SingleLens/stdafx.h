@@ -130,7 +130,7 @@ typedef struct
 	int     nStatus;
 	int		nLanguage;
 
-	int		nSlotNoToPick;	
+	int		nSlotNoToPick[2];	//0: Load, 1: Ready
 	//0: Load , 1: Clean, 2: Top, 3:empty, 4:btm, 5: Mark, 6: Unload 
 	
 	int		nZigX;
@@ -153,8 +153,8 @@ typedef struct
 	int	InfoCtZigRdy[10];
 	int	InfoCtZigUnload[10];
 	
-	BOOL	ZigMap[2][10];
-	int		LensMap[2][10][ZIG_X][ZIG_Y];
+	BOOL	ZigMap[3][10];
+	int		LensMap[3][10][ZIG_X][ZIG_Y];
 	
 		
 	CString	sMZIDElevLoad;

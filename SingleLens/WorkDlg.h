@@ -37,7 +37,7 @@ public:
 	CStaticCS		m_stcLensCnt[60];
 
 	CGridCS			m_grdLoadMZ;
-	CGridCS			m_grdUnloadMZ;
+	CGridCS			m_grdRdyMZ;
 
 		//old 
 
