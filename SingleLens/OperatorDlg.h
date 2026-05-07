@@ -15,7 +15,7 @@ public:
 
 // 대화 상자 데이터입니다.
 	enum { IDD = IDD_OPERATOR_DLG };
-	CLabelCS	m_Label[13];
+	CLabelCS	m_Label[15];
 	CPictureCS	m_picOperator[4];
 	CStaticCS	m_stcOperAlmTime[3];
 	CStaticCS	m_stcOperAlmList[3];

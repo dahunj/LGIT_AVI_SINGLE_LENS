@@ -56,7 +56,7 @@ public:
 	CLedCS			m_ledInitComplete;
 
 	CCheckCS		m_chkCycleStop;
-	CCheckCS		m_chkMesUse;
+
 	CPictureCS		m_picTrayBack[6];
 
 
@@ -95,8 +95,7 @@ protected:
 
 
 	afx_msg void OnBnClickedChkCycleStop();
-	afx_msg void OnBnClickedChkMesUse();
-	afx_msg void OnBnClickedMesCancel();
+
 	afx_msg LRESULT OnUpdateModel(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUpdateMZInfo(WPARAM nTray, LPARAM lParam);
 	afx_msg LRESULT OnUpdateBarcode(WPARAM wParam, LPARAM lParam);

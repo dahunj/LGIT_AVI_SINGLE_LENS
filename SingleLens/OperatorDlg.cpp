@@ -33,7 +33,7 @@ void COperatorDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 
-	for (int i = 0; i < 13; i++) DDX_Control(pDX, IDC_LABEL_0 + i, m_Label[i]);
+	for (int i = 0; i < 15; i++) DDX_Control(pDX, IDC_LABEL_0 + i, m_Label[i]);
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_PIC_OPERATOR_0 + i, m_picOperator[i]);
 	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_STC_OPER_ALM_TIME_0 + i, m_stcOperAlmTime[i]);
 	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_STC_OPER_ALM_LIST_0 + i, m_stcOperAlmList[i]);
@@ -50,19 +50,8 @@ void COperatorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_GRD_OPER_TRAY_TOP, m_grdOperTrayTop);
 	DDX_Control(pDX, IDC_GRD_OPER_TRAY_BTM, m_grdOperTrayBtm);
 	DDX_Control(pDX, IDC_GRD_OPER_TRAY_MARK, m_grdOperTrayMark);
-
-	
-	
-	//old 
-	
-	DDX_Control(pDX, IDC_STC_OPER_LOAD_TRAY, m_stcOperLoadTray);
-	DDX_Control(pDX, IDC_STC_OPER_CAP_TRAY, m_stcOperCapTray);
-	
-	
-	
-
-
-	
+			
+	//old 	
 	DDX_Control(pDX, IDC_BTN_OPER_START, m_btnOperStart);
 	DDX_Control(pDX, IDC_BTN_OPER_STOP, m_btnOperStop);
 	DDX_Control(pDX, IDC_BTN_OPER_CYCLE_STOP, m_btnOperCycleStop);
@@ -98,7 +87,7 @@ void COperatorDlg::Initial_Controls()
 {
 	
 
-	for (int i = 0; i < 13; i++) m_Label[i].Init_Ctrl("Segoe UI", 12, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xE6, 0xE6, 0xE6));
+	for (int i = 0; i < 15; i++) m_Label[i].Init_Ctrl("Segoe UI", 12, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xE6, 0xE6, 0xE6));
 	for (int i = 0; i < 4; i++) m_picOperator[i].Init_Ctrl(COLOR_DEFAULT, RGB(0xFF, 0xFF, 0xFF));
 	for (int i = 0; i < 3; i++) m_stcOperAlmTime[i].Init_Ctrl("Segoe UI", 12, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xFF, 0xFF, 0xFF));
 	for (int i = 0; i < 3; i++) m_stcOperAlmList[i].Init_Ctrl("Segoe UI", 10, FALSE, RGB(0x00, 0x00, 0x00), RGB(0xFF, 0xFF, 0xFF));
@@ -113,14 +102,11 @@ void COperatorDlg::Initial_Controls()
 	Initial_Grid(&m_grdOperMZLoad, SLOT_NO_MAX, 1);
 	Initial_Grid(&m_grdOperMZUnload, SLOT_NO_MAX, 1);
 
-	
-	//Old
-	/*m_stcOperLoadTray.Init_Ctrl("Segoe UI", 12, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xFF, 0xFF, 0xFF));
-	m_stcOperCapTray.Init_Ctrl("Segoe UI", 12, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xFF, 0xFF, 0xFF));
-	m_stcOperShipTray.Init_Ctrl("Segoe UI", 12, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xFF, 0xFF, 0xFF));
-	
-	
-	
+	Initial_Grid(&m_grdOperTrayTop, ZIG_Y, ZIG_X);
+	Initial_Grid(&m_grdOperTrayBtm, ZIG_Y, ZIG_X);
+	Initial_Grid(&m_grdOperTrayMark, ZIG_Y, ZIG_X);
+
+
 	m_btnOperStart.Init_Ctrl("Segoe UI", 40, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xD7, 0xD7, 0xD7), NULL, CButtonCS::emTop);
 	m_btnOperStop.Init_Ctrl("Segoe UI", 40, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xD7, 0xD7, 0xD7), NULL, CButtonCS::emTop);
 	m_btnOperCycleStop.Init_Ctrl("Segoe UI", 40, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xD7, 0xD7, 0xD7), NULL, CButtonCS::emTop);
@@ -130,7 +116,17 @@ void COperatorDlg::Initial_Controls()
 	m_btnOperManual.Init_Ctrl("Segoe UI", 22, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xD7, 0xD7, 0xD7), NULL, CButtonCS::emTop);
 	m_btnOperSetup.Init_Ctrl("Segoe UI", 22, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xD7, 0xD7, 0xD7), NULL, CButtonCS::emTop);
 	m_btnOperMonitor.Init_Ctrl("Segoe UI", 22, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xD7, 0xD7, 0xD7), NULL, CButtonCS::emTop);
-	m_btnOperExit.Init_Ctrl("Segoe UI", 22, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xD7, 0xD7, 0xD7), NULL, CButtonCS::emTop);*/
+	m_btnOperExit.Init_Ctrl("Segoe UI", 22, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xD7, 0xD7, 0xD7), NULL, CButtonCS::emTop);
+
+	
+	//Old
+	/*m_stcOperLoadTray.Init_Ctrl("Segoe UI", 12, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xFF, 0xFF, 0xFF));
+	m_stcOperCapTray.Init_Ctrl("Segoe UI", 12, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xFF, 0xFF, 0xFF));
+	m_stcOperShipTray.Init_Ctrl("Segoe UI", 12, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xFF, 0xFF, 0xFF));
+	
+	*/
+	
+	
 }
 
 BOOL COperatorDlg::OnInitDialog()

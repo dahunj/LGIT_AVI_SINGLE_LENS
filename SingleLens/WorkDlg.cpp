@@ -43,14 +43,14 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 60; i++) DDX_Control(pDX, IDC_STC_MZ_ZIGID_0 + i, m_stcZigID[i]);
 	for (int i = 0; i < 60; i++) DDX_Control(pDX, IDC_STC_MZ_LENS_CNT_0+ i, m_stcLensCnt[i]);
 
-	DDX_Control(pDX, IDC_BTN_MES_CANCEL, m_btnMesCancel);
+
 	DDX_Control(pDX, IDC_PIC_UPH_BACK, m_picUphBack);
 
 	DDX_Control(pDX, IDC_RDO_WORK_START, m_rdoWorkStart);
 	DDX_Control(pDX, IDC_RDO_WORK_STOP, m_rdoWorkStop);
 	DDX_Control(pDX, IDC_LED_INIT_COMPLETE, m_ledInitComplete);
 	DDX_Control(pDX, IDC_CHK_CYCLE_STOP, m_chkCycleStop);
-	DDX_Control(pDX, IDC_CHK_MES_USE, m_chkMesUse);
+	
 
 	for (int i = 0; i < AUTO_COUNT; i++) DDX_Control(pDX, IDC_STC_WORK_CASE_0 + i, m_stcWorkCase[i]);	
 	for (int i = 0; i < 7; i++) DDX_Control(pDX, IDC_LED_INDEX_DONE_0 + i, m_ledIndexDone[i]);
@@ -86,7 +86,7 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_RDO_WORK_START, &CWorkDlg::OnBnClickedRdoWorkStart)
 	ON_BN_CLICKED(IDC_RDO_WORK_STOP, &CWorkDlg::OnBnClickedRdoWorkStop)
 	ON_BN_CLICKED(IDC_CHK_CYCLE_STOP, &CWorkDlg::OnBnClickedChkCycleStop)
-	ON_BN_CLICKED(IDC_CHK_MES_USE, &CWorkDlg::OnBnClickedChkMesUse)
+
 	ON_MESSAGE(UM_UPDATE_MODEL, &CWorkDlg::OnUpdateModel)
 	ON_MESSAGE(UM_UPDATE_MZ_INFO, &CWorkDlg::OnUpdateMZInfo)
 	ON_MESSAGE(UM_UPDATE_BARCODE, &CWorkDlg::OnUpdateBarcode)
@@ -99,7 +99,7 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_MESSAGE(UM_SHOW_MSG, &CWorkDlg::OnShowMsg)
 	ON_BN_CLICKED(IDC_BUTTON1, &CWorkDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CWorkDlg::OnBnClickedButton2)
-	ON_BN_CLICKED(IDC_BTN_MES_CANCEL, &CWorkDlg::OnBnClickedMesCancel)
+	
 		
 	ON_BN_CLICKED(IDC_BTN_SIMUL1, &CWorkDlg::OnBnClickedBtnSimul1)
 	
@@ -156,9 +156,7 @@ void CWorkDlg::Initial_Controls()
 	m_ledInitComplete.Init_Ctrl("¹ÙÅÁ", 12, TRUE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em24);
 	
 	m_chkCycleStop.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, COLOR_DEFAULT, 0, 0);
-	m_chkMesUse.Init_Ctrl("Arial", 12, TRUE, RGB(0xFF, 0xFF, 0x00), RGB(0xC0, 0x10, 0x30), CCheckCS::emRed, CCheckCS::emRight);
-	//for (int i = 0; i < 4; i++) m_picTrayBack[i].Set_Color(COLOR_DEFAULT, RGB(0xF0, 0xF0, 0x80));
-		
+			
 	for (int i = 0; i < AUTO_COUNT; i++) m_stcWorkCase[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x40, 0x40));
 
 	for (int i = 0; i < 4; i++) m_stcTakt[i].Init_Ctrl("Arial", 9, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x40, 0x40));
@@ -301,21 +299,6 @@ void CWorkDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		
 		EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 		CString strText;
-
-
-//#ifndef DRY_RUN_TEST
-//		m_bmpEquipment.DeleteObject();
-//		if (pEquipData->bUseDoorLock) m_bmpEquipment.LoadBitmap(IDB_EQUIP_WORK);
-//		else m_bmpEquipment.LoadBitmap(IDB_EQUIP_DOOR);
-//		m_imgEquipment.SetBitmap(m_bmpEquipment);
-//#endif		
-		
-
-		m_chkMesUse.SetCheck(pEquipData->bUseMES);
-		
-	/*	m_grpLot[1].SetWindowText("Port 2 Lot Info");
-		m_stcLotId[1].Set_Color(COLOR_DEFAULT, RGB(0x80, 0xF0, 0xF0));
-		m_stcCmCount[1].Set_Color(COLOR_DEFAULT, RGB(0x80, 0xF0, 0xF0));*/
 
 		g_objCommon.Locking_MainDoor(FALSE);
 
@@ -573,18 +556,6 @@ void CWorkDlg::OnStnClickedLblLot3()
 
 
 
-void CWorkDlg::OnBnClickedMesCancel()
-{
-	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-
-	if (m_rdoWorkStart.GetCheck()) {
-		g_objCommon.Show_MsgBox(1, "Auto Run Áß¿£ Ãë¼ÒÇÒ ¼ö ¾ø½À´Ï´Ù........");
-		return;
-	}
-	g_objMES.m_nMESCapSequence = 0;
-	g_objMES.m_nMESShipSequence = 0;
-}
-
 void CWorkDlg::OnBnClickedRdoWorkStart()
 {
 	g_objLogFile.Save_HandlerLog("[Work Mode] START button push");
@@ -616,28 +587,6 @@ void CWorkDlg::OnBnClickedChkCycleStop()
 		m_chkCycleStop.Set_Color(RGB(0x00, 0x00, 0x00), RGB(0xF0, 0xF0, 0xF0));
 		gData.bCycleStop = FALSE;
 	}
-}
-
-void CWorkDlg::OnBnClickedChkMesUse()
-{
-	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-
-	if (m_rdoWorkStart.GetCheck()) {
-		g_objCommon.Show_MsgBox(1, "Can't change in Auto Run........");
-
-		m_chkMesUse.SetCheck(pEquipData->bUseMES);
-		return;
-	}
-
-	CIniFileCS INI("System/EquipData.ini");
-	if (!INI.Check_File()) {
-		AfxMessageBox("EquipData.ini File Not Found!!!");
-		return;
-	}
-	INI.Set_Bool("OPTION", "MES_USE", m_chkMesUse.GetCheck());
-	g_objDataManager.Read_EquipData();
-
-	g_objMES.Set_MESUse(pEquipData->bUseMES);
 }
 
 
