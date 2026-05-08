@@ -206,6 +206,8 @@ BOOL CSequenceMain::LotEnd_Run()
 	//if (!m_bUnloadLotEndAll) return FALSE;
 
 	if (Get_IsAutoRun()) return FALSE;
+	if (g_dlgWork.SearchMZCVInfo() > 0) return FALSE;
+	if (g_dlgWork.SearchMZElevInfo(0) > 0 || g_dlgWork.SearchMZElevInfo(1) > 0 ) return FALSE;
 
 	if (gData.bCycleStop) g_dlgWork.PostMessage(UM_RESET_CYCLE_STOP, NULL, NULL);
 
@@ -214,9 +216,7 @@ BOOL CSequenceMain::LotEnd_Run()
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	//pMainDlg->Set_LampFlicker_UldRun(FALSE);
 	//pMainDlg->Set_LampFlicker_UldOpen(FALSE);
-	//pMainDlg->Set_LampFlicker_Cap2(FALSE);
-	//pMainDlg->Set_LampFlicker_Ship1(FALSE);
-	//pMainDlg->Set_LampFlicker_Ship2(FALSE);
+	
 
 //	g_dlgWork.PostMessage(UM_UPDATE_LOT_INFO, (WPARAM)0, NULL);	// All Clear
 

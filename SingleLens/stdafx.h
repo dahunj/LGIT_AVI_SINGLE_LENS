@@ -200,14 +200,13 @@ typedef struct
 	BOOL    bCycleStop;                // Run 
 	BOOL    bFirstLotStart;
 	BOOL    bLotEndBeep;     
-
-	
+		
 	DWORD    dwMStopStartTime;        // ????? ???? ???, Stop ???or????? ?????? ??? ???????? 
 	DWORD    dwMStopEndTime;
 	DWORD    dwMStopProcTime;
 
-	CString sAlarmTime[3];
-	CString sAlarmList[3];
+	CString		sAlarmTime[3];
+	CString		sAlarmList[3];
 
 	CString    sComName;
 	int        nDoorLockTime;
@@ -216,8 +215,6 @@ typedef struct
 	BOOL	bLoadOpenSW;	// LED Switch below doors of machine  
 	BOOL	bUnloadOpenSW;
 	
-	
-
 	BOOL	bIndexDone[7]; 
 
 	int		nIndexPos;
@@ -226,11 +223,13 @@ typedef struct
 	BOOL	bElvLoadWait;
 	BOOL	bElvUnloadWait;
 	BOOL	bElvSlideOverWait;
-	BOOL	bFeederWorkWait;
-		
+	BOOL	bFeederWorkWait;		
 	
 	BOOL	bLdMZWait;
 	BOOL	bUldMZWait;
+
+	BOOL	bNoTrayMode;
+
 } GLOVAL_DATA;
 
 

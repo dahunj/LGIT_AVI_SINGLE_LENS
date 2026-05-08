@@ -50,17 +50,18 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_RDO_WORK_STOP, m_rdoWorkStop);
 	DDX_Control(pDX, IDC_LED_INIT_COMPLETE, m_ledInitComplete);
 	DDX_Control(pDX, IDC_CHK_CYCLE_STOP, m_chkCycleStop);
-	
+	DDX_Control(pDX, IDC_CHK_NO_TRAY, m_chkNoTrayMode);
 
 	for (int i = 0; i < AUTO_COUNT; i++) DDX_Control(pDX, IDC_STC_WORK_CASE_0 + i, m_stcWorkCase[i]);	
 	for (int i = 0; i < 7; i++) DDX_Control(pDX, IDC_LED_INDEX_DONE_0 + i, m_ledIndexDone[i]);
-	
+	for (int i = 0; i < 11; i++) DDX_Control(pDX, IDC_LED_MZ_DETECT_0 + i, m_ledMZDetect[i]);
 	DDX_Control(pDX, IDC_STC_MAIN_INDEX_POS, m_stcIndexPos);
 
 	DDX_Control(pDX, IDC_GRD_LOAD_MZ, m_grdLoadMZ);
 	DDX_Control(pDX, IDC_GRD_UNLOAD_MZ, m_grdRdyMZ);
 	//for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_PIC_TRAY_BACK_0 + i, m_picTrayBack[i]);
 
+	for (int i = 0; i < 7; i++) DDX_Control(pDX, IDC_STC_TRAY_NO_0 + i, m_stcTrayNo[i]);
 
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_STC_TAKT_0 + i, m_stcTakt[i]);
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_STC_UPH_0 + i, m_stcUph[i]);
@@ -104,6 +105,8 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_SIMUL1, &CWorkDlg::OnBnClickedBtnSimul1)
 	
 
+	ON_STN_CLICKED(IDC_STC_HIDDEN, &CWorkDlg::OnStnClickedStcHidden)
+	ON_BN_CLICKED(IDC_CHK_NO_TRAY, &CWorkDlg::OnBnClickedChkNoTray)
 END_MESSAGE_MAP()
 
 // CWorkDlg 메시지 처리기입니다.
@@ -123,6 +126,8 @@ void CWorkDlg::Initial_Controls()
 	Initial_Grid(&m_grdLoadMZ, SLOT_NO_MAX, 1);
 	Initial_Grid(&m_grdRdyMZ, SLOT_NO_MAX, 1);
 
+	
+	for (int i = 0; i < 7; i++) m_stcTrayNo[i].Init_Ctrl("바탕", 12, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));
 
 	// 비트맵 로드
 	m_bmpBg.LoadBitmap(IDB_EQUIP_WORK);
@@ -148,6 +153,7 @@ void CWorkDlg::Initial_Controls()
 	
 	
 	for (int i = 0; i < 7; i++) m_ledIndexDone[i].Init_Ctrl("Arial", 10, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em24);
+	for (int i = 0; i < 11; i++) m_ledMZDetect[i].Init_Ctrl("Arial", 10, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em24);
 	m_stcIndexPos.Init_Ctrl("바탕", 12, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));
 
 	
@@ -175,10 +181,7 @@ BOOL CWorkDlg::OnInitDialog()
 	SetWindowPos(this, 0, 75, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 
 	Initial_Controls();
-
-
 	
-
 	m_bAutoRunning = FALSE;
 	m_nGroupNo = 0;
 
@@ -189,7 +192,7 @@ BOOL CWorkDlg::OnInitDialog()
 	m_rdoWorkStop.SetCheck(TRUE);
 	m_rdoWorkStop.Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
 
-
+	m_chkNoTrayMode.ShowWindow(SW_HIDE);
 
 #ifndef AJIN_BOARD_USE
 	m_stcMZID[2].SetWindowText("TTTTT");
@@ -838,6 +841,26 @@ void CWorkDlg::Display_Status()
 
 	for (int i = 0; i < 7; i++) m_ledIndexDone[i].Set_On(gData.bIndexDone[i]);
 
+
+	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+
+	m_ledMZDetect[0].Set_On(pDX00->iLdCVMZExist5);
+	m_ledMZDetect[1].Set_On(pDX00->iLdCVMZExist4);
+	m_ledMZDetect[2].Set_On(pDX00->iLdCVMZExist3);
+	m_ledMZDetect[3].Set_On(pDX00->iLdCVMZExist2);
+	m_ledMZDetect[4].Set_On(pDX00->iLdCVMZExist1R);
+
+	m_ledMZDetect[5].Set_On(pDX00->iElvMZExist1);
+	m_ledMZDetect[6].Set_On(pDX00->iElvMZExist2);
+
+	m_ledMZDetect[7].Set_On(pDX01->iUldCvMZExist1L);
+	m_ledMZDetect[8].Set_On(pDX01->iUldCvMZExist2);
+	m_ledMZDetect[9].Set_On(pDX01->iUldCvMZExist3);
+	m_ledMZDetect[10].Set_On(pDX01->iUldCvMZExist4);
+
+	for (int i = 0; i < 7; i++) { strText.Format("%02d", gData.nSlotNoMainIndex[i]); m_stcTrayNo[i].Set_Text(strText); }
+	
 // 	if (g_objMesAgent.Is_Connected()) { m_stcMesConnect.Set_Text("Connected"); m_stcMesConnect.Set_Color(RGB(0x00, 0x00, 0x00), RGB(0x00, 0xFF, 0x00)); }
 // 	else { m_stcMesConnect.Set_Text("Disconnected"); m_stcMesConnect.Set_Color(RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00)); }
 // 
@@ -1267,9 +1290,9 @@ int CWorkDlg::SearchMZElevInfo(int nNo)
 	m_stcMZID[nNo].GetWindowText(sMZInfo);
 	if(sMZInfo != "")
 	{
-		return -1;
+		return nNo;
 	}
-	return 1;
+	return -1;
 }
 
 int CWorkDlg::SearchMZCVInfo()
@@ -1437,4 +1460,26 @@ int CWorkDlg::CheckZigExistInMZ(int nMZNo, int nSlot)
 		return nSlot;
 	}
 	return -1;
+}
+
+
+void CWorkDlg::OnStnClickedStcHidden()
+{
+	
+	if(m_chkNoTrayMode.IsWindowVisible())
+	{
+		m_chkNoTrayMode.ShowWindow(SW_HIDE);		
+	}
+	else
+	{
+		m_chkNoTrayMode.ShowWindow(SW_SHOW);
+		
+	}
+	
+}
+
+
+void CWorkDlg::OnBnClickedChkNoTray()
+{
+	gData.bNoTrayMode = m_chkNoTrayMode.GetCheck();
 }

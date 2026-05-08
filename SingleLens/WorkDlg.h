@@ -58,10 +58,7 @@ public:
 	CCheckCS		m_chkCycleStop;
 
 	CPictureCS		m_picTrayBack[6];
-
-
-
-	
+		
 	CStaticCS		m_stcWorkCase[10];
 	CStaticCS		m_stcPortNo[12];
 	CStaticCS		m_stcTakt[4];
@@ -70,6 +67,14 @@ public:
 	CLedCS			m_ledVisionStatus[2];
 	
 	CButtonCS		m_btnMesCancel;
+
+	CStaticCS			m_stcTrayNo[7];
+	CLedCS			m_ledMZDetect[11];
+
+
+	CStaticCS		m_stcHidden;
+	CCheckCS		m_chkNoTrayMode;
+	
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
@@ -164,6 +169,8 @@ public:
 	afx_msg void OnBnClickedBtnSimul1();	
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();
+	afx_msg void OnStnClickedStcHidden();
+	afx_msg void OnBnClickedChkNoTray();
 };
 
 
