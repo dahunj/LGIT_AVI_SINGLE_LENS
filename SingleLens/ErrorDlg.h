@@ -2,7 +2,7 @@
 //
 #pragma once
 
-const int BASE_ERR_CODE = 10000;
+const int BASE_ERR_CODE = 0;
 
 // CErrorDlg 대화 상자입니다.
 

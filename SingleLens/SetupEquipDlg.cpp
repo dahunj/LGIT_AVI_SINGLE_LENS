@@ -270,7 +270,19 @@ void CSetupEquipDlg::Save_EquipData()
 
 
 	m_stcMotionCheck.GetWindowText(strData); dData = atof(strData); INI.Set_Double("EQUIPMENT", "MOTION_CHECK", dData, "%0.3lf");
-	INI.Set_Bool("EQUIPMENT", "DOOR_LOCK", m_rdoDoorLock[1].GetCheck());
+	
+
+	if(m_rdoDoorLock[0].GetCheck())
+	{
+		pEquipData->bUseDoorLock = FALSE;
+		INI.Set_Bool("EQUIPMENT", "DOOR_LOCK", m_rdoDoorLock[0].GetCheck());
+	}
+	else
+	{
+		INI.Set_Bool("EQUIPMENT", "DOOR_LOCK", m_rdoDoorLock[1].GetCheck());
+		pEquipData->bUseDoorLock = TRUE;
+	}
+
 	m_stcDoorLockTime.GetWindowText(strData);
 	gData.nDoorLockTime = atoi(strData);
 	INI.Set_Integer("EQUIPMENT", "DOOR_LOCK_TIME", gData.nDoorLockTime);

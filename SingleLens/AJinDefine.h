@@ -193,8 +193,8 @@ typedef union tag_DX_DATA_02 {
 		DWORD i0213 : 1;					// X0213
 		DWORD i0214 : 1;					// X0214
 		DWORD i0215 : 1;					// X0215
-		DWORD iCleanerBtmDn : 1;			// X0216
-		DWORD iCleanerBtmUp : 1;			// X0217
+		DWORD iCleanerBtmUp : 1;			// X0216
+		DWORD iCleanerBtmDn : 1;			// X0217
 		DWORD iCleanerBtmFwd : 1;		// X0218
 		DWORD iCleanerBtmBwd : 1;		// X0219
 		DWORD i0220 : 1;		// X0220
@@ -348,8 +348,8 @@ typedef union tag_DY_DATA_02 {
 		DWORD oCleanerTopBlowOff : 1;											// Y0213
 		DWORD o0214 : 1;					// Y0214
 		DWORD o0215 : 1;					// Y0215
-		DWORD oCleanerBtmDn :1;						// Y0216
-		DWORD oCleanerBtmUp :1;						// Y0217
+		DWORD oCleanerBtmUp :1;						// Y0216
+		DWORD oCleanerBtmDn :1;						// Y0217
 		DWORD oCleanerBtmFwd :1;					// Y0218
 		DWORD oCleanerBtmBwd :1;					// Y0219
 		DWORD oCleanerBtmBlowOn :1;						// Y0220

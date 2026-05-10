@@ -377,13 +377,12 @@ void CSetupMotionTabDlg::OnBtnRelMovePClick(UINT nID)
 	double dPulse = 0.0;
 	if(nAxis == AX_MAIN_INDEX_R )
 	{
-		dPulse = dDist*7200;
+		dPulse = dDist;//*7200;
 		g_objAJinAXL.Move_Relative(nStartAx + ID, (double)dPulse);
 	}
 	else
 	{
 		g_objAJinAXL.Move_Relative(nStartAx + ID, dDist);
-
 	}
 	
 	m_strLog.Format("[Setup Motion] Move Relative(+) - %s, %0.3lf", g_objAJinAXL.Get_AxisName(nStartAx + ID), dDist);
@@ -404,7 +403,7 @@ void CSetupMotionTabDlg::OnBtnRelMoveNClick(UINT nID)
 	double dPulse = 0.0;
 	if(nAxis == AX_MAIN_INDEX_R )
 	{
-		dPulse = dDist*7200;
+		dPulse = dDist;//*7200;
 		g_objAJinAXL.Move_Relative(nStartAx + ID, (double)dPulse);
 	}
 	else
@@ -467,7 +466,8 @@ void CSetupMotionTabDlg::Display_Status()
 		double dAngle = 0.0;
 		if(nStartAx + i == AX_MAIN_INDEX_R)
 		{
-			dAngle = (pStatus->dPos/7200.0);
+			//dAngle = (pStatus->dPos/7200.0);
+			dAngle = (pStatus->dPos);
 			if(dAngle > 360) dAngle =  fmod(dAngle, 360.0);
 			strPos.Format("%0.3lf", dAngle);
 			m_stcAxisPos[i].SetWindowText(strPos);
@@ -476,9 +476,7 @@ void CSetupMotionTabDlg::Display_Status()
 		{
 			strPos.Format("%0.3lf", pStatus->dPos);
 			m_stcAxisPos[i].SetWindowText(strPos);
-		}
-
-		
+		}		
 
 		strVel.Format("%0.3lf", pStatus->dVel);
 		m_stcAxisVel[i].SetWindowText(strVel);

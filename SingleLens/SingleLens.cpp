@@ -77,6 +77,8 @@ BOOL CSingleLensApp::InitInstance()
 	gDoorLock.nOpenStart = -1;//start with nothing
 	gDoorLock.bFirst = TRUE;
 
+	gData.bDemoMode = TRUE;
+
 	InstallCrashHandler();
 
 	CSingleLensDlg dlg;

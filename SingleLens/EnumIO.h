@@ -11,6 +11,17 @@ struct eLdCV_IO
 	};
 };
 
+struct eUldCV_IO
+{
+	enum dtName
+	{
+		CW = 0,
+		CCW = 1,
+		Stop = 2,
+	};
+};
+
+
 struct eLdCVStpr
 {
 	enum dtName

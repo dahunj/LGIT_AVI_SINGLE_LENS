@@ -167,9 +167,7 @@ public:
 	void Set_ElevCVStop();
 
 
-	BOOL Get_FeederTrayExist();
-	BOOL Get_RailTrayExist();
-	BOOL Get_MZTrayExist();
+	
 
 };
 

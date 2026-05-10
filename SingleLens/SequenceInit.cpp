@@ -272,9 +272,10 @@ BOOL CSequenceInit::Initial_Conveyor()
 		return TRUE;
 	case 1:
 		g_objLogFile.Save_HandlerLog("[Initial Sequence] - MZ Elevator Complete");
-		m_niConveyorCase = 90; m_tiConveyorLoop.Set_LoopTime(5000);
+		m_niConveyorCase = 90; m_tiConveyorLoop.Set_LoopTime(65000);
 		break;
 	case 90:
+		m_tiConveyorLoop.Set_LoopTime(5000);
 		return TRUE;
 	}
 
@@ -302,7 +303,7 @@ BOOL CSequenceInit::Initial_MZ_Elevator()
 			g_objAJinAXL.Set_EncoderType(AX_MZ_ELEVATOR_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_MZ_ELEVATOR_Z, 1);	// Abs
 			
-			m_niMZElevCase++; m_tiMZElevLoop.Set_LoopTime(5000);
+			m_niMZElevCase++; m_tiMZElevLoop.Set_LoopTime(25000);
 		}
 		break;
 	case 2:		
@@ -337,6 +338,7 @@ BOOL CSequenceInit::Initial_MZ_Elevator()
 		break;
 
 	case 90:	// Initial Complete
+		m_tiMZElevLoop.Set_LoopTime(5000);
 		return TRUE;
 	}
 
@@ -403,6 +405,7 @@ BOOL CSequenceInit::Initial_Feeder()
 		}
 		break;
 	case 90:	// Initial Complete
+		m_tiFeederLoop.Set_LoopTime(5000);
 		return TRUE;
 	}
 
@@ -498,6 +501,7 @@ BOOL CSequenceInit::Initial_TrayPicker()
 		break;
 		
 	case 90:	// Initial Complete
+		m_tiTrayPickerLoop.Set_LoopTime(5000);
 		return TRUE;
 	}
 
@@ -540,6 +544,7 @@ BOOL CSequenceInit::Initial_LensCleaner()
 		break;	
 
 	case 90:	// Initial Complete
+		m_tiLensCleanLoop.Set_LoopTime(5000);
 		return TRUE;
 	}
 
@@ -633,6 +638,7 @@ BOOL CSequenceInit::Initial_TopInspector()
 		}		
 
 	case 90:	// Initial Complete
+		m_tiTopInspectorLoop.Set_LoopTime(5000);
 		return TRUE;
 	}
 
@@ -725,6 +731,7 @@ BOOL CSequenceInit::Initial_BtmInspector()
 		}		
 
 	case 90:	// Initial Complete
+		m_tiBtmInspectorLoop.Set_LoopTime(5000);
 		return TRUE;
 	}
 
@@ -815,6 +822,7 @@ BOOL CSequenceInit::Initial_MarkUnit()
 		}		
 
 	case 90:	// Initial Complete
+		m_tiMarkUnitLoop.Set_LoopTime(5000);
 		return TRUE;
 	}
 
@@ -834,7 +842,7 @@ BOOL CSequenceInit::Initial_MarkUnit()
 BOOL CSequenceInit::Initial_MainIndex()
 {
 
-	switch (m_niMarkUnitCase)
+	switch (m_niMainIndexCase)
 	{
 	case 0:
 		return TRUE;
@@ -865,18 +873,31 @@ BOOL CSequenceInit::Initial_MainIndex()
 			&& g_objCommon.Check_Position(AX_BTM_INSPECTOR_Z, eBtmInspect_Z::Ready)
 			&& g_objCommon.Get_CleanerOpen() && g_objCommon.Get_CleanerBackwardDone()) //Interlock 
 		{
-			g_objAJinAXL.Home_Search(AX_MAIN_INDEX_R);
+
+			/*if(gData.bDemoMode)
+			{
+
+			}
+			else*/
+			{
+				g_objAJinAXL.Home_Search(AX_MAIN_INDEX_R);
+			}			
 			m_niMainIndexCase++; m_tiMainInitLoop.Set_LoopTime(25000);
 		}		
 		break;
 	case 5:
-		if(g_objAJinAXL.Is_Home(AX_MAIN_INDEX_R))
+		/*if(gData.bDemoMode)
 		{
-			m_niMainIndexCase = 90; m_tiMainInitLoop.Set_LoopTime(5000);
+			m_niMainIndexCase = 90; m_tiMainInitLoop.Set_LoopTime(65000);
+		}
+		else*/ if(g_objAJinAXL.Is_Home(AX_MAIN_INDEX_R))
+		{
+			m_niMainIndexCase = 90; m_tiMainInitLoop.Set_LoopTime(65000);
 		}
 		break;
 
-	case 90:	// Initial Complete
+	case 90:	// Initial Complete		
+		m_tiMainInitLoop.Set_LoopTime(5000);
 		return TRUE;
 	}
 

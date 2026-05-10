@@ -49,7 +49,14 @@ BOOL CAJinAXL::Initialize()
 	if (dwReturn != AXT_RT_SUCCESS) return FALSE;
 	if (lDIOCount < DIO_MODULE_COUNT) return FALSE;
 
-	Read_Input();
+	if(gData.bDemoMode)
+	{
+
+	}
+	else
+	{
+		Read_Input();
+	}	
 	Read_Output();
 
 	// Door Interlock
@@ -106,11 +113,49 @@ void CAJinAXL::Terminate()
 
 void CAJinAXL::Read_Input()
 {
-#ifdef AJIN_BOARD_USE
+#ifdef AJIN_BOARD_USE	
+
+	BOOL nTemp[64];
+	if(gData.bDemoMode)
+	{
+		 nTemp[0] = m_DX00.iLdCVMZExist1R;
+		 nTemp[1] = m_DX00.iLdCVMZExist2;
+		 nTemp[2] = m_DX00.iLdCVMZExist3;
+		 nTemp[3] = m_DX00.iLdCVMZExist4;
+		 nTemp[4] = m_DX00.iLdCVMZExist5;
+
+		 nTemp[5] = m_DX00.iElvMZExist1;
+		 nTemp[6] = m_DX00.iElvMZExist2;
+
+		 nTemp[7] =  m_DX01.iUldCvMZExist1L;
+		 nTemp[8] =  m_DX01.iUldCvMZExist2;
+		 nTemp[9] =  m_DX01.iUldCvMZExist3;
+		 nTemp[10] = m_DX01.iUldCvMZExist4;
+	}
+	
 	AxdiReadInportDword( 0, 0, &m_DX00.nValue);
 	AxdiReadInportDword( 1, 0, &m_DX01.nValue);
 	AxdiReadInportDword( 2, 0, &m_DX02.nValue);
 	AxdiReadInportDword( 3, 0, &m_DX03.nValue);
+
+
+	if(gData.bDemoMode)
+	{
+		m_DX00.iLdCVMZExist1R = nTemp[0];
+		m_DX00.iLdCVMZExist2 = nTemp[1]; 
+		m_DX00.iLdCVMZExist3 = nTemp[2]; 
+		m_DX00.iLdCVMZExist4 = nTemp[3]; 
+		m_DX00.iLdCVMZExist5 = nTemp[4]; 
+
+		m_DX00.iElvMZExist1	= nTemp[5]; 
+		m_DX00.iElvMZExist2 = nTemp[6]; 
+
+		m_DX01.iUldCvMZExist1L = nTemp[7];
+		m_DX01.iUldCvMZExist2 = nTemp[8]; 
+		m_DX01.iUldCvMZExist3 = nTemp[9]; 
+		m_DX01.iUldCvMZExist4 =	nTemp[10];
+	}
+
 	
 #endif
 }
@@ -257,9 +302,9 @@ void CAJinAXL::Move_Relative(int nAxis, double dPos)
 }
 
 void CAJinAXL::Jog_Positive(int nAxis)
-{
+{	
 #ifdef AJIN_BOARD_USE
-	double	dVel = m_Param[nAxis].dSpeedJ;
+	double	dVel = m_Param[nAxis].dSpeedJ; 
 	double	dAcc = m_Param[nAxis].dSpeedJ * 4.0;
 	AxmMoveVel(nAxis, dVel, dAcc, dAcc);
 #endif

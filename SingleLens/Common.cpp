@@ -269,8 +269,7 @@ BOOL CCommon::Check_MainDoor(BOOL bAuto)
 		if (pDX03->iDoor05Unlock)							{ Show_Alarm("Main 05번 Door(X0326) Opened."); return FALSE; }
 		if (pDX03->iDoor06Unlock)							{ Show_Alarm("Main 06번 Door(X0327) Opened."); return FALSE; }
 		if (pDX03->iDoor07Unlock && !gData.bLoadOpenSW)	{ Show_Alarm("Main 07번 Door(X0328) Opened."); return FALSE; }
-		if (pDX03->iDoor08Unlock)							{ Show_Alarm("Main 08번 Door(X0329) Opened."); return FALSE; }
-		
+		if (pDX03->iDoor08Unlock)							{ Show_Alarm("Main 08번 Door(X0329) Opened."); return FALSE; }		
 	}
 #endif
 	return TRUE;
@@ -502,6 +501,7 @@ void CCommon::Set_LdStopper1Down()
 
 BOOL CCommon::Get_LdStopper1Up()
 {
+	
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
 	if(pDX00->iLdCVStpr1UpR && !pDX00->iLdCVStpr1Dn)
@@ -513,6 +513,8 @@ BOOL CCommon::Get_LdStopper1Up()
 
 BOOL CCommon::Get_LdStopper1Down()
 {
+	
+
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
 	if(!pDX00->iLdCVStpr1UpR && pDX00->iLdCVStpr1Dn)
@@ -548,7 +550,22 @@ BOOL CCommon::Get_LdStopper2Up()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
+
 	if(pDX00->iLdCVStpr2Up && !pDX00->iLdCVStpr2Dn)
+	{
+		return TRUE;
+	}
+	return FALSE;	
+}
+
+
+BOOL CCommon::Get_LdStopper2Down()
+{
+	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
+
+	
+
+	if(!pDX00->iLdCVStpr2Up && pDX00->iLdCVStpr2Dn)
 	{
 		return TRUE;
 	}
@@ -871,7 +888,7 @@ void CCommon::Set_LoadCVRunCCW()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 	pDY00->oLoadCVRun = TRUE;
-	pDY00->oLoadCVDirCCW = TRUE;
+	pDY00->oLoadCVDirCCW = FALSE;
 
 	g_objAJinAXL.Write_Output(0);
 }
@@ -880,7 +897,7 @@ void CCommon::Set_LoadCVRunCW()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 	pDY00->oLoadCVRun = TRUE;
-	pDY00->oLoadCVDirCCW = FALSE;
+	pDY00->oLoadCVDirCCW = TRUE;
 
 	g_objAJinAXL.Write_Output(0);
 }
@@ -900,7 +917,7 @@ void CCommon::Set_UnloadCVRunCCW()
 {
 	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
 	pDY01->oUldCvRun = TRUE;
-	pDY01->oUldCvDirCCW = TRUE;
+	pDY01->oUldCvDirCCW = FALSE;
 
 	g_objAJinAXL.Write_Output(1);
 }
@@ -909,7 +926,7 @@ void CCommon::Set_UnloadCVRunCW()
 {
 	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
 	pDY01->oUldCvRun = TRUE;
-	pDY01->oUldCvDirCCW = FALSE;
+	pDY01->oUldCvDirCCW = TRUE;
 
 	g_objAJinAXL.Write_Output(1);
 }
@@ -1067,3 +1084,5 @@ BOOL CCommon::Get_FeederOpen()
 	}
 	return FALSE;
 }
+
+

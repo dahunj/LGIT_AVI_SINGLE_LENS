@@ -34,7 +34,7 @@ void CManualElevDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 1; i++) DDX_Control(pDX, IDC_STC_AXIS_POS_0 + i, m_stcAxisPos[i]);
 	for (int i = 0; i < 5; i++) DDX_Control(pDX, IDC_LED_LD_CV_EXIST_0 + i, m_LedLdCVIO[i]);
 	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_CHK_LD_CV_R_0 + i, m_ChkLdCVIO[i]);
-
+	
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_LED_LD_CV_STOPPER_0 + i, m_LedLdCVStopper[i]);
 	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_BTN_LD_CV_STOPPER_0 + i, m_BtnLdCVStopper[i]);
 
@@ -46,6 +46,12 @@ void CManualElevDlg::DoDataExchange(CDataExchange* pDX)
 
 	for (int i = 0; i < 5; i++) DDX_Control(pDX, IDC_BTN_ELEV_Z_0 + i, m_BtnElevZ[i]);
 	for (int i = 0; i < 5; i++) DDX_Control(pDX, IDC_BTN_ELEVREADY_Z_0 + i, m_BtnElevReadyZ[i]);
+
+	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_LED_ULD_CV_EXIST_0 + i, m_LedUldCVIO[i]);
+	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_CHK_ULD_CV_R_0 + i, m_ChkUldCVIO[i]);
+
+	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_LED_ULD_CV_STOPPER_0 + i, m_LedUldCVStopper[i]);
+	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_BTN_ULD_CV_STOPPER_0 + i, m_BtnUldCVStopper[i]);
 }
 
 BEGIN_MESSAGE_MAP(CManualElevDlg, CDialogEx)
@@ -56,6 +62,10 @@ BEGIN_MESSAGE_MAP(CManualElevDlg, CDialogEx)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_ELEV_CV_STOPPER_0, IDC_BTN_ELEV_CV_STOPPER_7, OnBtnElevCVStopperClick)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_ELEV_Z_0, IDC_BTN_ELEV_Z_4, OnBtnElevZClick)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_ELEVREADY_Z_0, IDC_BTN_ELEVREADY_Z_4, OnBtnElevReadyZClick)
+
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_CHK_ULD_CV_R_0, IDC_CHK_ULD_CV_R_2, OnChkUldCVIOClick)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_ULD_CV_STOPPER_0, IDC_BTN_ULD_CV_STOPPER_1, OnBtnUldCVStopperClick)
+
 END_MESSAGE_MAP()
 
 // CManualElevDlg 메시지 처리기입니다.
@@ -126,6 +136,33 @@ void CManualElevDlg::Display_Status()
 	m_LedLdCVStopper[1].Set_On(pDX00->iLdCVStpr1Dn);
 	m_LedLdCVStopper[2].Set_On(pDX00->iLdCVStpr2Up);
 	m_LedLdCVStopper[3].Set_On(pDX00->iLdCVStpr2Dn);
+
+	m_LedElevIO[0].Set_On(pDX00->iElvMZExist1);
+	m_LedElevIO[1].Set_On(pDX00->iElvMZExist2);
+
+	m_LedElevStopper[0].Set_On(pDX00->iElvStpr1UpL);
+	m_LedElevStopper[1].Set_On(pDX00->iElvStpr1Dn);
+	m_LedElevStopper[2].Set_On(pDX00->iElvStpr1In);
+	m_LedElevStopper[3].Set_On(pDX00->iElvStpr1Out);
+	m_LedElevStopper[4].Set_On(pDX00->iElvStpr2UpR);
+	m_LedElevStopper[5].Set_On(pDX00->iElvStpr2Dn);
+	m_LedElevStopper[6].Set_On(pDX00->iElvStpr2In);
+	m_LedElevStopper[7].Set_On(pDX00->iElvStpr2Out);
+
+	m_LedUldCVStopper[0].Set_On(pDX01->iUldCvStprUp);
+	m_LedUldCVStopper[1].Set_On(pDX01->iUldCvStprDn);
+
+	m_LedLdCVIO[0].Set_On(pDX00->iLdCVMZExist1R);
+	m_LedLdCVIO[1].Set_On(pDX00->iLdCVMZExist2);
+	m_LedLdCVIO[2].Set_On(pDX00->iLdCVMZExist3);
+	m_LedLdCVIO[3].Set_On(pDX00->iLdCVMZExist4);
+
+	m_LedUldCVIO[0].Set_On(pDX01->iUldCvMZExist1L);
+	m_LedUldCVIO[1].Set_On(pDX01->iUldCvMZExist2);
+	m_LedUldCVIO[2].Set_On(pDX01->iUldCvMZExist3);
+	m_LedUldCVIO[3].Set_On(pDX01->iUldCvMZExist4);
+
+	
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -147,7 +184,7 @@ void CManualElevDlg::OnChkLdCVIOClick(UINT nID)
 				AfxMessageBox("Ld CV CCW 회전중, Stop 필요합니다");
 				return;
 			}
-			pDY00->oLoadCVRun = TRUE; pDY00->oLoadCVDirCCW = FALSE;
+			pDY00->oLoadCVRun = TRUE; pDY00->oLoadCVDirCCW = TRUE;
 			
 		}
 		else
@@ -166,7 +203,7 @@ void CManualElevDlg::OnChkLdCVIOClick(UINT nID)
 				AfxMessageBox("Ld CV CW 회전중, Stop 필요합니다");
 				return;
 			}
-			pDY00->oLoadCVRun = TRUE; pDY00->oLoadCVDirCCW = TRUE;
+			pDY00->oLoadCVRun = TRUE; pDY00->oLoadCVDirCCW = FALSE;
 
 		}
 		else
@@ -184,6 +221,64 @@ void CManualElevDlg::OnChkLdCVIOClick(UINT nID)
 	g_objAJinAXL.Write_Output(0);
 	
 	m_strLog.Format("[Manual LD CV] LD CV CW/CCW IO (%d) Click", nIndex);
+	g_objLogFile.Save_HandlerLog(m_strLog);
+}
+
+void CManualElevDlg::OnChkUldCVIOClick(UINT nID)
+{
+	if (!g_objCommon.Check_MainDoor()) return;
+
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+
+	int nIndex = nID - IDC_CHK_ULD_CV_R_0;	
+
+	if(nIndex == eUldCV_IO::CW)
+	{
+		if(m_ChkUldCVIO[eUldCV_IO::CW].GetCheck())
+		{
+			if(m_ChkUldCVIO[eUldCV_IO::CCW].GetCheck())
+			{
+				m_ChkUldCVIO[eUldCV_IO::CW].SetCheck(FALSE);
+				AfxMessageBox("Ld CV CCW 회전중, Stop 필요합니다");
+				return;
+			}
+			pDY01->oUldCvRun = TRUE; pDY01->oUldCvDirCCW = TRUE;
+
+		}
+		else
+		{
+			pDY01->oUldCvRun = FALSE; pDY01->oUldCvDirCCW = FALSE;
+		}
+	}
+
+	if(nIndex == eLdCV_IO::CCW)
+	{
+		if(m_ChkUldCVIO[eUldCV_IO::CCW].GetCheck())
+		{
+			if(m_ChkUldCVIO[eUldCV_IO::CW].GetCheck())
+			{
+				m_ChkUldCVIO[eUldCV_IO::CCW].SetCheck(FALSE);
+				AfxMessageBox("Ld CV CW 회전중, Stop 필요합니다");
+				return;
+			}
+			pDY01->oUldCvRun = TRUE; pDY01->oUldCvDirCCW = FALSE;
+
+		}
+		else
+		{
+			pDY01->oUldCvRun = FALSE; pDY01->oUldCvDirCCW = FALSE;
+		}
+	}
+
+	if(nIndex == eUldCV_IO::Stop)
+	{
+		m_ChkUldCVIO[eUldCV_IO::CW].SetCheck(FALSE);
+		m_ChkUldCVIO[eUldCV_IO::CCW].SetCheck(FALSE);	
+		pDY01->oUldCvRun = FALSE; pDY01->oUldCvDirCCW = FALSE;
+	}
+	g_objAJinAXL.Write_Output(1);
+
+	m_strLog.Format("[Manual ULD CV] ULD CV CW/CCW IO (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);
 }
 
@@ -214,9 +309,35 @@ void CManualElevDlg::OnBtnLdCVStopperClick(UINT nID)
 	{
 		pDY00->oLdCVStpr2Up = FALSE; pDY00->oLdCVStpr2Dn = TRUE;
 	}
-	g_objAJinAXL.Write_Output(0);
+	g_objAJinAXL.Write_Output(1);
 
 	m_strLog.Format("[Manual LD CV] LD CV Stoppper (%d) Click", nIndex);
+	g_objLogFile.Save_HandlerLog(m_strLog);
+
+}
+
+
+void CManualElevDlg::OnBtnUldCVStopperClick(UINT nID)
+{
+	if (!g_objCommon.Check_MainDoor()) return;
+
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+
+	int nIndex = nID - IDC_BTN_ULD_CV_STOPPER_0;
+
+	if(nIndex == eLdCVStpr::Up1)
+	{
+		pDY01->oUldCvStprUp = TRUE; pDY01->oUldCvStprDn = FALSE;
+	}
+
+	if(nIndex == eLdCVStpr::Down1)
+	{
+		pDY01->oUldCvStprUp = FALSE; pDY01->oUldCvStprDn = TRUE;
+	}
+
+	g_objAJinAXL.Write_Output(1);
+
+	m_strLog.Format("[Manual ULD CV] ULD CV Stoppper (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);
 
 }
@@ -239,7 +360,7 @@ void CManualElevDlg::OnChkElevCVIOClick(UINT nID)
 				AfxMessageBox("Elev CV CCW 회전중, Stop 필요합니다");
 				return;
 			}
-			pDY00->oElvCvRun = TRUE; pDY00->oElvCvDirCCW = FALSE;
+			pDY00->oElvCvRun = TRUE; pDY00->oElvCvDirCCW = TRUE;
 		}
 		else
 		{
@@ -257,7 +378,7 @@ void CManualElevDlg::OnChkElevCVIOClick(UINT nID)
 				AfxMessageBox("Elev CV CW 회전중, Stop 필요합니다");
 				return;
 			}
-			pDY00->oElvCvRun = TRUE; pDY00->oElvCvDirCCW = TRUE;
+			pDY00->oElvCvRun = TRUE; pDY00->oElvCvDirCCW = FALSE;
 
 		}
 		else

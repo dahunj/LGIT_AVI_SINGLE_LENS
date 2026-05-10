@@ -37,6 +37,12 @@ public:
 	CButtonCS	m_BtnElevZ[5];
 	CButtonCS	m_BtnElevReadyZ[5];
 
+	CLedCS		m_LedUldCVIO[4];
+	CCheckCS	m_ChkUldCVIO[3];
+
+	CLedCS		m_LedUldCVStopper[2];
+	CButtonCS	m_BtnUldCVStopper[2];
+
 		
 
 protected:
@@ -55,6 +61,9 @@ protected:
 
 	afx_msg void OnBtnElevZClick(UINT nID);
 	afx_msg void OnBtnElevReadyZClick(UINT nID);
+
+	afx_msg void OnChkUldCVIOClick(UINT nID);
+	afx_msg void OnBtnUldCVStopperClick(UINT nID);
 		 
 
 private:
