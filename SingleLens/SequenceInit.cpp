@@ -199,7 +199,7 @@ BOOL CSequenceInit::Initial_MainInit()
 		}
 		break;
 	case 5:		
-		if (!m_pDX01->iRailZigExist && !m_pDX02->iIndexTZigExist) 
+		if (!m_pDX01->iRailZigExist) //&& !m_pDX02->iIndexTZigExist) 
 		{
 			m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
 		}

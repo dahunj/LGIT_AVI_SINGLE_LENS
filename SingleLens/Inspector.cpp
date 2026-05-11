@@ -139,19 +139,17 @@ void CInspector::Get_LotReady(int nVPc, CString sLotId, CString sLotNo)
 
 }
 
-void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sLotId, CString sLotNo, CString sTrayNo, CString sCmNo)
+void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString sZigID, CString sSlotNo, CString sLensNo)
 {
-	int nLx = atoi(sLotNo) - 1;		// Lot Index
-	int nTx = atoi(sTrayNo) - 1;	// Tray Index
-	int	nCx = atoi(sCmNo) - 1;		// CM Index
+	int nTrayNo = atoi(sSlotNo) - 1;	// Tray Index
+	int	nLensNo = atoi(sLensNo) - 1;	// CM Index
 	
 }
 
-void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sLotId, CString sLotNo, CString sTrayNo, CString sCmNo, CString sJudge, CString sCode)
+void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CString sZigID, CString sSlotNo, CString sLensNo, CString sJudge, CString sNgCode)
 {
-	int nLx = atoi(sLotNo) - 1;		// Lot Index
-	int nTx = atoi(sTrayNo) - 1;	// Tray Index
-	int	nCx = atoi(sCmNo) - 1;		// CM Index
+	int nTrayNo = atoi(sSlotNo) - 1;	// Tray Index
+	int	nLensNo = atoi(sLensNo) - 1;	// CM Index
 	
 }
 

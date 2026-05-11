@@ -153,8 +153,8 @@ void CManualBtmDlg::OnBtnBtmInspectXClick(UINT nID)
 	}
 	if(nIndex == eBtmInspect_X::PitchM)
 	{
-		double dPitch = g_objDataManager.Get_pMoveData()->dBtmInspectorZ[eTopInspect_X::PitchM];
-		g_objAJinAXL.Move_Relative(AX_BTM_INSPECTOR_X, dPitch);
+		double dPitch = g_objDataManager.Get_pMoveData()->dBtmInspectorZ[eTopInspect_X::PitchP];
+		g_objAJinAXL.Move_Relative(AX_BTM_INSPECTOR_X, -dPitch);
 	}
 	m_strLog.Format("[Manual Btm Inspector X] X (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);
@@ -183,8 +183,8 @@ void CManualBtmDlg::OnBtnBtmInspectYClick(UINT nID)
 	}
 	if(nIndex == eBtmInspect_Y::PitchM)
 	{
-		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorY[eBtmInspect_Y::PitchM];
-		g_objAJinAXL.Move_Relative(AX_BTM_INSPECTOR_Y, dPitch);
+		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorY[eBtmInspect_Y::PitchP];
+		g_objAJinAXL.Move_Relative(AX_BTM_INSPECTOR_Y, -dPitch);
 	}
 	m_strLog.Format("[Manual Btm Inspector Y] Y (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);
@@ -246,8 +246,8 @@ void CManualBtmDlg::OnBtnMarkUnitXClick(UINT nID)
 	}
 	if(nIndex == eMark_X::PitchM)
 	{
-		double dPitch = g_objDataManager.Get_pMoveData()->dBtmInspectorZ[eMark_X::PitchM];
-		g_objAJinAXL.Move_Relative(AX_MARK_UNIT_X, dPitch);
+		double dPitch = g_objDataManager.Get_pMoveData()->dBtmInspectorZ[eMark_X::PitchP];
+		g_objAJinAXL.Move_Relative(AX_MARK_UNIT_X, -dPitch);
 	}
 	m_strLog.Format("[Manual Mark Unit X] X (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);
@@ -276,8 +276,8 @@ void CManualBtmDlg::OnBtnMarkUnitYClick(UINT nID)
 	}
 	if(nIndex == eMark_Y::PitchM)
 	{
-		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorY[eMark_Y::PitchM];
-		g_objAJinAXL.Move_Relative(AX_MARK_UNIT_Y, dPitch);
+		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorY[eMark_Y::PitchP];
+		g_objAJinAXL.Move_Relative(AX_MARK_UNIT_Y, -dPitch);
 	}
 	m_strLog.Format("[Manual Mark Unit Y] Y (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);

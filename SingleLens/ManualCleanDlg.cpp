@@ -191,8 +191,8 @@ void CManualCleanDlg::OnBtnTopInspectXClick(UINT nID)
 	}
 	if(nIndex == eTopInspect_X::PitchM)
 	{
-		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorZ[eTopInspect_X::PitchM];
-		g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_X, dPitch);
+		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorZ[eTopInspect_X::PitchP];
+		g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_X, -dPitch);
 	}
 	m_strLog.Format("[Manual Top Inspector X] X (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);
@@ -221,8 +221,8 @@ void CManualCleanDlg::OnBtnTopInspectYClick(UINT nID)
 	}
 	if(nIndex == eTopInspect_Y::PitchM)
 	{
-		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorY[eTopInspect_X::PitchM];
-		g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_Y, dPitch);
+		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorY[eTopInspect_X::PitchP];
+		g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_Y, -dPitch);
 	}
 	m_strLog.Format("[Manual Top Inspector Y] Y (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);

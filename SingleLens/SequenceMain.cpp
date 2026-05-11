@@ -207,7 +207,7 @@ BOOL CSequenceMain::LotEnd_Run()
 
 	if (Get_IsAutoRun()) return FALSE;
 	if (g_dlgWork.SearchMZCVInfo() < 0) return FALSE;
-	//if (g_dlgWork.SearchMZElevInfo(0) < 0 || g_dlgWork.SearchMZElevInfo(1) < 0 ) return FALSE;
+	if (g_dlgWork.SearchMZElevInfo(0) < 0 && g_dlgWork.SearchMZElevInfo(1) < 0 ) return FALSE;
 
 	if (gData.bCycleStop) g_dlgWork.PostMessage(UM_RESET_CYCLE_STOP, NULL, NULL);
 

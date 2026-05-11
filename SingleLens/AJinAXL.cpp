@@ -60,11 +60,11 @@ BOOL CAJinAXL::Initialize()
 	Read_Output();
 
 	// Door Interlock
-	/*m_DY13.oModeSelect = TRUE; Write_Output(13); theApp.uSleep(500);
-	m_DY13.oSafetyReset = TRUE;  Write_Output(13); theApp.uSleep(500);
-	m_DY13.oSafetyReset = FALSE; Write_Output(13); theApp.uSleep(500);
-	m_DY13.oSafetyReset = TRUE;  Write_Output(13); theApp.uSleep(500);
-	m_DY13.oSafetyReset = FALSE; Write_Output(13); theApp.uSleep(500);*/
+	m_DY03.oModeSelect = TRUE;   Write_Output(3); theApp.uSleep(500);
+	m_DY03.oSafetyReset = TRUE;  Write_Output(3); theApp.uSleep(500);
+	m_DY03.oSafetyReset = FALSE; Write_Output(3); theApp.uSleep(500);
+	m_DY03.oSafetyReset = TRUE;  Write_Output(3); theApp.uSleep(500);
+	m_DY03.oSafetyReset = FALSE; Write_Output(3); theApp.uSleep(500);
 
 	Alarm_Reset(-1);	// All Reset
 

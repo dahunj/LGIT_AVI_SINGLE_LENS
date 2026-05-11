@@ -147,11 +147,11 @@ void CManualIndexDlg::OnBtnIndexRClick(UINT nID)
 	}
 	if(nIndex == eIndex_R::MoveP)
 	{
-		g_objAJinAXL.Move_Relative(AX_MAIN_INDEX_R, 7200*60 ); //60 degree 
+		g_objAJinAXL.Move_Relative(AX_MAIN_INDEX_R, 60 ); //60 degree 
 	}
 	if(nIndex == eIndex_R::MoveM)
 	{		
-		g_objAJinAXL.Move_Relative(AX_MAIN_INDEX_R, -7200*60 ); //60 degree 
+		g_objAJinAXL.Move_Relative(AX_MAIN_INDEX_R, -60 ); //60 degree 
 	}	
 	m_strLog.Format("[Manual Index R X] R (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);

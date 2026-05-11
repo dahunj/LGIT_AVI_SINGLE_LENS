@@ -36,8 +36,9 @@ private:
 	void Get_StatusUpdate(int nVPc, CString sStatus);
 
 	void Get_LotReady(int nVPc, CString sLotId, CString sLotNo);
-	void Get_ScanComplete(int nVPc, CString sGbn, CString sLotId, CString sLotNo, CString sTrayNo, CString sCmNo);
-	void Get_InspectComplete(int nVPc, CString sGbn, CString sLotId, CString sLotNo, CString sTrayNo, CString sCmNo, CString sJudge, CString sCode);
+	void Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString sZigID, CString sSlotNo, CString sLensNo);
+	void Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CString sZigID, CString sSlotNo, CString sLensNo, CString sJudge, CString sNgCode);
+	
 	void Get_AMoveRequest(int nVPc, CString sGbn, CString sZ1, CString sZ2, CString sX, CString sY, CString sT, CString sR);
 	void Get_PositionRequest(int nVPc, CString sGbn);
 	void Get_ReloadRequest(int nVPc, CString sPc);
