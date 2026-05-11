@@ -337,6 +337,8 @@ BOOL CSequenceMain::LoadConveyorRun()
 	case 2:	
 		if(g_objCommon.Get_LdStopper1Up() )
 		{
+			if(!m_nLoadConveyorLoop.Waiting_Time(500)) break;
+
 			g_objCommon.Set_LoadCVRunCW();
 			m_nLoadConveyorCase++; m_nLoadConveyorLoop.Set_LoopTime(5000);
 		}		
@@ -353,7 +355,7 @@ BOOL CSequenceMain::LoadConveyorRun()
 	case 4:
 		if(g_objCommon.Get_LdStopper1Down())
 		{
-			if(!m_nLoadConveyorLoop.Waiting_Time(100)) break;
+			if(!m_nLoadConveyorLoop.Waiting_Time(500)) break;
 			m_nLoadConveyorCase++; m_nLoadConveyorLoop.Set_LoopTime(5000);
 		}		
 		break;
@@ -412,7 +414,7 @@ BOOL CSequenceMain::MZElevRun()
 		//if(nMZCnt > 0 && !gData.bCycleStop)
 		if(g_objCommon.Get_LdStopper1Down() && g_objCommon.Check_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Ready))
 		{
-			if (!m_nMZElevLoop.Waiting_Time(100)) break;		
+			if(!m_nMZElevLoop.Waiting_Time(500)) break;	
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load MZ to Elev Start");
 		}	
@@ -425,7 +427,7 @@ BOOL CSequenceMain::MZElevRun()
 			{
 				for(int i = 0; i < 6; i++) nMZDetectCnt[i] = 0;
 				
-				g_objCommon.Set_ElevStopper1Down(); Sleep(5);
+				g_objCommon.Set_ElevLift1Down(); Sleep(5);
 				g_objCommon.Set_ElevStopper2Down(); Sleep(5);
 				g_objCommon.Set_LoadCVRunCW();Sleep(5); //CW 회전하려면 CCW도 True 로 해야함  
 				g_objCommon.Set_ElevCVRunCW();
@@ -441,7 +443,7 @@ BOOL CSequenceMain::MZElevRun()
 			{
 				for(int i = 0; i < 6; i++) nMZDetectCnt[i] = 0;
 				 
-				g_objCommon.Set_ElevStopper1Down(); Sleep(10);
+				g_objCommon.Set_ElevLift1Down(); Sleep(10);
 				g_objCommon.Set_LoadCVRunCW();Sleep(5); //CW 회전하려면 CCW도 True 로 해야함 
 				g_objCommon.Set_ElevCVRunCW();
 				m_nMZElevCase = ElvBranch::RdyMZ; m_nMZElevLoop.Set_LoopTime(5000);
@@ -589,18 +591,18 @@ BOOL CSequenceMain::MZElevRun()
 			g_objCommon.Set_ElevCVStop();Sleep(5);
 			g_objCommon.Set_LoadCVRunCCW();Sleep(5);
 			
-			g_objCommon.Set_ElevStopper1Out();
+			g_objCommon.Set_ElevLift1Out();
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load CV CW Stop & Elev CV CW Start");
 		}
 		break;	
 	case 12:
-		if(g_objCommon.Get_ElevStopper1Out() && g_objCommon.Get_ElevStopper1Down())
+		if(g_objCommon.Get_ElevLift1Out() && g_objCommon.Get_ElevLift1Down())
 		{
 			if(!m_nMZElevLoop.Waiting_Time(1000)) break;
 
 			g_objCommon.Set_LoadCVStop();Sleep(5);
-			g_objCommon.Set_ElevStopper1Up();
+			g_objCommon.Set_ElevLift1Up();
 
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Stopper2 Up");
@@ -610,16 +612,16 @@ BOOL CSequenceMain::MZElevRun()
 		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		break;
 	case 14:
-		if(g_objCommon.Get_ElevStopper1Out() && g_objCommon.Get_ElevStopper1Up())
+		if(g_objCommon.Get_ElevLift1Out() && g_objCommon.Get_ElevLift1Up())
 		{
-			g_objCommon.Set_ElevStopper1In();			
+			g_objCommon.Set_ElevLift1In();			
 
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Stopper2 In");
 		}
 		break;
 	case 15:
-		if(g_objCommon.Get_ElevStopper1In() && g_objCommon.Get_ElevStopper1Up())
+		if(g_objCommon.Get_ElevLift1In() && g_objCommon.Get_ElevLift1Up())
 		{
 			//Info Processing 
 			//Check MZ ID if Exist Move Infomation to Loading MZ UI
@@ -766,7 +768,7 @@ BOOL CSequenceMain::MZElevRun()
 			nMZDetectCnt[0]++; nMZDetectCnt[1] = 0; 
 			if(nMZDetectCnt[0] < 5) break;
 
-			g_objCommon.Set_ElevStopper1Out();
+			g_objCommon.Set_ElevLift1Out();
 			m_nMZElevCase++;m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		else if(!m_pDX00->iElvMZExist1)
@@ -781,9 +783,9 @@ BOOL CSequenceMain::MZElevRun()
 		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		break;
 	case 53:
-		if(g_objCommon.Get_ElevStopper1Out())
+		if(g_objCommon.Get_ElevLift1Out())
 		{
-			g_objCommon.Set_ElevStopper1Down();
+			g_objCommon.Set_ElevLift1Down();
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}		
 		break;
@@ -791,7 +793,7 @@ BOOL CSequenceMain::MZElevRun()
 		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(15000);
 		break;
 	case 55:
-		if(g_objCommon.Get_ElevStopper1Down() && g_objCommon.Get_ElevStopper1Out()
+		if(g_objCommon.Get_ElevLift1Down() && g_objCommon.Get_ElevLift1Out()
 			&& g_objCommon.Get_ElevStopper2Down() && g_objCommon.Get_ElevStopper2Out())
 		{
 			g_objCommon.Set_ElevCVRunCW();

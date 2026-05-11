@@ -878,20 +878,20 @@ void CAJinAXL::Sim_SetOutToIn(int nNo)
 	
 	if(nNo == 0)
 	{
-		m_DX00.iLdCVStpr1UpR = m_DY00.oLdCVStpr1UpR;
-		m_DX00.iLdCVStpr1Dn = m_DY00.oLdCVStpr1Dn;
-		m_DX00.iLdCVStpr2Up = m_DY00.oLdCVStpr2Up;
-		m_DX00.iLdCVStpr2Dn = m_DY00.oLdCVStpr2Dn;
+		m_DX00.iLdCVLift1UpR = m_DY00.oLdCVStpr1UpR;
+		m_DX00.iLdCVLift1Dn = m_DY00.oLdCVStpr1Dn;
+		m_DX00.iLdCVLift2Up = m_DY00.oLdCVStpr2Up;
+		m_DX00.iLdCVLift2Dn = m_DY00.oLdCVStpr2Dn;
 
-		m_DX00.iElvStpr1UpL = m_DY00.oElvStpr1UpL;
-		m_DX00.iElvStpr1Dn = m_DY00.oElvStpr1Dn;
-		m_DX00.iElvStpr1In = m_DY00.oElvStpr1In;
-		m_DX00.iElvStpr1Out = m_DY00.oElvStpr1Out;
+		m_DX00.iElvLift1UpL = m_DY00.oElvStpr1UpL;
+		m_DX00.iElvLift1Dn = m_DY00.oElvStpr1Dn;
+		m_DX00.iElvLift1In = m_DY00.oElvStpr1In;
+		m_DX00.iElvLift1Out = m_DY00.oElvStpr1Out;
 
-		m_DX00.iElvStpr2UpR =		m_DY00.oElvStpr2UpR;
-		m_DX00.iElvStpr2Dn =		m_DY00.oElvStpr2Dn;
-		m_DX00.iElvStpr2In =			m_DY00.oElvStpr2In;
-		m_DX00.iElvStpr2Out =			m_DY00.oElvStpr2Out;
+		m_DX00.iElvLift2UpR =		m_DY00.oElvStpr2UpR;
+		m_DX00.iElvLift2Dn =		m_DY00.oElvStpr2Dn;
+		m_DX00.iElvLift2In =			m_DY00.oElvStpr2In;
+		m_DX00.iElvLift2Out =			m_DY00.oElvStpr2Out;
 	}
 
 	if(nNo == 1)

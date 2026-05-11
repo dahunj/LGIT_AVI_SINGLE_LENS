@@ -94,14 +94,14 @@ public:
 	BOOL Get_LdStopper2Down();
 	
 	
-	void Set_ElevStopper1In();
-	void Set_ElevStopper1Out();
-	void Set_ElevStopper1Up();
-	void Set_ElevStopper1Down();
-	BOOL Get_ElevStopper1In();
-	BOOL Get_ElevStopper1Out();
-	BOOL Get_ElevStopper1Up();
-	BOOL Get_ElevStopper1Down();
+	void Set_ElevLift1In();
+	void Set_ElevLift1Out();
+	void Set_ElevLift1Up();
+	void Set_ElevLift1Down();
+	BOOL Get_ElevLift1In();
+	BOOL Get_ElevLift1Out();
+	BOOL Get_ElevLift1Up();
+	BOOL Get_ElevLift1Down();
 
 
 

@@ -271,6 +271,8 @@ BOOL CSequenceInit::Initial_Conveyor()
 	case 0:
 		return TRUE;
 	case 1:
+		g_objCommon.Set_LoadCVStop();
+		g_objCommon.Set_UnloadCVStop();
 		g_objLogFile.Save_HandlerLog("[Initial Sequence] - MZ Elevator Complete");
 		m_niConveyorCase = 90; m_tiConveyorLoop.Set_LoopTime(65000);
 		break;
@@ -300,6 +302,8 @@ BOOL CSequenceInit::Initial_MZ_Elevator()
 	case 1:
 		if (!m_pDX00->iElvMZExist1 && !m_pDX00->iElvMZExist2) 
 		{			
+			g_objCommon.Set_ElevCVStop();
+
 			g_objAJinAXL.Set_EncoderType(AX_MZ_ELEVATOR_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_MZ_ELEVATOR_Z, 1);	// Abs
 			

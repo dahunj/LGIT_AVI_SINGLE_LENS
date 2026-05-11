@@ -504,7 +504,7 @@ BOOL CCommon::Get_LdStopper1Up()
 	
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(pDX00->iLdCVStpr1UpR && !pDX00->iLdCVStpr1Dn)
+	if(pDX00->iLdCVLift1UpR && !pDX00->iLdCVLift1Dn)
 	{
 		return TRUE;
 	}
@@ -517,7 +517,7 @@ BOOL CCommon::Get_LdStopper1Down()
 
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(!pDX00->iLdCVStpr1UpR && pDX00->iLdCVStpr1Dn)
+	if(!pDX00->iLdCVLift1UpR && pDX00->iLdCVLift1Dn)
 	{
 		return TRUE;
 	}
@@ -551,7 +551,7 @@ BOOL CCommon::Get_LdStopper2Up()
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
 
-	if(pDX00->iLdCVStpr2Up && !pDX00->iLdCVStpr2Dn)
+	if(pDX00->iLdCVLift2Up && !pDX00->iLdCVLift2Dn)
 	{
 		return TRUE;
 	}
@@ -565,7 +565,7 @@ BOOL CCommon::Get_LdStopper2Down()
 
 	
 
-	if(!pDX00->iLdCVStpr2Up && pDX00->iLdCVStpr2Dn)
+	if(!pDX00->iLdCVLift2Up && pDX00->iLdCVLift2Dn)
 	{
 		return TRUE;
 	}
@@ -576,7 +576,7 @@ BOOL CCommon::Get_LdStopper2Down()
 
 
 /////////////
-void CCommon::Set_ElevStopper1In()
+void CCommon::Set_ElevLift1In()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
@@ -586,7 +586,7 @@ void CCommon::Set_ElevStopper1In()
 
 }
 
-void CCommon::Set_ElevStopper1Out()
+void CCommon::Set_ElevLift1Out()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
@@ -595,7 +595,7 @@ void CCommon::Set_ElevStopper1Out()
 	g_objAJinAXL.Write_Output(0);
 }
 
-void CCommon::Set_ElevStopper1Up()
+void CCommon::Set_ElevLift1Up()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
@@ -605,7 +605,7 @@ void CCommon::Set_ElevStopper1Up()
 
 }
 
-void CCommon::Set_ElevStopper1Down()
+void CCommon::Set_ElevLift1Down()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
@@ -615,34 +615,22 @@ void CCommon::Set_ElevStopper1Down()
 
 }
 
-BOOL CCommon::Get_ElevStopper1In()
+BOOL CCommon::Get_ElevLift1In()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(pDX00->iElvStpr1In && !pDX00->iElvStpr1Out)
+	if(pDX00->iElvLift1In && !pDX00->iElvLift1Out)
 	{
 		return TRUE;
 	}
 	return FALSE;	
 }
 
-BOOL CCommon::Get_ElevStopper1Out()
+BOOL CCommon::Get_ElevLift1Out()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(!pDX00->iElvStpr1In && pDX00->iElvStpr1Out)
-	{
-		return TRUE;
-	}
-	return FALSE;	
-}
-
-
-BOOL CCommon::Get_ElevStopper1Up()
-{
-	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
-
-	if(pDX00->iElvStpr1UpL && !pDX00->iElvStpr1Dn)
+	if(!pDX00->iElvLift1In && pDX00->iElvLift1Out)
 	{
 		return TRUE;
 	}
@@ -650,11 +638,23 @@ BOOL CCommon::Get_ElevStopper1Up()
 }
 
 
-BOOL CCommon::Get_ElevStopper1Down()
+BOOL CCommon::Get_ElevLift1Up()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(!pDX00->iElvStpr1UpL && pDX00->iElvStpr1Dn)
+	if(pDX00->iElvLift1UpL && !pDX00->iElvLift1Dn)
+	{
+		return TRUE;
+	}
+	return FALSE;	
+}
+
+
+BOOL CCommon::Get_ElevLift1Down()
+{
+	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
+
+	if(!pDX00->iElvLift1UpL && pDX00->iElvLift1Dn)
 	{
 		return TRUE;
 	}
@@ -708,7 +708,7 @@ BOOL CCommon::Get_ElevStopper2In()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(pDX00->iElvStpr2In && !pDX00->iElvStpr2Out)
+	if(pDX00->iElvLift2In && !pDX00->iElvLift2Out)
 	{
 		return TRUE;
 	}
@@ -719,7 +719,7 @@ BOOL CCommon::Get_ElevStopper2Out()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(!pDX00->iElvStpr2In && pDX00->iElvStpr2Out)
+	if(!pDX00->iElvLift2In && pDX00->iElvLift2Out)
 	{
 		return TRUE;
 	}
@@ -731,7 +731,7 @@ BOOL CCommon::Get_ElevStopper2Up()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(pDX00->iElvStpr2UpR && !pDX00->iElvStpr2Dn)
+	if(pDX00->iElvLift2UpR && !pDX00->iElvLift2Dn)
 	{
 		return TRUE;
 	}
@@ -743,7 +743,7 @@ BOOL CCommon::Get_ElevStopper2Down()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
-	if(!pDX00->iElvStpr2UpR && pDX00->iElvStpr2Dn)
+	if(!pDX00->iElvLift2UpR && pDX00->iElvLift2Dn)
 	{
 		return TRUE;
 	}

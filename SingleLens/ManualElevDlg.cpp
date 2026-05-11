@@ -132,22 +132,22 @@ void CManualElevDlg::Display_Status()
 	m_LedLdCVIO[3].Set_On(pDX00->iLdCVMZExist4);
 	m_LedLdCVIO[4].Set_On(pDX00->iLdCVMZExist5);
 
-	m_LedLdCVStopper[0].Set_On(pDX00->iLdCVStpr1UpR);
-	m_LedLdCVStopper[1].Set_On(pDX00->iLdCVStpr1Dn);
-	m_LedLdCVStopper[2].Set_On(pDX00->iLdCVStpr2Up);
-	m_LedLdCVStopper[3].Set_On(pDX00->iLdCVStpr2Dn);
+	m_LedLdCVStopper[0].Set_On(pDX00->iLdCVLift1UpR);
+	m_LedLdCVStopper[1].Set_On(pDX00->iLdCVLift1Dn);
+	m_LedLdCVStopper[2].Set_On(pDX00->iLdCVLift2Up);
+	m_LedLdCVStopper[3].Set_On(pDX00->iLdCVLift2Dn);
 
 	m_LedElevIO[0].Set_On(pDX00->iElvMZExist1);
 	m_LedElevIO[1].Set_On(pDX00->iElvMZExist2);
 
-	m_LedElevStopper[0].Set_On(pDX00->iElvStpr1UpL);
-	m_LedElevStopper[1].Set_On(pDX00->iElvStpr1Dn);
-	m_LedElevStopper[2].Set_On(pDX00->iElvStpr1In);
-	m_LedElevStopper[3].Set_On(pDX00->iElvStpr1Out);
-	m_LedElevStopper[4].Set_On(pDX00->iElvStpr2UpR);
-	m_LedElevStopper[5].Set_On(pDX00->iElvStpr2Dn);
-	m_LedElevStopper[6].Set_On(pDX00->iElvStpr2In);
-	m_LedElevStopper[7].Set_On(pDX00->iElvStpr2Out);
+	m_LedElevStopper[0].Set_On(pDX00->iElvLift1UpL);
+	m_LedElevStopper[1].Set_On(pDX00->iElvLift1Dn);
+	m_LedElevStopper[2].Set_On(pDX00->iElvLift1In);
+	m_LedElevStopper[3].Set_On(pDX00->iElvLift1Out);
+	m_LedElevStopper[4].Set_On(pDX00->iElvLift2UpR);
+	m_LedElevStopper[5].Set_On(pDX00->iElvLift2Dn);
+	m_LedElevStopper[6].Set_On(pDX00->iElvLift2In);
+	m_LedElevStopper[7].Set_On(pDX00->iElvLift2Out);
 
 	m_LedUldCVStopper[0].Set_On(pDX01->iUldCvStprUp);
 	m_LedUldCVStopper[1].Set_On(pDX01->iUldCvStprDn);

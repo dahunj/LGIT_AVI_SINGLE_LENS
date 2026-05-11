@@ -109,28 +109,28 @@ typedef union tag_DX_DATA_00 {
 		DWORD i0005 : 1;						// X0005
 		DWORD i0006 : 1;				// X0006
 		DWORD i0007 : 1;			// X0007
-		DWORD iLdCVStpr1UpR : 1;				// X0008
-		DWORD iLdCVStpr1Dn : 1;				// X0009
-		DWORD iLdCVStpr2Up : 1;			// X0010
-		DWORD iLdCVStpr2Dn : 1;		// X0011
+		DWORD iLdCVLift1UpR : 1;				// X0008
+		DWORD iLdCVLift1Dn : 1;				// X0009
+		DWORD iLdCVLift2Up : 1;			// X0010
+		DWORD iLdCVLift2Dn : 1;		// X0011
 		DWORD i0012 : 1;			// X0012
 		DWORD i0013 : 1;		// X0013
 		DWORD i0014 : 1;		// X0014
 		DWORD i0015 : 1;		// X0015
 		DWORD iElvMZExist1 : 1;			// X0016
 		DWORD i0017 : 1;			// X0017
-		DWORD iElvStpr1UpL : 1;			// X0018
-		DWORD iElvStpr1Dn : 1;			// X0019
-		DWORD iElvStpr1In : 1;			// X0020
-		DWORD iElvStpr1Out : 1;						// X0021
+		DWORD iElvLift1UpL : 1;			// X0018
+		DWORD iElvLift1Dn : 1;			// X0019
+		DWORD iElvLift1In : 1;			// X0020
+		DWORD iElvLift1Out : 1;						// X0021
 		DWORD i0022	: 1;		// X0022
 		DWORD i0023	: 1;		// X0023
 		DWORD iElvMZExist2		: 1;						// X0024
 		DWORD i0025					: 1;			// X0025 - 임시 부여 
-		DWORD iElvStpr2UpR		: 1;				// X0026 - 임시 부여 
-		DWORD iElvStpr2Dn	: 1;				// X0027
-		DWORD iElvStpr2In		: 1;				// X0028
-		DWORD iElvStpr2Out	: 1;				// X0029
+		DWORD iElvLift2UpR		: 1;				// X0026 - 임시 부여 
+		DWORD iElvLift2Dn	: 1;				// X0027
+		DWORD iElvLift2In		: 1;				// X0028
+		DWORD iElvLift2Out	: 1;				// X0029
 		DWORD i0030 : 1;					// X0030
 		DWORD i0031 : 1;					// X0031
 	};
