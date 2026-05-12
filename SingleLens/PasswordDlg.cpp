@@ -107,13 +107,18 @@ void CPasswordDlg::OnBnClickedBtnOk()
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
 	m_edtPassword.GetWindowText(strInput);
-	if (strInput == pEquipData->sPasswordMt) {
+	if (strInput == pEquipData->sPasswordOp)
+	{
 		g_nLoginUser = 1;	// MT
 		EndDialog(IDOK);
-	} else if (strInput == pEquipData->sPasswordSi) {
+	}
+	else if (strInput == pEquipData->sPasswordEngr)
+	{
 		g_nLoginUser = 2;	// SI
 		EndDialog(IDOK);
-	} else {
+	}
+	else
+	{
 		g_nLoginUser = 0;	// None
 		m_edtPassword.SetWindowText("");
 	}

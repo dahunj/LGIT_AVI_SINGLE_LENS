@@ -187,12 +187,11 @@ void CInspector::Get_ReloadRequest(int nVPc, CString sPc)
 	Set_ReloadComplete(1, sPc);
 }
 
-void CInspector::Get_ErrorRequest(int nVPc, CString sGbn, CString sLotId, CString sLotNo, CString sTrayNo, CString sCmNo, CString sErrNo, CString sErrMsg)
+void CInspector::Get_ErrorRequest(int nVPc, CString sGbn, CString sMZID, CString sZigID, CString sSlotNo, CString sLensNo, CString sErrNo, CString sErrMsg)
 {
-	int nLx = atoi(sLotNo) - 1;		// Lot Index
-	int nTx = atoi(sTrayNo) - 1;	// Tray Index
-	int	nCx = atoi(sCmNo) - 1;		// CM Index
-	
+	int nTrayNo = atoi(sSlotNo) - 1;	// Tray Index
+	int	nLensNo = atoi(sLensNo) - 1;	// CM Index
+
 	int nMode = theApp.Get_MainMode();
 	
 }

@@ -44,7 +44,7 @@ private:
 	void Get_ReloadRequest(int nVPc, CString sPc);
 
 
-	void Get_ErrorRequest(int nVPc, CString sGbn, CString sLotId, CString sLotNo, CString sTrayNo, CString sCmNo, CString sErrNo, CString sErrMsg);
+	void Get_ErrorRequest(int nVPc, CString sGbn, CString sMZID, CString sZigID, CString sSlotNo, CString sLensNo, CString sErrNo, CString sErrMsg);
 
 	void Send_Command(int nVPc, CString sCommand);
 	void Exception_Log(int nVPc, CString sFunc, CString sGbn, int nLotNo, int nTrayNo, int nCmNo, int nCase);	// Recevie Exception Log

@@ -274,10 +274,14 @@ void CSingleLensDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	CIniFileCS INI(gsCurrentDir + "\\System\\EquipData.ini");
-	if (INI.Check_File()) {
-		pEquipData->nCappingCnt = INI.Get_Integer("LOAD_CELL", "CAPPING_CNT", 0);
-
-	} else { AfxMessageBox("EquipData.ini File Not Found!!!"); }
+	if (INI.Check_File())
+	{
+		
+	}
+	else 
+	{
+		AfxMessageBox("EquipData.ini File Not Found!!!");
+	}
 
 	if (!g_objAJinAXL.Initialize()) { Exit_System(EXIT_SYSTEM_AJIN); return; }
 
