@@ -430,40 +430,25 @@ void CAJinAXL::Stop_Trigger(int nAxis)
 #endif
 }
 
-void CAJinAXL::Start_Scan(int nAxis, double dPos, double dVel, double dTrigStart, double dTrigEnd, double dPeriod, double dWidth)
+void CAJinAXL::Start_Scan(int nAxis, double dPos, double dTrigS, double dTrigE, double dTrigP, double dTrigW)
 {
-#ifdef AJIN_BOARD_USE
-	// Trigger Setting
-	AxmTriggerSetReset(nAxis);
-	
-	dPeriod /= 1000;
-	dWidth /= 1000;
+#if defined(AJIN_BOARD_USE)
+	double dSpeed = m_Param[nAxis].dSpeedM;
+	double dWidth = dTrigW / dSpeed * 1000000;	// mm => usec
 
-	double dTrigTime = dWidth / dVel * 1000000.0;	// mm->usec
+	AxcTriggerSetEnable(0, DISABLE);
+	AxcTriggerSetBlock(0, dTrigS, dTrigE, dTrigP);
+	AxcTriggerSetTime(0, dWidth);
+	AxcTriggerSetEnable(0, ENABLE);
 
-	//dTrigTime = 20.0;	// mm->usec
-
-	// 1. Command Position ****************************************************
-// 	AxmTriggerSetTimeLevel(nAxis, dTrigTime, HIGH, COMMAND, DISABLE);
-	// 2. Actual Position *****************************************************
-	AxmTriggerSetTimeLevel(nAxis, dTrigTime, HIGH, ACTUAL, DISABLE);
-	//*************************************************************************
-	
-	DWORD dwCode = AxmTriggerSetBlock(nAxis, dTrigStart, dTrigEnd, dPeriod);
-	if (dwCode != AXT_RT_SUCCESS) AfxMessageBox("Trigger Setting Error");
-
-	// Scan Move
-	AxmMotSetAbsRelMode(nAxis, POS_ABS_MODE);
-	double	dAcc = dVel * 10.0;
-	AxmMoveStartPos(nAxis, dPos, dVel, dAcc, dAcc);
-	m_Status[nAxis].bInP = FALSE; m_Status[nAxis].bRun = TRUE;
+	Move_Absolute(nAxis, dPos);
 #endif
 }
 
 void CAJinAXL::Stop_Scan(int nAxis)
 {
-#ifdef AJIN_BOARD_USE
-	AxmTriggerSetReset(nAxis);
+#if defined(AJIN_BOARD_USE)
+	AxcTriggerSetEnable(0, DISABLE);
 #endif
 }
 
