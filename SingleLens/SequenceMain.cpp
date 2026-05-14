@@ -1064,6 +1064,8 @@ BOOL CSequenceMain::FeederRun()
 	case 34:
 		if(g_objCommon.Get_FeederClose() && (m_pDX01->iFeederZigExist || gData.bDemoMode))
 		{
+			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::FeederGrip])) break;
+				
 			//Info Processing
 			gData.sMZIDFeeder = gData.sMZIDRail; gData.sMZIDRail.Empty();
 			gData.sZigIDFeeder = gData.sZigIDRail; gData.sZigIDRail.Empty();
@@ -1104,6 +1106,8 @@ BOOL CSequenceMain::FeederRun()
 	case 38:
 		if(g_objCommon.Get_FeederOpen() )
 		{
+			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::FeederUnGrip])) break;
+
 			//Info Processing
 			gData.sMZIDElevUnload = gData.sMZIDFeeder; gData.sMZIDFeeder.Empty();
 			gData.sZigIDElevUnload[gData.nSlotNoFeeder - 1] = gData.sZigIDFeeder; gData.sZigIDFeeder.Empty();
@@ -1324,6 +1328,7 @@ BOOL CSequenceMain::ZigPickerRun()
 	case 4:
 		if(g_objCommon.Get_TrayPickMasterIn())
 		{
+			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TrayPickGrip])) break;
 			g_objCommon.Set_TrayPickSlaveIn();
 			m_nZigPickerCase++; m_nZigPickerLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
 			m_strLog.Format("Picker Slave In"); m_nZigPickerLoop.Takt_Save(4, m_nZigPickerCase, m_strLog);
@@ -1332,6 +1337,7 @@ BOOL CSequenceMain::ZigPickerRun()
 	case 5:
 		if(g_objCommon.Get_TrayPickMasterSlaveIn())
 		{
+			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TrayPickGrip])) break;
 			//Info Processing
 			gData.sMZIDTrayPick = gData.sMZIDRail; gData.sMZIDRail = "";
 			gData.sZigIDTrayPick =  gData.sZigIDRail; gData.sZigIDRail = "";
@@ -1379,6 +1385,7 @@ BOOL CSequenceMain::ZigPickerRun()
 	case 14:
 		if(g_objCommon.Get_TrayPickSlaveOut())
 		{
+			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TrayPickUnGrip])) break;
 			g_objCommon.Set_TrayPickMasterOut();
 			m_nZigPickerCase++; m_nZigPickerLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
 			m_strLog.Format("Picker Master Out"); m_nZigPickerLoop.Takt_Save(4, m_nZigPickerCase, m_strLog);
@@ -1387,6 +1394,7 @@ BOOL CSequenceMain::ZigPickerRun()
 	case 15:
 		if(g_objCommon.Get_TrayPickMasterSlaveOut())
 		{
+			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TrayPickUnGrip])) break;
 			//Info Processing 
 			gData.sMZIDMainIdex[eMainIndex::Load] = gData.sMZIDTrayPick; gData.sMZIDTrayPick = "";
 			gData.sZigIDMainIndex[eMainIndex::Load] =  gData.sZigIDTrayPick; gData.sZigIDTrayPick = "";
@@ -1440,6 +1448,7 @@ BOOL CSequenceMain::ZigPickerRun()
 	case 24:
 		if(g_objCommon.Get_TrayPickMasterIn())
 		{
+			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TrayPickGrip])) break;
 			g_objCommon.Set_TrayPickSlaveIn();
 			m_nZigPickerCase++; m_nZigPickerLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
 			m_strLog.Format("Picker Slave In"); m_nZigPickerLoop.Takt_Save(4, m_nZigPickerCase, m_strLog);
@@ -1448,6 +1457,7 @@ BOOL CSequenceMain::ZigPickerRun()
 	case 25:
 		if(g_objCommon.Get_TrayPickMasterSlaveIn())
 		{
+			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TrayPickGrip])) break;
 			//Info Processing
 			gData.sMZIDTrayPick = gData.sMZIDMainIdex[eMainIndex::Unload]; gData.sMZIDMainIdex[eMainIndex::Unload] = "";
 			gData.sZigIDTrayPick = gData.sZigIDMainIndex[eMainIndex::Unload]; gData.sZigIDMainIndex[eMainIndex::Unload] = "";
@@ -1495,6 +1505,7 @@ BOOL CSequenceMain::ZigPickerRun()
 	case 29:
 		if(g_objCommon.Get_TrayPickSlaveOut())
 		{
+			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TrayPickUnGrip])) break;
 			g_objCommon.Set_TrayPickMasterOut();
 			m_nZigPickerCase++; m_nZigPickerLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
 			m_strLog.Format("Picker Master Out"); m_nZigPickerLoop.Takt_Save(4, m_nZigPickerCase, m_strLog);
@@ -1503,6 +1514,7 @@ BOOL CSequenceMain::ZigPickerRun()
 	case 30:
 		if(g_objCommon.Get_TrayPickMasterSlaveOut())
 		{
+			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TrayPickUnGrip])) break;
 			//Info Processing 
 			gData.sMZIDRail = gData.sMZIDTrayPick; gData.sMZIDTrayPick.Empty();
 			gData.sZigIDRail = gData.sZigIDTrayPick; gData.sZigIDTrayPick.Empty();

@@ -462,22 +462,9 @@ void CSetupMotionTabDlg::Display_Status()
 	for (int i = 0; i < nMaxAxis; i++) 
 	{
 		AXIS_STATUS *pStatus = g_objAJinAXL.Get_pStatus(nStartAx + i);
-
-		double dAngle = 0.0;
-		if(nStartAx + i == AX_MAIN_INDEX_R)
-		{
-			//dAngle = (pStatus->dPos/7200.0);
-			dAngle = (pStatus->dPos);
-			if(dAngle > 360) dAngle =  fmod(dAngle, 360.0);
-			strPos.Format("%0.3lf", dAngle);
-			m_stcAxisPos[i].SetWindowText(strPos);
-		}
-		else
-		{
-			strPos.Format("%0.3lf", pStatus->dPos);
-			m_stcAxisPos[i].SetWindowText(strPos);
-		}		
-
+		strPos.Format("%0.3lf", pStatus->dPos);
+		m_stcAxisPos[i].SetWindowText(strPos);
+		
 		strVel.Format("%0.3lf", pStatus->dVel);
 		m_stcAxisVel[i].SetWindowText(strVel);
 

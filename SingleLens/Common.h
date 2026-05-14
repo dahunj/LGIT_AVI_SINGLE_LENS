@@ -102,10 +102,7 @@ public:
 	BOOL Get_ElevLift1Out();
 	BOOL Get_ElevLift1Up();
 	BOOL Get_ElevLift1Down();
-
-
-
-
+	
 	void Set_ElevStopper2In();
 	void Set_ElevStopper2Out();
 	void Set_ElevStopper2Up();

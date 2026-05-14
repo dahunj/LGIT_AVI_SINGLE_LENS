@@ -436,11 +436,11 @@ void CAJinAXL::Start_Scan(int nAxis, double dPos, double dTrigS, double dTrigE, 
 	double dSpeed = m_Param[nAxis].dSpeedM;
 	double dWidth = dTrigW / dSpeed * 1000000;	// mm => usec
 
-	AxcTriggerSetEnable(0, DISABLE);
+	/*AxcTriggerSetEnable(0, DISABLE);
 	AxcTriggerSetBlock(0, dTrigS, dTrigE, dTrigP);
 	AxcTriggerSetTime(0, dWidth);
 	AxcTriggerSetEnable(0, ENABLE);
-
+*/
 	Move_Absolute(nAxis, dPos);
 #endif
 }
@@ -448,7 +448,7 @@ void CAJinAXL::Start_Scan(int nAxis, double dPos, double dTrigS, double dTrigE, 
 void CAJinAXL::Stop_Scan(int nAxis)
 {
 #if defined(AJIN_BOARD_USE)
-	AxcTriggerSetEnable(0, DISABLE);
+	//AxcTriggerSetEnable(0, DISABLE);
 #endif
 }
 

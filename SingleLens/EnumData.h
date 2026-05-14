@@ -151,3 +151,18 @@ struct eMZ
 		Unload = 2,
 	};
 };
+
+
+struct eDelay
+{
+	enum Name
+	{
+		FeederGrip = 0,
+		FeederUnGrip = 1,
+		TrayPickGrip = 2,
+		TrayPickUnGrip = 0,
+		IndexAlignIn = 1,
+		IndexAlignOut = 2,
+	};
+
+};
