@@ -63,6 +63,9 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LBL_RESULT_TEST, m_lblResultTest);
 	DDX_Control(pDX, IDC_CHK_RESULT_TEST_USE, m_chkResultTestUse);
 	DDX_Control(pDX, IDC_EDT_RESULT_TEST, m_edtResultTest);
+
+	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_STC_ZIG_DATA_0 + i, m_stcZigData[i]);
+	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_STC_TRIGGER_DATA_0 + i, m_stcTriggerData[i]);
 }
 
 BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
@@ -73,6 +76,8 @@ BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
 	ON_STN_CLICKED(IDC_STC_SHOW_HIDDEN, &CSetupEquipDlg::OnStnClickedStcShowHidden)
 	ON_STN_CLICKED(IDC_STC_PASSWORD_MT, &CSetupEquipDlg::OnStnClickedStcPasswordMt)	
 	ON_STN_CLICKED(IDC_STC_DOORLOCK_TIME, &CSetupEquipDlg::OnStnClickedStcDoorlockTime)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_ZIG_DATA_0, IDC_STC_ZIG_DATA_3, OnStcZigDataClick)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_TRIGGER_DATA_0, IDC_STC_TRIGGER_DATA_7, OnStcZigDataClick)
 END_MESSAGE_MAP()
 
 // CSetupEquipDlg ¸Þ½ÃÁö Ã³¸®±âÀÔ´Ï´Ù.
@@ -121,6 +126,11 @@ void CSetupEquipDlg::Initial_Controls()
 	m_lblResultTest.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60));
 	m_chkResultTestUse.Init_Ctrl("¹ÙÅÁ", 10, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
 	m_edtResultTest.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, COLOR_DEFAULT);
+
+	for (int i = 0; i < 2; i++) m_stcZigData[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
+	for (int i = 2; i < 4; i++) m_stcZigData[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xFF, 0xE0));
+
+	for (int i = 0; i < 8; i++) m_stcTriggerData[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xFF, 0xE0));
 
 }
 
@@ -255,6 +265,21 @@ void CSetupEquipDlg::Display_EquipData()
 	strData.Format("%d", gData.nDoorLockTime);	m_stcDoorLockTime.SetWindowText(strData);
 
 	strData.Format("%0.3lf", gAlm.dMotionChkPos);	 m_stcMotionCheck.SetWindowText(strData);
+	
+	strData.Format("%d", pEquipData->nZigX); m_stcZigData[0].SetWindowText(strData);
+	strData.Format("%d", pEquipData->nZigY); m_stcZigData[1].SetWindowText(strData);
+	strData.Format("%0.2lf", pEquipData->dZigPitchX); m_stcZigData[2].SetWindowText(strData);
+	strData.Format("%0.2lf", pEquipData->dZigPitchY); m_stcZigData[3].SetWindowText(strData);
+	
+	strData.Format("%0.2lf", pEquipData->dTopStart); m_stcTriggerData[0].SetWindowText(strData);
+	strData.Format("%0.2lf", pEquipData->dTopEnd); m_stcTriggerData[1].SetWindowText(strData);
+	strData.Format("%0.2lf", pEquipData->dTopPeriod); m_stcTriggerData[2].SetWindowText(strData);
+	strData.Format("%0.2lf", pEquipData->dTopVelocity); m_stcTriggerData[3].SetWindowText(strData);
+
+	strData.Format("%0.2lf", pEquipData->dBtmStart); m_stcTriggerData[4].SetWindowText(strData);
+	strData.Format("%0.2lf", pEquipData->dBtmEnd); m_stcTriggerData[5].SetWindowText(strData);
+	strData.Format("%0.2lf", pEquipData->dBtmPeriod); m_stcTriggerData[6].SetWindowText(strData);
+	strData.Format("%0.2lf", pEquipData->dBtmVelocity); m_stcTriggerData[7].SetWindowText(strData);
 }
 
 void CSetupEquipDlg::Save_EquipData()
@@ -286,6 +311,23 @@ void CSetupEquipDlg::Save_EquipData()
 	m_stcDoorLockTime.GetWindowText(strData);
 	gData.nDoorLockTime = atoi(strData);
 	INI.Set_Integer("EQUIPMENT", "DOOR_LOCK_TIME", gData.nDoorLockTime);
+
+	
+	m_stcZigData[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Double ("COAT_ZIG", "ARRAY_X", dData, "%0.2lf");pEquipData->nZigX = nData;
+	m_stcZigData[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Double ("COAT_ZIG", "ARRAY_Y", dData, "%0.2lf");pEquipData->nZigY = nData;
+	m_stcZigData[2].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("COAT_ZIG", "PITCH_X", dData, "%0.2lf");pEquipData->dZigPitchX = dData;
+	m_stcZigData[3].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("COAT_ZIG", "PITCH_Y", dData, "%0.2lf");pEquipData->dZigPitchY = dData;
+
+
+	m_stcTriggerData[0].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP_START",   dData, "%0.2lf");pEquipData->dTopStart = dData;
+	m_stcTriggerData[1].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP_END",	 dData, "%0.2lf");pEquipData->dTopEnd = dData;
+	m_stcTriggerData[2].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP_PERIOD",  dData, "%0.2lf");pEquipData->dTopPeriod = dData;
+	m_stcTriggerData[3].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP_VEL",	 dData, "%0.2lf");pEquipData->dTopVelocity = dData;
+	m_stcTriggerData[4].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_START",   dData, "%0.2lf");pEquipData->dBtmStart = dData;
+	m_stcTriggerData[5].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_END",	 dData, "%0.2lf");pEquipData->dBtmEnd = dData;
+	m_stcTriggerData[6].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_PERIOD",  dData, "%0.2lf");pEquipData->dBtmPeriod = dData;
+	m_stcTriggerData[7].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_VEL",	 dData, "%0.2lf");pEquipData->dBtmVelocity = dData;
+
 }
 
 void CSetupEquipDlg::Cancel_EquipData()
@@ -300,6 +342,30 @@ void CSetupEquipDlg::Cancel_EquipData()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+
+void CSetupEquipDlg::OnStcZigDataClick(UINT nID)
+{
+	int ID = nID - IDC_STC_ZIG_DATA_0;
+
+	CString strOld, strNew;
+	m_stcZigData[ID].GetWindowText(strOld);
+	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
+
+	m_stcZigData[ID].SetWindowText(strNew);
+}
+
+
+
+void CSetupEquipDlg::OnStcTriggerDataClick(UINT nID)
+{
+	int ID = nID - IDC_STC_TRIGGER_DATA_0;
+
+	CString strOld, strNew;
+	m_stcTriggerData[ID].GetWindowText(strOld);
+	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
+
+	m_stcTriggerData[ID].SetWindowText(strNew);
+}
 
 
 

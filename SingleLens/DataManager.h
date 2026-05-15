@@ -14,49 +14,52 @@ typedef struct tag_EQUIP_DATA {
 	BOOL	bUseBtmVision;
 	BOOL	bUseMark;
 
+
+	int		nZigX;
+	int		nZigY;
 	double  dZigPitchY;
 	double	dZigPitchX;
 	
 	BOOL	bUseInspectSkip;
-	
-	
 
 
-
-///////////////////// old 	
 	CString sEquipName;
 	CString sModel;
 	int		nLotBarcodePort;
 
 	BOOL	bUseDoorLock;
 	
-
-	BOOL	bUseMES;
-	
+	BOOL	bUseMES;	
 
 	double	dIndexPitch;
-
 
 	int		nVacOffDelay[3];	// 0:Load,1:Assy,2:Unload
 	int		nDelayAdd[6];		// 0:LoadPicker Grip, 1:CapPicker VacOn, 2:AssyPicker VacOn, 3:UnloadPicker VacOn, 4:LoadCell, 5:AssyPicker CapPress
 
 	CString	sAviIp;
 
-
 	BOOL	bTower[6][4];		// [0:None,1:Init,2:Ready,3:Run,4:Alarm,5:Error][0:Green,1:Yellow,2:Red,3:Flicker]
 	BOOL	bBuzzer[5][6];		// [0::Alarm,1:Error,2:LotEnd,3:CapTray,4:ShipTray][0:Bit0,1:Bit1,2:Bit2,3:Bit3,4:Bit4,5:Flicker]
 	CString	sPasswordOp;
 	CString	sPasswordEngr;
-
-
-
-
-
-
-
+		
 
 	BOOL	bResultTestUse;		// Result Test Use
 	int		nResultTestNg;		// Result Test Ng Ratio (0~100)
+
+	//Trigger 
+	double	dTopStart;
+	double	dTopEnd;
+	double	dTopPeriod;
+	double	dTopVelocity;
+
+	double	dBtmStart;
+	double	dBtmEnd;
+	double	dBtmPeriod;
+	double	dBtmVelocity;
+
+
+
 
 } EQUIP_DATA;
 

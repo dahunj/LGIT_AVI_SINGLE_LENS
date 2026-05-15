@@ -236,6 +236,7 @@ BOOL CCommon::Check_MainEmgAir()
 	if (pDX03->iEmgSw1)		{ Show_Error(1); return FALSE; }
 	if (pDX03->iEmgSw2)		{ Show_Error(2); return FALSE; }
 	if (pDX03->iEmgSw3)		{ Show_Error(3); return FALSE; }
+	if (pDX03->iEmgSw4)		{ Show_Error(4); return FALSE; }
 	if (!pDX03->iMainAir1)	{ Show_Error(7); return FALSE; }
 	
 #endif

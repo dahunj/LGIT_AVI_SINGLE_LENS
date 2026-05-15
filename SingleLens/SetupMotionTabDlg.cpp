@@ -140,7 +140,7 @@ void CSetupMotionTabDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 
 	if (!bShow) return;
 
-	int nMaxAxis = (m_nMotionTab == 4 ? 3 : 8);
+	int nMaxAxis = 8;//(m_nMotionTab == 4 ? 3 : 8);
 	int nStartAx = m_nMotionTab * 8;
 
 	BOOL bVisible = (nMaxAxis < 4 ? FALSE : TRUE);

@@ -33,6 +33,8 @@ public:
 	CLabelCS	m_lblAviIp;
 	CIPAddressCtrl	m_ipaAviIp;
 
+	CStaticCS	m_stcZigData[4];
+	CStaticCS	m_stcTriggerData[8];
 	
 
 	CGroupCS	m_grpTower;
@@ -78,6 +80,8 @@ public:
 	void Cancel_EquipData();
 
 	afx_msg void OnStnClickedStcDoorlockTime();
+	afx_msg void OnStcZigDataClick(UINT nID);
+	afx_msg void OnStcTriggerDataClick(UINT nID);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
