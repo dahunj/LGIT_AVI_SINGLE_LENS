@@ -1480,5 +1480,5 @@ void CWorkDlg::OnStnClickedStcHidden()
 
 void CWorkDlg::OnBnClickedChkNoTray()
 {
-	gData.bNoTrayMode = m_chkNoTrayMode.GetCheck();
+	gData.bDemoMode = m_chkNoTrayMode.GetCheck();
 }

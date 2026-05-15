@@ -944,7 +944,7 @@ void CCommon::Set_ElevCVRunCCW()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 	pDY00->oElvCvRun = TRUE;
-	pDY00->oElvCvDirCCW = TRUE;
+	pDY00->oElvCvDirCCW = FALSE;
 	g_objAJinAXL.Write_Output(0);
 }
 
@@ -952,7 +952,7 @@ void CCommon::Set_ElevCVRunCW()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 	pDY00->oElvCvRun = TRUE;
-	pDY00->oElvCvDirCCW = FALSE;
+	pDY00->oElvCvDirCCW = TRUE;
 	g_objAJinAXL.Write_Output(0);
 }
 

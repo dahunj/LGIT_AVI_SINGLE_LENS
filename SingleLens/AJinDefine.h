@@ -233,10 +233,10 @@ typedef union tag_DX_DATA_03 {
 		DWORD i0315 : 1;			// X0315
 		DWORD iResetSw : 1;			// X0316
 		DWORD i0317 : 1;			// X0317
-		DWORD iLoadOpenSw : 1;	// X0318
-		DWORD iLoadRunSw : 1;		// X0319
-		DWORD iUnloadOpenSw : 1;		// X0320
-		DWORD iUnloadRunSw : 1;		// X0321
+		DWORD iUnloadOpenSw : 1;	// X0318				//¹è¼± ÀÌ½´·Î ÀÚ¸® ¹Ù²Þ 
+		DWORD iUnloadRunSw : 1;		// X0319
+		DWORD iLoadOpenSw : 1;		// X0320 iUnloadOpenSw
+		DWORD iLoadRunSw : 1;		// X0321 iUnloadRunSw
 		DWORD iDoor01Unlock : 1;	// X0322
 		DWORD iDoor02Unlock : 1;	// X0323
 		DWORD iDoor03Unlock : 1;		// X0324

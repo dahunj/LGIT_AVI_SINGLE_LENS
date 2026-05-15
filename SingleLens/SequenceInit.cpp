@@ -303,7 +303,16 @@ BOOL CSequenceInit::Initial_MZ_Elevator()
 		if (!m_pDX00->iElvMZExist1 && !m_pDX00->iElvMZExist2) 
 		{			
 			g_objCommon.Set_ElevCVStop();
-
+			Sleep(10);
+			g_objCommon.Set_ElevLift1Out();
+			Sleep(10);
+			g_objCommon.Set_ElevLift1Down();
+			Sleep(10);
+			g_objCommon.Set_ElevStopper2Out();
+			Sleep(10);
+			g_objCommon.Set_ElevStopper2Down();
+			Sleep(10);
+			
 			g_objAJinAXL.Set_EncoderType(AX_MZ_ELEVATOR_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_MZ_ELEVATOR_Z, 1);	// Abs
 			
@@ -315,7 +324,7 @@ BOOL CSequenceInit::Initial_MZ_Elevator()
 		{
 			if (!m_tiMZElevLoop.Waiting_Time(100)) break;
 			g_objAJinAXL.Home_Search(AX_MZ_ELEVATOR_Z);
-			m_niMZElevCase++; m_tiMZElevLoop.Set_LoopTime(5000);
+			m_niMZElevCase++; m_tiMZElevLoop.Set_LoopTime(30000);
 		}
 		break;
 	case 3:		
@@ -324,7 +333,7 @@ BOOL CSequenceInit::Initial_MZ_Elevator()
 			if (!m_tiMZElevLoop.Waiting_Time(100)) break;
 			g_objAJinAXL.Set_EncoderType(AX_MZ_ELEVATOR_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_MZ_ELEVATOR_Z, 1);	// Abs
-			m_niMZElevCase++; m_tiMZElevLoop.Set_LoopTime(5000);
+			m_niMZElevCase++; m_tiMZElevLoop.Set_LoopTime(30000);
 			
 		}
 		break;
@@ -383,7 +392,7 @@ BOOL CSequenceInit::Initial_Feeder()
 		}
 		break;
 	case 4:
-		m_niFeederCase++; m_tiFeederLoop.Set_LoopTime(5000);
+		m_niFeederCase++; m_tiFeederLoop.Set_LoopTime(30000);
 		break;
 	case 5:
 		if(m_niTrayPickerCase > 10) // Tray Picker Z Ready Up Complete 

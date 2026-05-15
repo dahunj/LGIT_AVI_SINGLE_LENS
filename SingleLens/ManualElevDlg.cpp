@@ -458,11 +458,7 @@ void CManualElevDlg::OnBtnElevZClick(UINT nID)
 	{
 		AfxMessageBox("Feeder Y Ready 위치가 아닙니다. 확인 후 진행하세요."); return;
 	}
-	if(!g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZLoad) 
-		&& !g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZReady))
-	{
-		AfxMessageBox("Feeder Y Ready 위치가 아닙니다. 확인 후 진행하세요."); return;
-	}
+	
 	
 	
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();

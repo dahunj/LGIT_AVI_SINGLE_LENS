@@ -66,7 +66,7 @@ BOOL CDataManager::Read_EquipData()
 
 	m_EquipData.nLotBarcodePort = INI.Get_Integer("EQUIPMENT", "LOT_BARCODE", 1);
 
-	m_EquipData.bUseDoorLock = INI.Get_Bool("EQUIPMENT", "DOOR_LOCK", FALSE);
+	m_EquipData.bUseDoorLock = FALSE;//INI.Get_Bool("EQUIPMENT", "DOOR_LOCK", FALSE);
 	gData.nDoorLockTime = INI.Get_Integer("EQUIPMENT", "DOOR_LOCK_TIME", 0);
 	gAlm.dMotionChkPos		= INI.Get_Double("EQUIPMENT", "MOTION_CHECK", 0.0);
 

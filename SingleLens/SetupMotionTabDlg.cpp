@@ -147,7 +147,8 @@ void CSetupMotionTabDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	m_Group[1].ShowWindow(bVisible);
 	for (int i = 0; i < 11; i++) m_Label[i + 11].ShowWindow(bVisible);
 	
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 8; i++)
+	{
 		bVisible = (i < nMaxAxis ? TRUE : FALSE);
 		if (m_nMotionTab == 1 && i == 7) bVisible = FALSE;
 
