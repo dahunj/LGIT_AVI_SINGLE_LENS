@@ -87,7 +87,7 @@
 
 #define MAIN_VERSION	_T("V 0.0.0.2b")
 //
-#define AJIN_BOARD_USE
+//#define AJIN_BOARD_USE
 //#define LOT_BARCODE_USE
 
 

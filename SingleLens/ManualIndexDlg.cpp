@@ -13,7 +13,7 @@
 
 #include "SingleLensDlg.h"
 #include "ManualDlg.h"
-
+#include "DataManager.h"
 
 // CManualIndexDlg 대화 상자입니다.
 
@@ -141,17 +141,20 @@ void CManualIndexDlg::OnBtnIndexRClick(UINT nID)
 
 	int nIndex = nID - IDC_BTN_INDEX_R_0;
 
+
+	MOVE_DATA *pMoveData = g_objDataManager.Get_pMoveData();
+	
 	if(nIndex == eIndex_R::Ready)
 	{
 		g_objCommon.Move_Position(AX_MAIN_INDEX_R, eIndex_R::Ready);
 	}
 	if(nIndex == eIndex_R::MoveP)
 	{
-		g_objAJinAXL.Move_Relative(AX_MAIN_INDEX_R, 60 ); //60 degree 
+		g_objAJinAXL.Move_Relative(AX_MAIN_INDEX_R, pMoveData->dMainIndexR[eIndex_R::MoveP]); //60 degree 
 	}
 	if(nIndex == eIndex_R::MoveM)
 	{		
-		g_objAJinAXL.Move_Relative(AX_MAIN_INDEX_R, -60 ); //60 degree 
+		g_objAJinAXL.Move_Relative(AX_MAIN_INDEX_R, -pMoveData->dMainIndexR[eIndex_R::MoveP]); //60 degree 
 	}	
 	m_strLog.Format("[Manual Index R X] R (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);
