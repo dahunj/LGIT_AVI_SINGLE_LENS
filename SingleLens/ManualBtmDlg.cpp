@@ -204,18 +204,20 @@ void CManualBtmDlg::OnBtnBtmInspectZClick(UINT nID)
 	}
 	if(nIndex == eBtmInspect_Z::ScanStart)
 	{
-		g_objCommon.Move_Position(AX_BTM_INSPECTOR_Z, eBtmInspect_Z::ScanStart);
+		double dStart = pEquipData->dTopStart;
+		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, dStart);		
 	}
-	/*if(nIndex == eTopInspect_Z::Dummy1)
-	{		
-	double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorZ[eTopInspect_Z::Dummy1];
-	g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_Z, dPitch);
-	}
-	if(nIndex == eTopInspect_Z::Dummy2)
+	if(nIndex == eBtmInspect_Z::ScanEnd)
 	{
-	double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorZ[eTopInspect_Z::Dummy2];
-	g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_Z, dPitch);
-	}*/
+		/*double dEnd = pEquipData->dTopEnd;
+		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, dEnd);*/		
+	}
+	if(nIndex == eBtmInspect_Z::Scan)
+	{
+		if (m_nScanCase == 0) m_nScanCase = 1;
+		m_bThreadBtmScan = TRUE;
+		m_pThreadBtmScan = AfxBeginThread(Thread_BtmScan, this);		
+	}
 	m_strLog.Format("[Manual Btm Inspector Z] Z (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);
 }
@@ -235,9 +237,9 @@ void CManualBtmDlg::OnBtnMarkUnitXClick(UINT nID)
 	{
 		g_objCommon.Move_Position(AX_MARK_UNIT_X, eMark_X::Ready);
 	}
-	if(nIndex == eMark_X::ScanStart)
+	if(nIndex == eMark_X::MarkStart)
 	{
-		g_objCommon.Move_Position(AX_MARK_UNIT_X, eMark_X::ScanStart);
+		g_objCommon.Move_Position(AX_MARK_UNIT_X, eMark_X::MarkStart);
 	}
 	if(nIndex == eMark_X::PitchP)
 	{		
@@ -265,9 +267,9 @@ void CManualBtmDlg::OnBtnMarkUnitYClick(UINT nID)
 	{
 		g_objCommon.Move_Position(AX_MARK_UNIT_Y, eMark_Y::Ready);
 	}
-	if(nIndex == eMark_Y::ScanStart)
+	if(nIndex == eMark_Y::MarkStart)
 	{
-		g_objCommon.Move_Position(AX_MARK_UNIT_Y, eMark_Y::ScanStart);
+		g_objCommon.Move_Position(AX_MARK_UNIT_Y, eMark_Y::MarkStart);
 	}
 	if(nIndex == eMark_Y::PitchP)
 	{		
@@ -295,9 +297,9 @@ void CManualBtmDlg::OnBtnMarkUnitZClick(UINT nID)
 	{
 		g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::Ready);
 	}
-	if(nIndex == eMark_Z::ScanStart)
+	if(nIndex == eMark_Z::MarkDown)
 	{
-		g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::ScanStart);
+		g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::MarkDown);
 	}
 	/*if(nIndex == eTopInspect_Z::Dummy1)
 	{		
@@ -339,6 +341,60 @@ void CManualBtmDlg::OnBtnMarkUnitIOClick(UINT nID)
 }
 
 
+UINT CManualBtmDlg::Thread_BtmScan(LPVOID lpVoid)
+{
+	CManualBtmDlg* pOwner = (CManualBtmDlg*)lpVoid;
+
+	while (pOwner->m_bThreadBtmScan) {
+		if (!pOwner->BtmScan_Run()) break;
+		Sleep(5);
+	}
+	pOwner->m_bThreadBtmScan = FALSE;
+	pOwner->m_pThreadBtmScan = NULL;
+
+	return 0;
+}
 ///////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////////////
+BOOL CManualBtmDlg::BtmScan_Run()
+{
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	MOVE_DATA *pMoveData = g_objDataManager.Get_pMoveData();
+	static double dTopZ = 0.0;
+
+
+
+	switch (m_nScanCase) {
+	case 0:		// Start 시 1로 진행
+		return TRUE;
+
+	case 1:		// Move Frist
+		if (g_objCommon.Check_Position(AX_BTM_INSPECTOR_Z, eTopInspect_Z::ScanStart)) 
+		{			
+			m_nScanCase++;
+		}
+		break;
+	case 2:		// Scan Move
+		if (g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Z)) 
+		{
+			double dPeriod = pEquipData->dBtmPeriod;	// 33mm
+			double dWidth = 10.0;						// 10mm (고정)
+			double dTrigS = pEquipData->dBtmStart;				// Trigger Start
+			double dTrigE = dTrigS + dPeriod * pEquipData->dBtmCount + dWidth + 1.0;	// Trigger End
+			dTopZ = dTrigE + 30.0;								// Motion End (가감속)
+			double dVelocity = pEquipData->dBtmVelocity;
+			g_objAJinAXL.Start_Scan(AX_BTM_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dWidth, dVelocity);
+			m_nScanCase++;
+		}
+		break;
+	case 3:		// Scan End
+		if (g_objAJinAXL.Is_MoveDone(AX_BTM_INSPECTOR_Z, dTopZ)) 
+		{
+			g_objAJinAXL.Stop_Scan(AX_BTM_INSPECTOR_Z);
+			m_nScanCase = 0;			
+			return FALSE;
+		}
+		break;
+	}
+	return TRUE;
+}

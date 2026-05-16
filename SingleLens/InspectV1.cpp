@@ -8,7 +8,7 @@
 #include "Inspector.h"
 
 const int VISION_PC  = 1;
-const int LOCAL_PORT = 8001;
+const int LOCAL_PORT = 12001;
 
 IMPLEMENT_DYNAMIC(CInspectV1, CWnd)
 

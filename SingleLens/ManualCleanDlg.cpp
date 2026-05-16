@@ -242,18 +242,21 @@ void CManualCleanDlg::OnBtnTopInspectZClick(UINT nID)
 	}
 	if(nIndex == eTopInspect_Z::ScanStart)
 	{
-		g_objCommon.Move_Position(AX_TOP_INSPECTOR_Z, eTopInspect_Z::ScanStart);
+		double dStart = pEquipData->dTopStart;
+		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, dStart);		
 	}
-	/*if(nIndex == eTopInspect_Z::Dummy1)
-	{		
-	double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorZ[eTopInspect_Z::Dummy1];
-	g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_Z, dPitch);
-	}
-	if(nIndex == eTopInspect_Z::Dummy2)
+	if(nIndex == eTopInspect_Z::ScanEnd)
 	{
-	double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorZ[eTopInspect_Z::Dummy2];
-	g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_Z, dPitch);
-	}*/
+		/*double dEnd = pEquipData->dTopEnd;
+		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, dEnd);*/		
+	}
+	if(nIndex == eTopInspect_Z::Scan)
+	{
+		if (m_nScanCase == 0) m_nScanCase = 1;
+		m_bThreadTopScan = TRUE;
+		m_pThreadTopScan = AfxBeginThread(Thread_TopScan, this);		
+	}
+
 	m_strLog.Format("[Manual Top Inspector Z] Z (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);
 }
@@ -261,4 +264,60 @@ void CManualCleanDlg::OnBtnTopInspectZClick(UINT nID)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+UINT CManualCleanDlg::Thread_TopScan(LPVOID lpVoid)
+{
+	CManualCleanDlg* pOwner = (CManualCleanDlg*)lpVoid;
+
+	while (pOwner->m_bThreadTopScan) {
+		if (!pOwner->TopScan_Run()) break;
+		Sleep(5);
+	}
+	pOwner->m_bThreadTopScan = FALSE;
+	pOwner->m_pThreadTopScan = NULL;
+
+	return 0;
+}
 ///////////////////////////////////////////////////////////////////////////////
+
+BOOL CManualCleanDlg::TopScan_Run()
+{
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	MOVE_DATA *pMoveData = g_objDataManager.Get_pMoveData();
+	static double dTopZ = 0.0;
+
+	
+
+	switch (m_nScanCase) {
+	case 0:		// Start 시 1로 진행
+		return TRUE;
+
+	case 1:		// Move Frist
+		if (g_objCommon.Check_Position(AX_TOP_INSPECTOR_Z, eTopInspect_Z::ScanStart)) 
+		{			
+			m_nScanCase++;
+		}
+		break;
+	case 2:		// Scan Move
+		if (g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Z)) 
+		{
+			double dPeriod = pEquipData->dTopPeriod;	// 33mm
+			double dWidth = 10.0;						// 10mm (고정)
+			double dTrigS = pEquipData->dTopStart;				// Trigger Start
+			double dTrigE = dTrigS + dPeriod * pEquipData->dTopCount + dWidth + 1.0;	// Trigger End
+			dTopZ = dTrigE + 30.0;								// Motion End (가감속)
+			double dVelocity = pEquipData->dTopVelocity;
+			g_objAJinAXL.Start_Scan(AX_TOP_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dWidth, dVelocity);
+			m_nScanCase++;
+		}
+		break;
+	case 3:		// Scan End
+		if (g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_Z, dTopZ)) 
+		{
+			g_objAJinAXL.Stop_Scan(AX_TOP_INSPECTOR_Z);
+			m_nScanCase = 0;			
+			return FALSE;
+		}
+		break;
+	}
+	return TRUE;
+}

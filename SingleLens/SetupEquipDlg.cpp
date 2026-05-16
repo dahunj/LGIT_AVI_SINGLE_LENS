@@ -132,6 +132,9 @@ void CSetupEquipDlg::Initial_Controls()
 
 	for (int i = 0; i < 8; i++) m_stcTriggerData[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xFF, 0xE0));
 
+	m_stcTriggerData[1].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
+	m_stcTriggerData[5].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
+
 }
 
 BOOL CSetupEquipDlg::OnInitDialog() 
@@ -272,12 +275,12 @@ void CSetupEquipDlg::Display_EquipData()
 	strData.Format("%0.2lf", pEquipData->dZigPitchY); m_stcZigData[3].SetWindowText(strData);
 	
 	strData.Format("%0.2lf", pEquipData->dTopStart); m_stcTriggerData[0].SetWindowText(strData);
-	strData.Format("%0.2lf", pEquipData->dTopEnd); m_stcTriggerData[1].SetWindowText(strData);
+	strData.Format("%02d", pEquipData->dTopCount); m_stcTriggerData[1].SetWindowText(strData);
 	strData.Format("%0.2lf", pEquipData->dTopPeriod); m_stcTriggerData[2].SetWindowText(strData);
 	strData.Format("%0.2lf", pEquipData->dTopVelocity); m_stcTriggerData[3].SetWindowText(strData);
 
 	strData.Format("%0.2lf", pEquipData->dBtmStart); m_stcTriggerData[4].SetWindowText(strData);
-	strData.Format("%0.2lf", pEquipData->dBtmEnd); m_stcTriggerData[5].SetWindowText(strData);
+	strData.Format("%02d", pEquipData->dBtmCount); m_stcTriggerData[5].SetWindowText(strData);
 	strData.Format("%0.2lf", pEquipData->dBtmPeriod); m_stcTriggerData[6].SetWindowText(strData);
 	strData.Format("%0.2lf", pEquipData->dBtmVelocity); m_stcTriggerData[7].SetWindowText(strData);
 }
@@ -320,11 +323,11 @@ void CSetupEquipDlg::Save_EquipData()
 
 
 	m_stcTriggerData[0].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP_START",   dData, "%0.2lf");pEquipData->dTopStart = dData;
-	m_stcTriggerData[1].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP_END",	 dData, "%0.2lf");pEquipData->dTopEnd = dData;
+	m_stcTriggerData[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Double ("TRIGGER", "TOP_COUNT",	 dData, "%02d");pEquipData->dTopCount = nData;
 	m_stcTriggerData[2].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP_PERIOD",  dData, "%0.2lf");pEquipData->dTopPeriod = dData;
 	m_stcTriggerData[3].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP_VEL",	 dData, "%0.2lf");pEquipData->dTopVelocity = dData;
 	m_stcTriggerData[4].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_START",   dData, "%0.2lf");pEquipData->dBtmStart = dData;
-	m_stcTriggerData[5].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_END",	 dData, "%0.2lf");pEquipData->dBtmEnd = dData;
+	m_stcTriggerData[5].GetWindowText(strData); nData = atoi(strData); INI.Set_Double ("TRIGGER", "BTM_COUNT",	 dData, "%02d");pEquipData->dBtmCount = nData;
 	m_stcTriggerData[6].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_PERIOD",  dData, "%0.2lf");pEquipData->dBtmPeriod = dData;
 	m_stcTriggerData[7].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_VEL",	 dData, "%0.2lf");pEquipData->dBtmVelocity = dData;
 

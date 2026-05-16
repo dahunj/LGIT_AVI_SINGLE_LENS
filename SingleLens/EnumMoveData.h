@@ -99,8 +99,8 @@ struct eTopInspect_Z
 	{
 		Ready = 0,
 		ScanStart = 1,
-		Dummy1 = 2,
-		Dummy2 = 3,
+		ScanEnd = 2,
+		Scan = 3,
 	};
 };
 
@@ -138,8 +138,8 @@ struct eBtmInspect_Z
 	{
 		Ready = 0,
 		ScanStart = 1,
-		Dummy1 = 2,
-		Dummy2 = 3,
+		ScanEnd = 2,
+		Scan = 3,
 	};
 };
 
@@ -151,7 +151,7 @@ struct eMark_X
 	enum dtName
 	{
 		Ready = 0,
-		ScanStart = 1,
+		MarkStart = 1,
 		PitchP = 2,
 		PitchM = 3,
 	};
@@ -164,7 +164,7 @@ struct eMark_Y
 	enum dtName
 	{
 		Ready = 0,
-		ScanStart = 1,
+		MarkStart = 1,
 		PitchP = 2,
 		PitchM = 3,
 	};
@@ -177,8 +177,8 @@ struct eMark_Z
 	enum dtName
 	{
 		Ready = 0,
-		ScanStart = 1,
-		Mark = 2,
+		MarkStart = 1,
+		MarkDown = 2,
 		Dummy = 3,
 	};
 };

@@ -636,7 +636,7 @@ BOOL CSequenceInit::Initial_TopInspector()
 		g_objAJinAXL.Home_Search(AX_TOP_INSPECTOR_X);
 		m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(15000);
 		break;
-	case 16:		// Tray Picker Slave Out 
+	case 16:		
 		if(g_objAJinAXL.Is_Home(AX_TOP_INSPECTOR_X))
 		{			
 			g_objCommon.Move_Position(AX_TOP_INSPECTOR_X, eTopInspect_X::Ready);
@@ -759,7 +759,7 @@ BOOL CSequenceInit::Initial_BtmInspector()
 
 
 /////////////////////////////////////////////////////////////////////////////
-// 7. (Error : 1700)
+// 7. (Error : 1800)
 BOOL CSequenceInit::Initial_MarkUnit()
 {
 	switch (m_niMarkUnitCase)
@@ -851,7 +851,7 @@ BOOL CSequenceInit::Initial_MarkUnit()
 
 
 /////////////////////////////////////////////////////////////////////////////
-// 8. (Error : 1800)
+// 8. (Error : 1900)
 BOOL CSequenceInit::Initial_MainIndex()
 {
 
@@ -885,25 +885,13 @@ BOOL CSequenceInit::Initial_MainIndex()
 			&& g_objCommon.Check_Position(AX_TOP_INSPECTOR_Z, eTopInspect_Z::Ready)
 			&& g_objCommon.Check_Position(AX_BTM_INSPECTOR_Z, eBtmInspect_Z::Ready)
 			&& g_objCommon.Get_CleanerOpen() && g_objCommon.Get_CleanerBackwardDone()) //Interlock 
-		{
-
-			/*if(gData.bDemoMode)
-			{
-
-			}
-			else*/
-			{
-				g_objAJinAXL.Home_Search(AX_MAIN_INDEX_R);
-			}			
+		{			
+			g_objAJinAXL.Home_Search(AX_MAIN_INDEX_R);					
 			m_niMainIndexCase++; m_tiMainInitLoop.Set_LoopTime(25000);
 		}		
 		break;
 	case 5:
-		/*if(gData.bDemoMode)
-		{
-			m_niMainIndexCase = 90; m_tiMainInitLoop.Set_LoopTime(65000);
-		}
-		else*/ if(g_objAJinAXL.Is_Home(AX_MAIN_INDEX_R))
+	    if(g_objAJinAXL.Is_Home(AX_MAIN_INDEX_R))
 		{
 			m_niMainIndexCase = 90; m_tiMainInitLoop.Set_LoopTime(65000);
 		}

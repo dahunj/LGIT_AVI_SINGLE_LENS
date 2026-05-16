@@ -108,7 +108,7 @@ public:
 	void Start_Trigger(int nAxis, double dStartPos, double dEndPos, double dPeriod, double dWidth);
 	void Stop_Trigger(int nAxis);
 
-	void Start_Scan(int nAxis, double dPos, double dTrigS, double dTrigE, double dTrigP, double dTrigW);
+	void Start_Scan(int nAxis, double dPos, double dTrigS, double dTrigE, double dTrigP, double dTrigW, double dVel);
 	void Stop_Scan(int nAxis);
 
 	void Read_AxisList();	// Axis Name & Param

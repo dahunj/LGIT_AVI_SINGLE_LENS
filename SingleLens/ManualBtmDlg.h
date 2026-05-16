@@ -55,4 +55,13 @@ private:
 
 public:
 	void Display_Status();
+
+
+protected:
+	int	 m_nScanCase;
+	BOOL BtmScan_Run();
+
+	BOOL		m_bThreadBtmScan;
+	CWinThread *m_pThreadBtmScan;
+	static UINT	Thread_BtmScan(LPVOID lpVoid);
 };

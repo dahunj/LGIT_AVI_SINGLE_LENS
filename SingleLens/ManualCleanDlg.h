@@ -44,4 +44,12 @@ private:
 
 public:
 	void Display_Status();
+
+protected:
+	int	 m_nScanCase;
+	BOOL TopScan_Run();
+
+	BOOL		m_bThreadTopScan;
+	CWinThread *m_pThreadTopScan;
+	static UINT	Thread_TopScan(LPVOID lpVoid);
 };

@@ -1998,9 +1998,9 @@ BOOL CSequenceMain::MarkUnitRun()
 		if(Select_MarkScanPos(nMarkXPos, nMarkYPos))
 		{
 			int nIdx = (nMarkYPos - 1) * gData.nZigX + nMarkXPos;
-			dMarkUnitY = m_pMoveData->dMarkUnitY[eMark_Y::ScanStart] + (m_pEquipData->dZigPitchY * (nMarkYPos - 1));
-			dMarkUnitX = m_pMoveData->dMarkUnitX[eMark_X::ScanStart] + (m_pEquipData->dZigPitchX * (nMarkXPos - 1));
-			dMarkUnitZ = m_pMoveData->dMarkUnitZ[eMark_Z::ScanStart];
+			dMarkUnitY = m_pMoveData->dMarkUnitY[eMark_Y::MarkStart] + (m_pEquipData->dZigPitchY * (nMarkYPos - 1));
+			dMarkUnitX = m_pMoveData->dMarkUnitX[eMark_X::MarkStart] + (m_pEquipData->dZigPitchX * (nMarkXPos - 1));
+			dMarkUnitZ = m_pMoveData->dMarkUnitZ[eMark_Z::MarkStart];
 
 			g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_Y, dMarkUnitY);
 			g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_X, dMarkUnitX);
@@ -2042,11 +2042,11 @@ BOOL CSequenceMain::MarkUnitRun()
 			}
 			if(bInspectFail) break; //Not Complete
 
-			g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::Mark);
+			g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::MarkDown);
 			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
 		}		
 	case 7:
-		if(g_objCommon.Check_Position(AX_MARK_UNIT_Z, eMark_Z::Mark))
+		if(g_objCommon.Check_Position(AX_MARK_UNIT_Z, eMark_Z::MarkDown))
 		{
 			g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::Ready);
 			m_nMarkUnitCase = 2; m_nMarkUnitLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
