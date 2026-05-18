@@ -1087,3 +1087,39 @@ BOOL CCommon::Get_FeederOpen()
 }
 
 
+
+
+
+void CCommon::Set_RailAlignIn()
+{
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+	pDY01->oRailZigAlignIn = TRUE; pDY01->oRailZigAlignOut = FALSE;
+	g_objAJinAXL.Write_Output(1);
+}
+
+void CCommon::Set_RailAlignOut()
+{
+	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
+	pDY01->oRailZigAlignIn = FALSE; pDY01->oRailZigAlignOut = TRUE;
+	g_objAJinAXL.Write_Output(1);
+}
+
+BOOL CCommon::Get_RailAlignIn()
+{
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+	if(pDX01->iRailZigAlignIn && !pDX01->iRailZigAlignOut)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+
+BOOL CCommon::Get_RailAlignOut()
+{
+	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
+	if(!pDX01->iRailZigAlignIn && pDX01->iRailZigAlignOut)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}

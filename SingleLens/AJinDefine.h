@@ -181,8 +181,8 @@ typedef union tag_DX_DATA_02 {
 		DWORD iIndexPosBit1 			: 1;		// X0201
 		DWORD iIndexPosBit2		: 1;		// X0202
 		DWORD i0203		: 1;		// X0203
-		DWORD iMainIndexZigAlignOut		: 1;		// X0204
-		DWORD iMainIndexZigAlignIn		: 1;	    // X0205
+		DWORD iMainIndexZigAlignIn		: 1;		// X0204
+		DWORD iMainIndexZigAlignOut		: 1;	    // X0205
 		DWORD iIndexTZigExist : 1;		// X0206
 		DWORD i0207 : 1;					// X0207
 		DWORD iCleanerTopDn : 1;			// X0208
@@ -308,8 +308,8 @@ typedef union tag_DY_DATA_01 {
 		DWORD o0111	: 1;								// Y0111
 		DWORD o0112 : 1;								// Y0112
 		DWORD o0113 : 1;								// Y0113
-		DWORD oFeederZigAlignIn : 1;					// Y0114
-		DWORD oFeederZigAlignOut : 1;					// Y0115
+		DWORD oRailZigAlignIn : 1;					// Y0114
+		DWORD oRailZigAlignOut : 1;					// Y0115
 		DWORD oZigPickerMasterIn : 1;					// Y0116
 		DWORD oZigPickerMasterOut : 1;					// Y0117
 		DWORD oZigPickerSlaveIn : 1;					// Y0118
@@ -336,8 +336,8 @@ typedef union tag_DY_DATA_02 {
 		DWORD o0201: 1;					// Y0201
 		DWORD o0202: 1;									// Y0202
 		DWORD o0203: 1;									// Y0203
-		DWORD oMainIndexZigAlignOut: 1;								// Y0204
-		DWORD oMainIndexZigAlignIn : 1;									// Y0205
+		DWORD oMainIndexZigAlignIn: 1;								// Y0204
+		DWORD oMainIndexZigAlignOut : 1;									// Y0205
 		DWORD o0206 : 1;											// Y0206
 		DWORD o0207 : 1;											// Y0207
 		DWORD oCleanerTopDn : 1;								// Y0208

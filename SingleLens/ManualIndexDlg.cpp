@@ -65,6 +65,8 @@ BOOL CManualIndexDlg::OnInitDialog()
 
 	Initial_Controls();
 		
+	SetTimer(0,100,0);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
 }
@@ -102,7 +104,7 @@ void CManualIndexDlg::OnDestroy()
 void CManualIndexDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-
+	if(nIDEvent == 0 ) Display_Status();
 	CDialogEx::OnTimer(nIDEvent);
 }
 
@@ -120,9 +122,9 @@ void CManualIndexDlg::Display_Status()
 	double dAngle = 0.0;
 	double dPos = g_objAJinAXL.Get_Position(AX_MAIN_INDEX_R);
 	
-	dAngle = (dPos/7200.0);
-	if(dAngle > 360) dAngle = fmod(dAngle, 360.0);
-	strPos.Format("%0.3lf", dAngle);
+	//dAngle = (dPos/7200.0);
+	//if(dAngle > 360) dAngle = fmod(dAngle, 360.0);
+	strPos.Format("%0.3lf", dPos);
 	m_stcAxisPos[0].SetWindowText(strPos);
 	
 	//int nPos = g_objCommon.Get_MainIndexPos(0);
@@ -131,6 +133,10 @@ void CManualIndexDlg::Display_Status()
 	
 	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
 	for (int i = 0; i < 3; i++) m_LedIndexPos[i].Set_On((pDX02->nValue >> i) & 1);					// Index Position
+
+	m_LedIndexIO[0].Set_On(pDX02->iMainIndexZigAlignIn);
+	m_LedIndexIO[1].Set_On(pDX02->iMainIndexZigAlignOut);
+
 }
 
 
@@ -170,13 +176,12 @@ void CManualIndexDlg::OnBtmIndexIOClick(UINT nID)
 
 	if(nIndex == eIndexIO::AlignIn)
 	{
-		pDY02->oMainIndexZigAlignIn = TRUE; pDY02->oMainIndexZigAlignOut = FALSE;
+		g_objCommon.Set_IndexLoadAlignIn();
 	}
 	if(nIndex == eIndexIO::AlignOut)
 	{
-		pDY02->oMainIndexZigAlignIn = FALSE; pDY02->oMainIndexZigAlignOut = TRUE;
-	}
-	
+		g_objCommon.Set_IndexLoadAlignOut();
+	}	
 	m_strLog.Format("[Manual Index IO ] I/O (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);
 }

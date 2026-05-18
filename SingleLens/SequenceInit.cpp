@@ -871,11 +871,11 @@ BOOL CSequenceInit::Initial_MainIndex()
 		}
 		return TRUE;
 	case 2:
-		g_objCommon.Set_IndexLoadAlignOut();
+		g_objCommon.Set_IndexLoadAlignIn();
 		m_niMainIndexCase++; m_tiMainIndexLoop.Set_LoopTime(5000);
 		break;
 	case 3:
-		if(g_objCommon.Get_IndexLoadAlignOut())
+		if(g_objCommon.Get_IndexLoadAlignIn())
 		{					
 			m_niMainIndexCase++; m_tiMainInitLoop.Set_LoopTime(25000);
 		}
@@ -887,11 +887,18 @@ BOOL CSequenceInit::Initial_MainIndex()
 			&& g_objCommon.Get_CleanerOpen() && g_objCommon.Get_CleanerBackwardDone()) //Interlock 
 		{			
 			g_objAJinAXL.Home_Search(AX_MAIN_INDEX_R);					
-			m_niMainIndexCase++; m_tiMainInitLoop.Set_LoopTime(25000);
+			m_niMainIndexCase++; m_tiMainInitLoop.Set_LoopTime(30000);
 		}		
 		break;
 	case 5:
 	    if(g_objAJinAXL.Is_Home(AX_MAIN_INDEX_R))
+		{
+			g_objCommon.Move_Position(AX_MAIN_INDEX_R, eIndex_R::Ready);
+			m_niMainIndexCase = 6; m_tiMainInitLoop.Set_LoopTime(30000);
+		}
+		break;
+	case 6:
+		if(g_objCommon.Check_Position(AX_MAIN_INDEX_R, eIndex_R::Ready))
 		{
 			m_niMainIndexCase = 90; m_tiMainInitLoop.Set_LoopTime(65000);
 		}

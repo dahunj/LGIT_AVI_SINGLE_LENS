@@ -85,7 +85,7 @@
 	#pragma comment(lib, "CSGridR.lib")
 #endif
 
-#define MAIN_VERSION	_T("V 0.0.0.2b")
+#define MAIN_VERSION	_T("V 0.0.0.3b")
 //
 //#define AJIN_BOARD_USE
 //#define LOT_BARCODE_USE
@@ -100,7 +100,7 @@
 
 #define SIM_WAITTIMES	 1		//
 #define SIM_WAITTIMEM	 1		//
-#define	VELOCITY_WEIGHT	 8
+#define	VELOCITY_WEIGHT	 40
 
 //Magazine Slot MAX Number 
 const int SLOT_NO_MAX = 10;

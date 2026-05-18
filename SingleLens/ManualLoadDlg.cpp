@@ -220,11 +220,11 @@ void CManualLoadDlg::OnBtnFeederIOClick(UINT nID)
 	}
 	if(nIndex == eFeeder_IO::RailAlignIn)
 	{
-		pDY01->oFeederZigAlignIn = TRUE; pDY01->oFeederZigAlignOut = FALSE;
+		pDY01->oRailZigAlignIn = TRUE; pDY01->oRailZigAlignOut = FALSE;
 	}
 	if(nIndex == eFeeder_IO::RailAlignOut)
 	{
-		pDY01->oFeederZigAlignIn = FALSE; pDY01->oFeederZigAlignOut = TRUE;
+		pDY01->oRailZigAlignIn = FALSE; pDY01->oRailZigAlignOut = TRUE;
 	}	
 	g_objAJinAXL.Write_Output(1);
 
@@ -265,7 +265,7 @@ void CManualLoadDlg::OnBtnPickerZClick(UINT nID)
 {
 	if (!g_objCommon.Check_MainDoor()) return;
 	
-	int nIndex = nID - IDC_BTN_PICKER_Y_0;
+	int nIndex = nID - IDC_BTN_PICKER_Z_0;
 
 	if(nIndex == eZigPicker_Z::Ready)
 	{

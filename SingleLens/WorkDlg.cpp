@@ -377,7 +377,12 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 		if (m_bAutoRunning) {	// First AutoStop
 			m_bAutoRunning = FALSE;
 			
+
+			g_objCommon.Set_LoadCVStop();
+			g_objCommon.Set_ElevCVStop();
 			g_objSequenceMain.End_MainRunThread();
+
+
 
 			int nState = theApp.Get_MainState();
 			if (nState != STATE_ALARM && nState != STATE_ERROR) pMainDlg->Set_CurrentState(STATE_STOP);

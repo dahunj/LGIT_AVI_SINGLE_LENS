@@ -144,6 +144,10 @@ public:
 	BOOL Get_FeederClose();
 	BOOL Get_FeederOpen();
 
+	void Set_RailAlignIn();
+	void Set_RailAlignOut();
+	BOOL Get_RailAlignIn();
+	BOOL Get_RailAlignOut();
 
 	void Set_CleanerForward();
 	void Set_CleanerBackward();
