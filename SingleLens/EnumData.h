@@ -166,3 +166,14 @@ struct eDelay
 	};
 
 };
+
+
+struct eVision
+{
+	enum Name
+	{
+		Tc = 0,
+		Bc = 1,
+	};
+
+};

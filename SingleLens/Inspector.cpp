@@ -114,7 +114,7 @@ void CInspector::Get_StatusRequest(int nVPc)
 	BOOL bInit = g_objSequenceInit.Get_InitComplete();
 	BOOL bRun = g_objSequenceMain.Is_MainThreadRun();
 	int nStatus = bRun ? 2 : bInit ? 1 : 0;
-	Set_StatusReply(nVPc, nStatus);
+	Set_StatusReply(nStatus);
 }
 
 void CInspector::Get_StatusReply(int nVPc, CString sStatus)
@@ -139,18 +139,83 @@ void CInspector::Get_LotReady(int nVPc, CString sLotId, CString sLotNo)
 
 }
 
-void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString sZigID, CString sSlotNo, CString sLensNo)
+void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString sMZNo, CString sTrayNo, CString sLensNo)
 {
-	int nTrayNo = atoi(sSlotNo) - 1;	// Tray Index
-	int	nLensNo = atoi(sLensNo) - 1;	// CM Index
+	int nMNo = atoi(sMZNo) - 1;
+	int nTNo = atoi(sTrayNo) - 1;	// Tray Index
+	int	nLNo = atoi(sLensNo) - 1;	// CM Index
 	
+	if (nTNo < 0 || nTNo > 99 || nLNo < 0 || nLNo > 200) { g_objCommon.Show_Error(6101); return; }
+
+	int nV = (sGbn == "TC" ? eVision::Tc : (sGbn == "BC" ? eVision::Bc : -1));
+	if (nV == -1) { g_objCommon.Show_Error(6102); return; }
+
+
+	if(nV == eVision::Tc) //Tc
+	{
+		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_TOP_INSPECT);
+		if (nCase != 5) 
+		{ 
+			//Exception_Log("Scan Complete", sGbn, nCase); 
+			return;
+		}
+
+		m_nTCScanCnt++;
+		if (m_nTCScanCnt < m_nTCScanReq) return; 
+
+		gData.bScanDone[eVision::Tc] = TRUE;
+		g_objSequenceMain.Set_MainRunCase(AUTO_TOP_INSPECT, 10);
+
+	}
+	else if(nV == eVision::Bc) // Bc
+	{
+		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_BTM_INSPECT);
+		if (nCase != 5) 
+		{ 
+			//Exception_Log("Scan Complete", sGbn, nCase);
+			return; 
+		}
+
+		m_nBCScanCnt++;
+		if (m_nBCScanCnt < m_nBCScanReq) return; 
+
+		gData.bScanDone[eVision::Bc] = TRUE;
+		g_objSequenceMain.Set_MainRunCase(AUTO_BTM_INSPECT, 10);
+	}
 }
 
-void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CString sZigID, CString sSlotNo, CString sLensNo, CString sJudge, CString sNgCode)
+void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CString sMZNo, CString sTrayNo, CString sLensNo, CString sJudge, CString sNgCode)
 {
-	int nTrayNo = atoi(sSlotNo) - 1;	// Tray Index
-	int	nLensNo = atoi(sLensNo) - 1;	// CM Index
-	
+	int nMNo = atoi(sMZNo) - 1;
+	int nTNo = atoi(sTrayNo) - 1;	// Tray Index
+	int	nLNo = atoi(sLensNo) - 1;	// CM Index
+
+	if (nTNo < 0 || nTNo > 99 || nLNo < 0 || nLNo > 200) { g_objCommon.Show_Error(6101); return; }
+
+	int nV = (sGbn == "TC" ? eVision::Tc : (sGbn == "BC" ? eVision::Bc : -1));
+	if (nV == -1) { g_objCommon.Show_Error(6102); return; }
+
+
+	gData.cJudgeCode[nMNo][nTNo][nLNo] = *(LPSTR)(LPCTSTR)sJudge;
+
+
+	int nMode = theApp.Get_MainMode();
+	int nPreInfo = gData.nInspectInfo[nMNo][nTNo][nLNo];
+
+	if		(sJudge == "N") { if (nPreInfo < 8 || nPreInfo > 8) gData.nInspectInfo[nMNo][nTNo][nLNo] = 2; }	// NG
+	else if (sJudge != "G")  // Good
+	{ 
+		if (nPreInfo < 2 || nPreInfo > 8) gData.nInspectInfo[nMNo][nTNo][nLNo] = 2;  // Normal (20180831 유출 때문에 수정.)		
+	}	
+
+	gData.byInspectDone[nMNo][nTNo][nLNo] |= (1 << nV);
+
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	if (pEquipData->bUseTopVision && ((gData.byInspectDone[nMNo][nTNo][nLNo] >> 0) & 1) == 0) return;	// Angle
+	if (pEquipData->bUseBtmVision  && ((gData.byInspectDone[nMNo][nTNo][nLNo] >> 1) & 1) == 0) return;	// Btm1_Specular
+
 }
 
 void CInspector::Get_AMoveRequest(int nVPc, CString sGbn, CString sZ1, CString sZ2, CString sX, CString sY, CString sT, CString sR)
@@ -165,9 +230,7 @@ void CInspector::Get_AMoveRequest(int nVPc, CString sGbn, CString sZ1, CString s
 	double dR  = atof(sR);
 
 	int nMode = theApp.Get_MainMode();
-	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-
-	
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();	
 }
 
 void CInspector::Get_PositionRequest(int nVPc, CString sGbn)
@@ -211,78 +274,83 @@ void CInspector::Exception_Log(int nVPc, CString sFunc, CString sGbn, int nLotNo
 /////////////////////////////////////////////////////////////////////////////
 // Set Command
 
-void CInspector::Set_StatusRequest(int nVPc)
+void CInspector::Set_StatusRequest()
 {
 	CString	strSendCmd;
 	strSendCmd.Format("STATUS,REQUEST");
-	Send_Command(nVPc, strSendCmd);
+	Send_Command(VISION_PC1, strSendCmd);
 }
 
-void CInspector::Set_StatusReply(int nVPc, int nStatus)
+void CInspector::Set_StatusReply(int nStatus)
 {
 	CString	strSendCmd;
 	strSendCmd.Format("STATUS,REPLY,%d", nStatus);
-	Send_Command(nVPc, strSendCmd);
+	Send_Command(VISION_PC1, strSendCmd);
 }
 
-void CInspector::Set_StatusUpdate(int nVPc, int nStatus)
+void CInspector::Set_StatusUpdate(int nStatus)
 {
 	CString	strSendCmd;
 	strSendCmd.Format("STATUS,UPDATE,%d", nStatus);
-	Send_Command(nVPc, strSendCmd);
+	Send_Command(VISION_PC1, strSendCmd);
 }
 
-void CInspector::Set_LotStart(int nVPc, CString sLotId, int nLotNo, int nTrayCount, int nCmCount, CString sModel)
+void CInspector::Set_LotStart(CString sMZID, int nMZNo, int nTrayCount, int nLensCount, CString sModel)
 {
 	m_bLotReady1 = FALSE;
 
 	CString strSendCmd;
-	strSendCmd.Format("LOT,START,%s,%d,%d,%d,%s", sLotId, nLotNo, nTrayCount, nCmCount, sModel);
-	Send_Command(nVPc, strSendCmd);
+	strSendCmd.Format("LOT,START,%s,%d,%d,%d,%s", sMZID, nMZNo, nTrayCount, nLensCount, sModel);
+	Send_Command(VISION_PC1, strSendCmd);
 }
 
-void CInspector::Set_LotEnd(int nVPc, CString sLotId, int nLotNo)
+void CInspector::Set_LotEnd(CString sMZID, int nMZNo)
 {
 	CString	strSendCmd;
-	strSendCmd.Format("LOT,END,%s,%d", sLotId, nLotNo);
-	Send_Command(nVPc, strSendCmd);
+	strSendCmd.Format("LOT,END,%s,%d", sMZID, nMZNo);
+	Send_Command(VISION_PC1, strSendCmd);
 }
 
-void CInspector::Set_LoadComplete(int nVPc, CString sGbn, CString sLotId, int nLotNo, int nTrayNo, int nCmNo, double dHeight)
+void CInspector::Set_LotReadyDone(CString sMZID, int nMZNo)
+{
+	CString	strSendCmd;
+	strSendCmd.Format("LOT,RDYDONE,%s,%d", sMZID, nMZNo);
+	Send_Command(VISION_PC1, strSendCmd);
+}
+
+void CInspector::Set_LoadComplete(CString sGbn, CString sMZID, int nMZNo, CString sTrayID, int nTrayNo, int nLensNo)
 {
 	CString	strSendCmd, strTemp;
-	strSendCmd.Format("LOAD,COMPLETE,%s,%s,%d,%d,%d,%0.3lf", sGbn, sLotId, nLotNo, nTrayNo, nCmNo, dHeight);
-	Send_Command(nVPc, strSendCmd);
+	strSendCmd.Format("LOAD,COMPLETE,%s,%s,%d,%s,%d,%d", sGbn, sMZID, nMZNo, sTrayID, nTrayNo, nLensNo);
+	Send_Command(VISION_PC1, strSendCmd);
 }
 
 void CInspector::Set_MoveComplete(int nVPc, CString sGbn)
 {
 	CString	strSendCmd;
 	strSendCmd.Format("MOVE,COMPLETE,%s", sGbn);
-	Send_Command(nVPc, strSendCmd);
+	Send_Command(VISION_PC1, strSendCmd);
 }
 
 void CInspector::Set_PositionReply(int nVPc, CString sGbn, double dZ1, double dZ2, double dX, double dY, double dT, double dR)
 {
 	CString	strSendCmd;
 	strSendCmd.Format("POSITION,REPLY,%s,%0.3lf,%0.3lf,%0.3lf,%0.3lf,%0.3lf,%0.3lf", sGbn, dZ1, dZ2, dX, dY, dT, dR);
-	Send_Command(nVPc, strSendCmd);
+	Send_Command(VISION_PC1, strSendCmd);
 }
-
-
 
 void CInspector::Set_ReloadComplete(int nVPc, CString sPc)
 {
 	CString	strSendCmd;
 	strSendCmd.Format("RELOAD,COMPLETE,%s", sPc);
-	Send_Command(nVPc, strSendCmd);
+	Send_Command(VISION_PC1, strSendCmd);
 }
 
 void CInspector::Set_InitialRequest(int nVPc)
 {
 	CString	strSendCmd;
 	strSendCmd.Format("INITIAL,REQUEST");
-	Send_Command(nVPc, strSendCmd);
+	Send_Command(VISION_PC1, strSendCmd);
 }
 
 void CInspector::Set_TimeUpdate(int nVPc)
@@ -295,7 +363,7 @@ void CInspector::Set_TimeUpdate(int nVPc)
 
 	CString	strSendCmd;
 	strSendCmd.Format("TIME,UPDATE,%s", strTime);
-	Send_Command(nVPc, strSendCmd);
+	Send_Command(VISION_PC1, strSendCmd);
 }
 
 /////////////////////////////////////////////////////////////////////////////

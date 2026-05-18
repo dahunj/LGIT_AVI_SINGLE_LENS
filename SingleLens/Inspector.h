@@ -30,14 +30,16 @@ private:
 	
 	BOOL	m_bLotReady1;
 
+	int		m_nBCScanReq, m_nTCScanReq;
+	int		m_nBCScanCnt, m_nTCScanCnt;
 
 	void Get_StatusRequest(int nVPc);
 	void Get_StatusReply(int nVPc, CString sStatus);
 	void Get_StatusUpdate(int nVPc, CString sStatus);
 
 	void Get_LotReady(int nVPc, CString sLotId, CString sLotNo);
-	void Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString sZigID, CString sSlotNo, CString sLensNo);
-	void Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CString sZigID, CString sSlotNo, CString sLensNo, CString sJudge, CString sNgCode);
+	void Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString sMZNo, CString sTrayNo, CString sLensNo);
+	void Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CString sMZNo, CString sTrayNo, CString sLensNo, CString sJudge, CString sNgCode);
 	
 	void Get_AMoveRequest(int nVPc, CString sGbn, CString sZ1, CString sZ2, CString sX, CString sY, CString sT, CString sR);
 	void Get_PositionRequest(int nVPc, CString sGbn);
@@ -58,14 +60,16 @@ public:
 
 	void Receive_Command(int nVPc, CString sCommand);
 
-	void Set_StatusRequest(int nVPc);
-	void Set_StatusReply(int nVPc, int nStatus);
-	void Set_StatusUpdate(int nVPc, int nStatus);
+	void Set_StatusRequest();
+	void Set_StatusReply(int nStatus);
+	void Set_StatusUpdate(int nStatus);
 
 
-	void Set_LotStart(int nVPc, CString sLotId, int nLotNo, int nTrayCount, int nCmCount, CString sModel);
-	void Set_LotEnd(int nVPc, CString sLotId, int nLotNo);
-	void Set_LoadComplete(int nVPc, CString sGbn, CString sLotId, int nLotNo, int nTrayNo, int nCmNo, double dHeight);
+	void Set_LotStart(CString sMZID, int nMZNo, int nTrayCount, int nLensCount, CString sModel);
+	void Set_LotEnd(CString sMZID, int nMZNo);
+	void Set_LotReadyDone(CString sMZID, int nMZNo);
+
+	void Set_LoadComplete(CString sGbn, CString sMZID, int nMZNo, CString sTrayID, int nTrayNo, int nLensNo);
 	void Set_MoveComplete(int nVPc, CString sGbn);
 
 	void Set_PositionReply(int nVPc, CString sGbn, double dZ1, double dZ2, double dX, double dY, double dT, double dR);

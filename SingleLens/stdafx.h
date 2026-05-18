@@ -122,6 +122,8 @@ typedef struct
 	CString	sMZID[6];
 	CString	sZigID[6][10];
 
+	int		nMZNo[6];
+
 	int		nMZCnt;
 	int		nLensUseCnt[6][10];
 	int		nLensMaxCnt;
@@ -193,9 +195,9 @@ typedef struct
 	
 	BOOL    bScanDone[2];            // 0:Top 1: Btm
 
-	char	cJudgeCode[10][ZIG_X*ZIG_Y][2];	
-	int     nInspectInfo[10][ZIG_X*ZIG_Y];    // ????? (0:Empty, 1:Good, 2:NG, 3:NoResult, 7:Request, 8:NG, 9:Init)
-	BYTE	byInspectDone[10][ZIG_X*ZIG_Y];	// 검사완료 (2bit 사용 ==> 0:T1, 1:Btm1)
+	char	cJudgeCode[7][10][ZIG_X*ZIG_Y];	
+	int     nInspectInfo[7][10][ZIG_X*ZIG_Y];    // ????? (0:Empty, 1:Good, 2:NG, 3:NoResult, 7:Request, 8:NG, 9:Init)
+	BYTE	byInspectDone[7][10][ZIG_X*ZIG_Y];	// 검사완료 (2bit 사용 ==> 0:T1, 1:Btm1)
 
 	//0: Rignt, 1 : Left,  판정코드 (0:Top, 1:Btm)
 	

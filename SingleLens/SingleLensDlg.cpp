@@ -762,7 +762,7 @@ void CSingleLensDlg::Exit_System(int nExitNo)
 
 	Set_CurrentState(STATE_NONE);
 
-	g_objInspector.Set_StatusUpdate(VISION_PC1, 0);
+	g_objInspector.Set_StatusUpdate(0);
 	
 
 	DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();

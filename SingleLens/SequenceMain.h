@@ -151,7 +151,7 @@ public:
 	void Init_MarkZig();
 	BOOL Select_MarkScanPos(int &nMarkPosX, int &nMarkPosY);
 
-	BOOL Check_InspectDone(const CString& sZigID, int sSlotNo, int sLensNo, DWORD dwStart);
+	BOOL Check_InspectDone(const CString& sZigID,int nMZNo, int sSlotNo, int sLensNo, DWORD dwStart);
 	
 	void Init_MZSlot(int nSlotNo, int nX, int nY);
 };
