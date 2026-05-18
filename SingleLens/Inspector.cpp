@@ -25,8 +25,6 @@ CCriticalSection g_csInspectRecv;	// Receive_Command 문제 해결하기 위함
 CInspector::CInspector()
 {
 	m_nStatusPC1 = 0;		// Vision PC1 상태 (0:Not Ready, 1:Ready, 2:Run)
-	
-
 	m_bLotReady1 = FALSE;	
 }
 

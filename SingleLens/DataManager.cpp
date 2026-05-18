@@ -73,11 +73,6 @@ BOOL CDataManager::Read_EquipData()
 	m_EquipData.bUseMES = INI.Get_Bool("OPTION", "MES_USE", FALSE);
 	
 
-
-
-		
-	
-
 	for (int i = 0; i < 3; i++) { strKey.Format("%d", i); m_EquipData.nVacOffDelay[i] = INI.Get_Integer("VAC_OFF_DELAY", strKey, 30); }
 	for (int i = 0; i < 6; i++) { strKey.Format("%d", i); m_EquipData.nDelayAdd[i] = INI.Get_Integer("DELAY_ADD", strKey, 100); }
 
@@ -91,16 +86,19 @@ BOOL CDataManager::Read_EquipData()
 	m_EquipData.sPasswordEngr = INI.Get_String("HIDDEN", "PASSWORD_SI", "");
 
 	
-	// Gloval Data
-		
+	// Gloval Data		
 	m_EquipData.nResultTestNg = INI.Get_Integer("RESULT_TEST", "RESULT_NG", 0);
 
 	//doorinterlock log
-
 	if (gDoorLock.nOpenStart == 0 && m_EquipData.bUseDoorLock == FALSE)
 		g_objLogFile.Save_Interlock(2);
 	if (gDoorLock.nOpenStart == 1 && m_EquipData.bUseDoorLock == TRUE) 
 		g_objLogFile.Save_Interlock(3);
+
+	m_EquipData.bUseTopVision = INI.Get_Bool("OPTION", "TOP_VISION", FALSE);
+	m_EquipData.bUseBtmVision = INI.Get_Bool("OPTION", "BTM_VISION", FALSE);
+
+
 
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	pMainDlg->Display_EquipName();

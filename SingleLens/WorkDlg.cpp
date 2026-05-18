@@ -67,6 +67,7 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_STC_UPH_0 + i, m_stcUph[i]);
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_STC_DAY_0 + i, m_stcDay[i]);
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_LED_VISION_STATUS_0 + i, m_ledVisionStatus[i]);
+	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_LED_EQUIP_OPTION_0 + i, m_ledEquipOption[i]);
 
 }
 
@@ -159,9 +160,9 @@ void CWorkDlg::Initial_Controls()
 	
 	m_rdoWorkStart.Init_Ctrl("¹ÙÅÁ", 20, TRUE, COLOR_DEFAULT, COLOR_DEFAULT, 0, 0);
 	m_rdoWorkStop.Init_Ctrl("¹ÙÅÁ", 20, TRUE, COLOR_DEFAULT, COLOR_DEFAULT, 0, 0);
-	m_ledInitComplete.Init_Ctrl("¹ÙÅÁ", 12, TRUE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em24);
+	m_ledInitComplete.Init_Ctrl("¹ÙÅÁ", 10, TRUE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em24);
 	
-	m_chkCycleStop.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, COLOR_DEFAULT, 0, 0);
+	m_chkCycleStop.Init_Ctrl("¹ÙÅÁ", 10, TRUE, COLOR_DEFAULT, COLOR_DEFAULT, 0, 0);
 			
 	for (int i = 0; i < AUTO_COUNT; i++) m_stcWorkCase[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x40, 0x40));
 
@@ -170,7 +171,8 @@ void CWorkDlg::Initial_Controls()
 	for (int i = 0; i < 2; i++) m_stcDay[i].Init_Ctrl("Arial", 9, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x40, 0x40));
 	for (int i = 0; i < 2; i++) m_ledVisionStatus[i].Init_Ctrl("Arial", 10, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em16);
 	
-	
+	for (int i = 0; i < 2; i++) m_ledEquipOption[i].Init_Ctrl("Arial", 10, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em16);
+
 }
 
 BOOL CWorkDlg::OnInitDialog()
@@ -881,11 +883,9 @@ void CWorkDlg::Display_Status()
 	BOOL bInitComplete = g_objSequenceInit.Get_InitComplete();
 	m_ledInitComplete.Set_On(bInitComplete);
 
-	//m_ledVisionStatus[0].Set_On(g_objInspector.Get_VisionStatus());
-	
-	
-
-	
+	m_ledVisionStatus[0].Set_On(g_objInspector.Check_Connect(VISION_PC1));
+	m_ledEquipOption[0].Set_On(pEquipData->bUseTopVision);
+	m_ledEquipOption[1].Set_On(pEquipData->bUseBtmVision);
 }
 
 void CWorkDlg::Reset_AlarmLog()

@@ -197,15 +197,32 @@ void CSequenceMain::Set_ClearRunData(BOOL bInit)
 		
 		memset(gData.InfoMainIndex, 0x00, sizeof(int)*7*ZIG_X*ZIG_Y);
 		memset(gData.InfoMZUnload, 0x00, sizeof(int)*10*ZIG_X*ZIG_Y);
+
+		memset(gData.InfoCtZigLoad, 0x00, sizeof(int)*10);
+		memset(gData.InfoCtZigRdy, 0x00, sizeof(int)*10);
+		memset(gData.InfoCtZigUnload, 0x00, sizeof(int)*10);
+
+		memset(gData.cJudgeCode, 0x00, sizeof(char)*7*10*ZIG_X*ZIG_Y);
+		memset(gData.nInspectInfo, 0x00, sizeof(int)*7*10*ZIG_X*ZIG_Y);
+		memset(gData.byInspectDone, 0x00, sizeof(BYTE)*7*10*ZIG_X*ZIG_Y);
+
+		memset(gData.bIndexDone, 0x00, sizeof(BOOL) * 7);
+
+		gData.bLdCVWorkWait = FALSE;
+		gData.bElvLoadWait = FALSE;
+		gData.bElvUnloadWait = FALSE;
+		gData.bElvSlideOverWait = FALSE;
+		gData.bFeederWorkWait = FALSE;
+		gData.bLdMZWait = FALSE;
+		gData.bUldMZWait = FALSE;
+
+		
 	}
-
-
-
-
+	
 	g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Load, NULL);
 	g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Ready, NULL);
 
-	memset(gData.bIndexDone, 0x00, sizeof(BOOL) * 7);
+	
 }
 
 void CSequenceMain::Set_ClearLotData(BOOL bInit, int nLotNo)
@@ -213,7 +230,7 @@ void CSequenceMain::Set_ClearLotData(BOOL bInit, int nLotNo)
 	
 }
 
-void CSequenceMain::Job_LotEnd()
+void CSequenceMain::Job_LotEnd(int nMZNo)
 {
 	m_bLotEnd = TRUE;
 }
@@ -1833,7 +1850,7 @@ BOOL CSequenceMain::TopInspectorRun()
 			else 
 			{
 				int nLensNo = (gData.nZigY - nTopYPos) * gData.nZigX + nTopXPos;	// Tray 하단부터 모듈 적재한다.
-				g_objInspector.Set_LoadComplete("TC", gData.sMZIDMainIdex[eMainIndex::Top],0, gData.sZigIDMainIndex[eMainIndex::Top], gData.nSlotNoMainIndex[eMainIndex::Top], nLensNo);
+				g_objInspector.Set_LoadComplete("TC", gData.sMZIDMainIdex[eMainIndex::Top],1, gData.sZigIDMainIndex[eMainIndex::Top], gData.nSlotNoMainIndex[eMainIndex::Top], nLensNo);
 				m_nTopInspectCase = (int)TopBranch::VisionWait; m_nTopInspectLoop.Set_LoopTime(gData.nTime[LoopTime::Scan]);			
 			}
 		}
@@ -1971,7 +1988,7 @@ BOOL CSequenceMain::BtmInspectorRun()
 			else 
 			{
 				int nLensNo = (gData.nZigY - nBtmYPos) * gData.nZigX + nBtmXPos;	// Tray 하단부터 모듈 적재한다.
-				g_objInspector.Set_LoadComplete("BC", gData.sMZIDMainIdex[eMainIndex::Btm],0, gData.sZigIDMainIndex[eMainIndex::Btm], gData.nSlotNoMainIndex[eMainIndex::Btm], nLensNo);				
+				g_objInspector.Set_LoadComplete("BC", gData.sMZIDMainIdex[eMainIndex::Btm],1, gData.sZigIDMainIndex[eMainIndex::Btm], gData.nSlotNoMainIndex[eMainIndex::Btm], nLensNo);				
 				m_nBtmInspectCase = (int)BtmBranch::VisionWait; m_nBtmInspectLoop.Set_LoopTime(gData.nTime[LoopTime::Scan]);			
 			}
 		}
@@ -2221,7 +2238,7 @@ BOOL CSequenceMain::MainIndexRun()
 
 		if(Check_IndexEmpty(-1) && !Check_CtZigInMZ(eMZ::Load) && Check_CVMZSensors() <= 0 )
 		{
-			Job_LotEnd();
+			Job_LotEnd(0);
 			//Lot End;
 		}
 		break;

@@ -66,6 +66,9 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_STC_ZIG_DATA_0 + i, m_stcZigData[i]);
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_STC_TRIGGER_DATA_0 + i, m_stcTriggerData[i]);
+
+	DDX_Control(pDX, IDC_CHK_TOP_VISION, m_chkTopVision);
+	DDX_Control(pDX, IDC_CHK_BTM_VISION, m_chkBtmVision);
 }
 
 BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
@@ -134,6 +137,9 @@ void CSetupEquipDlg::Initial_Controls()
 
 	m_stcTriggerData[1].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
 	m_stcTriggerData[5].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
+
+	m_chkTopVision.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
+	m_chkBtmVision.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
 
 }
 
@@ -283,6 +289,11 @@ void CSetupEquipDlg::Display_EquipData()
 	strData.Format("%02d", pEquipData->dBtmCount); m_stcTriggerData[5].SetWindowText(strData);
 	strData.Format("%0.2lf", pEquipData->dBtmPeriod); m_stcTriggerData[6].SetWindowText(strData);
 	strData.Format("%0.2lf", pEquipData->dBtmVelocity); m_stcTriggerData[7].SetWindowText(strData);
+
+
+	m_chkTopVision.SetCheck(pEquipData->bUseTopVision);
+	m_chkBtmVision.SetCheck(pEquipData->bUseBtmVision);
+
 }
 
 void CSetupEquipDlg::Save_EquipData()
@@ -330,6 +341,15 @@ void CSetupEquipDlg::Save_EquipData()
 	m_stcTriggerData[5].GetWindowText(strData); nData = atoi(strData); INI.Set_Double ("TRIGGER", "BTM_COUNT",	 dData, "%02d");pEquipData->dBtmCount = nData;
 	m_stcTriggerData[6].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_PERIOD",  dData, "%0.2lf");pEquipData->dBtmPeriod = dData;
 	m_stcTriggerData[7].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_VEL",	 dData, "%0.2lf");pEquipData->dBtmVelocity = dData;
+
+	pEquipData->bUseTopVision = m_chkTopVision.GetCheck();
+	INI.Set_Bool("OPTION", "TOP_VISION", pEquipData->bUseTopVision);
+	
+	pEquipData->bUseBtmVision = m_chkBtmVision.GetCheck();
+	INI.Set_Bool("OPTION", "BTM_VISION", pEquipData->bUseBtmVision);
+
+
+
 
 }
 

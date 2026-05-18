@@ -55,6 +55,9 @@ public:
 	CCheckCS	m_chkResultTestUse;
 	CEditCS		m_edtResultTest;
 
+	CCheckCS	m_chkTopVision;
+	CCheckCS	m_chkBtmVision;
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 

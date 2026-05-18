@@ -31,13 +31,11 @@ BOOL CLoopTimer::Over_LoopTime()
 	return FALSE;	// No Timeout Error
 #endif
 
-	if(gData.bDemoMode) return FALSE;
-
-
-
-#ifndef AJIN_BOARD_USE
-	return FALSE;	// No Timeout Error
-#endif
+//	if(gData.bDemoMode) return FALSE;
+//
+//#ifndef AJIN_BOARD_USE
+//	return FALSE;	// No Timeout Error
+//#endif
 
 	DWORD dwTerm = GetTickCount() - m_dwLoopStart;
 	if (dwTerm >= m_dwLoopTerm)
