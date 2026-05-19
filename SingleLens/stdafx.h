@@ -108,7 +108,7 @@ const int SLOT_NO_MAX = 10;
 const int ZIG_MAX = 500;
 
 //Zig X-Y
-const int ZIG_X = 4, ZIG_Y = 8;
+const int ZIG_X = 40, ZIG_Y = 20; // MAX
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -137,8 +137,8 @@ typedef struct
 	int		nSlotNoToPick[2];	//0: Load, 1: Ready
 	//0: Load , 1: Clean, 2: Top, 3:empty, 4:btm, 5: Mark, 6: Unload 
 	
-	int		nZigX;
-	int		nZigY;
+	int		nLensCntX;
+	int		nLensCntY;
 
 	// Info Processing
 
@@ -158,8 +158,7 @@ typedef struct
 	int	InfoCtZigUnload[10];
 	
 	BOOL	ZigMap[3][10];
-	int		LensMap[3][10][ZIG_X][ZIG_Y];
-	
+	int		LensMap[3][10][ZIG_X][ZIG_Y];	
 		
 	CString	sMZIDElevLoad;
 	CString	sZigIDElevLoad[10];
@@ -170,7 +169,6 @@ typedef struct
 	CString	sMZIDElevReady;
 	CString	sZigIDElevReady[10];
 	
-
 	CString	sMZIDFeeder;
 	CString	sZigIDFeeder;
 	int		nSlotNoFeeder;	

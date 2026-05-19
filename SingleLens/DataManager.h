@@ -49,12 +49,12 @@ typedef struct tag_EQUIP_DATA {
 
 	//Trigger 
 	double	dTopStart;
-	double	dTopCount;
+	int	dTopCount;
 	double	dTopPeriod;
 	double	dTopVelocity;
 
 	double	dBtmStart;
-	double	dBtmCount;
+	int	dBtmCount;
 	double	dBtmPeriod;
 	double	dBtmVelocity;
 

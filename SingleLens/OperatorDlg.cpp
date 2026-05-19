@@ -102,7 +102,7 @@ void COperatorDlg::Initial_Controls()
 	Initial_Grid(&m_grdOperMZLoad, SLOT_NO_MAX, 1);
 	Initial_Grid(&m_grdOperMZUnload, SLOT_NO_MAX, 1);
 
-	Initial_Grid(&m_grdOperTrayTop, ZIG_Y, ZIG_X);
+	Initial_Grid(&m_grdOperTrayTop, gData.nLensCntX, ZIG_X);
 	Initial_Grid(&m_grdOperTrayBtm, ZIG_Y, ZIG_X);
 	Initial_Grid(&m_grdOperTrayMark, ZIG_Y, ZIG_X);
 

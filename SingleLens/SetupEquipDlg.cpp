@@ -80,7 +80,7 @@ BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
 	ON_STN_CLICKED(IDC_STC_PASSWORD_MT, &CSetupEquipDlg::OnStnClickedStcPasswordMt)	
 	ON_STN_CLICKED(IDC_STC_DOORLOCK_TIME, &CSetupEquipDlg::OnStnClickedStcDoorlockTime)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_ZIG_DATA_0, IDC_STC_ZIG_DATA_3, OnStcZigDataClick)
-	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_TRIGGER_DATA_0, IDC_STC_TRIGGER_DATA_7, OnStcZigDataClick)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_TRIGGER_DATA_0, IDC_STC_TRIGGER_DATA_7, OnStcTriggerDataClick)
 END_MESSAGE_MAP()
 
 // CSetupEquipDlg 메시지 처리기입니다.
@@ -327,18 +327,18 @@ void CSetupEquipDlg::Save_EquipData()
 	INI.Set_Integer("EQUIPMENT", "DOOR_LOCK_TIME", gData.nDoorLockTime);
 
 	
-	m_stcZigData[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Double ("COAT_ZIG", "ARRAY_X", dData, "%0.2lf");pEquipData->nZigArrayX = nData;
-	m_stcZigData[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Double ("COAT_ZIG", "ARRAY_Y", dData, "%0.2lf");pEquipData->nZigArrayY = nData;
+	m_stcZigData[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("COAT_ZIG", "ARRAY_X", nData);pEquipData->nZigArrayX = nData;
+	m_stcZigData[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("COAT_ZIG", "ARRAY_Y", nData);pEquipData->nZigArrayY = nData;
 	m_stcZigData[2].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("COAT_ZIG", "PITCH_X", dData, "%0.2lf");pEquipData->dZigPitchX = dData;
 	m_stcZigData[3].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("COAT_ZIG", "PITCH_Y", dData, "%0.2lf");pEquipData->dZigPitchY = dData;
 
 
 	m_stcTriggerData[0].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP_START",   dData, "%0.2lf");pEquipData->dTopStart = dData;
-	m_stcTriggerData[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Double ("TRIGGER", "TOP_COUNT",	 dData, "%02d");pEquipData->dTopCount = nData;
+	m_stcTriggerData[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("TRIGGER", "TOP_COUNT",	 nData);		  pEquipData->dTopCount = nData;
 	m_stcTriggerData[2].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP_PERIOD",  dData, "%0.2lf");pEquipData->dTopPeriod = dData;
 	m_stcTriggerData[3].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP_VEL",	 dData, "%0.2lf");pEquipData->dTopVelocity = dData;
 	m_stcTriggerData[4].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_START",   dData, "%0.2lf");pEquipData->dBtmStart = dData;
-	m_stcTriggerData[5].GetWindowText(strData); nData = atoi(strData); INI.Set_Double ("TRIGGER", "BTM_COUNT",	 dData, "%02d");pEquipData->dBtmCount = nData;
+	m_stcTriggerData[5].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("TRIGGER", "BTM_COUNT",	 nData);		  pEquipData->dBtmCount = nData;
 	m_stcTriggerData[6].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_PERIOD",  dData, "%0.2lf");pEquipData->dBtmPeriod = dData;
 	m_stcTriggerData[7].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_VEL",	 dData, "%0.2lf");pEquipData->dBtmVelocity = dData;
 

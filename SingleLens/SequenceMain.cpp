@@ -40,8 +40,8 @@ CSequenceMain::CSequenceMain(void)
 	gData.nSlotNoToPick[eMZ::Ready] = 1;
 
 
-	gData.nZigY = ZIG_Y;
-	gData.nZigX = ZIG_X;
+	gData.nLensCntY = ZIG_Y;
+	gData.nLensCntX = ZIG_X;
 
 	
 	m_pEquipData->bUseBtmVision = TRUE;
@@ -1822,7 +1822,7 @@ BOOL CSequenceMain::TopInspectorRun()
 	case 3:
 		if(Select_TopScanPos(nTopXPos, nTopYPos))
 		{
-			int nIdx = (nTopYPos - 1) * gData.nZigX + nTopXPos;
+			int nIdx = (nTopYPos - 1) * gData.nLensCntX + nTopXPos;
 			dTopUnitY = m_pMoveData->dTopInspectorY[eTopInspect_Y::ScanStart] + (m_pEquipData->dZigPitchY * (nTopYPos - 1));
 			dTopUnitX = m_pMoveData->dTopInspectorX[eTopInspect_X::ScanStart] + (m_pEquipData->dZigPitchX * (nTopXPos - 1));
 			dTopUnitZ = m_pMoveData->dTopInspectorZ[eTopInspect_Z::ScanStart];
@@ -1854,7 +1854,7 @@ BOOL CSequenceMain::TopInspectorRun()
 			} 
 			else 
 			{
-				int nLensNo = (gData.nZigY * (nTopXPos-1)) + nTopYPos;	// Tray 하단부터 모듈 적재한다.
+				int nLensNo = (gData.nLensCntY * (nTopXPos-1)) + nTopYPos;	// Tray 하단부터 모듈 적재한다.
 				g_objInspector.Set_LoadComplete("TC", gData.sMZIDMainIdex[eMainIndex::Top],1, gData.sZigIDMainIndex[eMainIndex::Top], gData.nSlotNoMainIndex[eMainIndex::Top], nLensNo);
 				m_nTopInspectCase = (int)TopBranch::VisionWait; m_nTopInspectLoop.Set_LoopTime(gData.nTime[LoopTime::Scan]);			
 			}
@@ -1884,7 +1884,7 @@ BOOL CSequenceMain::TopInspectorRun()
 		break;
 	case 10:
 		nTopYPos++;
-		if(nTopYPos > gData.nZigY) 
+		if(nTopYPos > gData.nLensCntY) 
 		{
 			nTopXPos++; nTopYPos = 1;
 		}
@@ -1958,7 +1958,7 @@ BOOL CSequenceMain::BtmInspectorRun()
 	case 3:
 		if(Select_BtmScanPos(nBtmXPos, nBtmYPos))
 		{
-			int nIdx = (nBtmYPos - 1) * gData.nZigX + nBtmXPos;
+			int nIdx = (nBtmYPos - 1) * gData.nLensCntX + nBtmXPos;
 			dBtmUnitY = m_pMoveData->dBtmInspectorY[eTopInspect_Y::ScanStart] + (m_pEquipData->dZigPitchY * (nBtmYPos - 1));
 			dBtmUnitX = m_pMoveData->dBtmInspectorX[eTopInspect_X::ScanStart] + (m_pEquipData->dZigPitchX * (nBtmXPos - 1));
 			dBtmUnitZ = m_pMoveData->dBtmInspectorZ[eTopInspect_Z::ScanStart];
@@ -1992,7 +1992,7 @@ BOOL CSequenceMain::BtmInspectorRun()
 			} 
 			else 
 			{
-				int nLensNo = (gData.nZigY * (nBtmXPos-1)) + nBtmYPos;				
+				int nLensNo = (gData.nLensCntY * (nBtmXPos-1)) + nBtmYPos;				
 				g_objInspector.Set_LoadComplete("BC", gData.sMZIDMainIdex[eMainIndex::Btm],1, gData.sZigIDMainIndex[eMainIndex::Btm], gData.nSlotNoMainIndex[eMainIndex::Btm], nLensNo);				
 				m_nBtmInspectCase = (int)BtmBranch::VisionWait; m_nBtmInspectLoop.Set_LoopTime(gData.nTime[LoopTime::Scan]);			
 			}
@@ -2022,7 +2022,7 @@ BOOL CSequenceMain::BtmInspectorRun()
 		break;
 	case 10:
 		nBtmYPos++;
-		if(nBtmYPos > gData.nZigY) 
+		if(nBtmYPos > gData.nLensCntY) 
 		{
 			nBtmXPos++; nBtmYPos = 1;
 		}
@@ -2097,7 +2097,7 @@ BOOL CSequenceMain::MarkUnitRun()
 	case 3:
 		if(Select_MarkScanPos(nMarkXPos, nMarkYPos))
 		{
-			int nIdx = (nMarkYPos - 1) * gData.nZigX + nMarkXPos;
+			int nIdx = (nMarkYPos - 1) * gData.nLensCntX + nMarkXPos;
 			dMarkUnitY = m_pMoveData->dMarkUnitY[eMark_Y::MarkStart] + (m_pEquipData->dZigPitchY * (nMarkYPos - 1));
 			dMarkUnitX = m_pMoveData->dMarkUnitX[eMark_X::MarkStart] + (m_pEquipData->dZigPitchX * (nMarkXPos - 1));
 			dMarkUnitZ = m_pMoveData->dMarkUnitZ[eMark_Z::MarkStart];
@@ -2106,7 +2106,7 @@ BOOL CSequenceMain::MarkUnitRun()
 			g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_X, dMarkUnitX);
 			g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_Z, dMarkUnitZ);
 
-			nLensNo = (gData.nZigY - nMarkYPos) * gData.nZigX + nMarkXPos;	// Tray 하단부터 모듈 적재한다.
+			nLensNo = (gData.nLensCntY - nMarkYPos) * gData.nLensCntX + nMarkXPos;	// Tray 하단부터 모듈 적재한다.
 			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nTime[LoopTime::Motion]);
 		}
 		else
@@ -2634,11 +2634,11 @@ BOOL CSequenceMain::Select_TopScanPos(int &nTopPosX, int &nTopPosY)
 
 	//Y 기준 X 증가하면서 찍는 방법 
 	//for(int j= (gData.nZigY - 1); j>=0; j--) 
-	for(int i= 0; i < gData.nZigX; i++) 
+	for(int i= 0; i < gData.nLensCntX; i++) 
 	{
 		if (i==1 || i==3 || i==5 || i==7 || i==9 || i==11)
 		{
-			for(int j = gData.nZigY - 1; j >= 0; j--) 
+			for(int j = gData.nLensCntY - 1; j >= 0; j--) 
 			{
 				if (gData.InfoMainIndex[eMainIndex::Top][i][j] == eLensState::TopReady
 					|| gData.InfoMainIndex[eMainIndex::Top][i][j] == eLensState::Init)  
@@ -2652,7 +2652,7 @@ BOOL CSequenceMain::Select_TopScanPos(int &nTopPosX, int &nTopPosY)
 		}
 		else
 		{
-			for(int j = 0 ; j < gData.nZigY ; j++)
+			for(int j = 0 ; j < gData.nLensCntY ; j++)
 			{
 				if (gData.InfoMainIndex[eMainIndex::Top][i][j] == eLensState::TopReady
 					|| gData.InfoMainIndex[eMainIndex::Top][i][j] == eLensState::Init) 
@@ -2668,7 +2668,7 @@ BOOL CSequenceMain::Select_TopScanPos(int &nTopPosX, int &nTopPosY)
 		if (nTopPosY > 0) break;
 	}
 
-	if (nTopPosX > gData.nZigX) return FALSE;
+	if (nTopPosX > gData.nLensCntX) return FALSE;
 	if (nTopPosY == 0 || nTopPosX == 0) return FALSE;
 	return TRUE;
 }
@@ -2700,7 +2700,7 @@ BOOL CSequenceMain::Select_BtmScanPos(int &nBtmPosX, int &nBtmPosY)
 	nBtmPosX = nBtmPosY = 0;
 
 	//Y 기준 X 증가하면서 찍는 방법 
-	for(int i= 0; i < gData.nZigX; i++) 
+	for(int i= 0; i < gData.nLensCntX; i++) 
 	{
 		if (i==1 || i==3 || i==5 || i==7 || i==9 || i==11)
 		{
@@ -2736,7 +2736,7 @@ BOOL CSequenceMain::Select_BtmScanPos(int &nBtmPosX, int &nBtmPosY)
 		if (nBtmPosY > 0) break;
 	}
 
-	if (nBtmPosX > gData.nZigX) return FALSE;
+	if (nBtmPosX > gData.nLensCntX) return FALSE;
 	if (nBtmPosY == 0 || nBtmPosX == 0) return FALSE;
 	return TRUE;
 }

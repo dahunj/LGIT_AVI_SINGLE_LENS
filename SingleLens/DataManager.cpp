@@ -95,8 +95,13 @@ BOOL CDataManager::Read_EquipData()
 	if (gDoorLock.nOpenStart == 1 && m_EquipData.bUseDoorLock == TRUE) 
 		g_objLogFile.Save_Interlock(3);
 
-	m_EquipData.nZigArrayX =  INI.Get_Double("COAT_ZIG", "ARRAY_X", 0.00);
-	m_EquipData.nZigArrayY =		  INI.Get_Double("COAT_ZIG", "ARRAY_Y", 0.00);
+	m_EquipData.nZigArrayX =  INI.Get_Integer("COAT_ZIG", "ARRAY_X", 0);
+	m_EquipData.nZigArrayY =  INI.Get_Integer("COAT_ZIG", "ARRAY_Y", 0);
+	gData.nLensCntX = m_EquipData.nZigArrayX;
+	gData.nZigY = m_EquipData.nZigArrayY;
+	
+
+
 	m_EquipData.dZigPitchX = INI.Get_Double("COAT_ZIG", "PITCH_X", 0.00);
 	m_EquipData.dZigPitchY = INI.Get_Double("COAT_ZIG", "PITCH_Y", 0.00);
 
