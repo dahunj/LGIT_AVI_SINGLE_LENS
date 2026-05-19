@@ -67,8 +67,11 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_STC_ZIG_DATA_0 + i, m_stcZigData[i]);
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_STC_TRIGGER_DATA_0 + i, m_stcTriggerData[i]);
 
+	DDX_Control(pDX, IDC_STC_ELV_DATA_0, m_stcElvData[0]);
+	
 	DDX_Control(pDX, IDC_CHK_TOP_VISION, m_chkTopVision);
 	DDX_Control(pDX, IDC_CHK_BTM_VISION, m_chkBtmVision);
+	DDX_Control(pDX, IDC_CHK_MARK_USE, m_chkMarkUse);
 }
 
 BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
@@ -81,6 +84,7 @@ BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
 	ON_STN_CLICKED(IDC_STC_DOORLOCK_TIME, &CSetupEquipDlg::OnStnClickedStcDoorlockTime)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_ZIG_DATA_0, IDC_STC_ZIG_DATA_3, OnStcZigDataClick)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_TRIGGER_DATA_0, IDC_STC_TRIGGER_DATA_7, OnStcTriggerDataClick)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_ELV_DATA_0, IDC_STC_ELV_DATA_0, OnStcElvDataClick)
 END_MESSAGE_MAP()
 
 // CSetupEquipDlg ¸Þ½ÃÁö Ã³¸®±âÀÔ´Ï´Ù.
@@ -140,7 +144,7 @@ void CSetupEquipDlg::Initial_Controls()
 
 	m_chkTopVision.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
 	m_chkBtmVision.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
-
+	m_chkMarkUse.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
 }
 
 BOOL CSetupEquipDlg::OnInitDialog() 
@@ -275,6 +279,8 @@ void CSetupEquipDlg::Display_EquipData()
 
 	strData.Format("%0.3lf", gAlm.dMotionChkPos);	 m_stcMotionCheck.SetWindowText(strData);
 	
+
+
 	strData.Format("%d", pEquipData->nZigArrayX); m_stcZigData[0].SetWindowText(strData);
 	strData.Format("%d", pEquipData->nZigArrayY); m_stcZigData[1].SetWindowText(strData);
 	strData.Format("%0.2lf", pEquipData->dZigPitchX); m_stcZigData[2].SetWindowText(strData);
@@ -290,9 +296,12 @@ void CSetupEquipDlg::Display_EquipData()
 	strData.Format("%0.2lf", pEquipData->dBtmPeriod); m_stcTriggerData[6].SetWindowText(strData);
 	strData.Format("%0.2lf", pEquipData->dBtmVelocity); m_stcTriggerData[7].SetWindowText(strData);
 
+	strData.Format("%0.2lf", pEquipData->dElevPitchZ); m_stcElvData[0].SetWindowText(strData);
+
 
 	m_chkTopVision.SetCheck(pEquipData->bUseTopVision);
 	m_chkBtmVision.SetCheck(pEquipData->bUseBtmVision);
+	m_chkMarkUse.SetCheck(pEquipData->bUseMark);
 
 }
 
@@ -342,14 +351,17 @@ void CSetupEquipDlg::Save_EquipData()
 	m_stcTriggerData[6].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_PERIOD",  dData, "%0.2lf");pEquipData->dBtmPeriod = dData;
 	m_stcTriggerData[7].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_VEL",	 dData, "%0.2lf");pEquipData->dBtmVelocity = dData;
 
+	m_stcElvData[0].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("ELEVATOR", "PITCH_Z", dData, "%0.2lf"); pEquipData->dElevPitchZ = dData;
+
+
 	pEquipData->bUseTopVision = m_chkTopVision.GetCheck();
 	INI.Set_Bool("OPTION", "TOP_VISION", pEquipData->bUseTopVision);
 	
 	pEquipData->bUseBtmVision = m_chkBtmVision.GetCheck();
 	INI.Set_Bool("OPTION", "BTM_VISION", pEquipData->bUseBtmVision);
 
-
-
+	pEquipData->bUseMark = m_chkMarkUse.GetCheck();
+	INI.Set_Bool("OPTION", "MARK_USE", pEquipData->bUseMark);
 
 }
 
@@ -390,6 +402,17 @@ void CSetupEquipDlg::OnStcTriggerDataClick(UINT nID)
 	m_stcTriggerData[ID].SetWindowText(strNew);
 }
 
+
+void CSetupEquipDlg::OnStcElvDataClick(UINT nID)
+{
+	int ID = nID - IDC_STC_ELV_DATA_0;
+
+	CString strOld, strNew;
+	m_stcElvData[ID].GetWindowText(strOld);
+	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
+
+	m_stcElvData[ID].SetWindowText(strNew);
+}
 
 
 

@@ -35,6 +35,8 @@ public:
 
 	CStaticCS	m_stcZigData[4];
 	CStaticCS	m_stcTriggerData[8];
+
+	CStaticCS	m_stcElvData[1];
 	
 
 	CGroupCS	m_grpTower;
@@ -57,6 +59,7 @@ public:
 
 	CCheckCS	m_chkTopVision;
 	CCheckCS	m_chkBtmVision;
+	CCheckCS	m_chkMarkUse;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
@@ -85,6 +88,7 @@ public:
 	afx_msg void OnStnClickedStcDoorlockTime();
 	afx_msg void OnStcZigDataClick(UINT nID);
 	afx_msg void OnStcTriggerDataClick(UINT nID);
+	afx_msg void OnStcElvDataClick(UINT nID);
 };
 
 ///////////////////////////////////////////////////////////////////////////////

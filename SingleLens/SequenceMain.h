@@ -140,20 +140,20 @@ public:
 	
 	void Set_IndexEnd();
 
-	BOOL CheckCtZigAllReturn();	
+	BOOL Check_TrayAllReturn();	
 	//////////////////////////////////////////////////////////////////////////
 	void Init_TopZig();
-	BOOL Select_TopScanPos(int &nTopPosX, int &nTopPosY);
-		
+	BOOL Select_TopScanPos(int &nTopPosX, int &nTopPosY);		
 	void Init_BtmZig();
 	BOOL Select_BtmScanPos(int &nBtmPosX, int &nBtmPosY);
-
 	void Init_MarkZig();
 	BOOL Select_MarkScanPos(int &nMarkPosX, int &nMarkPosY);
 
 	BOOL Check_InspectDone(const CString& sZigID,int nMZNo, int sSlotNo, int sLensNo, DWORD dwStart);
 	
 	void Init_MZSlot(int nSlotNo, int nX, int nY);
+
+	int Find_UnloadMZNo();
 };
 
 extern CSequenceMain g_objSequenceMain;

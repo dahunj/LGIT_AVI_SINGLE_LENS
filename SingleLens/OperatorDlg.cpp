@@ -102,9 +102,9 @@ void COperatorDlg::Initial_Controls()
 	Initial_Grid(&m_grdOperMZLoad, SLOT_NO_MAX, 1);
 	Initial_Grid(&m_grdOperMZUnload, SLOT_NO_MAX, 1);
 
-	Initial_Grid(&m_grdOperTrayTop, gData.nLensCntX, ZIG_X);
-	Initial_Grid(&m_grdOperTrayBtm, ZIG_Y, ZIG_X);
-	Initial_Grid(&m_grdOperTrayMark, ZIG_Y, ZIG_X);
+	Initial_Grid(&m_grdOperTrayTop, gData.nLensCntY, gData.nLensCntX);
+	Initial_Grid(&m_grdOperTrayBtm, gData.nLensCntY, gData.nLensCntX);
+	Initial_Grid(&m_grdOperTrayMark, gData.nLensCntY, gData.nLensCntX);
 
 
 	m_btnOperStart.Init_Ctrl("Segoe UI", 40, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xD7, 0xD7, 0xD7), NULL, CButtonCS::emTop);

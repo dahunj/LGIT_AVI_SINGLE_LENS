@@ -76,8 +76,16 @@ BOOL CSingleLensApp::InitInstance()
 
 	gDoorLock.nOpenStart = -1;//start with nothing
 	gDoorLock.bFirst = TRUE;
-
 	gData.bDemoMode = TRUE;
+
+	CIniFileCS INI(gsCurrentDir + "\\System\\EquipData.ini");
+	if (!INI.Check_File()) { AfxMessageBox("EquipData.ini File Not Found!!!"); return FALSE; }
+
+	gData.nLensCntX = INI.Get_Integer("COAT_ZIG", "ARRAY_X", 0);
+	gData.nLensCntY = INI.Get_Integer("COAT_ZIG", "ARRAY_Y", 0);
+
+	if( gData.nLensCntX <= 0 ) gData.nLensCntX = 1;
+	if( gData.nLensCntY <= 0 ) gData.nLensCntY = 1;
 
 	InstallCrashHandler();
 

@@ -1365,12 +1365,12 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo)
 
 		if(nTo == eMZ::Load && nFrom != eMZ::Ready)
 		{
-			gData.nSlotNoToPick[eMZ::Load] = 1;
+			gData.nTNoPick[eMZ::Load] = 1;
 			gData.ZigMap[eMZ::Load][i] = FALSE;
 
-			for(int j = 0; j < ZIG_X; j++)
+			for(int j = 0; j < gData.nLensCntX; j++)
 			{
-				for(int k = 0; k < ZIG_Y; k++)
+				for(int k = 0; k < gData.nLensCntY; k++)
 				{
 					nCnt++;
 					if(nCnt <= gData.nLensUseCnt[nTo][i])
@@ -1390,12 +1390,12 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo)
 		}
 		else if(nTo == eMZ::Ready)
 		{
-			gData.nSlotNoToPick[eMZ::Ready] = 1;
+			gData.nTNoPick[eMZ::Ready] = 1;
 			gData.ZigMap[eMZ::Ready][i] = FALSE;
 
-			for(int j = 0; j < ZIG_X; j++)
+			for(int j = 0; j < gData.nLensCntX; j++)
 			{
-				for(int k = 0; k < ZIG_Y; k++)
+				for(int k = 0; k < gData.nLensCntY; k++)
 				{
 					nCnt++;
 					if(nCnt <= gData.nLensUseCnt[nTo][i])
@@ -1415,7 +1415,7 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo)
 		}
 		else if(nTo == eMZ::Load && nFrom == eMZ::Ready)
 		{
-			gData.nSlotNoToPick[eMZ::Load] = gData.nSlotNoToPick[eMZ::Ready];
+			gData.nTNoPick[eMZ::Load] = gData.nTNoPick[eMZ::Ready];
 			gData.ZigMap[eMZ::Load][i] = gData.ZigMap[eMZ::Ready][i];
 			
 			memcpy(gData.InfoMZLoad[i], gData.InfoMZReady[i], sizeof(int)*ZIG_X*ZIG_Y);

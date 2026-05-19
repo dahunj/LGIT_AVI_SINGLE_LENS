@@ -707,6 +707,8 @@ void CCommon::Set_ElevStopper2Down()
 
 BOOL CCommon::Get_ElevStopper2In()
 {
+	if(gData.bDemoMode) return TRUE;
+
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
 	if(pDX00->iElvLift2In && !pDX00->iElvLift2Out)
@@ -730,6 +732,8 @@ BOOL CCommon::Get_ElevStopper2Out()
 
 BOOL CCommon::Get_ElevStopper2Up()
 {
+	if(gData.bDemoMode) return TRUE;
+
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
 	if(pDX00->iElvLift2UpR && !pDX00->iElvLift2Dn)

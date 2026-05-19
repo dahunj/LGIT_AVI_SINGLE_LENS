@@ -462,6 +462,7 @@ void CManualElevDlg::OnBtnElevZClick(UINT nID)
 	
 	
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	MOVE_DATA *pMoveData = g_objDataManager.Get_pMoveData();
 
 	int nIndex = nID - IDC_BTN_ELEV_Z_0;
 
@@ -483,13 +484,13 @@ void CManualElevDlg::OnBtnElevZClick(UINT nID)
 
 	if(nIndex == eElv_Z::Pitch)
 	{
-		double dPitchZ = pEquipData->dElevPitchZ;
+		double dPitchZ = pEquipData->dElevPitchZ;//pMoveData->dMZElevZ[eElv_Z::Pitch];//
 		g_objAJinAXL.Move_Relative(AX_MZ_ELEVATOR_Z, dPitchZ);		
 	}
 
 	if(nIndex == eElv_Z::PitchMinus)
 	{
-		double dPitchZ = pEquipData->dElevPitchZ;
+		double dPitchZ = pEquipData->dElevPitchZ;//pMoveData->dMZElevZ[eElv_Z::Pitch];
 		g_objAJinAXL.Move_Relative(AX_MZ_ELEVATOR_Z, -dPitchZ);	
 	}	
 

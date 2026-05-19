@@ -36,17 +36,6 @@ CSequenceMain::CSequenceMain(void)
 
 	m_bThreadMainRun = FALSE;
 	m_pThreadMainRun = NULL;
-	gData.nSlotNoToPick[eMZ::Load] = 1;
-	gData.nSlotNoToPick[eMZ::Ready] = 1;
-
-
-	gData.nLensCntY = ZIG_Y;
-	gData.nLensCntX = ZIG_X;
-
-	
-	m_pEquipData->bUseBtmVision = TRUE;
-	m_pEquipData->bUseTopVision = TRUE;
-
 
 	Reset_MainRunCase();
 }
@@ -139,6 +128,15 @@ void CSequenceMain::Set_MainRunLoop(int nRun, int nLoop)
 
 BOOL CSequenceMain::Get_IsAutoRun()
 {
+	
+	if (!Check_IndexEmpty(-1)) return TRUE;
+	if (Check_CtZigInMZ(eMZ::Load)) return TRUE;
+	if (!Check_ZigPickerEmpty()) return TRUE;
+	if (!Check_FeederEmpty()) return TRUE;
+	if (Check_CVMZSensors() > 0) return TRUE;
+
+	if(gData.bCycleStop) return FALSE;
+
 	int *pCase = Get_pMainRunCase();
 	for (int i = 0; i < AUTO_COUNT; i++) 
 	{		
@@ -150,11 +148,6 @@ BOOL CSequenceMain::Get_IsAutoRun()
 		if (*(pCase + i) > 0) return TRUE;
 	}
 
-	if (!Check_IndexEmpty(-1)) return TRUE;
-	if (Check_CtZigInMZ(eMZ::Load)) return TRUE;
-	if (!Check_ZigPickerEmpty()) return TRUE;
-	if (!Check_FeederEmpty()) return TRUE;
-	if (Check_CVMZSensors() > 0) return TRUE;
 	
 	return FALSE;
 }
@@ -177,52 +170,60 @@ void CSequenceMain::Set_ClearRunData(BOOL bInit)
 {
 	if(bInit)
 	{
-		for(int i = 0; i < 6; i++) gData.sMZID[i] = "";
-		for(int i = 0; i < 6; i++) for(int j = 0; j < 10; j++) gData.sZigID[i][j] = "";
-		for(int i = 0; i < 6; i++) gData.nMZNo[i];
-
-		gData.nMZCnt = 0;
-		for(int i = 0; i < 6; i++) for(int j = 0; j < 10; j++) gData.nLensUseCnt[i][j] = 0;
-		gData.nLensMaxCnt = 0;
-
-		gData.nSlotNoToPick[0] = 0;
-		gData.nSlotNoToPick[1] = 0;
-
-		memset(gData.InfoMZLoad, 0x00, sizeof(int)*10*ZIG_X*ZIG_Y);
-		memset(gData.InfoMZReady, 0x00, sizeof(int)*10*ZIG_X*ZIG_Y);
-
-		memset(gData.InfoFeeder, 0x00, sizeof(int)*ZIG_X*ZIG_Y);
-		memset(gData.InfoRail, 0x00, sizeof(int)*ZIG_X*ZIG_Y);
-		memset(gData.InfoZigPick, 0x00, sizeof(int)*ZIG_X*ZIG_Y);
-		
-		memset(gData.InfoMainIndex, 0x00, sizeof(int)*7*ZIG_X*ZIG_Y);
-		memset(gData.InfoMZUnload, 0x00, sizeof(int)*10*ZIG_X*ZIG_Y);
-
-		memset(gData.InfoCtZigLoad, 0x00, sizeof(int)*10);
-		memset(gData.InfoCtZigRdy, 0x00, sizeof(int)*10);
-		memset(gData.InfoCtZigUnload, 0x00, sizeof(int)*10);
-
-		memset(gData.cJudgeCode, 0x00, sizeof(char)*7*10*ZIG_X*ZIG_Y);
-		memset(gData.nInspectInfo, 0x00, sizeof(int)*7*10*ZIG_X*ZIG_Y);
-		memset(gData.byInspectDone, 0x00, sizeof(BYTE)*7*10*ZIG_X*ZIG_Y);
-
-		memset(gData.bIndexDone, 0x00, sizeof(BOOL) * 7);
-
-		gData.bLdCVWorkWait = FALSE;
-		gData.bElvLoadWait = FALSE;
-		gData.bElvUnloadWait = FALSE;
-		gData.bElvSlideOverWait = FALSE;
-		gData.bFeederWorkWait = FALSE;
-		gData.bLdMZWait = FALSE;
-		gData.bUldMZWait = FALSE;
-
-		
 	}
+	for(int i = 0; i < 6; i++) gData.sMZID[i] = "";
+	for(int i = 0; i < 6; i++) for(int j = 0; j < 10; j++) gData.sZigID[i][j] = "";
+	for(int i = 0; i < 6; i++) gData.nMZNo[i];
+
+	gData.nMZCnt = 0;
+	for(int i = 0; i < 6; i++) for(int j = 0; j < 10; j++) gData.nLensUseCnt[i][j] = 0;
+	gData.nLensMaxCnt = 0;
+
+	memset(gData.InfoMZLoad, 0x00, sizeof(int)*10*ZIG_X*ZIG_Y);
+	memset(gData.InfoMZReady, 0x00, sizeof(int)*10*ZIG_X*ZIG_Y);
+	memset(gData.InfoFeeder, 0x00, sizeof(int)*ZIG_X*ZIG_Y);
+	memset(gData.InfoRail, 0x00, sizeof(int)*ZIG_X*ZIG_Y);
+	memset(gData.InfoZigPick, 0x00, sizeof(int)*ZIG_X*ZIG_Y);
+	memset(gData.InfoMainIndex, 0x00, sizeof(int)*7*ZIG_X*ZIG_Y);
+	memset(gData.InfoMZUnload, 0x00, sizeof(int)*10*ZIG_X*ZIG_Y);
+
+	memset(gData.InfoCtZigLoad, 0x00, sizeof(int)*10);
+	memset(gData.InfoCtZigRdy, 0x00, sizeof(int)*10);
+	memset(gData.InfoCtZigUnload, 0x00, sizeof(int)*10);
+
+	memset(gData.cJudgeCode, 0x00, sizeof(char)*7*10*ZIG_X*ZIG_Y);
+	memset(gData.nInspectInfo, 0x00, sizeof(int)*7*10*ZIG_X*ZIG_Y);
+	memset(gData.byInspectDone, 0x00, sizeof(BYTE)*7*10*ZIG_X*ZIG_Y);
+
+	memset(gData.bIndexDone, 0x00, sizeof(BOOL) * 7);		
+
+
+	gData.nTNoPick[0] = 0;
+	gData.nTNoPick[1] = 0;
+
+	gData.bLdCVWorkWait = FALSE;
+	gData.bElvLoadWait = FALSE;
+	gData.bElvUnloadWait = FALSE;
+	gData.bElvSlideOverWait = FALSE;
+	gData.bFeederWorkWait = FALSE;
+	gData.bLdMZWait = FALSE;
+	gData.bUldMZWait = FALSE;
 	
+	g_dlgWork.TransferMZInfo(eMZ::Load, -1);
+	g_dlgWork.TransferMZInfo(eMZ::Ready, -1);
+	g_dlgWork.TransferMZInfo(eMZ::Unload, -1);
+
 	g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Load, NULL);
 	g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Ready, NULL);
-
 	
+	gData.bCycleStop = FALSE;
+
+	if(gData.bDemoMode)
+	{
+		m_pDX00->iElvMZExist1 = FALSE;
+		m_pDX00->iElvMZExist2 = FALSE;
+		m_pDX01->iUldCvMZExist4 = FALSE;
+	}	
 }
 
 void CSequenceMain::Set_ClearLotData(BOOL bInit, int nLotNo)
@@ -232,6 +233,8 @@ void CSequenceMain::Set_ClearLotData(BOOL bInit, int nLotNo)
 
 void CSequenceMain::Job_LotEnd(int nMZNo)
 {
+	
+
 	m_bLotEnd = TRUE;
 }
 
@@ -259,17 +262,19 @@ BOOL CSequenceMain::LotEnd_Run()
 	if (gData.bCycleStop) g_dlgWork.PostMessage(UM_RESET_CYCLE_STOP, NULL, NULL);
 
 	gData.bFirstLotStart = FALSE;
+
+
 	
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	//pMainDlg->Set_LampFlicker_UldRun(FALSE);
-	//pMainDlg->Set_LampFlicker_UldOpen(FALSE);
+	//pMainDlg->Set_LampFlicker_UldOpen(FALSE);	
+
+	g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (WPARAM)0, NULL);	// All Clear
 	
-
-//	g_dlgWork.PostMessage(UM_UPDATE_LOT_INFO, (WPARAM)0, NULL);	// All Clear
-
 //	if (m_nAssyPickCase == 1) m_nAssyPickCase = 0;
 
 	Set_ClearRunData(FALSE);
+	Reset_MainRunCase();
 
 	//int nPx = (gData.nULPNo < 1) ? 0 : gData.nULPNo - 1;	// 맨마지막 공정인 Good Tray Port No 활용.
 
@@ -337,7 +342,7 @@ BOOL CSequenceMain::LoadConveyorRun()
 {
 	static int nDetectCnt[6] = {0, 0, 0, 0, 0, 0}; 
 
-	if(gData.bLdMZWait || gData.bElvLoadWait || gData.bFeederWorkWait)
+	if(gData.bLdMZWait || gData.bElvLoadWait || gData.bFeederWorkWait || gData.bCycleStop)
 	{
 		g_objCommon.Set_LoadCVStop();
 		return TRUE;
@@ -446,11 +451,12 @@ BOOL CSequenceMain::LoadConveyorRun()
 //  2. (Error : 3400)
 BOOL CSequenceMain::MZElevRun()
 {
-	static int  nMZCnt = 0;	
+	static int  nMZNo = 0;
+	static int  nMZCnt = 0;
 	static int	nMZDetectCnt[6] = {0,0,0,0,0,0};
 	DWORD dwTick1 = 0, dwTick2 = 0;
 	
-	if(gData.bFeederWorkWait) return TRUE;	
+	if(gData.bFeederWorkWait ) return TRUE;	
 
 	//Suppose MZ on Right of Elev
 	switch(m_nMZElevCase)
@@ -460,10 +466,10 @@ BOOL CSequenceMain::MZElevRun()
 		return TRUE;
 	case ElvBranch::Start:
 
-		//if(nMZCnt > 0 && !gData.bCycleStop)
+		
 		if(g_objCommon.Get_LdStopper1Down() && g_objCommon.Check_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Ready))
 		{
-			if(!m_nMZElevLoop.Waiting_Time(500)) break;	
+			//if(!m_nMZElevLoop.Waiting_Time(500)) break;	
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load MZ to Elev Start");
 		}	
@@ -532,6 +538,7 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		break;
 	case ElvBranch::LoadMZ:	
+		m_nMZElevLoop.Set_LoopTime(30000);
 		if(gData.bDemoMode)
 		{
 			if(m_pDX00->iLdCVMZExist1R)
@@ -554,11 +561,10 @@ BOOL CSequenceMain::MZElevRun()
 		else
 		{
 			// 15초 반응 없으면 매거진 다시 컨베이어에 놓을것
-			if(!m_nMZElevLoop.Waiting_Time(15000)) break;  
-			
 			nMZDetectCnt[5]++;
-			if(nMZDetectCnt[5] > 5)
+			if(nMZDetectCnt[5] > 50)
 			{
+				nMZDetectCnt[0] = 0; nMZDetectCnt[5] = 0;
 				m_nMZElevCase = 0; m_nMZElevLoop.Set_LoopTime(5000);
 			}			
 		}
@@ -612,9 +618,12 @@ BOOL CSequenceMain::MZElevRun()
 			{
 				g_dlgWork.TransferMZInfo(nFrom, eMZ::Load);
 				gData.sMZIDElevLoad = gData.sMZID[eMZ::Load];
+				
 
+				nMZNo++; if(nMZNo > 7) nMZNo =1;
 				for(int i = 0; i < 10; i++)
 				{
+					gData.nMZNoMZLoad[i] = nMZNo;
 					gData.sZigIDElevLoad[i] = gData.sZigID[eMZ::Load][i];
 				}				
 				g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Load, NULL);
@@ -688,8 +697,10 @@ BOOL CSequenceMain::MZElevRun()
 				g_dlgWork.TransferMZInfo(nFrom, eMZ::Ready);
 				gData.sMZIDElevReady = gData.sMZID[eMZ::Ready];
 
+				nMZNo++;if(nMZNo > 7) nMZNo =1;
 				for(int i = 0; i < 10; i++)
 				{
+					gData.nMZNoMZRdy[i] = nMZNo;
 					gData.sZigIDElevReady[i] = gData.sZigID[eMZ::Ready][i];
 				}				
 				g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Ready, NULL);
@@ -744,7 +755,7 @@ BOOL CSequenceMain::MZElevRun()
 		}		
 		break;
 	case 33:
-		if(nMZCnt >= 4)
+		if(nMZCnt >= 4) //If it's full, wait until one becomes available.
 		{
 			nMZDetectCnt[5] = 0;
 			m_nMZElevCase = ElvBranch::Unload;			
@@ -827,7 +838,8 @@ BOOL CSequenceMain::MZElevRun()
 			Sleep(5);
 			g_objCommon.Set_UnloadCVStop();	
 			gData.bElvUnloadWait = FALSE;
-			m_nMZElevCase = 51;m_nMZElevLoop.Set_LoopTime(5000);
+			//Check Slide Over 
+			m_nMZElevCase = ElvBranch::SlideOver;m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
 	case ElvBranch::SlideOver:		
@@ -918,6 +930,8 @@ BOOL CSequenceMain::MZElevRun()
 				
 				for(int i = 0; i < 10; i++)
 				{
+					gData.nMZNoMZLoad[i] = gData.nMZNoMZRdy[i]; gData.nMZNoMZRdy[i] = 0;
+
 					gData.sZigIDElevLoad[i] = gData.sZigID[eMZ::Load][i];
 					gData.sZigIDElevReady[i].Empty();
 				}				
@@ -947,8 +961,7 @@ BOOL CSequenceMain::MZElevRun()
 BOOL CSequenceMain::FeederRun()
 {	
 	static double dPosZ = 0.0;
-
-	
+		
 	if(gData.bElvLoadWait || gData.bElvSlideOverWait || gData.bElvUnloadWait) return TRUE;
 	
 	switch(m_nFeederCase)
@@ -967,19 +980,19 @@ BOOL CSequenceMain::FeederRun()
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready))
 		{
 			//아래 부터 검사 
-			dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] - m_pEquipData->dElevPitchZ * (gData.nSlotNoToPick[eMZ::Load] - 1) ;
+			dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] - m_pEquipData->dElevPitchZ * (gData.nTNoPick[eMZ::Load] - 1);
+			//dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] - m_pMoveData->dMZElevZ[eElv_Z::Pitch] * (gData.nTNoPick[eMZ::Load] - 1) ;
 			g_objAJinAXL.Move_Absolute(AX_MZ_ELEVATOR_Z, dPosZ);
 
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZLoad);
 
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
-			m_strLog.Format("Elev Z pitch Move, SlotNo : %d", gData.nSlotNoToPick); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+			m_strLog.Format("Elev Z pitch Move, SlotNo : %d", gData.nTNoPick); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}		
 		break;
 	case 3:
 		if(g_objAJinAXL.Is_MoveDone(AX_MZ_ELEVATOR_Z, dPosZ) && g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZLoad))
-		{
-			
+		{			
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 			m_strLog.Format("FeederUnit X Move (MZ2), %d"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}
@@ -994,11 +1007,11 @@ BOOL CSequenceMain::FeederRun()
 			gData.bFeederWorkWait = TRUE; // load Start
 
 			int nExist = -1;
-			nExist = g_dlgWork.CheckZigExistInMZ(0, gData.nSlotNoToPick[eMZ::Load]);
+			nExist = g_dlgWork.CheckZigExistInMZ(0, gData.nTNoPick[eMZ::Load]);
 
 
 			if((m_pDX01->iMagazineZigExist|| gData.bDemoMode) 
-				&& nExist == gData.nSlotNoToPick[eMZ::Load])
+				&& nExist == gData.nTNoPick[eMZ::Load])
 			{				
 				g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad);
 				m_nFeederCase = 10; m_nFeederLoop.Set_LoopTime(5000);
@@ -1009,15 +1022,15 @@ BOOL CSequenceMain::FeederRun()
 				//Z Pitch Move 
 				//g_objAJinAXL.Move_Relative(AX_MZ_ELEVATOR_Z, -m_pEquipData->dMZPitchRightZ*(1.0)); 
 
-				if(gData.nSlotNoToPick[eMZ::Load] > 10) 
+				if(gData.nTNoPick[eMZ::Load] > 10) 
 				{	
-					gData.nSlotNoToPick[eMZ::Load] = 1;
+					gData.nTNoPick[eMZ::Load] = 1;
 					m_nFeederCase = 0; m_nFeederLoop.Set_LoopTime(5000);
 					m_strLog.Format("Elev Z Move to search Finish"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 				}
 				else
 				{
-					gData.nSlotNoToPick[eMZ::Load]++;
+					gData.nTNoPick[eMZ::Load]++;
 					m_nFeederCase = FeederBranch::LoadSearch; m_nFeederLoop.Set_LoopTime(5000);
 					m_strLog.Format("Elev Z Move to search Zig"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 				}
@@ -1054,11 +1067,15 @@ BOOL CSequenceMain::FeederRun()
 			gData.bFeederWorkWait = FALSE;
 			//Info Processing 		
 			gData.sMZIDFeeder = gData.sMZIDElevLoad; gData.sMZIDElevLoad = "";
-			gData.sZigIDFeeder = gData.sZigIDElevLoad[gData.nSlotNoToPick[eMZ::Load] -1]; gData.sZigIDElevLoad[gData.nSlotNoToPick[eMZ::Load] -1] = "";
-			gData.nSlotNoFeeder = gData.nSlotNoToPick[eMZ::Load]; 
-			memcpy(gData.InfoFeeder, gData.InfoMZLoad[gData.nSlotNoToPick[eMZ::Load] -1], sizeof(int)*ZIG_X*ZIG_Y );
-			memset(gData.InfoMZLoad[gData.nSlotNoToPick[eMZ::Load] -1], 0x00, sizeof(int)*ZIG_X*ZIG_Y );
-
+			gData.sZigIDFeeder = gData.sZigIDElevLoad[gData.nTNoPick[eMZ::Load] -1]; gData.sZigIDElevLoad[gData.nTNoPick[eMZ::Load] -1] = "";
+			gData.nSlotNoFeeder = gData.nTNoPick[eMZ::Load]; 
+			
+			gData.nMZNoFeeder = gData.nMZNoMZLoad[gData.nTNoPick[eMZ::Load] -1];
+			gData.nMZNoMZLoad[gData.nTNoPick[eMZ::Load] -1] = 0;
+			
+			memcpy(gData.InfoFeeder, gData.InfoMZLoad[gData.nTNoPick[eMZ::Load] -1], sizeof(int)*ZIG_X*ZIG_Y );
+			memset(gData.InfoMZLoad[gData.nTNoPick[eMZ::Load] -1], 0x00, sizeof(int)*ZIG_X*ZIG_Y );
+			
 			g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO,eMZ::Load, NULL);
 
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
@@ -1106,11 +1123,14 @@ BOOL CSequenceMain::FeederRun()
 			gData.sMZIDRail = gData.sMZIDFeeder; gData.sMZIDFeeder.Empty();
 			gData.sZigIDRail = gData.sZigIDFeeder; gData.sZigIDFeeder.Empty();
 			gData.nSlotNoRail = gData.nSlotNoFeeder; gData.nSlotNoFeeder = 0;
+
+			gData.nMZNoRail = gData.nMZNoFeeder; gData.nMZNoFeeder = 0;
+
 			memcpy( gData.InfoRail, gData.InfoFeeder,  sizeof(int)*ZIG_X*ZIG_Y);
 			memset( gData.InfoFeeder, 0x00, sizeof(int)*ZIG_X*ZIG_Y);	
 
-			gData.nSlotNoToPick[eMZ::Load]++;
-			if(gData.nSlotNoToPick[eMZ::Load] > 10) gData.nSlotNoToPick[eMZ::Load] = 1;
+			gData.nTNoPick[eMZ::Load]++;
+			if(gData.nTNoPick[eMZ::Load] > 10) gData.nTNoPick[eMZ::Load] = 1;
 			m_nZigPickerCase = ZigPickBranch::Load; // Tray Picker load Start 			
 			m_nFeederCase = 0; m_nFeederLoop.Set_LoopTime(5000);
 			m_strLog.Format("Zig Picker load Start "); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
@@ -1153,6 +1173,9 @@ BOOL CSequenceMain::FeederRun()
 			gData.sMZIDFeeder = gData.sMZIDRail; gData.sMZIDRail.Empty();
 			gData.sZigIDFeeder = gData.sZigIDRail; gData.sZigIDRail.Empty();
 			gData.nSlotNoFeeder = gData.nSlotNoRail; gData.nSlotNoRail = 0;
+
+			gData.nMZNoFeeder = gData.nMZNoRail; gData.nMZNoRail = 0;
+
 			memcpy( gData.InfoFeeder, gData.InfoRail,  sizeof(int)*ZIG_X*ZIG_Y);
 			memset( gData.InfoRail, 0x00, sizeof(int)*ZIG_X*ZIG_Y);	
 			
@@ -1195,6 +1218,8 @@ BOOL CSequenceMain::FeederRun()
 			gData.sMZIDElevUnload = gData.sMZIDFeeder; gData.sMZIDFeeder.Empty();
 			gData.sZigIDElevUnload[gData.nSlotNoFeeder - 1] = gData.sZigIDFeeder; gData.sZigIDFeeder.Empty();
 						
+			gData.nMZNoMZUnload[gData.nSlotNoFeeder-1] = gData.nMZNoFeeder; gData.nMZNoFeeder = 0;
+
 			memcpy( gData.InfoMZUnload[gData.nSlotNoFeeder-1], gData.InfoFeeder,  sizeof(int)*ZIG_X*ZIG_Y);
 			memset( gData.InfoFeeder, 0x00, sizeof(int)*ZIG_X*ZIG_Y);	
 
@@ -1213,7 +1238,7 @@ BOOL CSequenceMain::FeederRun()
 		{
 			gData.bFeederWorkWait = FALSE;
 
-			if(CheckCtZigAllReturn())
+			if(Check_TrayAllReturn())
 			{
 				m_nMZElevCase = ElvBranch::Unload;
 			}
@@ -1233,13 +1258,14 @@ BOOL CSequenceMain::FeederRun()
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready))
 		{
 			//아래 부터 검사 
-			dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] - m_pEquipData->dElevPitchZ * (gData.nSlotNoToPick[eMZ::Ready] - 1) ;
+			dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] - m_pEquipData->dElevPitchZ * (gData.nTNoPick[eMZ::Ready] - 1) ;
+			//dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] - m_pMoveData->dMZElevZ[eElv_Z::Pitch] * (gData.nTNoPick[eMZ::Ready] - 1) ;
+			
 			g_objAJinAXL.Move_Absolute(AX_MZ_ELEVATOR_Z, dPosZ);
-
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZReady);
 
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
-			m_strLog.Format("Elev Z pitch Move, SlotNo : %d", gData.nSlotNoToPick); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+			m_strLog.Format("Elev Z pitch Move, SlotNo : %d", gData.nTNoPick); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}		
 		break;
 	case 53:
@@ -1259,9 +1285,9 @@ BOOL CSequenceMain::FeederRun()
 			gData.bFeederWorkWait = TRUE; // load Start
 
 			int nExist = -1;
-			nExist = g_dlgWork.CheckZigExistInMZ(eMZ::Ready, gData.nSlotNoToPick[eMZ::Ready]);
+			nExist = g_dlgWork.CheckZigExistInMZ(eMZ::Ready, gData.nTNoPick[eMZ::Ready]);
 
-			if( (m_pDX01->iMagazineZigExist || gData.bDemoMode) && nExist == gData.nSlotNoToPick[eMZ::Ready])
+			if( (m_pDX01->iMagazineZigExist || gData.bDemoMode) && nExist == gData.nTNoPick[eMZ::Ready])
 			{				
 				g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZReady);
 				m_nFeederCase = 60; m_nFeederLoop.Set_LoopTime(5000);
@@ -1272,15 +1298,15 @@ BOOL CSequenceMain::FeederRun()
 				//Z Pitch Move 
 				//g_objAJinAXL.Move_Relative(AX_MZ_ELEVATOR_Z, -m_pEquipData->dMZPitchRightZ*(1.0)); 
 
-				if(gData.nSlotNoToPick[eMZ::Ready] > 10) 
+				if(gData.nTNoPick[eMZ::Ready] > 10) 
 				{	
-					gData.nSlotNoToPick[eMZ::Ready] = 1;
+					gData.nTNoPick[eMZ::Ready] = 1;
 					m_nFeederCase = 0; m_nFeederLoop.Set_LoopTime(5000);
 					m_strLog.Format("Elev Z Move to search Finish"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 				}
 				else
 				{
-					gData.nSlotNoToPick[eMZ::Ready]++;
+					gData.nTNoPick[eMZ::Ready]++;
 					m_nFeederCase = FeederBranch::RdySearch; m_nFeederLoop.Set_LoopTime(5000);
 					m_strLog.Format("Elev Z Move to search Zig"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 				}
@@ -1317,10 +1343,13 @@ BOOL CSequenceMain::FeederRun()
 		
 			//Info Processing 		
 			gData.sMZIDFeeder = gData.sMZIDElevReady; gData.sMZIDElevReady = "";
-			gData.sZigIDFeeder = gData.sZigIDElevReady[gData.nSlotNoToPick[eMZ::Ready] -1]; gData.sZigIDElevReady[gData.nSlotNoToPick[eMZ::Ready] -1] = "";
-			gData.nSlotNoFeeder = gData.nSlotNoToPick[eMZ::Ready]; 
-			memcpy(gData.InfoFeeder, gData.InfoMZReady[gData.nSlotNoToPick[eMZ::Ready] -1], sizeof(int)*ZIG_X*ZIG_Y );
-			memset(gData.InfoMZReady[gData.nSlotNoToPick[eMZ::Ready] -1], 0x00, sizeof(int)*ZIG_X*ZIG_Y );
+			gData.sZigIDFeeder = gData.sZigIDElevReady[gData.nTNoPick[eMZ::Ready] -1]; gData.sZigIDElevReady[gData.nTNoPick[eMZ::Ready] -1] = "";
+			gData.nSlotNoFeeder = gData.nTNoPick[eMZ::Ready]; 
+			
+			gData.nMZNoFeeder = gData.nMZNoMZRdy[gData.nTNoPick[eMZ::Ready] -1]; gData.nMZNoMZRdy[gData.nTNoPick[eMZ::Ready] -1] = 0; 
+			
+			memcpy(gData.InfoFeeder, gData.InfoMZReady[gData.nTNoPick[eMZ::Ready] -1], sizeof(int)*ZIG_X*ZIG_Y );
+			memset(gData.InfoMZReady[gData.nTNoPick[eMZ::Ready] -1], 0x00, sizeof(int)*ZIG_X*ZIG_Y );
 
 			g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO,eMZ::Ready, NULL);
 
@@ -1353,11 +1382,14 @@ BOOL CSequenceMain::FeederRun()
 			gData.sMZIDRail = gData.sMZIDFeeder; gData.sMZIDFeeder.Empty();
 			gData.sZigIDRail = gData.sZigIDFeeder; gData.sZigIDFeeder.Empty();
 			gData.nSlotNoRail = gData.nSlotNoFeeder; gData.nSlotNoFeeder = 0;
+
+			gData.nMZNoRail = gData.nMZNoFeeder; gData.nMZNoFeeder = 0;
+
 			memcpy( gData.InfoRail, gData.InfoFeeder,  sizeof(int)*ZIG_X*ZIG_Y);
 			memset( gData.InfoFeeder, 0x00, sizeof(int)*ZIG_X*ZIG_Y);	
 
-			gData.nSlotNoToPick[eMZ::Ready]++;
-			if(gData.nSlotNoToPick[eMZ::Ready] > 10) gData.nSlotNoToPick[eMZ::Ready] = 1;
+			gData.nTNoPick[eMZ::Ready]++;
+			if(gData.nTNoPick[eMZ::Ready] > 10) gData.nTNoPick[eMZ::Ready] = 1;
 			m_nZigPickerCase = ZigPickBranch::Load; // Tray Picker load Start 			
 			m_nFeederCase = 0; m_nFeederLoop.Set_LoopTime(5000);
 			m_strLog.Format("Zig Picker load Start "); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
@@ -1425,6 +1457,9 @@ BOOL CSequenceMain::ZigPickerRun()
 			gData.sMZIDTrayPick = gData.sMZIDRail; gData.sMZIDRail = "";
 			gData.sZigIDTrayPick =  gData.sZigIDRail; gData.sZigIDRail = "";
 			gData.nSlotNoTrayPick = gData.nSlotNoRail; gData.nSlotNoRail = 0;
+
+			gData.nMZNoTrayPicker = gData.nMZNoRail; gData.nMZNoRail = 0;
+
 			memcpy(gData.InfoZigPick, gData.InfoRail, sizeof(int)*ZIG_X*ZIG_Y);
 			memset( gData.InfoRail, 0, sizeof(int)*ZIG_X*ZIG_Y);
 			
@@ -1484,6 +1519,8 @@ BOOL CSequenceMain::ZigPickerRun()
 			gData.sMZIDMainIdex[eMainIndex::Load] = gData.sMZIDTrayPick; gData.sMZIDTrayPick = "";
 			gData.sZigIDMainIndex[eMainIndex::Load] =  gData.sZigIDTrayPick; gData.sZigIDTrayPick = "";
 			gData.nSlotNoMainIndex[eMainIndex::Load] = gData.nSlotNoTrayPick; gData.nSlotNoTrayPick = 0;
+
+			gData.nMZNoMainIndex[eMainIndex::Load] = gData.nMZNoTrayPicker; gData.nMZNoTrayPicker = 0;
 
 			memcpy(gData.InfoMainIndex[eMainIndex::Load], gData.InfoZigPick, sizeof(int)*ZIG_X*ZIG_Y);
 			memset(gData.InfoZigPick, 0x00, sizeof(int)*ZIG_X*ZIG_Y);
@@ -1549,6 +1586,8 @@ BOOL CSequenceMain::ZigPickerRun()
 			gData.sZigIDTrayPick = gData.sZigIDMainIndex[eMainIndex::Unload]; gData.sZigIDMainIndex[eMainIndex::Unload] = "";
 			gData.nSlotNoTrayPick = gData.nSlotNoMainIndex[eMainIndex::Unload]; gData.nSlotNoMainIndex[eMainIndex::Unload] = 0;
 
+			gData.nMZNoTrayPicker = gData.nMZNoMainIndex[eMainIndex::Unload]; gData.nMZNoMainIndex[eMainIndex::Unload] = 0;
+
 			memcpy(gData.InfoZigPick, gData.InfoMainIndex[eMainIndex::Unload], sizeof(int)*ZIG_X*ZIG_Y);
 			memset( gData.InfoMainIndex[eMainIndex::Unload], 0x00, sizeof(int)*ZIG_X*ZIG_Y);
 
@@ -1605,6 +1644,9 @@ BOOL CSequenceMain::ZigPickerRun()
 			gData.sMZIDRail = gData.sMZIDTrayPick; gData.sMZIDTrayPick.Empty();
 			gData.sZigIDRail = gData.sZigIDTrayPick; gData.sZigIDTrayPick.Empty();
 			gData.nSlotNoRail = gData.nSlotNoTrayPick; gData.nSlotNoTrayPick = 0;
+
+			gData.nMZNoRail = gData.nMZNoTrayPicker; gData.nMZNoTrayPicker = 0;
+
 			memcpy( gData.InfoRail, gData.InfoZigPick,  sizeof(int)*ZIG_X*ZIG_Y);
 			memset( gData.InfoZigPick, 0x00, sizeof(int)*ZIG_X*ZIG_Y);			
 
@@ -1706,6 +1748,12 @@ BOOL CSequenceMain::ZigPickerRun()
 // 5. (Error : 4300)
 BOOL CSequenceMain::LensCleanerRun()
 {
+	if(gData.bCycleStop)
+	{
+		gData.bIndexDone[eMainIndex::Clean] = TRUE;
+		return TRUE;
+	}
+	
 	switch(m_nLensCleanerCase)
 	{
 	case 0:
@@ -1777,6 +1825,13 @@ BOOL CSequenceMain::TopInspectorRun()
 {
 	static int nTopXPos = 0, nTopYPos = 0;
 	static double	dTopUnitX, dTopUnitY, dTopUnitZ = 0.0;
+
+	if(gData.bCycleStop)
+	{
+		gData.bIndexDone[eMainIndex::Top] = TRUE;
+		return TRUE;
+	}
+
 
 	switch(m_nTopInspectCase)
 	{
@@ -1855,7 +1910,8 @@ BOOL CSequenceMain::TopInspectorRun()
 			else 
 			{
 				int nLensNo = (gData.nLensCntY * (nTopXPos-1)) + nTopYPos;	// Tray 하단부터 모듈 적재한다.
-				g_objInspector.Set_LoadComplete("TC", gData.sMZIDMainIdex[eMainIndex::Top],1, gData.sZigIDMainIndex[eMainIndex::Top], gData.nSlotNoMainIndex[eMainIndex::Top], nLensNo);
+				g_objInspector.Set_LoadComplete("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.nMZNoMainIndex[eMainIndex::Top]
+				, gData.sZigIDMainIndex[eMainIndex::Top], gData.nSlotNoMainIndex[eMainIndex::Top], nLensNo);
 				m_nTopInspectCase = (int)TopBranch::VisionWait; m_nTopInspectLoop.Set_LoopTime(gData.nTime[LoopTime::Scan]);			
 			}
 		}
@@ -1913,6 +1969,13 @@ BOOL CSequenceMain::BtmInspectorRun()
 {
 	static int nBtmXPos = 0, nBtmYPos = 0;
 	static double	dBtmUnitX, dBtmUnitY, dBtmUnitZ = 0.0;
+
+	if(gData.bCycleStop)
+	{
+		gData.bIndexDone[eMainIndex::None] = TRUE;
+		gData.bIndexDone[eMainIndex::Btm] = TRUE;
+		return TRUE;
+	}
 
 	switch(m_nBtmInspectCase)
 	{
@@ -1993,7 +2056,8 @@ BOOL CSequenceMain::BtmInspectorRun()
 			else 
 			{
 				int nLensNo = (gData.nLensCntY * (nBtmXPos-1)) + nBtmYPos;				
-				g_objInspector.Set_LoadComplete("BC", gData.sMZIDMainIdex[eMainIndex::Btm],1, gData.sZigIDMainIndex[eMainIndex::Btm], gData.nSlotNoMainIndex[eMainIndex::Btm], nLensNo);				
+				g_objInspector.Set_LoadComplete("BC", gData.sMZIDMainIdex[eMainIndex::Btm],gData.nMZNoMainIndex[eMainIndex::Btm],
+					gData.sZigIDMainIndex[eMainIndex::Btm], gData.nSlotNoMainIndex[eMainIndex::Btm], nLensNo);				
 				m_nBtmInspectCase = (int)BtmBranch::VisionWait; m_nBtmInspectLoop.Set_LoopTime(gData.nTime[LoopTime::Scan]);			
 			}
 		}
@@ -2056,6 +2120,11 @@ BOOL CSequenceMain::MarkUnitRun()
 	static double	dMarkUnitX, dMarkUnitY, dMarkUnitZ = 0.0;
 	static DWORD	dwTick = 0;
 		
+	if(gData.bCycleStop)
+	{
+		gData.bIndexDone[eMainIndex::Mark] = TRUE;
+		return TRUE;
+	}
 
 	switch(m_nMarkUnitCase)
 	{
@@ -2267,6 +2336,11 @@ BOOL CSequenceMain::MainIndexRun()
 				g_objCommon.Set_IndexLoadAlignIn();
 				m_nMainIndexCase++; m_nIndexTLoop.Set_LoopTime(10000);
 			}
+			else if(gData.bCycleStop)
+			{
+				g_objCommon.Set_IndexLoadAlignIn();
+				m_nMainIndexCase++; m_nIndexTLoop.Set_LoopTime(10000);
+			}
 		}
 		return TRUE;
 	case 11:
@@ -2314,7 +2388,7 @@ BOOL CSequenceMain::MainIndexRun()
 
 BOOL CSequenceMain::UnloadConveyorRun()
 {
-	static int nDetectCnt[5] = {0,0,0,0,0};
+	static int nDetectCnt[6] = {0,0,0,0,0,0};
 
 	if(gData.bUldMZWait || gData.bElvUnloadWait)
 	{
@@ -2341,9 +2415,15 @@ BOOL CSequenceMain::UnloadConveyorRun()
 		}
 		else
 		{
-			nDetectCnt[0] = 0;
+			nDetectCnt[5]++;
+			if(nDetectCnt[5] > 5000)
+			{
+				g_objCommon.Show_Alarm("Unload C/V 4번 비워주세요.");
+				nDetectCnt[5] = 0; nDetectCnt[0] = 0;
+				return FALSE;
+			}			
 		}
-		return TRUE;;
+		return TRUE;
 	case 2:
 		g_objCommon.Set_UnloadCVRunCW();
 		m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(5000);
@@ -2362,29 +2442,25 @@ BOOL CSequenceMain::UnloadConveyorRun()
 
 		if(m_pDX01->iUldCvMZExist4)
 		{
-			//Info Processing
-			gData.sMZIDElevUnload.Empty();
-
-			for(int i = 0; i < 10; i++) gData.sZigIDElevUnload[i].Empty();
-			memset( gData.InfoMZUnload, 0x00, sizeof(int)*10*ZIG_X*ZIG_Y);	
-			
-			g_dlgWork.TransferMZInfo(eMZ::Load, -1); // From Load To Out(-1)
-			g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO,eMZ::Unload, NULL);
-			
-
-			g_objCommon.Set_LdStopper1Down();
-			g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Ready);
-			m_nMZElevCase = ElvBranch::Start; // Slide over Check 
-
 			g_objCommon.Set_UnloadCVStop();
-			m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(5000);
-		}
-		else
-		{
-			m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(5000);
-		}
+			m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(5000);			
+		}		
 		break;
 	case 5:
+		//Info Processing
+		gData.sMZIDElevUnload.Empty();
+		for(int i = 0; i < 10; i++) gData.sZigIDElevUnload[i].Empty();
+		memset( gData.InfoMZUnload, 0x00, sizeof(int)*10*ZIG_X*ZIG_Y);	
+		
+		Job_LotEnd(Find_UnloadMZNo());
+		g_dlgWork.TransferMZInfo(eMZ::Load, -1); // From Load To Out(-1)
+		g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO,eMZ::Unload, NULL);
+		
+		g_objCommon.Set_LdStopper1Down();
+		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Ready);
+		m_nMZElevCase = ElvBranch::Start; // Slide over Check 
+		m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(5000);	
+	case 6:
 		if(gData.bDemoMode)
 		{
 			if(m_pDX01->iUldCvMZExist4)
@@ -2392,7 +2468,7 @@ BOOL CSequenceMain::UnloadConveyorRun()
 				m_pDX01->iUldCvMZExist4 = FALSE; 
 			}	
 		}
-	
+		
 		m_nUnloadConveyorCase = 1; m_nUnloadConveyorLoop.Set_LoopTime(5000);
 		break;	
 
@@ -2412,15 +2488,6 @@ void CSequenceMain::Begin_MainRunThread()
 	if (m_nMainIndexCase == 0 )		m_nMainIndexCase = 1;
 	if (m_nLoadConveyorCase == 0)	m_nLoadConveyorCase = 1;
 	if (m_nUnloadConveyorCase == 0) m_nUnloadConveyorCase = 1;
-	/*if (m_nMZElevCase == 0)			m_nMZElevCase = 1;
-	if (m_nFeederCase == 0)			m_nFeederCase = 1;
-	if (m_nZigPickerCase == 0)		m_nZigPickerCase = 1;
-	if (m_nLensCleanerCase == 0)	m_nLensCleanerCase = 1;
-	if (m_nTopInspectCase == 0)		m_nTopInspectCase = 1;
-	if (m_nBtmInspectCase == 0 )	m_nBtmInspectCase = 1;
-	if (m_nMarkUnitCase == 0)			m_nMarkUnitCase = 1;
-	if (m_nMainIndexCase == 0 )		m_nMainIndexCase = 1;
-	;*/
 
 	if (m_pThreadMainRun) End_MainRunThread();
 	m_bThreadMainRun = TRUE;
@@ -2524,9 +2591,9 @@ BOOL CSequenceMain::Check_IndexEmpty(int nPos)
 
 	for (int i = nS; i < nE + 1; i++) 
 	{
-		for (int j = 0; j < ZIG_X; j++) 
+		for (int j = 0; j < gData.nLensCntX; j++) 
 		{
-			for (int k = 0; k < ZIG_Y; k++) 
+			for (int k = 0; k < gData.nLensCntY; k++) 
 			{
 				if (gData.InfoMainIndex[i][j][k] > 0) return FALSE;
 			}			
@@ -2537,9 +2604,9 @@ BOOL CSequenceMain::Check_IndexEmpty(int nPos)
 
 BOOL CSequenceMain::Check_ZigPickerEmpty()
 {
-	for (int i = 0; i < ZIG_X; i++) 
+	for (int i = 0; i < gData.nLensCntX; i++) 
 	{
-		for(int j = 0; j < ZIG_Y; j++)
+		for(int j = 0; j < gData.nLensCntY; j++)
 		{
 			if (gData.InfoZigPick[i][j] > 0)
 			{
@@ -2552,17 +2619,17 @@ BOOL CSequenceMain::Check_ZigPickerEmpty()
 
 BOOL CSequenceMain::Check_FeederEmpty()
 {
-	for (int i = 0; i < ZIG_X; i++) 
+	for (int i = 0; i < gData.nLensCntX; i++) 
 	{
-		for(int j = 0; j < ZIG_Y; j++)
+		for(int j = 0; j < gData.nLensCntY; j++)
 		{
 			if (gData.InfoFeeder[i][j] > 0) return FALSE; 
 		}		
 	}
 
-	for (int i = 0; i < ZIG_X; i++) 
+	for (int i = 0; i < gData.nLensCntX; i++) 
 	{
-		for(int j = 0; j < ZIG_Y; j++)
+		for(int j = 0; j < gData.nLensCntY; j++)
 		{
 			if (gData.InfoRail[i][j] > 0) return FALSE; 
 		}		
@@ -2599,6 +2666,15 @@ void CSequenceMain::Set_IndexEnd()
 	gData.sZigIDMainIndex[eMainIndex::Clean] = gData.sZigIDMainIndex[eMainIndex::Load];
 	gData.sZigIDMainIndex[eMainIndex::Load] = "";
 
+	gData.nMZNoMainIndex[eMainIndex::Unload] = gData.nMZNoMainIndex[eMainIndex::Mark]; 
+	gData.nMZNoMainIndex[eMainIndex::Mark] = gData.nMZNoMainIndex[eMainIndex::Btm]; 
+	gData.nMZNoMainIndex[eMainIndex::Btm] = gData.nMZNoMainIndex[eMainIndex::None]; 
+	gData.nMZNoMainIndex[eMainIndex::None] = gData.nMZNoMainIndex[eMainIndex::Top]; 
+	gData.nMZNoMainIndex[eMainIndex::Top] = gData.nMZNoMainIndex[eMainIndex::Clean]; 
+	gData.nMZNoMainIndex[eMainIndex::Clean] = gData.nMZNoMainIndex[eMainIndex::Load];
+	gData.nMZNoMainIndex[eMainIndex::Load] = 0;
+
+
 	memmove(gData.InfoMainIndex[eMainIndex::Unload], gData.InfoMainIndex[eMainIndex::Mark], sizeof(int)*ZIG_X*ZIG_Y);
 	memmove(gData.InfoMainIndex[eMainIndex::Mark], gData.InfoMainIndex[eMainIndex::Btm], sizeof(int)*ZIG_X*ZIG_Y);
 	memmove(gData.InfoMainIndex[eMainIndex::Btm], gData.InfoMainIndex[eMainIndex::None], sizeof(int)*ZIG_X*ZIG_Y);
@@ -2612,9 +2688,9 @@ void CSequenceMain::Set_IndexEnd()
 
 void CSequenceMain::Init_TopZig()
 {
-	for(int i = 0; i < ZIG_X; i++)
+	for(int i = 0; i < gData.nLensCntX; i++)
 	{
-		for(int j = 0; j < ZIG_Y; j++)
+		for(int j = 0; j < gData.nLensCntY; j++)
 		{
 			if(gData.InfoMainIndex[eMainIndex::Top][i][j] == eLensState::Init)
 			{
@@ -2676,9 +2752,9 @@ BOOL CSequenceMain::Select_TopScanPos(int &nTopPosX, int &nTopPosY)
 
 void CSequenceMain::Init_BtmZig()
 {
-	for(int i = 0; i < ZIG_X; i++)
+	for(int i = 0; i < gData.nLensCntX; i++)
 	{
-		for(int j = 0; j < ZIG_Y; j++)
+		for(int j = 0; j < gData.nLensCntY; j++)
 		{
 			if(gData.InfoMainIndex[eMainIndex::Btm][i][j] == eLensState::Init
 				|| gData.InfoMainIndex[eMainIndex::Btm][i][j] == eLensState::TopReady
@@ -2704,7 +2780,7 @@ BOOL CSequenceMain::Select_BtmScanPos(int &nBtmPosX, int &nBtmPosY)
 	{
 		if (i==1 || i==3 || i==5 || i==7 || i==9 || i==11)
 		{
-			for(int j = gData.nZigY - 1; j >= 0; j--) 
+			for(int j = gData.nLensCntY - 1; j >= 0; j--) 
 			{
 				if (gData.InfoMainIndex[eMainIndex::Btm][i][j] == eLensState::BtmReady
 					||gData.InfoMainIndex[eMainIndex::Btm][i][j] == eLensState::TopDone
@@ -2718,7 +2794,7 @@ BOOL CSequenceMain::Select_BtmScanPos(int &nBtmPosX, int &nBtmPosY)
 		}
 		else
 		{
-			for(int j = 0 ; j < gData.nZigY ; j++)
+			for(int j = 0 ; j < gData.nLensCntY ; j++)
 			{
 				if (gData.InfoMainIndex[eMainIndex::Btm][i][j] == eLensState::BtmReady
 					||gData.InfoMainIndex[eMainIndex::Btm][i][j] == eLensState::TopDone
@@ -2845,9 +2921,9 @@ BOOL CSequenceMain::Check_CtZigInMZ(int nPos)
 {
 	for(int i = 0; i < 10; i++)
 	{
-		for(int j = 0;  j < ZIG_X; j++)
+		for(int j = 0;  j < gData.nLensCntX; j++)
 		{
-			for(int k = 0; k < ZIG_Y; k++)
+			for(int k = 0; k < gData.nLensCntY; k++)
 			{
 				 if(nPos == eMZ::Load)  if(gData.InfoMZLoad[i][j][k] > 0 )  return TRUE; 
 				 if(nPos == eMZ::Ready)  if(gData.InfoMZReady[i][j][k] > 0 )  return TRUE; 
@@ -2877,7 +2953,7 @@ int CSequenceMain::Search_ZigSlotNo(int nPos, int nSlot)
 	return -1;
 }
 
-BOOL CSequenceMain::CheckCtZigAllReturn()
+BOOL CSequenceMain::Check_TrayAllReturn()
 {
 	for(int i = 0; i < 10; i++ )
 	{
@@ -2892,6 +2968,20 @@ BOOL CSequenceMain::CheckCtZigAllReturn()
 	return TRUE;
 }
 
+
+int CSequenceMain::Find_UnloadMZNo()
+{
+	int nMZNo = 0;
+	for(int i = 0; i < 10; i++)
+	{
+		if(gData.nMZNoMZUnload[i] > 0)
+		{
+			nMZNo = gData.nMZNoMZUnload[i];
+			return nMZNo;
+		}
+	}
+	return nMZNo;
+}
 
 
 BOOL CSequenceMain::Run_Simulation()

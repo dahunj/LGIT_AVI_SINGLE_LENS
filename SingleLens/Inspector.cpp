@@ -144,8 +144,8 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 	int	nLNo = atoi(sLensNo);	// CM Index
 
 	int nXPos = 0, nYPos = 0;
-	nXPos = ((nLNo-1) / gData.nZigY);
-	nYPos = (nLNo-1) % gData.nZigY;
+	nXPos = ((nLNo-1) / gData.nLensCntY);
+	nYPos = (nLNo-1) % gData.nLensCntY;
 	
 
 	if (nTNo < 0 || nTNo > 99 || nLNo < 0 || nLNo > 200) { g_objCommon.Show_Error(6101); return; }
