@@ -139,10 +139,15 @@ void CInspector::Get_LotReady(int nVPc, CString sLotId, CString sLotNo)
 
 void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString sMZNo, CString sTrayNo, CString sLensNo)
 {
-	int nMNo = atoi(sMZNo) - 1;
-	int nTNo = atoi(sTrayNo) - 1;	// Tray Index
-	int	nLNo = atoi(sLensNo) - 1;	// CM Index
+	int nMNo = atoi(sMZNo);
+	int nTNo = atoi(sTrayNo);	// Tray Index
+	int	nLNo = atoi(sLensNo);	// CM Index
+
+	int nXPos = 0, nYPos = 0;
+	nXPos = ((nLNo-1) / gData.nZigY);
+	nYPos = (nLNo-1) % gData.nZigY;
 	
+
 	if (nTNo < 0 || nTNo > 99 || nLNo < 0 || nLNo > 200) { g_objCommon.Show_Error(6101); return; }
 
 	int nV = (sGbn == "TC" ? eVision::Tc : (sGbn == "BC" ? eVision::Bc : -1));
@@ -157,11 +162,9 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 			//Exception_Log("Scan Complete", sGbn, nCase); 
 			return;
 		}
-
-		m_nTCScanCnt++;
-		if (m_nTCScanCnt < m_nTCScanReq) return; 
-
+				
 		gData.bScanDone[eVision::Tc] = TRUE;
+		gData.InfoMainIndex[eMainIndex::Top][nXPos][nYPos] = eLensState::TopDone;
 		g_objSequenceMain.Set_MainRunCase(AUTO_TOP_INSPECT, 10);
 
 	}
@@ -173,11 +176,9 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 			//Exception_Log("Scan Complete", sGbn, nCase);
 			return; 
 		}
-
-		m_nBCScanCnt++;
-		if (m_nBCScanCnt < m_nBCScanReq) return; 
-
+				
 		gData.bScanDone[eVision::Bc] = TRUE;
+		gData.InfoMainIndex[eMainIndex::Btm][nXPos][nYPos] = eLensState::BtmDone;
 		g_objSequenceMain.Set_MainRunCase(AUTO_BTM_INSPECT, 10);
 	}
 }

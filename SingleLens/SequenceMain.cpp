@@ -526,7 +526,7 @@ BOOL CSequenceMain::MZElevRun()
 			if(nMZDetectCnt[5] > 5)
 			{
 				for(int i = 0; i < 6; i++) nMZDetectCnt[i] = 0;
-				m_nMZElevCase = 0; m_nMZElevLoop.Set_LoopTime(5000);
+				m_nMZElevCase = 0; m_nMZElevLoop.Set_LoopTime(30000);
 				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elevator Full");
 			}				
 		}
@@ -551,12 +551,17 @@ BOOL CSequenceMain::MZElevRun()
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(30000);
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load CV CW Stop & Elev CV CW Start");
 		}
-	/*	else
+		else
 		{
+			// 15초 반응 없으면 매거진 다시 컨베이어에 놓을것
+			if(!m_nMZElevLoop.Waiting_Time(15000)) break;  
+			
 			nMZDetectCnt[5]++;
-			if(nMZDetectCnt[5] < 8) break;
-			m_nMZElevCase = 0; m_nMZElevLoop.Set_LoopTime(5000);
-		}*/
+			if(nMZDetectCnt[5] > 5)
+			{
+				m_nMZElevCase = 0; m_nMZElevLoop.Set_LoopTime(5000);
+			}			
+		}
 		break;
 	case 4:
 		if(gData.bDemoMode)
@@ -1849,7 +1854,7 @@ BOOL CSequenceMain::TopInspectorRun()
 			} 
 			else 
 			{
-				int nLensNo = (gData.nZigY - nTopYPos) * gData.nZigX + nTopXPos;	// Tray 하단부터 모듈 적재한다.
+				int nLensNo = (gData.nZigY * (nTopXPos-1)) + nTopYPos;	// Tray 하단부터 모듈 적재한다.
 				g_objInspector.Set_LoadComplete("TC", gData.sMZIDMainIdex[eMainIndex::Top],1, gData.sZigIDMainIndex[eMainIndex::Top], gData.nSlotNoMainIndex[eMainIndex::Top], nLensNo);
 				m_nTopInspectCase = (int)TopBranch::VisionWait; m_nTopInspectLoop.Set_LoopTime(gData.nTime[LoopTime::Scan]);			
 			}
@@ -1987,7 +1992,7 @@ BOOL CSequenceMain::BtmInspectorRun()
 			} 
 			else 
 			{
-				int nLensNo = (gData.nZigY - nBtmYPos) * gData.nZigX + nBtmXPos;	// Tray 하단부터 모듈 적재한다.
+				int nLensNo = (gData.nZigY * (nBtmXPos-1)) + nBtmYPos;				
 				g_objInspector.Set_LoadComplete("BC", gData.sMZIDMainIdex[eMainIndex::Btm],1, gData.sZigIDMainIndex[eMainIndex::Btm], gData.nSlotNoMainIndex[eMainIndex::Btm], nLensNo);				
 				m_nBtmInspectCase = (int)BtmBranch::VisionWait; m_nBtmInspectLoop.Set_LoopTime(gData.nTime[LoopTime::Scan]);			
 			}
@@ -2241,7 +2246,7 @@ BOOL CSequenceMain::MainIndexRun()
 			Job_LotEnd(0);
 			//Lot End;
 		}
-		break;
+		return TRUE;
 	case 10:
 		if(Check_IndexDone()) // && g_objCommon.Get_IndexLoadAlignIn()
 		{
