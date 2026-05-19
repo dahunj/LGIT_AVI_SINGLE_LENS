@@ -95,7 +95,21 @@ BOOL CDataManager::Read_EquipData()
 	if (gDoorLock.nOpenStart == 1 && m_EquipData.bUseDoorLock == TRUE) 
 		g_objLogFile.Save_Interlock(3);
 
-	m_EquipData.bUseTopVision = INI.Get_Bool("OPTION", "TOP_VISION", FALSE);
+	m_EquipData.nZigArrayX =  INI.Get_Double("COAT_ZIG", "ARRAY_X", 0.00);
+	m_EquipData.nZigArrayY =		  INI.Get_Double("COAT_ZIG", "ARRAY_Y", 0.00);
+	m_EquipData.dZigPitchX = INI.Get_Double("COAT_ZIG", "PITCH_X", 0.00);
+	m_EquipData.dZigPitchY = INI.Get_Double("COAT_ZIG", "PITCH_Y", 0.00);
+
+	m_EquipData.dTopStart	 = INI.Get_Double("COAT_ZIG", "TOP_START",   0.00);
+	m_EquipData.dTopCount    = INI.Get_Double("COAT_ZIG", "TOP_COUNT",	 0.00);
+	m_EquipData.dTopPeriod   = INI.Get_Double("COAT_ZIG", "TOP_PERIOD",  0.00);
+	m_EquipData.dTopVelocity = INI.Get_Double("COAT_ZIG", "TOP_VEL",	 0.00);
+	m_EquipData.dBtmStart	 = INI.Get_Double("COAT_ZIG", "BTM_START",   0.00);
+	m_EquipData.dBtmCount    = INI.Get_Double("COAT_ZIG", "BTM_COUNT",	 0.00);
+	m_EquipData.dBtmPeriod   = INI.Get_Double("COAT_ZIG", "BTM_PERIOD",  0.00);
+	m_EquipData.dBtmVelocity = INI.Get_Double("COAT_ZIG", "BTM_VEL",	 0.00);
+	
+	m_EquipData.bUseTopVision = INI.Get_Bool("OPTION", "TOP_VISION", FALSE);	
 	m_EquipData.bUseBtmVision = INI.Get_Bool("OPTION", "BTM_VISION", FALSE);
 
 

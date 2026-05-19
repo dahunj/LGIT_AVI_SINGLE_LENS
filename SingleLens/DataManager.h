@@ -15,8 +15,8 @@ typedef struct tag_EQUIP_DATA {
 	BOOL	bUseMark;
 
 
-	int		nZigX;
-	int		nZigY;
+	int		nZigArrayX;
+	int		nZigArrayY;
 	double  dZigPitchY;
 	double	dZigPitchX;
 	

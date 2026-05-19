@@ -275,8 +275,8 @@ void CSetupEquipDlg::Display_EquipData()
 
 	strData.Format("%0.3lf", gAlm.dMotionChkPos);	 m_stcMotionCheck.SetWindowText(strData);
 	
-	strData.Format("%d", pEquipData->nZigX); m_stcZigData[0].SetWindowText(strData);
-	strData.Format("%d", pEquipData->nZigY); m_stcZigData[1].SetWindowText(strData);
+	strData.Format("%d", pEquipData->nZigArrayX); m_stcZigData[0].SetWindowText(strData);
+	strData.Format("%d", pEquipData->nZigArrayY); m_stcZigData[1].SetWindowText(strData);
 	strData.Format("%0.2lf", pEquipData->dZigPitchX); m_stcZigData[2].SetWindowText(strData);
 	strData.Format("%0.2lf", pEquipData->dZigPitchY); m_stcZigData[3].SetWindowText(strData);
 	
@@ -327,8 +327,8 @@ void CSetupEquipDlg::Save_EquipData()
 	INI.Set_Integer("EQUIPMENT", "DOOR_LOCK_TIME", gData.nDoorLockTime);
 
 	
-	m_stcZigData[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Double ("COAT_ZIG", "ARRAY_X", dData, "%0.2lf");pEquipData->nZigX = nData;
-	m_stcZigData[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Double ("COAT_ZIG", "ARRAY_Y", dData, "%0.2lf");pEquipData->nZigY = nData;
+	m_stcZigData[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Double ("COAT_ZIG", "ARRAY_X", dData, "%0.2lf");pEquipData->nZigArrayX = nData;
+	m_stcZigData[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Double ("COAT_ZIG", "ARRAY_Y", dData, "%0.2lf");pEquipData->nZigArrayY = nData;
 	m_stcZigData[2].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("COAT_ZIG", "PITCH_X", dData, "%0.2lf");pEquipData->dZigPitchX = dData;
 	m_stcZigData[3].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("COAT_ZIG", "PITCH_Y", dData, "%0.2lf");pEquipData->dZigPitchY = dData;
 
