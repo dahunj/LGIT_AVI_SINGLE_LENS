@@ -163,28 +163,29 @@ BOOL CSingleLensDlg::OnInitDialog()
 
 	SetTimer(TIMER_DATE_TIME, 500, NULL);
 	SetTimer(TIMER_DOOR_LOCK, 1000, NULL);
-
-
-
+	
 	gData.nSpeedOption = SpeedMode::Slow;
 	if(gData.nSpeedOption == SpeedMode::Slow)
 	{
-		gData.nTime[LoopTime::Motion] = 25000;
-		gData.nTime[LoopTime::Scan] = 60000;
-		gData.nTime[LoopTime::Wait] = 60000;
+		gData.nLT[eLT::Motion] = 15000;
+		gData.nLT[eLT::Scan] = 30000;
+		gData.nLT[eLT::CV] = 30000;
+		gData.nLT[eLT::Wait] = 60000;
 	}
 	else if(gData.nSpeedOption == SpeedMode::Fast)
 	{
-		gData.nTime[LoopTime::Motion] = 5000;
-		gData.nTime[LoopTime::Scan] = 30000;
-		gData.nTime[LoopTime::Wait] = 45000;
+		gData.nLT[eLT::Motion] = 5000;
+		gData.nLT[eLT::Scan] = 30000;
+		gData.nLT[eLT::Wait] = 45000;
+		gData.nLT[eLT::CV] = 30000;
 
 	}
 	else if(gData.nSpeedOption == SpeedMode::Normal)
 	{
-		gData.nTime[LoopTime::Motion] = 10000;
-		gData.nTime[LoopTime::Scan] = 30000;
-		gData.nTime[LoopTime::Wait] = 60000;
+		gData.nLT[eLT::Motion] = 10000;
+		gData.nLT[eLT::Scan] = 30000;
+		gData.nLT[eLT::Wait] = 60000;
+		gData.nLT[eLT::CV] = 30000;
 	}
 	
 

@@ -37,13 +37,14 @@ struct eMainIndex
 };
 
 
-struct LoopTime
+struct eLT
 {
 	enum Name
 	{
 		Motion = 0,
 		Scan = 1,
-		Wait = 2,
+		CV = 2,		
+		Wait = 3,
 	};
 };
 

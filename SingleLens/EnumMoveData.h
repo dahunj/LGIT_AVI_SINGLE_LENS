@@ -65,7 +65,8 @@ struct eZigPicker_Z
 	{
 		Ready = 0,
 		LoadDown = 1, 
-		Index = 2,
+		IndexLoad = 2,
+		IndexUnload = 3,
 	};
 };
 

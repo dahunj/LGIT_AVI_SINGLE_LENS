@@ -50,7 +50,7 @@ BEGIN_MESSAGE_MAP(CManualLoadDlg, CDialogEx)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_FEEDER_Y_0, IDC_BTN_FEEDER_Y_3, OnBtnFeederYClick)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_FEEDER_IO_0, IDC_BTN_FEEDER_IO_3, OnBtnFeederIOClick)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_PICKER_Y_0, IDC_BTN_PICKER_Y_2, OnBtnPickerYClick)
-	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_PICKER_Z_0, IDC_BTN_PICKER_Z_2, OnBtnPickerZClick)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_PICKER_Z_0, IDC_BTN_PICKER_Z_3, OnBtnPickerZClick)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_PICKER_IO_0, IDC_BTN_PICKER_IO_3, OnBtnPickerIOClick)
 END_MESSAGE_MAP()
 
@@ -275,9 +275,13 @@ void CManualLoadDlg::OnBtnPickerZClick(UINT nID)
 	{
 		g_objCommon.Move_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::LoadDown);
 	}	
-	if(nIndex == eZigPicker_Z::Index)
+	if(nIndex == eZigPicker_Z::IndexLoad)
 	{
-		g_objCommon.Move_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Index);
+		g_objCommon.Move_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::IndexLoad);
+	}
+	if(nIndex == eZigPicker_Z::IndexUnload)
+	{
+		g_objCommon.Move_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::IndexUnload);
 	}
 
 	m_strLog.Format("[Manual Zig Picker Z] Zig Picker Z (%d) Click", nIndex);

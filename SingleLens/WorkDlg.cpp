@@ -147,11 +147,7 @@ void CWorkDlg::Initial_Controls()
 	{
 		m_rcBgArea.SetRectEmpty();
 	}
-
-
-
-	m_picUphBack.Init_Ctrl(COLOR_DEFAULT, COLOR_DEFAULT);
-	
+	m_picUphBack.Init_Ctrl(COLOR_DEFAULT, COLOR_DEFAULT);	
 	
 	for (int i = 0; i < 7; i++) m_ledIndexDone[i].Init_Ctrl("Arial", 10, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em24);
 	for (int i = 0; i < 11; i++) m_ledMZDetect[i].Init_Ctrl("Arial", 10, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em24);
@@ -206,10 +202,10 @@ BOOL CWorkDlg::OnInitDialog()
 		m_stcZigID[24].SetWindowText("11115");
 		m_stcZigID[25].SetWindowText("11116");
 		m_stcZigID[26].SetWindowText("11117");
-		m_stcZigID[27].SetWindowText("11118");
+		/*m_stcZigID[27].SetWindowText("11118");
 		m_stcZigID[28].SetWindowText("11119");
-
-
+		m_stcZigID[29].SetWindowText("11120");*/
+		
 		m_stcLensCnt[20].SetWindowText("14");
 		m_stcLensCnt[21].SetWindowText("14");
 		m_stcLensCnt[22].SetWindowText("14");
@@ -217,36 +213,35 @@ BOOL CWorkDlg::OnInitDialog()
 		m_stcLensCnt[24].SetWindowText("14");
 		m_stcLensCnt[25].SetWindowText("14");
 		m_stcLensCnt[26].SetWindowText("14");
-		m_stcLensCnt[27].SetWindowText("14");
-		m_stcLensCnt[28].SetWindowText("14");
-
-
-
+		//m_stcLensCnt[27].SetWindowText("14");
+		//m_stcLensCnt[28].SetWindowText("14");
+		//m_stcLensCnt[29].SetWindowText("14");
+		
 		m_stcMZID[3].SetWindowText("MMMMM");
 		m_stcZigID[30].SetWindowText("1111");
 		m_stcZigID[31].SetWindowText("11112");
-		m_stcZigID[32].SetWindowText("11113");
+		/*m_stcZigID[32].SetWindowText("11113");
 		m_stcZigID[33].SetWindowText("11114");
 		m_stcZigID[34].SetWindowText("11115");
 		m_stcZigID[35].SetWindowText("11116");
 		m_stcZigID[36].SetWindowText("11117");
 		m_stcZigID[37].SetWindowText("11118");
 		m_stcZigID[38].SetWindowText("11119");
+		m_stcZigID[39].SetWindowText("11120");*/
 
 
 		m_stcLensCnt[30].SetWindowText("14");
 		m_stcLensCnt[31].SetWindowText("14");
-		m_stcLensCnt[32].SetWindowText("14");
+		/*m_stcLensCnt[32].SetWindowText("14");
 		m_stcLensCnt[33].SetWindowText("14");
 		m_stcLensCnt[34].SetWindowText("14");
 		m_stcLensCnt[35].SetWindowText("14");
 		m_stcLensCnt[36].SetWindowText("14");
 		m_stcLensCnt[37].SetWindowText("14");
 		m_stcLensCnt[38].SetWindowText("14");
-
-
-
-		m_stcMZID[4].SetWindowText("MMMMM3");
+		m_stcLensCnt[39].SetWindowText("14");*/
+		
+		/*m_stcMZID[4].SetWindowText("MMMMM3");
 		m_stcZigID[40].SetWindowText("1111");
 		m_stcZigID[41].SetWindowText("11112");
 		m_stcZigID[42].SetWindowText("11113");
@@ -256,7 +251,7 @@ BOOL CWorkDlg::OnInitDialog()
 		m_stcZigID[46].SetWindowText("11117");
 		m_stcZigID[47].SetWindowText("11118");
 		m_stcZigID[48].SetWindowText("11119");
-
+		m_stcZigID[49].SetWindowText("11119");
 
 		m_stcLensCnt[40].SetWindowText("14");
 		m_stcLensCnt[41].SetWindowText("14");
@@ -267,10 +262,8 @@ BOOL CWorkDlg::OnInitDialog()
 		m_stcLensCnt[46].SetWindowText("14");
 		m_stcLensCnt[47].SetWindowText("14");
 		m_stcLensCnt[48].SetWindowText("14");
+		m_stcLensCnt[49].SetWindowText("14");*/
 	}
-
-	
-
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -289,8 +282,6 @@ void CWorkDlg::OnDestroy()
 	CDialogEx::OnDestroy();
 	
 	KillTimer(0);
-
-
 }
 
 void CWorkDlg::OnShowWindow(BOOL bShow, UINT nStatus)

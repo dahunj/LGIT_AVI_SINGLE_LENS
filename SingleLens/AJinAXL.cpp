@@ -87,24 +87,24 @@ BOOL CAJinAXL::Initialize()
 
 #ifdef AJIN_BOARD_USE
 	// Trigger 초기화
-	//long lChCount, lPulse;
-	//double dUnits;
+	long lChCount, lPulse;
+	double dUnits;
 
-	//if (AxcInfoGetTotalChannelCount(&lChCount)!= AXT_RT_SUCCESS) return FALSE;
-	//if (lChCount < 2) return FALSE;	// 2채널
+	if (AxcInfoGetTotalChannelCount(&lChCount)!= AXT_RT_SUCCESS) return FALSE;
+	if (lChCount < 2) return FALSE;	// 2채널
 
-	//if (AxcTriggerSetEnable(0, DISABLE) != AXT_RT_SUCCESS) return FALSE;
+	if (AxcTriggerSetEnable(0, DISABLE) != AXT_RT_SUCCESS) return FALSE;
 
-	//if (AxmMotGetMoveUnitPerPulse(AX_TOP_INSPECTOR_Z, &dUnits, &lPulse) != AXT_RT_SUCCESS) return FALSE;
-	//if (AxcMotSetMoveUnitPerPulse(0, dUnits / lPulse) != AXT_RT_SUCCESS) return FALSE;
+	if (AxmMotGetMoveUnitPerPulse(AX_TOP_INSPECTOR_Z, &dUnits, &lPulse) != AXT_RT_SUCCESS) return FALSE;
+	if (AxcMotSetMoveUnitPerPulse(0, dUnits / lPulse) != AXT_RT_SUCCESS) return FALSE;
 
-	//if (AxcSignalSetEncInputMethod(0, ObverseSqr4Mode) != AXT_RT_SUCCESS) return FALSE;
-	//if (AxcSignalSetEncReverse(0, 0) != AXT_RT_SUCCESS) return FALSE;	// 엔코더 입력 카운터 (0:반전없음, 1:반전)
-	//if (AxcTriggerSetLevel(0, HIGH) != AXT_RT_SUCCESS) return FALSE;	// 트리거 펄스 출력 레벨 (0:Low, 1:High)
-	//if (AxcTriggerSetFunction(0, 1) != AXT_RT_SUCCESS) return FALSE;	// 0:절대위치 트리거, 1:주기위치 트리거
+	if (AxcSignalSetEncInputMethod(0, ObverseSqr4Mode) != AXT_RT_SUCCESS) return FALSE;
+	if (AxcSignalSetEncReverse(0, 0) != AXT_RT_SUCCESS) return FALSE;	// 엔코더 입력 카운터 (0:반전없음, 1:반전)
+	if (AxcTriggerSetLevel(0, HIGH) != AXT_RT_SUCCESS) return FALSE;	// 트리거 펄스 출력 레벨 (0:Low, 1:High)
+	if (AxcTriggerSetFunction(0, 1) != AXT_RT_SUCCESS) return FALSE;	// 0:절대위치 트리거, 1:주기위치 트리거
 
-	//if (AxcTriggerSetBlockLowerPos(0, 0.0) != AXT_RT_SUCCESS) return FALSE;
-	//if (AxcTriggerSetBlockUpperPos(0, 1000.0) != AXT_RT_SUCCESS) return FALSE;
+	if (AxcTriggerSetBlockLowerPos(0, 0.0) != AXT_RT_SUCCESS) return FALSE;
+	if (AxcTriggerSetBlockUpperPos(0, 1000.0) != AXT_RT_SUCCESS) return FALSE;
 #endif
 
 	m_bThreadAJin = TRUE;

@@ -37,9 +37,6 @@ private:
 	int              m_nextId;   // 아직 한 번도 안 쓴 ID 시작값
 };
 
-
-
-
 class CAJinAXL
 {
 public:

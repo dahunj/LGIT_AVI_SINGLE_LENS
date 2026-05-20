@@ -336,8 +336,8 @@ typedef union tag_DY_DATA_02 {
 		DWORD o0201: 1;					// Y0201
 		DWORD o0202: 1;									// Y0202
 		DWORD o0203: 1;									// Y0203
-		DWORD oMainIndexZigAlignIn: 1;								// Y0204
-		DWORD oMainIndexZigAlignOut : 1;									// Y0205
+		DWORD oMainIndexZigAlignOut: 1;								// Y0204
+		DWORD oMainIndexZigAlignIn : 1;									// Y0205
 		DWORD o0206 : 1;											// Y0206
 		DWORD o0207 : 1;											// Y0207
 		DWORD oCleanerTopDn : 1;								// Y0208

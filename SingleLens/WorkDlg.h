@@ -148,8 +148,7 @@ public:
 	void Set_AutoRunStatus(BOOL bAutoRun) { m_bAutoRunning = bAutoRun; }
 	void Set_State(int nState);
 	void Enable_UserInput(int nNo, BOOL bEnable);
-
-
+	
 	int		SearchMZElevInfo(int nNo);
 	int		SearchMZCVInfo();
 	void	TransferMZInfo(int nFrom, int nTo);
@@ -158,9 +157,7 @@ public:
 	int		SearchLensCntInfo(int nMZNo);
 
 	int		CheckZigExistInMZ(int nMZ, int nSlot);
-
-
-
+	
 	void Get_MZInfo(int nMZNo);
 	void Set_MZInfo(int nMZNo);
 	
