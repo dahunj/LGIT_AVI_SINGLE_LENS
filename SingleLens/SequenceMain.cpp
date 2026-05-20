@@ -844,6 +844,7 @@ BOOL CSequenceMain::MZElevRun()
 			Sleep(5);
 			g_objCommon.Set_UnloadCVStop();	
 			gData.bElvUnloadWait = FALSE;
+			m_nUnloadConveyorCase = eULDCVBr::start; //Unload CV Start 
 			//Check Slide Over 
 			m_nMZElevCase = ElvBranch::SlideOver;m_nMZElevLoop.Set_LoopTime(5000);
 		}
@@ -2422,6 +2423,7 @@ BOOL CSequenceMain::MainIndexRun()
 
 BOOL CSequenceMain::UnloadConveyorRun()
 {
+	static int nMZCntPre = 0, nMZCntPost = 0;
 	static int nDetectCnt[6] = {0,0,0,0,0,0};
 
 	static DWORD dwTick;
@@ -2433,32 +2435,71 @@ BOOL CSequenceMain::UnloadConveyorRun()
 	case 0:
 		m_nUnloadConveyorLoop.Set_LoopTime(5000);
 		return TRUE;
-	case 1:
+	case eULDCVBr::start:
 		if(gData.bDemoMode) m_pDX01->iUldCvMZExist4 = FALSE;
 		
-		if((m_pDX01->iUldCvMZExist1L || m_pDX01->iUldCvMZExist2 || m_pDX01->iUldCvMZExist3) && !m_pDX01->iUldCvMZExist4 )
+		if(m_pDX01->iUldCvMZExist1L)
 		{
 			nDetectCnt[0]++;
-			if(nDetectCnt[0] > 5)
-			{
-				nDetectCnt[0] = 0;
-				m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(5000);
-			}
-			else if(GetTickCount() - dwTick > 15000 )
-			{
-				dwTick = GetTickCount();
-				g_objCommon.Show_Alarm("Unload C/V 4锅 厚况林技夸.");
-				nDetectCnt[5] = 0; nDetectCnt[0] = 0;
-				return FALSE;
-			}
+			if(nDetectCnt[0] > 5){ nMZCntPre++; }
+		}
+		if(m_pDX01->iUldCvMZExist2)
+		{
+			nDetectCnt[1]++;
+			if(nDetectCnt[1] > 5){ nMZCntPre++; }
+		}
+		if(m_pDX01->iUldCvMZExist3)
+		{
+			nDetectCnt[2]++;
+			if(nDetectCnt[2] > 5){ nMZCntPre++; }
+		}
+		if(m_pDX01->iUldCvMZExist4)
+		{
+			nDetectCnt[3]++;
+			if(nDetectCnt[3] > 5){ nMZCntPre++; }
+		}
+		nDetectCnt[5]++;
+		if(nDetectCnt[5] > 8)
+		{
+			for(int i = 0; i < 6; i++) nDetectCnt[i] = 0;
+			m_nUnloadConveyorCase++;m_nUnloadConveyorLoop.Set_LoopTime(5000);
 		}		
 		return TRUE;
 	case 2:
-		g_objCommon.Set_UnloadCVRunCW();
-		m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(5000);
+		if(nMZCntPre < 4)
+		{
+			dwTick = GetTickCount();
+			g_objCommon.Set_UnloadCVRunCW();
+			m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(5000);
+		}	
 		break;
 	case 3:
-		m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(5000);
+		if(m_pDX01->iUldCvMZExist1L)
+		{
+			nDetectCnt[0]++;
+			if(nDetectCnt[0] > 5){ nMZCntPost++; }
+		}
+		if(m_pDX01->iUldCvMZExist2)
+		{
+			nDetectCnt[1]++;
+			if(nDetectCnt[1] > 5){ nMZCntPost++; }
+		}
+		if(m_pDX01->iUldCvMZExist3)
+		{
+			nDetectCnt[2]++;
+			if(nDetectCnt[2] > 5){ nMZCntPost++; }
+		}
+		if(m_pDX01->iUldCvMZExist4)
+		{
+			nDetectCnt[3]++;
+			if(nDetectCnt[3] > 5){ nMZCntPost++; }
+		}
+		nDetectCnt[5]++;
+		if(nDetectCnt[5] > 8)
+		{
+			for(int i = 0; i < 6; i++) nDetectCnt[i] = 0;
+			m_nUnloadConveyorCase++;m_nUnloadConveyorLoop.Set_LoopTime(5000);
+		}				
 		break;
 	case 4:
 		if(gData.bDemoMode)
@@ -2469,11 +2510,16 @@ BOOL CSequenceMain::UnloadConveyorRun()
 			}
 		}
 
-		if(m_pDX01->iUldCvMZExist4)
+		if(nMZCntPost +1 == nMZCntPre)
 		{
 			g_objCommon.Set_UnloadCVStop();
 			m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(5000);			
-		}		
+		}
+		else if(GetTickCount() - dwTick > 15000 )
+		{
+			g_objCommon.Show_Alarm("Unload C/V 4锅 厚况林技夸.");		
+			return FALSE;
+		}
 		break;
 	case 5:
 		//Info Processing
@@ -2497,8 +2543,9 @@ BOOL CSequenceMain::UnloadConveyorRun()
 				m_pDX01->iUldCvMZExist4 = FALSE; 
 			}	
 		}
+		nMZCntPre = 0; nMZCntPost = 0;
 		dwTick = GetTickCount();
-		m_nUnloadConveyorCase = 1; m_nUnloadConveyorLoop.Set_LoopTime(5000);
+		m_nUnloadConveyorCase = 0; m_nUnloadConveyorLoop.Set_LoopTime(5000);
 		break;	
 
 	}
