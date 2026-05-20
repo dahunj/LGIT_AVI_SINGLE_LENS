@@ -97,7 +97,7 @@ struct eFeederBr
 	};
 };
 
-struct ZigPickBranch
+struct eTrayPickerBr
 {
 	enum Name
 	{
@@ -107,19 +107,21 @@ struct ZigPickBranch
 	};
 };
 
-struct TopBranch
+struct eTopBr
 {
 	enum Name
 	{
 		VisionWait = 5,
+		Trigger = 6, 
 	};
 };
 
-struct BtmBranch
+struct eBtmBr
 {
 	enum Name
 	{
 		VisionWait = 5,
+		Trigger = 6, 
 	};
 };
 

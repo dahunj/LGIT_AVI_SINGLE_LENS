@@ -1265,11 +1265,14 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo)
 
 	gData.sMZID[nTo] = sMZIDFrom; gData.sMZID[nFrom] = "";
 
-	
+	gData.nLensTotalCnt[nTo] = 0;
+	gData.nCtZigTotalCnt[nTo] = 0;
 	for(int i = 0; i < 10; i++)
 	{
 		m_stcZigID[nFrom*10 + i].GetWindowText(sZigIDFrom);
 		sZigIDTo = sZigIDFrom;
+
+		if(sZigIDTo != "") gData.nCtZigTotalCnt[nTo]++;
 		m_stcZigID[nTo*10 + i].SetWindowText(sZigIDTo);
 		m_stcZigID[nFrom*10 +i].SetWindowText("");
 
@@ -1281,6 +1284,8 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo)
 		m_stcLensCnt[nFrom*10 +i].SetWindowText("");
 
 		gData.nLensUseCnt[nTo][i] = atoi(sLensCntTo);
+		gData.nLensTotalCnt[nTo] += gData.nLensUseCnt[nTo][i];
+
 		gData.nLensUseCnt[nFrom][i] = 0;
 		
 		//Init Lens State 

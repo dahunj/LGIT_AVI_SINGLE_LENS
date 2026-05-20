@@ -27,6 +27,7 @@ private:
 	CInspectV1	m_Vision1;
 
 	int		m_nStatusPC1;	// Vision PC1 ป๓ลย (0:Not Ready, 1:Ready, 2:Run)
+	int		m_nFOBStatus;
 	
 	BOOL	m_bLotReady1;
 
@@ -37,16 +38,19 @@ private:
 	void Get_StatusReply(int nVPc, CString sStatus);
 	void Get_StatusUpdate(int nVPc, CString sStatus);
 
-	void Get_LotReady(int nVPc, CString sLotId, CString sLotNo);
+	void Get_FOBUpdate(int nVPc, CString sStatus);
+	void Get_FOBReply(int nVPc, CString sStatus);
+
+	void Get_LotReady(int nVPc, CString sMZID, CString sMZNo);
 	void Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString sMZNo, CString sTrayNo, CString sLensNo);
 	void Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CString sMZNo, CString sTrayNo, CString sLensNo, CString sJudge, CString sNgCode);
 	
-	void Get_AMoveRequest(int nVPc, CString sGbn, CString sZ1, CString sZ2, CString sX, CString sY, CString sT, CString sR);
+	void Get_AMoveRequest(int nVPc, CString sGbn, CString sZ1);
 	void Get_PositionRequest(int nVPc, CString sGbn);
 	void Get_ReloadRequest(int nVPc, CString sPc);
+	void Get_TriggerRequest(int nVPc, CString sGbn, CString sMZNo, CString sCtZigID, CString sZigNo, CString sLensNo);
 
-
-	void Get_ErrorRequest(int nVPc, CString sGbn, CString sMZID, CString sZigID, CString sSlotNo, CString sLensNo, CString sErrNo, CString sErrMsg);
+	void Get_ErrorRequest(int nVPc, CString sErrNo, CString sErrMsg);
 
 	void Send_Command(int nVPc, CString sCommand);
 	void Exception_Log(int nVPc, CString sFunc, CString sGbn, int nLotNo, int nTrayNo, int nCmNo, int nCase);	// Recevie Exception Log
@@ -55,6 +59,12 @@ private:
 
 	
 public:
+	double m_dTopZ;
+	double Get_TopZ() { return m_dTopZ; }
+
+	double m_dBtmZ;
+	double Get_BtmZ() { return m_dBtmZ; }
+
 	void Initialize();
 	void Terminate();
 
@@ -65,6 +75,7 @@ public:
 	void Set_StatusUpdate(int nStatus);
 
 
+	
 	void Set_LotStart(CString sMZID, int nMZNo, int nTrayCount, int nLensCount, CString sModel);
 	void Set_LotEnd(CString sMZID, int nMZNo);
 	void Set_LotReadyDone(CString sMZID, int nMZNo);
@@ -72,11 +83,13 @@ public:
 	void Set_LoadComplete(CString sGbn, CString sMZID, int nMZNo, CString sTrayID, int nTrayNo, int nLensNo);
 	void Set_MoveComplete(int nVPc, CString sGbn);
 
-	void Set_PositionReply(int nVPc, CString sGbn, double dZ1, double dZ2, double dX, double dY, double dT, double dR);
+	void Set_PositionReply(int nVPc, CString sGbn, double dZ1);
 	void Set_ReloadComplete(int nVPc, CString sPc);
 	
 	void Set_InitialRequest(int nVPc);
 	void Set_TimeUpdate(int nVPc);
+
+	void Set_FOBRequest();
 
 	BOOL Check_Connect(int nVPc);
 	BOOL Check_LotReady();

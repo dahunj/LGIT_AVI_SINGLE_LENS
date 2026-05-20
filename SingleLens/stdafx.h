@@ -125,6 +125,9 @@ typedef struct
 	int		nMZNo[6];
 
 	int		nMZCnt;
+
+	int		nCtZigTotalCnt[6];
+	int		nLensTotalCnt[6];
 	int		nLensUseCnt[6][10];
 	int		nLensMaxCnt;
 	
