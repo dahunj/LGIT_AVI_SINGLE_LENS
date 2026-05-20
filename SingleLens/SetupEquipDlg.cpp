@@ -352,8 +352,7 @@ void CSetupEquipDlg::Save_EquipData()
 	m_stcTriggerData[7].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_VEL",	 dData, "%0.2lf");pEquipData->dBtmVelocity = dData;
 
 	m_stcElvData[0].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("ELEVATOR", "PITCH_Z", dData, "%0.2lf"); pEquipData->dElevPitchZ = dData;
-
-
+	
 	pEquipData->bUseTopVision = m_chkTopVision.GetCheck();
 	INI.Set_Bool("OPTION", "TOP_VISION", pEquipData->bUseTopVision);
 	

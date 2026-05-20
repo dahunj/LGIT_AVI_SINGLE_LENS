@@ -13,7 +13,8 @@ struct eLensState
 		TopDone = 4,
 		BtmReady = 5,
 		BtmDone = 6,
-		Marked = 7, 
+		MarkReady = 7,
+		MarkDone = 8, 
 		Init = 9,
 
 	};

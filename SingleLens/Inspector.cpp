@@ -201,15 +201,14 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 	int nMode = theApp.Get_MainMode();
 	int nPreInfo = gData.nInspectInfo[nMNo][nTNo][nLNo];
 
-	if		(sJudge == "N") { if (nPreInfo < 8 || nPreInfo > 8) gData.nInspectInfo[nMNo][nTNo][nLNo] = 2; }	// NG
+	if		(sJudge == "N") { if (nPreInfo < 9) gData.nInspectInfo[nMNo][nTNo][nLNo] = 2; }	// NG
 	else if (sJudge != "G")  // Good
 	{ 
 		if (nPreInfo < 2 || nPreInfo > 8) gData.nInspectInfo[nMNo][nTNo][nLNo] = 2;  // Normal (20180831 유출 때문에 수정.)		
 	}	
 
 	gData.byInspectDone[nMNo][nTNo][nLNo] |= (1 << nV);
-
-
+	
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
 	if (pEquipData->bUseTopVision && ((gData.byInspectDone[nMNo][nTNo][nLNo] >> 0) & 1) == 0) return;	// Angle
