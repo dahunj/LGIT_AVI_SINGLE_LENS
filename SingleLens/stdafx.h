@@ -227,7 +227,6 @@ typedef struct
 
 	int		nIndexPos;
 
-	BOOL	bLdCVWorkWait;
 	BOOL	bElvLoadWait;
 	BOOL	bElvUnloadWait;
 	BOOL	bElvSlideOverWait;
@@ -252,10 +251,7 @@ typedef struct
 	int	nLotStatus[60];	//0:Wait, 1, 2:Run, 3:Lot_End
 
 	BOOL bEmptyLot[60];
-
-
-
-
+	
 	///////////old 	
 	CString sStartTime[2];
 	CString sEndTime[2];
@@ -330,8 +326,6 @@ typedef struct{
 	double	dTime;
 	double	dPer;
 }GLOBAL_DOORLOCK;
-
-
 
 
 extern GLOVAL_DATA	gData;

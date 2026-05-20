@@ -86,7 +86,7 @@ struct ElvBranch
 	};
 };
 
-struct FeederBranch
+struct eFeederBr
 {
 	enum Name
 	{
@@ -129,6 +129,16 @@ struct MarkerBranch
 	enum Name
 	{
 		VisionWait = 5,
+	};
+};
+
+struct eLDCVBr
+{
+	enum Name
+	{
+		Check = 0,
+		Start = 1,
+		ElvWait = 10,
 	};
 };
 

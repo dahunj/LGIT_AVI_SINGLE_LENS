@@ -201,8 +201,7 @@ void CSequenceMain::Set_ClearRunData(BOOL bInit)
 	gData.nTNoPick[0] = 0;
 	gData.nTNoPick[1] = 0;
 
-	gData.bLdCVWorkWait = FALSE;
-	gData.bElvLoadWait = FALSE;
+	
 	gData.bElvUnloadWait = FALSE;
 	gData.bElvSlideOverWait = FALSE;
 	gData.bFeederWorkWait = FALSE;
@@ -341,11 +340,12 @@ BOOL CSequenceMain::LoadConveyorRun()
 {
 	static int nDetectCnt[6] = {0, 0, 0, 0, 0, 0}; 
 
-	if(gData.bLdMZWait || gData.bElvLoadWait || gData.bFeederWorkWait || gData.bCycleStop)
+	if(gData.bLdMZWait )
 	{
 		g_objCommon.Set_LoadCVStop();
 		return TRUE;
 	}
+	if(gData.bCycleStop) return TRUE;
 
 	if(gData.bDemoMode)
 	{
@@ -354,7 +354,7 @@ BOOL CSequenceMain::LoadConveyorRun()
 			m_pDX00->iLdCVMZExist1R = TRUE; m_pDX00->iLdCVMZExist5 = FALSE;
 		}
 	}
-	if(m_nLoadConveyorCase == 0 && 
+	if(m_nLoadConveyorCase == eLDCVBr::Check && 
 		(m_pDX00->iLdCVMZExist1R || m_pDX00->iLdCVMZExist2 || m_pDX00->iLdCVMZExist3 || m_pDX00->iLdCVMZExist4))
 	{
 		m_nLoadConveyorCase = 1; m_nLoadConveyorLoop.Set_LoopTime(5000);
@@ -362,7 +362,7 @@ BOOL CSequenceMain::LoadConveyorRun()
 
 	switch(m_nLoadConveyorCase)
 	{
-	case 0:
+	case eLDCVBr::Check:
 		m_nLoadConveyorLoop.Set_LoopTime(5000);
 		return TRUE;
 	case 1:		
@@ -395,7 +395,7 @@ BOOL CSequenceMain::LoadConveyorRun()
 	case 2:	
 		if(g_objCommon.Get_LdStopper1Up() )
 		{
-			if(!m_nLoadConveyorLoop.Waiting_Time(500)) break;
+			if(!m_nLoadConveyorLoop.Waiting_Time(300)) break;
 
 			g_objCommon.Set_LoadCVRunCW();
 			m_nLoadConveyorCase++; m_nLoadConveyorLoop.Set_LoopTime(25000);
@@ -413,7 +413,7 @@ BOOL CSequenceMain::LoadConveyorRun()
 	case 4:
 		if(g_objCommon.Get_LdStopper1Down())
 		{
-			if(!m_nLoadConveyorLoop.Waiting_Time(500)) break;
+			if(!m_nLoadConveyorLoop.Waiting_Time(300)) break;
 			m_nLoadConveyorCase++; m_nLoadConveyorLoop.Set_LoopTime(5000);
 		}		
 		break;
@@ -425,20 +425,24 @@ BOOL CSequenceMain::LoadConveyorRun()
 						
 			g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Ready);
 			m_nMZElevCase = ElvBranch::Start; 
-			m_nLoadConveyorCase = 0; m_nLoadConveyorLoop.Set_LoopTime(5000);
+
+			m_nLoadConveyorCase = eLDCVBr::ElvWait; m_nLoadConveyorLoop.Set_LoopTime(5000);
 		}		
 		else if(m_pDX00->iElvMZExist1 && m_pDX00->iElvMZExist2)
 		{
 			nDetectCnt[1]++; nDetectCnt[0] = 0; 
 			if(nDetectCnt[1] < 5) return TRUE;
 						
-			m_nLoadConveyorCase = 1; m_nLoadConveyorLoop.Set_LoopTime(5000);
+			m_nLoadConveyorCase = 0; m_nLoadConveyorLoop.Set_LoopTime(5000);
 		}
 		else
 		{
 			for(int i = 0; i < 5; i++) nDetectCnt[i] = 0;
 		}
 		return TRUE;	
+	case eLDCVBr::ElvWait: //wait 
+		m_nLoadConveyorLoop.Set_LoopTime(5000);
+		return TRUE;
 	}
 	
 	// 1. (Error : 3100)
@@ -468,11 +472,9 @@ BOOL CSequenceMain::MZElevRun()
 		m_nMZElevLoop.Set_LoopTime(5000);
 		return TRUE;
 	case ElvBranch::Start:
-
-		
 		if(g_objCommon.Get_LdStopper1Down() && g_objCommon.Check_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Ready))
 		{
-			//if(!m_nMZElevLoop.Waiting_Time(500)) break;	
+					
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load MZ to Elev Start");
 		}	
@@ -491,6 +493,8 @@ BOOL CSequenceMain::MZElevRun()
 				g_objCommon.Set_ElevStopper2Down(); Sleep(5);
 				g_objCommon.Set_LoadCVRunCW();Sleep(15); //CW 회전하려면 CCW도 True 로 해야함  
 				g_objCommon.Set_ElevCVRunCW();Sleep(15);
+
+				gData.bElvLoadWait = TRUE;	
 				m_nMZElevCase = ElvBranch::LoadMZ; m_nMZElevLoop.Set_LoopTime(30000);
 				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load CV CW Start");	
 			}
@@ -509,6 +513,8 @@ BOOL CSequenceMain::MZElevRun()
 				g_objCommon.Set_ElevLift1Out(); Sleep(10);
 				g_objCommon.Set_LoadCVRunCW();Sleep(5); //CW 회전하려면 CCW도 True 로 해야함 
 				g_objCommon.Set_ElevCVRunCW();
+
+				gData.bElvLoadWait = TRUE;	
 				m_nMZElevCase = ElvBranch::RdyMZ; m_nMZElevLoop.Set_LoopTime(30000);
 				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load CV CW Start");		
 			}				
@@ -522,6 +528,8 @@ BOOL CSequenceMain::MZElevRun()
 
 				for(int i = 0; i < 6; i++) nMZDetectCnt[i] = 0;
 				gData.bElvSlideOverWait = TRUE;
+				m_nLoadConveyorCase = eLDCVBr::Check;
+								
 				m_nMZElevCase = ElvBranch::SlideOver; m_nMZElevLoop.Set_LoopTime(30000);
 				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load CV CW Start");		
 			}
@@ -533,7 +541,7 @@ BOOL CSequenceMain::MZElevRun()
 			if(nMZDetectCnt[3] > 5)
 			{
 				dwTick1 = GetTickCount();
-
+				m_nLoadConveyorCase = eLDCVBr::Check;
 				for(int i = 0; i < 6; i++) nMZDetectCnt[i] = 0;
 				m_nMZElevCase = 20; m_nMZElevLoop.Set_LoopTime(30000);
 				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load CV CW Start");	
@@ -567,7 +575,7 @@ BOOL CSequenceMain::MZElevRun()
 				g_objCommon.Set_LoadCVStop(); Sleep(5);
 				g_objCommon.Set_LoadCVRunCCW(); Sleep(5);
 				g_objCommon.Set_ElevCVRunCW();
-				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(30000);
+				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(gData.nLT[eLT::CV]);
 				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load CV CW Stop & Elev CV CW Start");
 			
 			
@@ -592,25 +600,28 @@ BOOL CSequenceMain::MZElevRun()
 			g_objCommon.Set_LoadCVStop(); Sleep(5);
 			
 			g_objCommon.Set_ElevStopper2Out();
-			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+
+			
+
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(gData.nLT[eLT::CV]);
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev CV CW Stop & Stopper2 Out");
 		}
 		return TRUE;
 	case 5:
 		if(g_objCommon.Get_ElevStopper2Out() && g_objCommon.Get_ElevStopper2Down())
 		{
-			if(!m_nMZElevLoop.Waiting_Time(1500)) break;
+			if(!m_nMZElevLoop.Waiting_Time(1000)) break;
 			g_objCommon.Set_ElevStopper2Up();						
-			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(gData.nLT[eLT::CV]);
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Stopper2 Up");
 		}
 		break;
 	case 6:
 		if(g_objCommon.Get_ElevStopper2Out() && g_objCommon.Get_ElevStopper2Up())
 		{
-			if(!m_nMZElevLoop.Waiting_Time(1500)) break;
+			if(!m_nMZElevLoop.Waiting_Time(1000)) break;
 			g_objCommon.Set_ElevStopper2In();
-			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(gData.nLT[eLT::CV]);
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Stopper2 In");
 		}
 		break;
@@ -642,7 +653,8 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		break;
 	case 8:
-		m_nLoadConveyorCase = 1;
+		gData.bElvLoadWait = FALSE;	
+		m_nLoadConveyorCase = eLDCVBr::Check;
 		m_nMZElevCase = 20;	m_nMZElevLoop.Set_LoopTime(5000);	
 		break;
 	
@@ -673,7 +685,7 @@ BOOL CSequenceMain::MZElevRun()
 
 			g_objCommon.Set_LoadCVStop();Sleep(5);
 			g_objCommon.Set_ElevLift1Up();
-
+			
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Stopper2 Up");
 		}
@@ -719,13 +731,14 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		break;
 	case 16:
-		m_nLoadConveyorCase = 1;
+		gData.bElvLoadWait = FALSE;
+		m_nLoadConveyorCase = eLDCVBr::Check;
 		m_nMZElevCase = 20;	m_nMZElevLoop.Set_LoopTime(5000);	
 		break;
 
 	case 20: // working 
 		//If additional M/Z added from operator with UI, case can be changed 
-		gData.bElvLoadWait = FALSE;
+		
 		return TRUE;
 
 	case ElvBranch::Unload:
@@ -985,7 +998,7 @@ BOOL CSequenceMain::FeederRun()
 {	
 	static double dPosZ = 0.0;
 		
-	if(gData.bElvLoadWait || gData.bElvSlideOverWait || gData.bElvUnloadWait) return TRUE;
+	if( gData.bElvSlideOverWait || gData.bElvUnloadWait) return TRUE;
 	
 	switch(m_nFeederCase)
 	{
@@ -993,11 +1006,10 @@ BOOL CSequenceMain::FeederRun()
 		m_nFeederLoop.Set_LoopTime(5000);
 		return TRUE;
 
-	case (int) FeederBranch::LoadSearch:	
-		if(!gData.bElvLoadWait)
-		{
-			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
-		}
+	case (int) eFeederBr::LoadSearch:	
+		if(gData.bElvLoadWait || gData.bElvSlideOverWait || gData.bElvUnloadWait) return TRUE;
+		m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
+		
 		return TRUE;
 	case 2:
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready) || g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad)  )
@@ -1058,7 +1070,7 @@ BOOL CSequenceMain::FeederRun()
 				else
 				{
 					
-					m_nFeederCase = FeederBranch::LoadSearch; m_nFeederLoop.Set_LoopTime(5000);
+					m_nFeederCase = eFeederBr::LoadSearch; m_nFeederLoop.Set_LoopTime(5000);
 					m_strLog.Format("Elev Z Move to search Zig"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 				}
 				
@@ -1166,8 +1178,8 @@ BOOL CSequenceMain::FeederRun()
 	case 20: // Tray Pick working 
 		return TRUE;
 
-	case FeederBranch::Unload:
-		
+	case eFeederBr::Unload:
+		if(gData.bElvLoadWait || gData.bElvSlideOverWait || gData.bElvUnloadWait ) break;
 		m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		return TRUE;
 	case 31:
@@ -1218,10 +1230,7 @@ BOOL CSequenceMain::FeederRun()
 		}
 		break;
 	case 35:
-		if(!gData.bElvLoadWait)
-		{
-			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
-		}
+		m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);		
 		return TRUE;
 
 	case 36:
@@ -1280,11 +1289,9 @@ BOOL CSequenceMain::FeederRun()
 		break;
 
 
-	case (int) FeederBranch::RdySearch:	
-		if(!gData.bElvLoadWait)
-		{
-			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
-		}
+	case (int) eFeederBr::RdySearch:	
+		if(gData.bElvLoadWait || gData.bElvSlideOverWait || gData.bElvUnloadWait) break;
+		m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		return TRUE;
 	case 52:
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready) || g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZReady) )
@@ -1343,7 +1350,7 @@ BOOL CSequenceMain::FeederRun()
 				else
 				{
 					//gData.nTNoPick[eMZ::Ready]++;
-					m_nFeederCase = FeederBranch::RdySearch; m_nFeederLoop.Set_LoopTime(5000);
+					m_nFeederCase = eFeederBr::RdySearch; m_nFeederLoop.Set_LoopTime(5000);
 					m_strLog.Format("Elev Z Move to search Zig"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 				}
 			}
@@ -1694,7 +1701,7 @@ BOOL CSequenceMain::ZigPickerRun()
 	case 31:		
 		if(g_objCommon.Check_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Ready) && (!m_pDX01->iZigPickerExist || gData.bDemoMode))
 		{			
-			m_nFeederCase = (int) FeederBranch::Unload;
+			m_nFeederCase = (int) eFeederBr::Unload;
 					
 			m_nZigPickerCase = 0; m_nZigPickerLoop.Set_LoopTime(gData.nLT[eLT::Motion]);
 			m_strLog.Format("Feeder and Rail Start (Unload)"); m_nZigPickerLoop.Takt_Save(4, m_nZigPickerCase, m_strLog);
@@ -2338,16 +2345,16 @@ BOOL CSequenceMain::MainIndexRun()
 	case (int) MainIndexBranch::CheckInOut:		
 		if(Check_IndexEmpty(eMainIndex::Load) 
 			&& m_nMZElevCase == 20 && m_nFeederCase == 0 && m_nZigPickerCase == 0
-			&& !gData.bIndexDone[eMainIndex::Load] && Check_CtZigInMZ(eMZ::Load) )// Unload 가 비워지면 다시 Load 
+			&& !gData.bIndexDone[eMainIndex::Load] && Check_CtZigInMZ(eMZ::Load)) // Unload 가 비워지면 다시 Load 
 		{			
-			m_nFeederCase = FeederBranch::LoadSearch; // Feeder  부터			
+			m_nFeederCase = eFeederBr::LoadSearch; // Feeder  부터			
 			m_strLog.Format("Feeder LoadSearch"); m_nIndexTLoop.Takt_Save(9, m_nMainIndexCase, m_strLog);
 		}
 		else if(Check_IndexEmpty(eMainIndex::Load) 
 			&& m_nMZElevCase == 20 && m_nFeederCase == 0 && m_nZigPickerCase == 0
-			&& !gData.bIndexDone[eMainIndex::Load] && Check_CtZigInMZ(eMZ::Ready) )// Unload 가 비워지면 다시 Load 
+			&& !gData.bIndexDone[eMainIndex::Load] && Check_CtZigInMZ(eMZ::Ready)) // Unload 가 비워지면 다시 Load 
 		{				
-			m_nFeederCase = FeederBranch::RdySearch; // Feeder  부터			
+			m_nFeederCase = eFeederBr::RdySearch; // Feeder  부터			
 			m_strLog.Format("Feeder Ready Search"); m_nIndexTLoop.Takt_Save(9, m_nMainIndexCase, m_strLog);
 		}
 		else if(Check_IndexEmpty(eMainIndex::Load) &&  !gData.bIndexDone[eMainIndex::Load]
