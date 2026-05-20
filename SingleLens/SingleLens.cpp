@@ -76,7 +76,7 @@ BOOL CSingleLensApp::InitInstance()
 
 	gDoorLock.nOpenStart = -1;//start with nothing
 	gDoorLock.bFirst = TRUE;
-	gData.bDemoMode = TRUE;
+	//gData.bDemoMode = TRUE;
 
 	CIniFileCS INI(gsCurrentDir + "\\System\\EquipData.ini");
 	if (!INI.Check_File()) { AfxMessageBox("EquipData.ini File Not Found!!!"); return FALSE; }

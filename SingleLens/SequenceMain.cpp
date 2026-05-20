@@ -354,7 +354,11 @@ BOOL CSequenceMain::LoadConveyorRun()
 			m_pDX00->iLdCVMZExist1R = TRUE; m_pDX00->iLdCVMZExist5 = FALSE;
 		}
 	}
-
+	if(m_nLoadConveyorCase == 0 && 
+		(m_pDX00->iLdCVMZExist1R || m_pDX00->iLdCVMZExist2 || m_pDX00->iLdCVMZExist3 || m_pDX00->iLdCVMZExist4))
+	{
+		m_nLoadConveyorCase = 1; m_nLoadConveyorLoop.Set_LoopTime(5000);
+	}
 
 	switch(m_nLoadConveyorCase)
 	{
@@ -591,7 +595,7 @@ BOOL CSequenceMain::MZElevRun()
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev CV CW Stop & Stopper2 Out");
 		}
-		break;
+		return TRUE;
 	case 5:
 		if(g_objCommon.Get_ElevStopper2Out() && g_objCommon.Get_ElevStopper2Down())
 		{
@@ -844,9 +848,21 @@ BOOL CSequenceMain::MZElevRun()
 			Sleep(5);
 			g_objCommon.Set_UnloadCVStop();	
 			gData.bElvUnloadWait = FALSE;
+
+			g_dlgWork.TransferMZInfo(eMZ::Load, -1); // From Load To Out(-1)
+			//Info Processing
+			gData.sMZIDElevUnload.Empty();
+			for(int i = 0; i < 10; i++) gData.sZigIDElevUnload[i].Empty();
+			memset( gData.InfoMZUnload, 0x00, sizeof(int)*10*ZIG_X*ZIG_Y);
+
+			g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO,eMZ::Unload, NULL);
+
+			Job_LotEnd(Find_UnloadMZNo());	
+
+
 			m_nUnloadConveyorCase = eULDCVBr::start; //Unload CV Start 
-			//Check Slide Over 
-			m_nMZElevCase = ElvBranch::SlideOver;m_nMZElevLoop.Set_LoopTime(5000);
+			m_nMZElevCase = ElvBranch::SlideOver; //Check Slide Over
+			m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
 	case ElvBranch::SlideOver:		
@@ -2433,7 +2449,7 @@ BOOL CSequenceMain::UnloadConveyorRun()
 	switch(m_nUnloadConveyorCase)
 	{
 	case 0:
-		m_nUnloadConveyorLoop.Set_LoopTime(5000);
+		m_nUnloadConveyorLoop.Set_LoopTime(gData.nLT[eLT::CV]);
 		return TRUE;
 	case eULDCVBr::start:
 		if(gData.bDemoMode) m_pDX01->iUldCvMZExist4 = FALSE;
@@ -2441,28 +2457,28 @@ BOOL CSequenceMain::UnloadConveyorRun()
 		if(m_pDX01->iUldCvMZExist1L)
 		{
 			nDetectCnt[0]++;
-			if(nDetectCnt[0] > 5){ nMZCntPre++; }
+			if(nDetectCnt[0] > 5){ nMZCntPre++; nDetectCnt[0] = 0; }
 		}
 		if(m_pDX01->iUldCvMZExist2)
 		{
 			nDetectCnt[1]++;
-			if(nDetectCnt[1] > 5){ nMZCntPre++; }
+			if(nDetectCnt[1] > 5){ nMZCntPre++; nDetectCnt[1] = 0; }
 		}
 		if(m_pDX01->iUldCvMZExist3)
 		{
 			nDetectCnt[2]++;
-			if(nDetectCnt[2] > 5){ nMZCntPre++; }
+			if(nDetectCnt[2] > 5){ nMZCntPre++; nDetectCnt[2] = 0; }
 		}
 		if(m_pDX01->iUldCvMZExist4)
 		{
 			nDetectCnt[3]++;
-			if(nDetectCnt[3] > 5){ nMZCntPre++; }
+			if(nDetectCnt[3] > 5){ nMZCntPre++; nDetectCnt[3] = 0; }
 		}
 		nDetectCnt[5]++;
 		if(nDetectCnt[5] > 8)
 		{
 			for(int i = 0; i < 6; i++) nDetectCnt[i] = 0;
-			m_nUnloadConveyorCase++;m_nUnloadConveyorLoop.Set_LoopTime(5000);
+			m_nUnloadConveyorCase++;m_nUnloadConveyorLoop.Set_LoopTime(gData.nLT[eLT::CV]);
 		}		
 		return TRUE;
 	case 2:
@@ -2470,35 +2486,40 @@ BOOL CSequenceMain::UnloadConveyorRun()
 		{
 			dwTick = GetTickCount();
 			g_objCommon.Set_UnloadCVRunCW();
-			m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(5000);
+			m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(gData.nLT[eLT::CV]);
 		}	
+		else
+		{
+			nMZCntPre = 0;
+			m_nUnloadConveyorCase = 1; m_nUnloadConveyorLoop.Set_LoopTime(gData.nLT[eLT::CV]);
+		}
 		break;
 	case 3:
 		if(m_pDX01->iUldCvMZExist1L)
 		{
 			nDetectCnt[0]++;
-			if(nDetectCnt[0] > 5){ nMZCntPost++; }
+			if(nDetectCnt[0] > 5){ nMZCntPost++; nDetectCnt[0] = 0; }
 		}
 		if(m_pDX01->iUldCvMZExist2)
 		{
 			nDetectCnt[1]++;
-			if(nDetectCnt[1] > 5){ nMZCntPost++; }
+			if(nDetectCnt[1] > 5){ nMZCntPost++; nDetectCnt[1] = 0; }
 		}
 		if(m_pDX01->iUldCvMZExist3)
 		{
 			nDetectCnt[2]++;
-			if(nDetectCnt[2] > 5){ nMZCntPost++; }
+			if(nDetectCnt[2] > 5){ nMZCntPost++; nDetectCnt[2] = 0; }
 		}
 		if(m_pDX01->iUldCvMZExist4)
 		{
 			nDetectCnt[3]++;
-			if(nDetectCnt[3] > 5){ nMZCntPost++; }
+			if(nDetectCnt[3] > 5){ nMZCntPost++; nDetectCnt[3] = 0; }
 		}
 		nDetectCnt[5]++;
 		if(nDetectCnt[5] > 8)
 		{
 			for(int i = 0; i < 6; i++) nDetectCnt[i] = 0;
-			m_nUnloadConveyorCase++;m_nUnloadConveyorLoop.Set_LoopTime(5000);
+			m_nUnloadConveyorCase++;m_nUnloadConveyorLoop.Set_LoopTime(gData.nLT[eLT::CV]);
 		}				
 		break;
 	case 4:
@@ -2510,31 +2531,24 @@ BOOL CSequenceMain::UnloadConveyorRun()
 			}
 		}
 
-		if(nMZCntPost +1 == nMZCntPre)
+		if(nMZCntPost == nMZCntPre + 1)
 		{
 			g_objCommon.Set_UnloadCVStop();
-			m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(5000);			
+			m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(gData.nLT[eLT::CV]);			
 		}
 		else if(GetTickCount() - dwTick > 15000 )
 		{
-			g_objCommon.Show_Alarm("Unload C/V 4번 비워주세요.");		
-			return FALSE;
+			//Lot End A¼AⓒCI±a 
+			nMZCntPost = 0;		
+			m_nUnloadConveyorCase = 0; m_nUnloadConveyorLoop.Set_LoopTime(gData.nLT[eLT::CV]);					
+		
 		}
 		break;
 	case 5:
-		//Info Processing
-		gData.sMZIDElevUnload.Empty();
-		for(int i = 0; i < 10; i++) gData.sZigIDElevUnload[i].Empty();
-		memset( gData.InfoMZUnload, 0x00, sizeof(int)*10*ZIG_X*ZIG_Y);	
-		
-		Job_LotEnd(Find_UnloadMZNo());
-		g_dlgWork.TransferMZInfo(eMZ::Load, -1); // From Load To Out(-1)
-		g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO,eMZ::Unload, NULL);
-		
 		g_objCommon.Set_LdStopper1Down();
 		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Ready);
 		m_nMZElevCase = ElvBranch::Start; // Slide over Check 
-		m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(5000);	
+		m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(gData.nLT[eLT::CV]);	
 	case 6:
 		if(gData.bDemoMode)
 		{
@@ -2545,7 +2559,7 @@ BOOL CSequenceMain::UnloadConveyorRun()
 		}
 		nMZCntPre = 0; nMZCntPost = 0;
 		dwTick = GetTickCount();
-		m_nUnloadConveyorCase = 0; m_nUnloadConveyorLoop.Set_LoopTime(5000);
+		m_nUnloadConveyorCase = 0; m_nUnloadConveyorLoop.Set_LoopTime(gData.nLT[eLT::CV]);
 		break;	
 
 	}
@@ -2563,7 +2577,7 @@ void CSequenceMain::Begin_MainRunThread()
 {
 	if (m_nMainIndexCase == 0 )		m_nMainIndexCase = 1;
 	if (m_nLoadConveyorCase == 0)	m_nLoadConveyorCase = 1;
-	if (m_nUnloadConveyorCase == 0) m_nUnloadConveyorCase = 1;
+	//if (m_nUnloadConveyorCase == 0) m_nUnloadConveyorCase = 1;
 
 	if (m_pThreadMainRun) End_MainRunThread();
 	m_bThreadMainRun = TRUE;
