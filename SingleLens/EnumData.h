@@ -132,7 +132,7 @@ struct MarkerBranch
 	};
 };
 
-struct eLDCVBr
+struct eLoadCVBr
 {
 	enum Name
 	{
@@ -142,7 +142,7 @@ struct eLDCVBr
 	};
 };
 
-struct eULDCVBr
+struct eUnloadCVBr
 {
 	enum Name
 	{

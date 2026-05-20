@@ -345,7 +345,11 @@ BOOL CSequenceMain::LoadConveyorRun()
 		g_objCommon.Set_LoadCVStop();
 		return TRUE;
 	}
-	if(gData.bCycleStop) return TRUE;
+	if(gData.bCycleStop || gData.bElvLoadWait)
+	{
+		m_nLoadConveyorCase = 0; //eLoadCVBr::Check
+		return TRUE;
+	}
 
 	if(gData.bDemoMode)
 	{
@@ -354,7 +358,7 @@ BOOL CSequenceMain::LoadConveyorRun()
 			m_pDX00->iLdCVMZExist1R = TRUE; m_pDX00->iLdCVMZExist5 = FALSE;
 		}
 	}
-	if(m_nLoadConveyorCase == eLDCVBr::Check && 
+	if(m_nLoadConveyorCase == eLoadCVBr::Check && 
 		(m_pDX00->iLdCVMZExist1R || m_pDX00->iLdCVMZExist2 || m_pDX00->iLdCVMZExist3 || m_pDX00->iLdCVMZExist4))
 	{
 		m_nLoadConveyorCase = 1; m_nLoadConveyorLoop.Set_LoopTime(5000);
@@ -362,7 +366,7 @@ BOOL CSequenceMain::LoadConveyorRun()
 
 	switch(m_nLoadConveyorCase)
 	{
-	case eLDCVBr::Check:
+	case eLoadCVBr::Check:
 		m_nLoadConveyorLoop.Set_LoopTime(5000);
 		return TRUE;
 	case 1:		
@@ -426,7 +430,7 @@ BOOL CSequenceMain::LoadConveyorRun()
 			g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Ready);
 			m_nMZElevCase = ElvBranch::Start; 
 
-			m_nLoadConveyorCase = eLDCVBr::ElvWait; m_nLoadConveyorLoop.Set_LoopTime(5000);
+			m_nLoadConveyorCase = eLoadCVBr::ElvWait; m_nLoadConveyorLoop.Set_LoopTime(5000);
 		}		
 		else if(m_pDX00->iElvMZExist1 && m_pDX00->iElvMZExist2)
 		{
@@ -440,7 +444,7 @@ BOOL CSequenceMain::LoadConveyorRun()
 			for(int i = 0; i < 5; i++) nDetectCnt[i] = 0;
 		}
 		return TRUE;	
-	case eLDCVBr::ElvWait: //wait 
+	case eLoadCVBr::ElvWait: //wait 
 		m_nLoadConveyorLoop.Set_LoopTime(5000);
 		return TRUE;
 	}
@@ -528,7 +532,7 @@ BOOL CSequenceMain::MZElevRun()
 
 				for(int i = 0; i < 6; i++) nMZDetectCnt[i] = 0;
 				gData.bElvSlideOverWait = TRUE;
-				m_nLoadConveyorCase = eLDCVBr::Check;
+				m_nLoadConveyorCase = eLoadCVBr::Check;
 								
 				m_nMZElevCase = ElvBranch::SlideOver; m_nMZElevLoop.Set_LoopTime(30000);
 				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load CV CW Start");		
@@ -541,7 +545,7 @@ BOOL CSequenceMain::MZElevRun()
 			if(nMZDetectCnt[3] > 5)
 			{
 				dwTick1 = GetTickCount();
-				m_nLoadConveyorCase = eLDCVBr::Check;
+				m_nLoadConveyorCase = eLoadCVBr::Check;
 				for(int i = 0; i < 6; i++) nMZDetectCnt[i] = 0;
 				m_nMZElevCase = 20; m_nMZElevLoop.Set_LoopTime(30000);
 				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load CV CW Start");	
@@ -654,7 +658,7 @@ BOOL CSequenceMain::MZElevRun()
 		break;
 	case 8:
 		gData.bElvLoadWait = FALSE;	
-		m_nLoadConveyorCase = eLDCVBr::Check;
+		m_nLoadConveyorCase = eLoadCVBr::Check;
 		m_nMZElevCase = 20;	m_nMZElevLoop.Set_LoopTime(5000);	
 		break;
 	
@@ -732,7 +736,7 @@ BOOL CSequenceMain::MZElevRun()
 		break;
 	case 16:
 		gData.bElvLoadWait = FALSE;
-		m_nLoadConveyorCase = eLDCVBr::Check;
+		m_nLoadConveyorCase = eLoadCVBr::Check;
 		m_nMZElevCase = 20;	m_nMZElevLoop.Set_LoopTime(5000);	
 		break;
 
@@ -871,9 +875,8 @@ BOOL CSequenceMain::MZElevRun()
 			g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO,eMZ::Unload, NULL);
 
 			Job_LotEnd(Find_UnloadMZNo());	
-
-
-			m_nUnloadConveyorCase = eULDCVBr::start; //Unload CV Start 
+			
+			m_nUnloadConveyorCase = eUnloadCVBr::start; //Unload CV Start 
 			m_nMZElevCase = ElvBranch::SlideOver; //Check Slide Over
 			m_nMZElevLoop.Set_LoopTime(5000);
 		}
@@ -998,7 +1001,7 @@ BOOL CSequenceMain::FeederRun()
 {	
 	static double dPosZ = 0.0;
 		
-	if( gData.bElvSlideOverWait || gData.bElvUnloadWait) return TRUE;
+	if( gData.bElvSlideOverWait || gData.bElvLoadWait || gData.bElvUnloadWait) return TRUE;
 	
 	switch(m_nFeederCase)
 	{
@@ -1179,7 +1182,7 @@ BOOL CSequenceMain::FeederRun()
 		return TRUE;
 
 	case eFeederBr::Unload:
-		if(gData.bElvLoadWait || gData.bElvSlideOverWait || gData.bElvUnloadWait ) break;
+		if(gData.bElvLoadWait || gData.bElvSlideOverWait || gData.bElvUnloadWait ) return TRUE;
 		m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		return TRUE;
 	case 31:
@@ -1290,7 +1293,7 @@ BOOL CSequenceMain::FeederRun()
 
 
 	case (int) eFeederBr::RdySearch:	
-		if(gData.bElvLoadWait || gData.bElvSlideOverWait || gData.bElvUnloadWait) break;
+		if(gData.bElvLoadWait || gData.bElvSlideOverWait || gData.bElvUnloadWait) return TRUE;
 		m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		return TRUE;
 	case 52:
@@ -2458,7 +2461,7 @@ BOOL CSequenceMain::UnloadConveyorRun()
 	case 0:
 		m_nUnloadConveyorLoop.Set_LoopTime(gData.nLT[eLT::CV]);
 		return TRUE;
-	case eULDCVBr::start:
+	case eUnloadCVBr::start:
 		if(gData.bDemoMode) m_pDX01->iUldCvMZExist4 = FALSE;
 		
 		if(m_pDX01->iUldCvMZExist1L)
