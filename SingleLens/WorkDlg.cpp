@@ -709,9 +709,7 @@ void CWorkDlg::Check_Lamp()
 				}	
 			}				
 		} 
-
-
-
+		
 		if (pDX03->iUnloadOpenSw) 
 		{
 			//if (!pEquipData->bUseDoorLock || !pDX03->iDoor03Unlock) // 안전 확인.

@@ -135,7 +135,6 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		CString strErrNo, strErrCode, strErrMsg, strShow, strLog;
 		CString strMes = "";
 		
-
 		pMainDlg->Set_CurrentState(STATE_ERROR);
 
 		strErrNo.Format("%04d", m_nErrNo);
@@ -146,22 +145,11 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		if (!INI.Check_File()) { AfxMessageBox("ErrorList.ini File Not Found!!!"); return; }
 		strErrMsg = INI.Get_String("ERROR", strErrNo, "");
 
-		CString strErrPick = "";
-		
-	/*	if(m_nErrNo == 4415  || m_nErrNo == 4416)
-		{
-			strErrPick = g_objCommon.Get_UnloadPickerUpCheckErr();
-			strErrPick += g_objCommon.Get_UnloadPickerVacOffCheckErr();
-		}*/
-		
-
-		
-
+		CString strErrPick = "";		
+	
 // 		if (m_nErrNo == 3606 || m_nErrNo == 3706 || m_nErrNo == 6220) m_btnErrToManual.SetWindowText("Skip");
 // 		else m_btnErrToManual.SetWindowText("To Manual");
-
 		
-
 		if (m_nErrNo == 9012 || m_nErrNo == 9022) strMes.Format("==> Reason[%s] Text[%s]..", g_objMES.m_sReasonCode, g_objMES.m_sReasonText);
 
 		if (m_nErrNo > 2 && m_nErrNo < 7) g_objSequenceInit.Set_InitComplete(FALSE);	// 3,4,5,6
@@ -180,8 +168,8 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		gData.sAlarmTime[0].Format("%02d:%02d:%02d", time.wHour, time.wMinute, time.wSecond);
 		gData.sAlarmList[0].Format("[%s] %s", strErrNo, m_strErrMsg);
 
-		//strLog.Format("%s,%s,%s", gData.sLotID[nNo], strErrNo, m_strErrMsg);
-		//g_objLogFile.Save_AlarmLog(strLog);
+		strLog.Format("%s,%s,%s", gData.sMZID[eMZ::Load], strErrNo, m_strErrMsg);
+		g_objLogFile.Save_AlarmLog(strLog);
 		
 		Set_AlarmLog(m_nErrCode, m_strErrMsg);
 

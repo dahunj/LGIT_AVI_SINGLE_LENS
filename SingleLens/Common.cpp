@@ -245,22 +245,33 @@ BOOL CCommon::Check_MainEmgAir()
 
 BOOL CCommon::Check_MainDoor(BOOL bAuto)
 {
+
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
 #ifdef AJIN_BOARD_USE
 	DX_DATA_03 *pDX03 = g_objAJinAXL.Get_pDX03();
-	if (!pEquipData->bUseDoorLock) return TRUE;
 
-	// temp
-	if (pDX03->iDoor01Unlock )						{ Show_Alarm("Main 01번 Door(X0322) Opened."); return FALSE; }
-	if (pDX03->iDoor02Unlock)							{ Show_Alarm("Main 02번 Door(X0323) Opened."); return FALSE; }
-	if (pDX03->iDoor03Unlock && !gData.bUnloadOpenSW)	{ Show_Alarm("Main 03번 Door(X0324) Opened."); return FALSE; }
-	if (pDX03->iDoor04Unlock)							{ Show_Alarm("Main 04번 Door(X0325) Opened."); return FALSE; }
-	if (pDX03->iDoor05Unlock)							{ Show_Alarm("Main 05번 Door(X0326) Opened."); return FALSE; }
-	if (pDX03->iDoor06Unlock)							{ Show_Alarm("Main 06번 Door(X0327) Opened."); return FALSE; }
-	if (pDX03->iDoor07Unlock && !gData.bLoadOpenSW)	{ Show_Alarm("Main 07번 Door(X0328) Opened."); return FALSE; }
-	if (pDX03->iDoor08Unlock)							{ Show_Alarm("Main 08번 Door(X0329) Opened."); return FALSE; }		
 
+	if (!pEquipData->bUseDoorLock) 
+	{		
+		//Don't Check Door when Unlocked 
+		//if (pDX03->iDoor01UnlockFront1) { Show_Alarm("Main 01번 Door(X0322) Opened."); return FALSE; }
+		//if (pDX03->iDoor02UnlockFront2) { Show_Alarm("Main 02번 Door(X0323) Opened."); return FALSE; }
+	} 
+	else
+	{
+		if (!pEquipData->bUseDoorLock) return TRUE;
+
+		// temp
+		if (pDX03->iDoor01Unlock )						{ Show_Alarm("Main 01번 Door(X0322) Opened."); return FALSE; }
+		if (pDX03->iDoor02Unlock)							{ Show_Alarm("Main 02번 Door(X0323) Opened."); return FALSE; }
+		if (pDX03->iDoor03Unlock && !gData.bUnloadOpenSW)	{ Show_Alarm("Main 03번 Door(X0324) Opened."); return FALSE; }
+		if (pDX03->iDoor04Unlock)							{ Show_Alarm("Main 04번 Door(X0325) Opened."); return FALSE; }
+		if (pDX03->iDoor05Unlock)							{ Show_Alarm("Main 05번 Door(X0326) Opened."); return FALSE; }
+		if (pDX03->iDoor06Unlock)							{ Show_Alarm("Main 06번 Door(X0327) Opened."); return FALSE; }
+		if (pDX03->iDoor07Unlock && !gData.bLoadOpenSW)	{ Show_Alarm("Main 07번 Door(X0328) Opened."); return FALSE; }
+		if (pDX03->iDoor08Unlock)							{ Show_Alarm("Main 08번 Door(X0329) Opened."); return FALSE; }		
+	}
 #endif
 	return TRUE;
 }
