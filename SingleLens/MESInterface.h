@@ -38,10 +38,8 @@ public:
 	void Set_MESUse(BOOL bMESUse);
 	void Set_Status(int	nStste);	// 1:Run, 2:Stop, 3:Idle
 
-	void Set_CapLotChangeRequest(CString sLotID, CString sOperID);
-	void Set_ShipLotChangeRequest(CString sLotID, CString sOperID);
-	void Save_AviRmsData(CString sKey, CString sValue);
 
+	
 	void Read_Result(int nType);
 	void Clear_Result();
 

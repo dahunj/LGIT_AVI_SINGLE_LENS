@@ -18,6 +18,7 @@ public:
 	CLabelCS	m_Label[7];
 
 	CStaticCS	m_stcEquipName;
+	CStaticCS	m_stcEquipModel;
 	
 	CComboCS	m_cboLotBarcodePort;
 
@@ -83,12 +84,15 @@ private:
 
 public:
 	void Save_EquipData();
+	void Save_ModelEquipData(CString sPath);
 	void Cancel_EquipData();
 
 	afx_msg void OnStnClickedStcDoorlockTime();
 	afx_msg void OnStcZigDataClick(UINT nID);
 	afx_msg void OnStcTriggerDataClick(UINT nID);
 	afx_msg void OnStcElvDataClick(UINT nID);
+	afx_msg void OnBnClickedBtnModelAdd();
+	afx_msg void OnStnClickedStcEquipModel();
 };
 
 ///////////////////////////////////////////////////////////////////////////////

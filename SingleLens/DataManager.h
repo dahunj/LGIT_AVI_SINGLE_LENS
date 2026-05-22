@@ -24,7 +24,7 @@ typedef struct tag_EQUIP_DATA {
 
 
 	CString sEquipName;
-	CString sModel;
+	CString sModelName;
 	int		nLotBarcodePort;
 
 	BOOL	bUseDoorLock;

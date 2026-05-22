@@ -261,76 +261,7 @@ void CMESInterface::Set_Status(int nStste)	//1:Run, 2:Stop, 3:Idle
 	g_csMesLog.Unlock();
 }
 
-void CMESInterface::Save_AviRmsData(CString sKey, CString sValue)
-{
-	CString strFile = (CString)MES_FOLDER_RMS + "Current_Recipe.txt";
 
-	CIniFileCS INI(strFile);
-	if (!INI.Check_File()) return;
-
-	INI.Set_String("Current_Recipe", "Recipe_Name_Handler", gData.sRecipe);	// Model
-	INI.Set_String("Current_Recipe", sKey, sValue);	// Change Data
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-void CMESInterface::Set_CapLotChangeRequest(CString sLotID, CString sOperID)
-{
-	char chSep = '/';
-	CString strPart, strCapCnt, strLotId;
-
-	AfxExtractSubString(strPart, sLotID, 0, chSep);	  strPart.Trim();
-	AfxExtractSubString(strCapCnt, sLotID, 1, chSep); strCapCnt.Trim();
-	AfxExtractSubString(strLotId, sLotID, 2, chSep);  strLotId.Trim();
-
-	m_sOperPartNo = strPart; m_sOperLotID = strLotId; m_nOperCount = atoi(strCapCnt); m_sOperOpID = sOperID;
-
-	if (!m_pThreadMESCap) {
-		m_bThreadMESCap = TRUE;
-		m_pThreadMESCap = AfxBeginThread(Thread_MESCap, NULL);
-	}
-
-	g_csMesLog.Lock();
-
-	SYSTEMTIME time;
-	GetLocalTime(&time);
-
-	CString strPath, strFile, strSave, sState;
-	strPath.Format("%s%04d%02d%02d", MES_FOLDER_LOG, time.wYear, time.wMonth, time.wDay);
-	strFile.Format("%s\\%04d%02d%02d.txt", strPath, time.wYear, time.wMonth, time.wDay);
-
-	CString strPath2, strFile2;
-	strPath2= "D:\\EVMS\\TP\\Backup";
-	strFile2.Format("%s\\%04d%02d%02d.txt", strPath2, time.wYear, time.wMonth, time.wDay);
-
-
-	Create_Folder(strPath);
-	Create_Folder(strPath2);
-
-	CFile file;
-	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
-		try {
-			file.SeekToEnd();
-
-			// MTRLTYPE=KMODC01: Cap, ChangeCode=1: 재료소진
-			sState = "MaterialExchangeConfirmRequest";
-			strSave.Format("%04d-%02d-%02d %02d:%02d:%02d,LOTSTATUS=%s,MTRLTYPE=KMODC01,PARTNO=%s,MLOTID=%s,SLOT=1,QUANTITY=%d,CHANGECODE=#0001,OPID=%s,APPLY_AMOUNT=0\r\n",
-				time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond,
-				sState, m_sOperPartNo, m_sOperLotID, m_nOperCount, m_sOperOpID);
-			file.Write(strSave, strSave.GetLength());
-
-			file.Close();
-
-			CopyFile(strFile, strFile2, FALSE);
-
-		} catch (CFileException *pEx) {
-			pEx->Delete();
-		}
-	}
-	g_objMES.m_nMESCapSequence = 1;	// Start
-
-	g_csMesLog.Unlock();
-}
 
 // Cap Thread Function
 UINT CMESInterface::Thread_MESCap(LPVOID lpVoid)
@@ -379,62 +310,6 @@ UINT CMESInterface::Thread_MESCap(LPVOID lpVoid)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void CMESInterface::Set_ShipLotChangeRequest(CString sLotID, CString sOperID)
-{
-	char chSep = '/';
-	CString strPart, strShipCnt, strLotId;
-
-	AfxExtractSubString(strPart, sLotID, 0, chSep);	   strPart.Trim();
-	AfxExtractSubString(strShipCnt, sLotID, 1, chSep); strShipCnt.Trim();
-	AfxExtractSubString(strLotId, sLotID, 2, chSep);   strLotId.Trim();
-
-	m_sOperPartNo = strPart; m_sOperLotID = strLotId; m_nOperCount = atoi(strShipCnt); m_sOperOpID = sOperID;
-
-	if (!m_pThreadMESShip) {
-		m_bThreadMESShip = TRUE;
-		m_pThreadMESShip = AfxBeginThread(Thread_MESShip, NULL);
-	}
-
-	g_csMesLog.Lock();
-
-	SYSTEMTIME time;
-	GetLocalTime(&time);
-
-	CString strPath, strFile, strSave, sState;
-	strPath.Format("%s%04d%02d%02d", MES_FOLDER_LOG, time.wYear, time.wMonth, time.wDay);
-	strFile.Format("%s\\%04d%02d%02d.txt", strPath, time.wYear, time.wMonth, time.wDay);
-
-	CString strPath2, strFile2;
-	strPath2 ="D:\\EVMS\\TP\\Backup";
-	strFile2.Format("%s\\%04d%02d%02d.txt", strPath2, time.wYear, time.wMonth, time.wDay);
-
-
-	Create_Folder(strPath);
-
-	CFile file;
-	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
-		try {
-			file.SeekToEnd();
-
-			// MTRLTYPE=KSHTR01: Cap, ChangeCode=1: 재료소진
-			sState = "MaterialExchangeConfirmRequest";
-			strSave.Format("%04d-%02d-%02d %02d:%02d:%02d,LOTSTATUS=%s,MTRLTYPE=KSHTR01,PARTNO=%s,MLOTID=%s,SLOT=1,QUANTITY=%d,CHANGECODE=#0001,OPID=%s,APPLY_AMOUNT=0\r\n",
-				time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond,
-				sState, m_sOperPartNo, m_sOperLotID, m_nOperCount, m_sOperOpID);
-			file.Write(strSave, strSave.GetLength());
-
-			file.Close();
-
-			CopyFile(strFile,strFile2, FALSE);
-
-		} catch (CFileException *pEx) {
-			pEx->Delete();
-		}
-	}
-	g_objMES.m_nMESShipSequence = 1;	// Start
-
-	g_csMesLog.Unlock();
-}
 
 // Ship Thread Function
 UINT CMESInterface::Thread_MESShip(LPVOID lpVoid)

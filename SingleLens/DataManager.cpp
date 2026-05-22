@@ -25,7 +25,7 @@ CDataManager::~CDataManager()
 void CDataManager::Reset_EquipData()
 {
 	m_EquipData.sEquipName = "";
-	m_EquipData.sModel = "";
+	m_EquipData.sModelName = "";
 	m_EquipData.nLotBarcodePort = 0;
 
 	m_EquipData.bUseDoorLock = FALSE;
@@ -61,12 +61,15 @@ BOOL CDataManager::Read_EquipData()
 
 	CString strKey;
 	m_EquipData.sEquipName = INI.Get_String("EQUIPMENT", "NAME", "");
-	m_EquipData.sModel = INI.Get_String("EQUIPMENT", "MODEL", "");
-	gData.sRecipe = (m_EquipData.sModel == "" ? "R53B" : m_EquipData.sModel);	// Default(R53B)
+	m_EquipData.sModelName = INI.Get_String("EQUIPMENT", "MODEL", "");
 
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
+	pMainDlg->Display_EquipName();
+
+	
 	m_EquipData.nLotBarcodePort = INI.Get_Integer("EQUIPMENT", "LOT_BARCODE", 1);
 
-	m_EquipData.bUseDoorLock = FALSE;//INI.Get_Bool("EQUIPMENT", "DOOR_LOCK", FALSE);
+	m_EquipData.bUseDoorLock = FALSE; //INI.Get_Bool("EQUIPMENT", "DOOR_LOCK", FALSE);
 	gData.nDoorLockTime = INI.Get_Integer("EQUIPMENT", "DOOR_LOCK_TIME", 0);
 	gAlm.dMotionChkPos		= INI.Get_Double("EQUIPMENT", "MOTION_CHECK", 0.0);
 
@@ -77,18 +80,7 @@ BOOL CDataManager::Read_EquipData()
 	for (int i = 0; i < 6; i++) { strKey.Format("%d", i); m_EquipData.nDelayAdd[i] = INI.Get_Integer("DELAY_ADD", strKey, 100); }
 
 	m_EquipData.sAviIp = INI.Get_String("AVI", "AVI_IP", "");
-
 	
-	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) { strKey.Format("%d%d", i, j); m_EquipData.bTower[i][j] = INI.Get_Bool("TOWER", strKey, FALSE); }
-	for (int i = 0; i < 5; i++) for (int j = 0; j < 6; j++) { strKey.Format("%d%d", i, j); m_EquipData.bBuzzer[i][j] = INI.Get_Bool("BUZZER", strKey, FALSE); }
-
-	m_EquipData.sPasswordOp = INI.Get_String("HIDDEN", "PASSWORD_MT", "");
-	m_EquipData.sPasswordEngr = INI.Get_String("HIDDEN", "PASSWORD_SI", "");
-
-	
-	// Gloval Data		
-	m_EquipData.nResultTestNg = INI.Get_Integer("RESULT_TEST", "RESULT_NG", 0);
-
 	//doorinterlock log
 	if (gDoorLock.nOpenStart == 0 && m_EquipData.bUseDoorLock == FALSE)
 		g_objLogFile.Save_Interlock(2);
@@ -116,9 +108,23 @@ BOOL CDataManager::Read_EquipData()
 	m_EquipData.bUseBtmVision = INI.Get_Bool("OPTION", "BTM_VISION", FALSE);
 
 
+	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) { strKey.Format("%d%d", i, j); m_EquipData.bTower[i][j] = INI.Get_Bool("TOWER", strKey, FALSE); }
+	for (int i = 0; i < 5; i++) for (int j = 0; j < 6; j++) { strKey.Format("%d%d", i, j); m_EquipData.bBuzzer[i][j] = INI.Get_Bool("BUZZER", strKey, FALSE); }
 
-	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
-	pMainDlg->Display_EquipName();
+	CString strIndex;
+	for(int i = 0; i < 6; i++)
+	{
+		strIndex.Format("%d", i);
+		m_EquipData.nDelayAdd[i] = INI.Get_Integer("DELAY_ADD", strIndex, 0);
+	}
+
+	m_EquipData.sPasswordOp = INI.Get_String("HIDDEN", "PASSWORD_ENGR", "");
+	m_EquipData.sPasswordEngr = INI.Get_String("HIDDEN", "PASSWORD_OP", "");
+
+	// Gloval Data		
+	m_EquipData.nResultTestNg = INI.Get_Integer("RESULT_TEST", "RESULT_NG", 0);
+
+
 
 	return TRUE;
 }

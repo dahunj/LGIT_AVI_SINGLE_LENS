@@ -2,6 +2,7 @@
 //
 #include "stdafx.h"
 #include "SingleLens.h"
+#include "SingleLensDlg.h"
 #include "SetupEquipDlg.h"
 #include "afxdialogex.h"
 
@@ -32,6 +33,9 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 7; i++) DDX_Control(pDX, IDC_LABEL_0 + i,  m_Label[i]);
 */
 	DDX_Control(pDX, IDC_STC_EQUIP_NAME, m_stcEquipName);
+	DDX_Control(pDX, IDC_STC_EQUIP_MODEL, m_stcEquipModel);
+
+
 	DDX_Control(pDX, IDC_CBO_LOT_BARCODE_PORT, m_cboLotBarcodePort);
 	
 	DDX_Control(pDX, IDC_STC_MOTION_CHECK, m_stcMotionCheck);
@@ -85,6 +89,8 @@ BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_ZIG_DATA_0, IDC_STC_ZIG_DATA_3, OnStcZigDataClick)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_TRIGGER_DATA_0, IDC_STC_TRIGGER_DATA_7, OnStcTriggerDataClick)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_ELV_DATA_0, IDC_STC_ELV_DATA_0, OnStcElvDataClick)
+	ON_BN_CLICKED(IDC_BTN_MODEL_ADD, &CSetupEquipDlg::OnBnClickedBtnModelAdd)
+	ON_STN_CLICKED(IDC_STC_EQUIP_MODEL, &CSetupEquipDlg::OnStnClickedStcEquipModel)
 END_MESSAGE_MAP()
 
 // CSetupEquipDlg 메시지 처리기입니다.
@@ -100,7 +106,8 @@ void CSetupEquipDlg::Initial_Controls()
 	//m_Label[6].Init_Ctrl("바탕", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x20, 0x20)); // Vendor Selection 
 
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-	m_stcEquipName.Init_Ctrl("바탕", 15, TRUE, RGB(0x00, 0x00, 0x80), RGB(0xE0, 0xFF, 0xE0));
+	m_stcEquipName.Init_Ctrl("바탕", 11, TRUE, RGB(0x00, 0x00, 0x80), RGB(0xE0, 0xFF, 0xE0));
+	m_stcEquipModel.Init_Ctrl("바탕", 11, TRUE, RGB(0x00, 0x00, 0x80), RGB(0xE0, 0xFF, 0xE0));
 	
 	for (int i = 0; i < 4; i++) { strText.Format("COM%d", i + 1); m_cboLotBarcodePort.AddString(strText); }
 	m_cboLotBarcodePort.Init_Ctrl("바탕", 12, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xF0, 0xE0, 0x00));
@@ -273,6 +280,9 @@ void CSetupEquipDlg::Display_EquipData()
 {
 	CString strData;
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	m_stcEquipName.SetWindowText(pEquipData->sEquipName);
+	m_stcEquipModel.SetWindowText(pEquipData->sModelName);
 	
 	m_rdoDoorLock[(int)pEquipData->bUseDoorLock].SetCheck(TRUE);
 	strData.Format("%d", gData.nDoorLockTime);	m_stcDoorLockTime.SetWindowText(strData);
@@ -303,6 +313,17 @@ void CSetupEquipDlg::Display_EquipData()
 	m_chkBtmVision.SetCheck(pEquipData->bUseBtmVision);
 	m_chkMarkUse.SetCheck(pEquipData->bUseMark);
 
+
+	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) m_chkTower[i][j].SetCheck(pEquipData->bTower[i][j]);
+	for (int i = 0; i < 5; i++) for (int j = 0; j < 6; j++) m_chkBuzzer[i][j].SetCheck(pEquipData->bBuzzer[i][j]);
+
+	CString strData;
+	for (int i = 0; i < 6; i++) 
+	{
+		strData.Format("%d", m_EquipData.nDelayAdd[i]);
+		m_stcDelayAdd[i].SetWindowText(strData);
+	}
+
 }
 
 void CSetupEquipDlg::Save_EquipData()
@@ -316,10 +337,13 @@ void CSetupEquipDlg::Save_EquipData()
 	CIniFileCS INI(gsCurrentDir + "\\System\\EquipData.ini");
 	if (!INI.Check_File()) { AfxMessageBox("EquipData.ini File Not Found!!!"); return ; }
 
-
-	m_stcMotionCheck.GetWindowText(strData); dData = atof(strData); INI.Set_Double("EQUIPMENT", "MOTION_CHECK", dData, "%0.3lf");
 	
+	m_stcEquipName.GetWindowText(strData); INI.Set_String("EQUIPMENT", "NAME", strData);
+	m_stcEquipModel.GetWindowText(strModel); INI.Set_String("EQUIPMENT", "MODEL", strModel);
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetMainWnd();
+	pMainDlg->Display_EquipName();
 
+	nData = m_cboLotBarcodePort.GetCurSel(); INI.Set_Integer("EQUIPMENT", "LOT_BARCODE", nData + 1);
 	if(m_rdoDoorLock[0].GetCheck())
 	{
 		pEquipData->bUseDoorLock = FALSE;
@@ -330,18 +354,16 @@ void CSetupEquipDlg::Save_EquipData()
 		INI.Set_Bool("EQUIPMENT", "DOOR_LOCK", m_rdoDoorLock[1].GetCheck());
 		pEquipData->bUseDoorLock = TRUE;
 	}
-
-	m_stcDoorLockTime.GetWindowText(strData);
-	gData.nDoorLockTime = atoi(strData);
+	m_stcMotionCheck.GetWindowText(strData); dData = atof(strData); INI.Set_Double("EQUIPMENT", "MOTION_CHECK", dData, "%0.3lf");
+	
+	m_stcDoorLockTime.GetWindowText(strData);gData.nDoorLockTime = atoi(strData);
 	INI.Set_Integer("EQUIPMENT", "DOOR_LOCK_TIME", gData.nDoorLockTime);
-
 	
 	m_stcZigData[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("COAT_ZIG", "ARRAY_X", nData);pEquipData->nZigArrayX = nData;
 	m_stcZigData[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("COAT_ZIG", "ARRAY_Y", nData);pEquipData->nZigArrayY = nData;
 	m_stcZigData[2].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("COAT_ZIG", "PITCH_X", dData, "%0.2lf");pEquipData->dZigPitchX = dData;
 	m_stcZigData[3].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("COAT_ZIG", "PITCH_Y", dData, "%0.2lf");pEquipData->dZigPitchY = dData;
-
-
+	
 	m_stcTriggerData[0].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP_START",   dData, "%0.2lf");pEquipData->dTopStart = dData;
 	m_stcTriggerData[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("TRIGGER", "TOP_COUNT",	 nData);		  pEquipData->dTopCount = nData;
 	m_stcTriggerData[2].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP_PERIOD",  dData, "%0.2lf");pEquipData->dTopPeriod = dData;
@@ -353,16 +375,86 @@ void CSetupEquipDlg::Save_EquipData()
 
 	m_stcElvData[0].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("ELEVATOR", "PITCH_Z", dData, "%0.2lf"); pEquipData->dElevPitchZ = dData;
 	
-	pEquipData->bUseTopVision = m_chkTopVision.GetCheck();
-	INI.Set_Bool("OPTION", "TOP_VISION", pEquipData->bUseTopVision);
-	
-	pEquipData->bUseBtmVision = m_chkBtmVision.GetCheck();
-	INI.Set_Bool("OPTION", "BTM_VISION", pEquipData->bUseBtmVision);
+	pEquipData->bUseTopVision = m_chkTopVision.GetCheck();INI.Set_Bool("OPTION", "TOP_VISION", pEquipData->bUseTopVision);	 
+	pEquipData->bUseBtmVision = m_chkBtmVision.GetCheck();INI.Set_Bool("OPTION", "BTM_VISION", pEquipData->bUseBtmVision);
+	pEquipData->bUseMark = m_chkMarkUse.GetCheck(); INI.Set_Bool("OPTION", "MARK_USE", pEquipData->bUseMark);
 
-	pEquipData->bUseMark = m_chkMarkUse.GetCheck();
-	INI.Set_Bool("OPTION", "MARK_USE", pEquipData->bUseMark);
+
+	m_stcDelayAdd[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "FEEDER_CLOSE", nData);
+	m_stcDelayAdd[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "FEEDER_OPEN", nData);
+	m_stcDelayAdd[2].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "TRAY_PICKER_CLOSE", nData);
+	m_stcDelayAdd[3].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "TRAY_PICKER_OPEN", nData);
+	m_stcDelayAdd[4].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "INDEX_ALIGN_IN", nData);
+	m_stcDelayAdd[5].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "INDEX_ALIGN_OUT", nData);
+
+
+
+	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) { strKey.Format("%d%d", i, j); INI.Set_Bool("TOWER", strKey, m_chkTower[i][j].GetCheck()); }
+	for (int i = 0; i < 5; i++) for (int j = 0; j < 6; j++) { strKey.Format("%d%d", i, j); INI.Set_Bool("BUZZER", strKey, m_chkBuzzer[i][j].GetCheck()); }
+
+	CString sPathSource;
+	sPathSource = gsCurrentDir + "\\System\\Model\\";
+	sPathSource += strModel;
+	sPathSource += _T("\\");
+	Save_ModelEquipData(sPathSource);
+
+	g_objCommon.Backup_File(gsCurrentDir + "\\System", "EquipData");
 
 }
+
+
+
+void CSetupEquipDlg::Save_ModelEquipData(CString sPath)
+{
+	CString strKey, strData;
+	int nData;
+	double dData;
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	CIniFileCS INI(sPath + "EquipData.ini");
+	if (!INI.Check_File()) {
+		AfxMessageBox("EquipData.ini File Not Found!!");
+		return;
+	}
+
+	m_stcEquipName.GetWindowText(strData); INI.Set_String("EQUIPMENT", "NAME", strData);
+	m_stcEquipModel.GetWindowText(strData); INI.Set_String("EQUIPMENT", "MODEL", strData);
+	nData = m_cboLotBarcodePort.GetCurSel(); INI.Set_Integer("EQUIPMENT", "LOT_BARCODE", nData + 1);
+	INI.Set_Bool("EQUIPMENT", "DOOR_LOCK", m_rdoDoorLock[1].GetCheck());
+	
+	m_stcZigData[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("COAT_ZIG", "ARRAY_X", nData);pEquipData->nZigArrayX = nData;
+	m_stcZigData[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("COAT_ZIG", "ARRAY_Y", nData);pEquipData->nZigArrayY = nData;
+	m_stcZigData[2].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("COAT_ZIG", "PITCH_X", dData, "%0.2lf");pEquipData->dZigPitchX = dData;
+	m_stcZigData[3].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("COAT_ZIG", "PITCH_Y", dData, "%0.2lf");pEquipData->dZigPitchY = dData;
+
+	m_stcTriggerData[0].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP_START",   dData, "%0.2lf");pEquipData->dTopStart = dData;
+	m_stcTriggerData[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("TRIGGER", "TOP_COUNT",	 nData);		  pEquipData->dTopCount = nData;
+	m_stcTriggerData[2].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP_PERIOD",  dData, "%0.2lf");pEquipData->dTopPeriod = dData;
+	m_stcTriggerData[3].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP_VEL",	 dData, "%0.2lf");pEquipData->dTopVelocity = dData;
+	m_stcTriggerData[4].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_START",   dData, "%0.2lf");pEquipData->dBtmStart = dData;
+	m_stcTriggerData[5].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("TRIGGER", "BTM_COUNT",	 nData);		  pEquipData->dBtmCount = nData;
+	m_stcTriggerData[6].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_PERIOD",  dData, "%0.2lf");pEquipData->dBtmPeriod = dData;
+	m_stcTriggerData[7].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_VEL",	 dData, "%0.2lf");pEquipData->dBtmVelocity = dData;
+
+	m_stcElvData[0].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("ELEVATOR", "PITCH_Z", dData, "%0.2lf"); pEquipData->dElevPitchZ = dData;
+
+	pEquipData->bUseTopVision = m_chkTopVision.GetCheck();INI.Set_Bool("OPTION", "TOP_VISION", pEquipData->bUseTopVision);	 
+	pEquipData->bUseBtmVision = m_chkBtmVision.GetCheck();INI.Set_Bool("OPTION", "BTM_VISION", pEquipData->bUseBtmVision);
+	pEquipData->bUseMark = m_chkMarkUse.GetCheck(); INI.Set_Bool("OPTION", "MARK_USE", pEquipData->bUseMark);
+
+
+	m_stcDelayAdd[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "FEEDER_CLOSE", nData);
+	m_stcDelayAdd[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "FEEDER_OPEN", nData);
+	m_stcDelayAdd[2].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "TRAY_PICKER_CLOSE", nData);
+	m_stcDelayAdd[3].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "TRAY_PICKER_OPEN", nData);
+	m_stcDelayAdd[4].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "INDEX_ALIGN_IN", nData);
+	m_stcDelayAdd[5].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "INDEX_ALIGN_OUT", nData);
+
+
+	g_objLogFile.Save_HandlerLog("[Setup Equip] Model Save");
+}
+
 
 void CSetupEquipDlg::Cancel_EquipData()
 {
@@ -423,4 +515,68 @@ void CSetupEquipDlg::OnStnClickedStcDoorlockTime()
 	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
 
 	m_stcDoorLockTime.SetWindowText(strNew);
+}
+
+
+void CSetupEquipDlg::OnBnClickedBtnModelAdd()
+{
+	CString strModel;
+	m_stcEquipName.GetWindowText(strModel);
+
+	if(!strModel.IsEmpty())
+	{
+		CString sPathSource;
+		sPathSource = gsCurrentDir + "\\System\\Model";
+		sPathSource += _T("\\");
+		sPathSource += strModel;
+
+		if (GetFileAttributes(sPathSource) == -1) {	// 디렉토리 없음
+			g_objLogFile.Create_Folder(sPathSource);
+
+			CString strOriginFile, strTargetFile;
+
+			strOriginFile = gsCurrentDir + "\\System\\EquipData.ini";
+			strTargetFile = sPathSource + "\\EquipData.ini";
+			if (!CopyFile(strOriginFile, strTargetFile, FALSE)) {
+				AfxMessageBox("EquipData.ini File Copy Fail!!!");
+				return;
+			}
+/*
+			strOriginFile = gsCurrentDir + "\\System\\MoveData.ini";
+			strTargetFile = sPathSource + "\\MoveData.ini";
+			if (!CopyFile(strOriginFile, strTargetFile, FALSE)) {
+				AfxMessageBox("EquipData.ini File Copy Fail!!!");
+				return;
+			}
+*/
+		} else {
+			if (gData.nLanguage == 0) AfxMessageBox("이미 같은 모델이 있습니다.");
+			else					  AfxMessageBox("You already have the same model.");
+		}
+		Save_EquipData();
+
+		Display_EquipData();
+	}
+}
+
+
+void CSetupEquipDlg::OnStnClickedStcEquipModel()
+{
+	CString strKey, strMsg;
+	if (g_objCommon.Show_KeyPad(strKey) != IDOK) return;
+	if (strKey.Find("-") >= 0) {
+		strMsg.Format("[%s] Recipe Name ( - ) 입력불가...", strKey);
+		g_objCommon.Show_MsgBox(1, strMsg);
+		return;
+	}
+	if (strKey.Find(" ") >= 0) {
+		strMsg.Format("[%s] Recipe Name (  ) 입력불가...", strKey);
+		g_objCommon.Show_MsgBox(1, strMsg);
+		return;
+	}
+
+	m_stcEquipModel.SetWindowText(strKey);
+
+	m_strLog.Format("[Setup Equip] OnStnClickedStcEquipModel - Data(%s)", strKey);
+	g_objLogFile.Save_HandlerLog(m_strLog);
 }

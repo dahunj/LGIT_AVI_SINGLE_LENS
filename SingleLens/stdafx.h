@@ -87,7 +87,7 @@
 
 #define MAIN_VERSION	_T("V 0.0.0.3b")
 //
-#define AJIN_BOARD_USE
+//#define AJIN_BOARD_USE
 //#define LOT_BARCODE_USE
 
 
@@ -117,7 +117,6 @@ extern CString gsCurrentDir;	// 현재 프로젝트 폴더
 typedef struct
 {
 	CString	sOperID;		// Operator
-	CString	sRecipe;		// Recipe Item
 
 	CString	sMZID[6];
 	CString	sZigID[6][10];

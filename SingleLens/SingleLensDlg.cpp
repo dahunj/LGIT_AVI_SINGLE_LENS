@@ -702,8 +702,9 @@ void CSingleLensDlg::Enable_ModeButton(BOOL bEnable)
 void CSingleLensDlg::Display_EquipName()
 {
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-	CString strText = pEquipData->sEquipName + " ( " + gData.sRecipe + " )";
-	m_stcMainEquip.SetWindowText(strText);
+	CString str;
+	str.Format("%s / %s", pEquipData->sEquipName, pEquipData->sModelName);
+	m_stcMainEquip.SetWindowText(str);
 }
 
 void CSingleLensDlg::Display_DateTime()
