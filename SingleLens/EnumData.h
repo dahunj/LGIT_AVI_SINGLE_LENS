@@ -194,8 +194,8 @@ struct eVision
 {
 	enum Name
 	{
-		Tc = 0,
-		Bc = 1,
+		TC = 0,
+		BC = 1,
 	};
 
 };

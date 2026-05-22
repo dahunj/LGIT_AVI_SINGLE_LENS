@@ -4,6 +4,8 @@
 
 #include "WorkInfoDlg.h"
 #include "afxwin.h"
+#include "AJinDefine.h"
+
 
 #define UM_UPDATE_MODEL			WM_USER+1
 #define UM_UPDATE_MZ_INFO		WM_USER+2
@@ -133,8 +135,16 @@ private:
 	BOOL	m_bUldOpenSwOn;
 	BOOL	m_bUldRunSwOn;
 
+	BOOL	m_bLoadCVRun;
+	BOOL	m_bUnloadCVRun;
 	
-	
+
+	DY_DATA_00 *m_pDY00;
+	DY_DATA_01 *m_pDY01;
+	DY_DATA_02 *m_pDY02;
+	DY_DATA_03 *m_pDY03;
+
+
 private:
 	BOOL Work_Start();
 	void Initial_Controls();
@@ -169,6 +179,7 @@ public:
 	afx_msg void OnBnClickedButton2();
 	afx_msg void OnStnClickedStcHidden();
 	afx_msg void OnBnClickedChkNoTray();
+	afx_msg void OnBnClickedBtnLight();
 };
 
 

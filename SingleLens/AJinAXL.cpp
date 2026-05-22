@@ -105,6 +105,21 @@ BOOL CAJinAXL::Initialize()
 
 	if (AxcTriggerSetBlockLowerPos(0, 0.0) != AXT_RT_SUCCESS) return FALSE;
 	if (AxcTriggerSetBlockUpperPos(0, 1000.0) != AXT_RT_SUCCESS) return FALSE;
+
+
+
+	if (AxcTriggerSetEnable(1, DISABLE) != AXT_RT_SUCCESS) return FALSE;
+
+	if (AxmMotGetMoveUnitPerPulse(AX_BTM_INSPECTOR_Z, &dUnits, &lPulse) != AXT_RT_SUCCESS) return FALSE;
+	if (AxcMotSetMoveUnitPerPulse(1, dUnits / lPulse) != AXT_RT_SUCCESS) return FALSE;
+
+	if (AxcSignalSetEncInputMethod(1, ObverseSqr4Mode) != AXT_RT_SUCCESS) return FALSE;
+	if (AxcSignalSetEncReverse(1, 0) != AXT_RT_SUCCESS) return FALSE;	// 엔코더 입력 카운터 (0:반전없음, 1:반전)
+	if (AxcTriggerSetLevel(1, HIGH) != AXT_RT_SUCCESS) return FALSE;	// 트리거 펄스 출력 레벨 (0:Low, 1:High)
+	if (AxcTriggerSetFunction(1, 1) != AXT_RT_SUCCESS) return FALSE;	// 0:절대위치 트리거, 1:주기위치 트리거
+
+	if (AxcTriggerSetBlockLowerPos(1, 0.0) != AXT_RT_SUCCESS) return FALSE;
+	if (AxcTriggerSetBlockUpperPos(1, 1000.0) != AXT_RT_SUCCESS) return FALSE;
 #endif
 
 	m_bThreadAJin = TRUE;
@@ -120,6 +135,7 @@ BOOL CAJinAXL::Initialize()
 
 	return TRUE;
 }
+
 
 void CAJinAXL::Terminate()
 {
@@ -454,16 +470,17 @@ void CAJinAXL::Stop_Trigger(int nAxis)
 #endif
 }
 
-void CAJinAXL::Start_Scan(int nAxis, double dPos, double dTrigS, double dTrigE, double dTrigP, double dTrigW, double dVel)
+void CAJinAXL::Start_Scan(int nCh, int nAxis, double dPos, double dTrigS, double dTrigE, double dTrigP, double dTrigW, double dVel)
 {
 #if defined(AJIN_BOARD_USE)
 	double dSpeed = dVel;//m_Param[nAxis].dSpeedM;
-	double dWidth = dTrigW / dSpeed * 1000000;	// mm => usec
+	double dWidth = (dTrigP/2) / dSpeed*1000000;
+		//dTrigW / dSpeed * 1000000;	// mm => usec
 
-	AxcTriggerSetEnable(0, DISABLE);
-	AxcTriggerSetBlock(0, dTrigS, dTrigE, dTrigP);
-	AxcTriggerSetTime(0, dWidth);
-	AxcTriggerSetEnable(0, ENABLE);
+	AxcTriggerSetEnable(nCh, DISABLE);
+	AxcTriggerSetBlock(nCh, dTrigS, dTrigE, dTrigP);
+	AxcTriggerSetTime(nCh, dWidth);
+	AxcTriggerSetEnable(nCh, ENABLE);
 
 	Move_Absolute(nAxis, dPos);
 #endif
@@ -473,8 +490,20 @@ void CAJinAXL::Stop_Scan(int nAxis)
 {
 #if defined(AJIN_BOARD_USE)
 	AxcTriggerSetEnable(0, DISABLE);
+	Sleep(5);
+	AxcTriggerSetEnable(1, DISABLE);
 #endif
 }
+
+void CAJinAXL::Clear_Scan(int nCh)
+{
+#if defined(AJIN_BOARD_USE)
+	if(nCh == 0) AxcStatusSetActPos(0,0.0);
+	Sleep(5);
+	if(nCh == 1 ) AxcStatusSetActPos(1,0.0);
+#endif
+}
+
 
 /////////////////////////////////////////////////////////////////////////////
 // Motion Param Read / Write Function

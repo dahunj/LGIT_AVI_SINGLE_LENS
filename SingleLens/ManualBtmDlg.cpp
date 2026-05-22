@@ -50,6 +50,9 @@ BEGIN_MESSAGE_MAP(CManualBtmDlg, CDialogEx)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_MARK_UNIT_X_0, IDC_BTN_MARK_UNIT_X_3, OnBtnMarkUnitXClick)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_MARK_UNIT_Y_0, IDC_BTN_MARK_UNIT_Y_3, OnBtnMarkUnitYClick)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_MARK_UNIT_Z_0, IDC_BTN_MARK_UNIT_Z_3, OnBtnMarkUnitZClick)
+	ON_BN_CLICKED(IDC_BUTTON1, &CManualBtmDlg::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON2, &CManualBtmDlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON4, &CManualBtmDlg::OnBnClickedButton4)
 END_MESSAGE_MAP()
 
 // CManualBtmDlg 메시지 처리기입니다.
@@ -68,6 +71,7 @@ BOOL CManualBtmDlg::OnInitDialog()
 
 	Initial_Controls();
 
+	m_nScanCase = 0;
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
 }
@@ -205,7 +209,7 @@ void CManualBtmDlg::OnBtnBtmInspectZClick(UINT nID)
 	if(nIndex == eBtmInspect_Z::ScanStart)
 	{
 		double dStart = pEquipData->dTopStart;
-		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, dStart);		
+		g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_Z, dStart-5);		
 	}
 	if(nIndex == eBtmInspect_Z::ScanEnd)
 	{
@@ -369,32 +373,55 @@ BOOL CManualBtmDlg::BtmScan_Run()
 		return TRUE;
 
 	case 1:		// Move Frist
-		if (g_objCommon.Check_Position(AX_BTM_INSPECTOR_Z, eTopInspect_Z::ScanStart)) 
+		if (g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Z)) 
 		{			
 			m_nScanCase++;
 		}
 		break;
 	case 2:		// Scan Move
-		if (g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Z)) 
+		if (g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Z)) 
 		{
 			double dPeriod = pEquipData->dBtmPeriod;	// 33mm
 			double dWidth = 10.0;						// 10mm (고정)
 			double dTrigS = pEquipData->dBtmStart;				// Trigger Start
 			double dTrigE = dTrigS + dPeriod * pEquipData->dBtmCount + dWidth + 1.0;	// Trigger End
-			dTopZ = dTrigE + 30.0;								// Motion End (가감속)
+			dTopZ = dTrigE + 5.0;								// Motion End (가감속)
 			double dVelocity = pEquipData->dBtmVelocity;
-			g_objAJinAXL.Start_Scan(AX_BTM_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dWidth, dVelocity);
+			g_objAJinAXL.Start_Scan(eVision::BC, AX_BTM_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dWidth, dVelocity);
 			m_nScanCase++;
 		}
 		break;
 	case 3:		// Scan End
-		if (g_objAJinAXL.Is_MoveDone(AX_BTM_INSPECTOR_Z, dTopZ)) 
+		if (g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Z)) 
 		{
 			g_objAJinAXL.Stop_Scan(AX_BTM_INSPECTOR_Z);
 			m_nScanCase = 0;			
 			return FALSE;
 		}
 		break;
+	case 4:
+		return FALSE;
+		
 	}
 	return TRUE;
+}
+
+void CManualBtmDlg::OnBnClickedButton1()
+{
+	m_nScanCase = 0;
+}
+
+
+void CManualBtmDlg::OnBnClickedButton2()
+{
+	m_nScanCase = 4;
+	m_bThreadBtmScan = FALSE;
+	m_pThreadBtmScan = NULL;
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+
+void CManualBtmDlg::OnBnClickedButton4()
+{
+	g_objAJinAXL.Clear_Scan(eVision::BC);
 }

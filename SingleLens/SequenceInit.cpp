@@ -599,6 +599,7 @@ BOOL CSequenceInit::Initial_TopInspector()
 		{			
 			g_objAJinAXL.Set_EncoderType(AX_TOP_INSPECTOR_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_TOP_INSPECTOR_Z, 1);	// Abs
+			g_objAJinAXL.Clear_Scan(eVision::TC);
 			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(5000);
 		}
 		break;
@@ -692,6 +693,7 @@ BOOL CSequenceInit::Initial_BtmInspector()
 		{			
 			g_objAJinAXL.Set_EncoderType(AX_BTM_INSPECTOR_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_BTM_INSPECTOR_Z, 1);	// Abs
+			g_objAJinAXL.Clear_Scan(eVision::BC);
 			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(5000);
 		}
 		break;

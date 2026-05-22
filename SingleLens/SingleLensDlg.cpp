@@ -605,7 +605,81 @@ void CSingleLensDlg::Set_CurrentState(int nState)
 {
 	KillTimer(TIMER_TOWER_FLKR);
 	KillTimer(TIMER_BUZZER_FLKR);
-	//KillTimer(TIMER_LAMP_FLKR);
+	//	KillTimer(TIMER_LAMP_FLKR);
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
+
+	// Start, Stop, Reset SW
+	switch (nState) {
+	case STATE_NONE:
+		pDY03->oStartLamp1 = pDY03->oStartLamp2 = FALSE;
+		pDY03->oStopLamp1  = pDY03->oStopLamp2 = FALSE;
+		pDY03->oResetLamp1 = pDY03->oResetLamp2 = FALSE;
+		break;
+	case STATE_INIT:
+		pDY03->oStartLamp1 = pDY03->oStartLamp2 = TRUE;
+		pDY03->oStopLamp1  = pDY03->oStopLamp2 = TRUE;
+		pDY03->oResetLamp1 = pDY03->oResetLamp2 = FALSE;
+		break;
+	case STATE_RUN:
+		pDY03->oStartLamp1 = pDY03->oStartLamp2 = TRUE;
+		pDY03->oStopLamp1  = pDY03->oStopLamp2 = FALSE;
+		pDY03->oResetLamp1 = pDY03->oResetLamp2 = FALSE;
+		break;
+	case STATE_STOP:
+		pDY03->oStartLamp1 = pDY03->oStartLamp2 = FALSE;
+		pDY03->oStopLamp1  = pDY03->oStopLamp2 = TRUE;
+		pDY03->oResetLamp1 = pDY03->oResetLamp2 = FALSE;
+		break;
+	case STATE_ALARM:
+	case STATE_ERROR:
+	case STATE_LOTEND:
+	case STATE_SHIPTRAY:
+	case STATE_CAPTRAY:
+		pDY03->oStartLamp1 = pDY03->oStartLamp2 = FALSE;
+		pDY03->oStopLamp1  = pDY03->oStopLamp2 = FALSE;
+		pDY03->oResetLamp1 = pDY03->oResetLamp2 = TRUE;
+		break;
+	}
+	g_objAJinAXL.Write_Output(12);
+	Set_LotStateTime();
+	// Tower
+	m_bTowerOn = TRUE;
+	pDY03->oTowerGreen = pEquipData->bTower[nState][0];
+	pDY03->oTowerYellow = pEquipData->bTower[nState][1];
+	pDY03->oTowerRed = pEquipData->bTower[nState][2];
+
+	// Tower Flicker
+	if (pEquipData->bTower[nState][3]) SetTimer(TIMER_TOWER_FLKR, 500, NULL);
+
+	// Buzzer
+	if (nState == STATE_ALARM || nState == STATE_ERROR ||
+		nState == STATE_LOTEND || nState == STATE_CAPTRAY || nState == STATE_SHIPTRAY) {
+			m_bBuzzerOn = TRUE;
+#ifndef DRY_RUN_TEST	// 시끄러워서 막음
+			EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+			
+			/*pDY03->oBuzzerBit0 = pEquipData->bBuzzer[nState - STATE_ALARM][0];
+			pDY03->oBuzzerBit1 = pEquipData->bBuzzer[nState - STATE_ALARM][1];
+			pDY03->oBuzzerBit2 = pEquipData->bBuzzer[nState - STATE_ALARM][2];
+			pDY03->oBuzzerBit3 = pEquipData->bBuzzer[nState - STATE_ALARM][3];
+			pDY03->oBuzzerBit4 = pEquipData->bBuzzer[nState - STATE_ALARM][4];*/
+		
+#endif
+			// Buzzer Flicker
+			if (pEquipData->bBuzzer[nState - STATE_ALARM][5]) SetTimer(TIMER_BUZZER_FLKR, 500, NULL);
+	}
+	g_objAJinAXL.Write_Output(12);
+
+	// Load/Unload Lamp
+	if (nState == STATE_RUN) {
+		SetTimer(TIMER_LOAD1_LAMP_FLKR, 500, NULL);
+		SetTimer(TIMER_LOAD2_LAMP_FLKR, 500, NULL);
+		SetTimer(TIMER_NG_LAMP_FLKR, 500, NULL);
+		SetTimer(TIMER_GOOD_LAMP_FLKR, 500, NULL);
+		SetTimer(TIMER_EMPTY_LAMP_FLKR, 500, NULL);
+	}
 
 	theApp.Set_MainState(nState);
 	g_dlgWork.Set_State(nState);
@@ -613,7 +687,31 @@ void CSingleLensDlg::Set_CurrentState(int nState)
 
 void CSingleLensDlg::Set_InsideLight()
 {
+	DX_DATA_03 *pDX03 = g_objAJinAXL.Get_pDX03();
+	DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
+
+	int nDoorState = (pDX03->nValue >> 22);
+
+
+	if(nDoorState == 0 || gData.bLdMZWait && nDoorState == 8)
+	{
+		if (m_bInsideLight) {
+			m_bInsideLight = FALSE;
+			pDY03->oInsideLight = FALSE;
+			g_objAJinAXL.Write_Output(13);
+		}
+	}
+	else
+	{
+		if (!m_bInsideLight) {
+			m_bInsideLight = TRUE;
+			pDY03->oInsideLight = TRUE;
+			g_objAJinAXL.Write_Output(13);
+		}
+	}
 	
+
+
 }
 
 void CSingleLensDlg::Set_TowerFlicker(BOOL bEnable)

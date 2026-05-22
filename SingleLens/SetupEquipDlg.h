@@ -19,6 +19,7 @@ public:
 
 	CStaticCS	m_stcEquipName;
 	CStaticCS	m_stcEquipModel;
+	CComboCS    m_cboModelChange;
 	
 	CComboCS	m_cboLotBarcodePort;
 
@@ -83,6 +84,7 @@ private:
 	void Display_EquipData();
 
 public:
+	void InitModelComboBox();
 	void Save_EquipData();
 	void Save_ModelEquipData(CString sPath);
 	void Cancel_EquipData();
@@ -93,6 +95,7 @@ public:
 	afx_msg void OnStcElvDataClick(UINT nID);
 	afx_msg void OnBnClickedBtnModelAdd();
 	afx_msg void OnStnClickedStcEquipModel();
+	afx_msg void OnCbnSelchangeCboModelChange();
 };
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -105,8 +105,10 @@ public:
 	void Start_Trigger(int nAxis, double dStartPos, double dEndPos, double dPeriod, double dWidth);
 	void Stop_Trigger(int nAxis);
 
-	void Start_Scan(int nAxis, double dPos, double dTrigS, double dTrigE, double dTrigP, double dTrigW, double dVel);
+	void Start_Scan(int nCh, int nAxis, double dPos, double dTrigS, double dTrigE, double dTrigP, double dTrigW, double dVel);
 	void Stop_Scan(int nAxis);
+	void Clear_Scan(int nCh);
+
 
 	void Read_AxisList();	// Axis Name & Param
 	void Read_MotionParam(int nAxis);
@@ -146,7 +148,6 @@ public:
 	BOOL   Get_MotorRun(int nAxis) { return m_Status[nAxis].bRun; }
 
 	void Save_AxisList();	// 값 입력하기 위한 테스트 프로그램
-
 
 public:
 	int		StartThread(int nType, int nAxis, double dPos);					// 새 워커 시작. 성공 시 쓰레드 ID(>0) 반환, 실패 시 0 반환

@@ -64,4 +64,8 @@ protected:
 	BOOL		m_bThreadBtmScan;
 	CWinThread *m_pThreadBtmScan;
 	static UINT	Thread_BtmScan(LPVOID lpVoid);
+public:
+	afx_msg void OnBnClickedButton1();
+	afx_msg void OnBnClickedButton2();
+	afx_msg void OnBnClickedButton4();
 };

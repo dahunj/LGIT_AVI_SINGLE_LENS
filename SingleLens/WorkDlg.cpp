@@ -25,6 +25,7 @@ IMPLEMENT_DYNAMIC(CWorkDlg, CDialogEx)
 CWorkDlg::CWorkDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CWorkDlg::IDD, pParent)
 {
+	
 }
 
 CWorkDlg::~CWorkDlg()
@@ -69,6 +70,11 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_LED_VISION_STATUS_0 + i, m_ledVisionStatus[i]);
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_LED_EQUIP_OPTION_0 + i, m_ledEquipOption[i]);
 
+	m_pDY00 = g_objAJinAXL.Get_pDY00();
+	m_pDY01 = g_objAJinAXL.Get_pDY01();
+	m_pDY02 = g_objAJinAXL.Get_pDY02();
+	m_pDY03 = g_objAJinAXL.Get_pDY03();
+
 }
 
 BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
@@ -108,6 +114,7 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 
 	ON_STN_CLICKED(IDC_STC_HIDDEN, &CWorkDlg::OnStnClickedStcHidden)
 	ON_BN_CLICKED(IDC_CHK_NO_TRAY, &CWorkDlg::OnBnClickedChkNoTray)
+	ON_BN_CLICKED(IDC_BTN_LIGHT, &CWorkDlg::OnBnClickedBtnLight)
 END_MESSAGE_MAP()
 
 // CWorkDlg 메시지 처리기입니다.
@@ -288,6 +295,13 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 			pMainDlg->Enable_ModeButton(FALSE);
 			pMainDlg->Set_CurrentState(STATE_RUN);
 
+			
+			//If it was running before Stop, then run again 
+			if (m_bLoadCVRun ) g_objCommon.Set_LoadCVRunCW(); Sleep(5); 
+			if (m_bUnloadCVRun) g_objCommon.Set_UnloadCVRunCW(); Sleep(5);
+			m_bLoadCVRun = FALSE;
+			m_bUnloadCVRun = FALSE;
+
 			g_objSequenceMain.Begin_MainRunThread();
 			//g_objInspector.Set_StatusUpdate(VISION_ALL, 2);
 
@@ -302,13 +316,13 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 		if (m_bAutoRunning) {	// First AutoStop
 			m_bAutoRunning = FALSE;
 			
+			m_bLoadCVRun = m_pDY00->oLoadCVRun;
+			m_bUnloadCVRun = m_pDY01->oUldCvRun;
 
-			g_objCommon.Set_LoadCVStop();
-			g_objCommon.Set_ElevCVStop();
+			g_objCommon.Set_LoadCVStop();Sleep(5);
+			g_objCommon.Set_ElevCVStop();Sleep(5);
 			g_objSequenceMain.End_MainRunThread();
-
-
-
+			
 			int nState = theApp.Get_MainState();
 			if (nState != STATE_ALARM && nState != STATE_ERROR) pMainDlg->Set_CurrentState(STATE_STOP);
 			//g_objInspector.Set_StatusUpdate(VISION_ALL, 1);
@@ -577,7 +591,7 @@ BOOL CWorkDlg::Work_Start()
 		}
 	}
 
-	if(nZigFlag < 0) {g_objCommon.Show_MsgBox(1, "Please Input ZigID."); return FALSE;}
+	if(nZigFlag < 0) {g_objCommon.Show_MsgBox(1, "Please Input Coating Zig ID."); return FALSE;}
 	if(nLensFlag < 0) {g_objCommon.Show_MsgBox(1, "Please Input Lens Cnt."); return FALSE;}
 
 
@@ -1484,4 +1498,25 @@ void CWorkDlg::OnStnClickedStcHidden()
 void CWorkDlg::OnBnClickedChkNoTray()
 {
 	gData.bDemoMode = m_chkNoTrayMode.GetCheck();
+}
+
+
+void CWorkDlg::OnBnClickedBtnLight()
+{
+	DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
+
+	static int nOnOff = 0;
+
+	if(nOnOff == 0)
+	{
+		nOnOff = 1;
+		pDY03->oInsideLight = TRUE;
+	}
+	else if(nOnOff == 1)
+	{
+		nOnOff = 0;
+		pDY03->oInsideLight = FALSE;
+	}
+	
+	g_objAJinAXL.Write_Output(3);
 }

@@ -11,6 +11,7 @@
 #include "DataManager.h"
 #include "Common.h"
 #include "SequenceMain.h"
+#include "Inspector.h"
 
 // CManualCleanDlg 대화 상자입니다.
 
@@ -44,7 +45,12 @@ BEGIN_MESSAGE_MAP(CManualCleanDlg, CDialogEx)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_TOP_INSPECT_X_0, IDC_BTN_TOP_INSPECT_X_3, OnBtnTopInspectXClick)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_TOP_INSPECT_Y_0, IDC_BTN_TOP_INSPECT_Y_3, OnBtnTopInspectYClick)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_TOP_INSPECT_Z_0, IDC_BTN_TOP_INSPECT_Z_3, OnBtnTopInspectZClick)
-	END_MESSAGE_MAP()
+	ON_BN_CLICKED(IDC_BUTTON1, &CManualCleanDlg::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BTN_CASERESET, &CManualCleanDlg::OnBnClickedBtnCasereset)
+	ON_BN_CLICKED(IDC_BTN_AMOVE, &CManualCleanDlg::OnBnClickedBtnAmove)
+	ON_BN_CLICKED(IDC_BTN_CASERESET2, &CManualCleanDlg::OnBnClickedBtnCasereset2)
+	ON_BN_CLICKED(IDC_BUTTON2, &CManualCleanDlg::OnBnClickedButton2)
+END_MESSAGE_MAP()
 
 // CManualCleanDlg 메시지 처리기입니다.
 
@@ -67,6 +73,8 @@ BOOL CManualCleanDlg::OnInitDialog()
 	SetWindowPos(this, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 
 	Initial_Controls();
+
+	m_nScanCase = 0;
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -243,7 +251,7 @@ void CManualCleanDlg::OnBtnTopInspectZClick(UINT nID)
 	if(nIndex == eTopInspect_Z::ScanStart)
 	{
 		double dStart = pEquipData->dTopStart;
-		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, dStart);		
+		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, dStart - 5);		
 	}
 	if(nIndex == eTopInspect_Z::ScanEnd)
 	{
@@ -292,7 +300,7 @@ BOOL CManualCleanDlg::TopScan_Run()
 		return TRUE;
 
 	case 1:		// Move Frist
-		if (g_objCommon.Check_Position(AX_TOP_INSPECTOR_Z, eTopInspect_Z::ScanStart)) 
+		if (g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Z)) 
 		{			
 			m_nScanCase++;
 		}
@@ -300,24 +308,70 @@ BOOL CManualCleanDlg::TopScan_Run()
 	case 2:		// Scan Move
 		if (g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Z)) 
 		{
+			m_nScanCase = 3;
 			double dPeriod = pEquipData->dTopPeriod;	// 33mm
 			double dWidth = 10.0;						// 10mm (고정)
 			double dTrigS = pEquipData->dTopStart;				// Trigger Start
 			double dTrigE = dTrigS + dPeriod * pEquipData->dTopCount + dWidth + 1.0;	// Trigger End
-			dTopZ = dTrigE + 30.0;								// Motion End (가감속)
+			dTopZ = dTrigE + 5.0;								// Motion End (가감속)
 			double dVelocity = pEquipData->dTopVelocity;
-			g_objAJinAXL.Start_Scan(AX_TOP_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dWidth, dVelocity);
-			m_nScanCase++;
+			g_objAJinAXL.Start_Scan(eVision::TC, AX_TOP_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dWidth, dVelocity);
+			
 		}
 		break;
 	case 3:		// Scan End
-		if (g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_Z, dTopZ)) 
+		if (g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Z)) 
 		{
 			g_objAJinAXL.Stop_Scan(AX_TOP_INSPECTOR_Z);
 			m_nScanCase = 0;			
 			return FALSE;
 		}
 		break;
+	case 4:
+		return FALSE;
 	}
 	return TRUE;
+}
+
+void CManualCleanDlg::OnBnClickedButton1()
+{
+
+}
+
+
+void CManualCleanDlg::OnBnClickedBtnCasereset()
+{
+	m_nScanCase = 0;
+}
+
+
+void CManualCleanDlg::OnBnClickedBtnAmove()
+{
+	double m_dTopZ = 30.9;
+	if(theApp.Get_MainMode() == MODE_MANUAL)
+	{
+		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, m_dTopZ);		
+		while (1)
+		{
+			theApp.DoEvents();
+			if(g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_Z, m_dTopZ))
+			{
+				break;
+			}
+		}
+	}
+}
+
+
+void CManualCleanDlg::OnBnClickedBtnCasereset2()
+{
+	m_nScanCase = 4;	
+	m_bThreadTopScan = FALSE;
+	m_pThreadTopScan = NULL;
+}
+
+
+void CManualCleanDlg::OnBnClickedButton2()
+{
+	g_objAJinAXL.Clear_Scan(eVision::TC);
 }

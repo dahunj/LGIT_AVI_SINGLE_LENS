@@ -52,4 +52,10 @@ protected:
 	BOOL		m_bThreadTopScan;
 	CWinThread *m_pThreadTopScan;
 	static UINT	Thread_TopScan(LPVOID lpVoid);
+public:
+	afx_msg void OnBnClickedButton1();
+	afx_msg void OnBnClickedBtnCasereset();
+	afx_msg void OnBnClickedBtnAmove();
+	afx_msg void OnBnClickedBtnCasereset2();
+	afx_msg void OnBnClickedButton2();
 };

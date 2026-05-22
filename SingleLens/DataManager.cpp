@@ -70,8 +70,8 @@ BOOL CDataManager::Read_EquipData()
 	m_EquipData.nLotBarcodePort = INI.Get_Integer("EQUIPMENT", "LOT_BARCODE", 1);
 
 	m_EquipData.bUseDoorLock = FALSE; //INI.Get_Bool("EQUIPMENT", "DOOR_LOCK", FALSE);
-	gData.nDoorLockTime = INI.Get_Integer("EQUIPMENT", "DOOR_LOCK_TIME", 0);
-	gAlm.dMotionChkPos		= INI.Get_Double("EQUIPMENT", "MOTION_CHECK", 0.0);
+	gData.nDoorLockTime = INI.Get_Integer("EQUIPMENT","DOOR_LOCK_TIME", 0);
+	gAlm.dMotionChkPos		= INI.Get_Double("EQUIPMENT","MOTION_CHECK", 0.0);
 
 	m_EquipData.bUseMES = INI.Get_Bool("OPTION", "MES_USE", FALSE);
 	
@@ -95,19 +95,18 @@ BOOL CDataManager::Read_EquipData()
 	m_EquipData.dElevPitchZ = INI.Get_Double("ELEVATOR", "PITCH_Z", 0.00);
 
 
-	m_EquipData.dTopStart	 = INI.Get_Double("COAT_ZIG", "TOP_START",   0.00);
-	m_EquipData.dTopCount    = INI.Get_Double("COAT_ZIG", "TOP_COUNT",	 0.00);
-	m_EquipData.dTopPeriod   = INI.Get_Double("COAT_ZIG", "TOP_PERIOD",  0.00);
-	m_EquipData.dTopVelocity = INI.Get_Double("COAT_ZIG", "TOP_VEL",	 0.00);
-	m_EquipData.dBtmStart	 = INI.Get_Double("COAT_ZIG", "BTM_START",   0.00);
-	m_EquipData.dBtmCount    = INI.Get_Double("COAT_ZIG", "BTM_COUNT",	 0.00);
-	m_EquipData.dBtmPeriod   = INI.Get_Double("COAT_ZIG", "BTM_PERIOD",  0.00);
-	m_EquipData.dBtmVelocity = INI.Get_Double("COAT_ZIG", "BTM_VEL",	 0.00);
+	m_EquipData.dTopStart	 = INI.Get_Double("TRIGGER", "TOP_START",   0.00);
+	m_EquipData.dTopCount    = INI.Get_Double("TRIGGER", "TOP_COUNT",	 0.00);
+	m_EquipData.dTopPeriod   = INI.Get_Double("TRIGGER", "TOP_PERIOD",  0.00);
+	m_EquipData.dTopVelocity = INI.Get_Double("TRIGGER", "TOP_VEL",	 0.00);
+	m_EquipData.dBtmStart	 = INI.Get_Double("TRIGGER", "BTM_START",   0.00);
+	m_EquipData.dBtmCount    = INI.Get_Double("TRIGGER", "BTM_COUNT",	 0.00);
+	m_EquipData.dBtmPeriod   = INI.Get_Double("TRIGGER", "BTM_PERIOD",  0.00);
+	m_EquipData.dBtmVelocity = INI.Get_Double("TRIGGER", "BTM_VEL",	 0.00);
 	
 	m_EquipData.bUseTopVision = INI.Get_Bool("OPTION", "TOP_VISION", FALSE);	
 	m_EquipData.bUseBtmVision = INI.Get_Bool("OPTION", "BTM_VISION", FALSE);
-
-
+	
 	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) { strKey.Format("%d%d", i, j); m_EquipData.bTower[i][j] = INI.Get_Bool("TOWER", strKey, FALSE); }
 	for (int i = 0; i < 5; i++) for (int j = 0; j < 6; j++) { strKey.Format("%d%d", i, j); m_EquipData.bBuzzer[i][j] = INI.Get_Bool("BUZZER", strKey, FALSE); }
 
@@ -123,11 +122,14 @@ BOOL CDataManager::Read_EquipData()
 
 	// Gloval Data		
 	m_EquipData.nResultTestNg = INI.Get_Integer("RESULT_TEST", "RESULT_NG", 0);
-
-
-
+	
 	return TRUE;
 }
+
+
+
+
+
 
 BOOL CDataManager::Read_MoveData()
 {
@@ -154,5 +156,8 @@ BOOL CDataManager::Read_MoveData()
 
 	return TRUE;
 }
+
+
+
 
 ///////////////////////////////////////////////////////////////////////////////

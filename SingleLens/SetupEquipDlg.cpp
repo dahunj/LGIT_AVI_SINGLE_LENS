@@ -34,7 +34,7 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 */
 	DDX_Control(pDX, IDC_STC_EQUIP_NAME, m_stcEquipName);
 	DDX_Control(pDX, IDC_STC_EQUIP_MODEL, m_stcEquipModel);
-
+	DDX_Control(pDX, IDC_CBO_MODEL_CHANGE, m_cboModelChange);
 
 	DDX_Control(pDX, IDC_CBO_LOT_BARCODE_PORT, m_cboLotBarcodePort);
 	
@@ -91,6 +91,7 @@ BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_ELV_DATA_0, IDC_STC_ELV_DATA_0, OnStcElvDataClick)
 	ON_BN_CLICKED(IDC_BTN_MODEL_ADD, &CSetupEquipDlg::OnBnClickedBtnModelAdd)
 	ON_STN_CLICKED(IDC_STC_EQUIP_MODEL, &CSetupEquipDlg::OnStnClickedStcEquipModel)
+	ON_CBN_SELCHANGE(IDC_CBO_MODEL_CHANGE, &CSetupEquipDlg::OnCbnSelchangeCboModelChange)
 END_MESSAGE_MAP()
 
 // CSetupEquipDlg ∏ﬁΩ√¡ˆ √≥∏Æ±‚¿‘¥œ¥Ÿ.
@@ -108,6 +109,7 @@ void CSetupEquipDlg::Initial_Controls()
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	m_stcEquipName.Init_Ctrl("πŸ≈¡", 11, TRUE, RGB(0x00, 0x00, 0x80), RGB(0xE0, 0xFF, 0xE0));
 	m_stcEquipModel.Init_Ctrl("πŸ≈¡", 11, TRUE, RGB(0x00, 0x00, 0x80), RGB(0xE0, 0xFF, 0xE0));
+	m_cboModelChange.Init_Ctrl("πŸ≈¡", 11, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xFF, 0xE0, 0x00));
 	
 	for (int i = 0; i < 4; i++) { strText.Format("COM%d", i + 1); m_cboLotBarcodePort.AddString(strText); }
 	m_cboLotBarcodePort.Init_Ctrl("πŸ≈¡", 12, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xF0, 0xE0, 0x00));
@@ -152,6 +154,47 @@ void CSetupEquipDlg::Initial_Controls()
 	m_chkTopVision.Init_Ctrl("πŸ≈¡", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
 	m_chkBtmVision.Init_Ctrl("πŸ≈¡", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
 	m_chkMarkUse.Init_Ctrl("πŸ≈¡", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
+}
+
+
+void CSetupEquipDlg::InitModelComboBox()
+{
+
+	CString sPathSource;
+	sPathSource = gsCurrentDir + "\\System\\Model";
+
+	for(int i=m_cboModelChange.GetCount()-1; i>=0; i--)
+	{
+		m_cboModelChange.DeleteString(i);
+	}
+
+	if (GetFileAttributes(sPathSource) == -1) return;	// µ∑∫≈‰∏Æ æ¯¿Ω
+
+	int nIndex = 0 ;
+
+	CFileFind ff;
+
+	BOOL bFile = ff.FindFile(sPathSource + _T("\\*.*"));
+
+	while(bFile)
+	{
+		bFile = ff.FindNextFile();
+
+		CString str;	// = ff.GetFileName();
+
+		if(ff.IsDots()) continue;
+
+		if(ff.IsDirectory()){
+			str = ff.GetFileName();
+			m_cboModelChange.AddString(str);
+		}
+
+		//str = str.Left(str.ReverseFind(_T('.')));
+
+		//m_cboModelChange.AddString(str);
+
+	}
+	ff.Close();
 }
 
 BOOL CSetupEquipDlg::OnInitDialog() 
@@ -289,8 +332,6 @@ void CSetupEquipDlg::Display_EquipData()
 
 	strData.Format("%0.3lf", gAlm.dMotionChkPos);	 m_stcMotionCheck.SetWindowText(strData);
 	
-
-
 	strData.Format("%d", pEquipData->nZigArrayX); m_stcZigData[0].SetWindowText(strData);
 	strData.Format("%d", pEquipData->nZigArrayY); m_stcZigData[1].SetWindowText(strData);
 	strData.Format("%0.2lf", pEquipData->dZigPitchX); m_stcZigData[2].SetWindowText(strData);
@@ -317,10 +358,10 @@ void CSetupEquipDlg::Display_EquipData()
 	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) m_chkTower[i][j].SetCheck(pEquipData->bTower[i][j]);
 	for (int i = 0; i < 5; i++) for (int j = 0; j < 6; j++) m_chkBuzzer[i][j].SetCheck(pEquipData->bBuzzer[i][j]);
 
-	CString strData;
+	
 	for (int i = 0; i < 6; i++) 
 	{
-		strData.Format("%d", m_EquipData.nDelayAdd[i]);
+		strData.Format("%d", pEquipData->nDelayAdd[i]);
 		m_stcDelayAdd[i].SetWindowText(strData);
 	}
 
@@ -579,4 +620,25 @@ void CSetupEquipDlg::OnStnClickedStcEquipModel()
 
 	m_strLog.Format("[Setup Equip] OnStnClickedStcEquipModel - Data(%s)", strKey);
 	g_objLogFile.Save_HandlerLog(m_strLog);
+}
+
+
+void CSetupEquipDlg::OnCbnSelchangeCboModelChange()
+{
+	//CString strModel;
+	//int nSel = m_cboModelChange.GetCurSel();
+	//m_cboModelChange.GetLBText(nSel, strModel);
+
+	//if(!strModel.IsEmpty())
+	//{
+	//	CString sPathSource;
+	//	sPathSource = gsCurrentDir + "\\System\\Model";
+	//	sPathSource += _T("\\");
+	//	sPathSource += strModel;
+	//	sPathSource += _T("\\");
+
+	//	g_objDataManager.Read_ModelEquipData(sPathSource);
+	//	//		g_objDataManager.Read_ModelMoveData(sPathSource);
+
+	//	Display_EquipData();
 }

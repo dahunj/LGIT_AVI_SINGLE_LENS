@@ -162,11 +162,11 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 
 	if (nTNo < 0 || nTNo > 99 || nLNo < 0 || nLNo > 200) { g_objCommon.Show_Error(6101); return; }
 
-	int nV = (sGbn == "TC" ? eVision::Tc : (sGbn == "BC" ? eVision::Bc : -1));
+	int nV = (sGbn == "TC" ? eVision::TC : (sGbn == "BC" ? eVision::BC : -1));
 	if (nV == -1) { g_objCommon.Show_Error(6102); return; }
 
 
-	if(nV == eVision::Tc) //Tc
+	if(nV == eVision::TC) //Tc
 	{
 		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_TOP_INSPECT);
 		if (nCase != 5) 
@@ -175,12 +175,12 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 			return;
 		}
 				
-		gData.bScanDone[eVision::Tc] = TRUE;
+		gData.bScanDone[eVision::TC] = TRUE;
 		gData.InfoMainIndex[eMainIndex::Top][nXPos][nYPos] = eLensState::TopDone;
 		g_objSequenceMain.Set_MainRunCase(AUTO_TOP_INSPECT, 10);
 
 	}
-	else if(nV == eVision::Bc) // Bc
+	else if(nV == eVision::BC) // Bc
 	{
 		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_BTM_INSPECT);
 		if (nCase != 5) 
@@ -189,7 +189,7 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 			return; 
 		}
 				
-		gData.bScanDone[eVision::Bc] = TRUE;
+		gData.bScanDone[eVision::BC] = TRUE;
 		gData.InfoMainIndex[eMainIndex::Btm][nXPos][nYPos] = eLensState::BtmDone;
 		g_objSequenceMain.Set_MainRunCase(AUTO_BTM_INSPECT, 10);
 	}
@@ -203,7 +203,7 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 
 	if (nTNo < 0 || nTNo > 99 || nLNo < 0 || nLNo > 200) { g_objCommon.Show_Error(6101); return; }
 
-	int nV = (sGbn == "TC" ? eVision::Tc : (sGbn == "BC" ? eVision::Bc : -1));
+	int nV = (sGbn == "TC" ? eVision::TC : (sGbn == "BC" ? eVision::BC : -1));
 	if (nV == -1) { g_objCommon.Show_Error(6102); return; }
 
 
@@ -232,8 +232,36 @@ void CInspector::Get_AMoveRequest(int nVPc, CString sGbn, CString sZ1)
 {
 	if (!g_objSequenceInit.Get_InitComplete()) { g_objCommon.Show_Error(50); return; }
 
+
+	EQUIP_DATA *m_pEquipData = g_objDataManager.Get_pEquipData();
+
+
 	if(sGbn == "TC") m_dTopZ = atof(sZ1);
 	if(sGbn == "BC") m_dBtmZ = atof(sZ1);
+
+	m_pEquipData->dTopStart = m_dTopZ;
+	m_pEquipData->dBtmStart = m_dBtmZ;
+	if(theApp.Get_MainMode() == MODE_MANUAL)
+	{
+		if(sGbn == "TC") g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z,m_pEquipData->dTopStart );
+		if(sGbn == "BC") g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_Z,m_pEquipData->dBtmStart );
+		while (1)
+		{
+			theApp.DoEvents();
+			if(g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_Z, m_pEquipData->dTopStart))
+			{
+				if(sGbn == "TC") g_objInspector.Set_MoveComplete(VISION_PC1, "TC");				
+				break;
+			}
+			if(g_objAJinAXL.Is_MoveDone(AX_BTM_INSPECTOR_Z, m_pEquipData->dTopStart))
+			{				
+				if(sGbn == "BC") g_objInspector.Set_MoveComplete(VISION_PC1, "BC");
+				break;
+			}
+
+		}
+	}
+
 }
 
 void CInspector::Get_PositionRequest(int nVPc, CString sGbn)
