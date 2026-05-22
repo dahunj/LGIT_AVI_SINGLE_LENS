@@ -662,56 +662,59 @@ void CWorkDlg::Check_Lamp()
 	{		
 		if (pDX03->iLoadOpenSw) 
 		{
-			if (!pEquipData->bUseDoorLock || !pDX03->iDoor08Unlock) // 안전 확인.
-			{	
+			//if (!pEquipData->bUseDoorLock || !pDX03->iDoor08Unlock) // 안전 확인.
+			{
 				if (!gData.bLdMZWait && !m_bLdOpenSwOn) 
 				{
 					pMainDlg->Set_LampFlicker_LdOpen(TRUE);
 					pMainDlg->Set_LampFlicker_LdRun(FALSE);	
-					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = TRUE; g_objAJinAXL.Write_Output(3); }
+
 					gData.bLdMZWait = TRUE;
 					m_bLdOpenSwOn = TRUE; m_bLdRunSwOn = FALSE;
+
+					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = TRUE; g_objAJinAXL.Write_Output(3); }
+
 				}
-				/*else if (gData.bLdMZWait && m_bLdOpenSwOn)
+				else if (gData.bLdMZWait && m_bLdOpenSwOn)
 				{
 					pMainDlg->Set_LampFlicker_LdOpen(FALSE);
 					pMainDlg->Set_LampFlicker_LdRun(TRUE);	
 					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = FALSE; g_objAJinAXL.Write_Output(33); }
 					gData.bLdMZWait = FALSE;
 					m_bLdOpenSwOn = FALSE; m_bLdRunSwOn = TRUE;
-				}*/
-			}
+				}			
+			}			
 		} 	
 
 
 		if (pDX03->iLoadRunSw) 
-		{
-			if (!pEquipData->bUseDoorLock || pDX03->iDoor08Unlock) // 안전 확인.
-			{	
+		{			
+			//if (!pEquipData->bUseDoorLock || !pDX03->iDoor08Unlock) // 안전 확인.
+			{
 				if (gData.bLdMZWait && !m_bLdRunSwOn) 
 				{
 					pMainDlg->Set_LampFlicker_LdOpen(FALSE);
 					pMainDlg->Set_LampFlicker_LdRun(TRUE);	
-					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = FALSE; g_objAJinAXL.Write_Output(3); }
+					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = TRUE; g_objAJinAXL.Write_Output(3); }
 					gData.bLdMZWait = FALSE;
 					m_bLdOpenSwOn = FALSE; m_bLdRunSwOn = TRUE;
 				}
-				/*else if (!gData.bLdMZWait && m_bLdRunSwOn)
+				else if (!gData.bLdMZWait && m_bLdRunSwOn)
 				{
 					pMainDlg->Set_LampFlicker_LdOpen(TRUE);
 					pMainDlg->Set_LampFlicker_LdRun(FALSE);	
 					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = FALSE; g_objAJinAXL.Write_Output(33); }
 					gData.bLdMZWait = TRUE;
 					m_bLdOpenSwOn = TRUE; m_bLdRunSwOn = FALSE;
-				}*/
-			}
+				}	
+			}				
 		} 
 
 
 
 		if (pDX03->iUnloadOpenSw) 
 		{
-			if (!pEquipData->bUseDoorLock || !pDX03->iDoor03Unlock) // 안전 확인.
+			//if (!pEquipData->bUseDoorLock || !pDX03->iDoor03Unlock) // 안전 확인.
 			{	
 				if (!gData.bUldMZWait && !m_bUldOpenSwOn) 
 				{
@@ -721,21 +724,21 @@ void CWorkDlg::Check_Lamp()
 					gData.bUldMZWait = TRUE;
 					m_bUldOpenSwOn = TRUE; m_bUldRunSwOn = FALSE;
 				}
-				/*else if (gData.bLdMZWait && m_bLdOpenSwOn)
+				else if (gData.bLdMZWait && m_bLdOpenSwOn)
 				{
 					pMainDlg->Set_LampFlicker_LdOpen(FALSE);
 					pMainDlg->Set_LampFlicker_LdRun(TRUE);	
-					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = FALSE; g_objAJinAXL.Write_Output(33); }
-					gData.bLdMZWait = FALSE;
-					m_bLdOpenSwOn = FALSE; m_bLdRunSwOn = TRUE;
-				}*/
+					if (pEquipData->bUseDoorLock) { pDY03->oDoor03Unlock = FALSE; g_objAJinAXL.Write_Output(33); }
+					gData.bUldMZWait = FALSE;
+					m_bUldOpenSwOn = FALSE; m_bUldRunSwOn = TRUE;
+				}
 			}
 		} 	
 
 
 		if (pDX03->iUnloadRunSw) 
 		{
-			if (!pEquipData->bUseDoorLock || pDX03->iDoor03Unlock) // 안전 확인.
+			//if (!pEquipData->bUseDoorLock || pDX03->iDoor03Unlock) // 안전 확인.
 			{	
 				if (gData.bUldMZWait && !m_bUldRunSwOn) 
 				{
@@ -745,14 +748,14 @@ void CWorkDlg::Check_Lamp()
 					gData.bUldMZWait = FALSE;
 					m_bUldOpenSwOn = FALSE; m_bUldRunSwOn = TRUE;
 				}
-				/*else if (!gData.bLdMZWait && m_bLdRunSwOn)
+				else if (!gData.bLdMZWait && m_bLdRunSwOn)
 				{
 					pMainDlg->Set_LampFlicker_LdOpen(TRUE);
 					pMainDlg->Set_LampFlicker_LdRun(FALSE);	
-					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = FALSE; g_objAJinAXL.Write_Output(33); }
-					gData.bLdMZWait = TRUE;
-					m_bLdOpenSwOn = TRUE; m_bLdRunSwOn = FALSE;
-				}*/
+					if (pEquipData->bUseDoorLock) { pDY03->oDoor03Unlock = FALSE; g_objAJinAXL.Write_Output(3); }
+					gData.bUldMZWait = TRUE;
+					m_bUldOpenSwOn = TRUE; m_bUldRunSwOn = FALSE;
+				}
 			}
 		} 	
 

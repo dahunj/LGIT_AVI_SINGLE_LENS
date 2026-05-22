@@ -143,16 +143,19 @@ void CInitialDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	KillTimer(0);
 
-	/*DX_DATA_12 *pDX12 = g_objAJinAXL.Get_pDX12();
 
-	if (pDX12->iStartSw && !m_rdoInitStart.GetCheck()) {
+	DX_DATA_03 *pDX03 = g_objAJinAXL.Get_pDX03();
+
+	if (pDX03->iStartSw && !m_rdoInitStart.GetCheck())
+	{
 		g_objLogFile.Save_HandlerLog("[Initial Mode] START S/W Push");
 		m_rdoInitStart.SetCheck(TRUE);
-
-	} else if (pDX12->iStopSw && !m_rdoInitStop.GetCheck()) {
+	}
+	else if (pDX03->iStopSw && !m_rdoInitStop.GetCheck())
+	{
 		g_objLogFile.Save_HandlerLog("[Initial Mode] STOP S/W Push");
 		m_rdoInitStop.SetCheck(TRUE);
-	}*/
+	}
 
 	Display_Status();
 

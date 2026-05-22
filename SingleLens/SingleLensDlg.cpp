@@ -605,7 +605,7 @@ void CSingleLensDlg::Set_CurrentState(int nState)
 {
 	KillTimer(TIMER_TOWER_FLKR);
 	KillTimer(TIMER_BUZZER_FLKR);
-//	KillTimer(TIMER_LAMP_FLKR);
+	//KillTimer(TIMER_LAMP_FLKR);
 
 	theApp.Set_MainState(nState);
 	g_dlgWork.Set_State(nState);
