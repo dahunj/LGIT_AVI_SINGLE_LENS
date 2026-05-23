@@ -58,10 +58,10 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 5; i++) for (int j = 0; j < 6; j++) DDX_Control(pDX, IDC_CHK_BUZZER_0_0 + i * 6 + j,  m_chkBuzzer[i][j]);
 
 	DDX_Control(pDX, IDC_GRP_HIDDEN, m_grpHidden);
-	DDX_Control(pDX, IDC_LBL_PASSWORD_MT, m_lblPasswordMt);
-	DDX_Control(pDX, IDC_STC_PASSWORD_MT, m_stcPasswordMt);
-	DDX_Control(pDX, IDC_LBL_PASSWORD_SI, m_lblPasswordSi);
-	DDX_Control(pDX, IDC_EDT_PASSWORD_SI, m_edtPasswordSi);
+	DDX_Control(pDX, IDC_LBL_PASSWORD_MT, m_lblPasswordOp);
+	DDX_Control(pDX, IDC_STC_PASSWORD_MT, m_stcPasswordOp);
+	DDX_Control(pDX, IDC_LBL_PASSWORD_SI, m_lblPasswordEngr);
+	DDX_Control(pDX, IDC_EDT_PASSWORD_SI, m_edtPasswordEngr);
 		
 	DDX_Control(pDX, IDC_GRP_RESULT_TEST, m_grpResultTest);
 	DDX_Control(pDX, IDC_LBL_RESULT_TEST, m_lblResultTest);
@@ -92,6 +92,7 @@ BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_MODEL_ADD, &CSetupEquipDlg::OnBnClickedBtnModelAdd)
 	ON_STN_CLICKED(IDC_STC_EQUIP_MODEL, &CSetupEquipDlg::OnStnClickedStcEquipModel)
 	ON_CBN_SELCHANGE(IDC_CBO_MODEL_CHANGE, &CSetupEquipDlg::OnCbnSelchangeCboModelChange)
+	ON_CBN_DROPDOWN(IDC_CBO_MODEL_CHANGE, &CSetupEquipDlg::OnCbnDropdownCboModelChange)
 END_MESSAGE_MAP()
 
 // CSetupEquipDlg ¸Þ½ÃÁö Ã³¸®±âÀÔ´Ï´Ù.
@@ -133,10 +134,10 @@ void CSetupEquipDlg::Initial_Controls()
 	for (int i = 0; i < 5; i++) for (int j = 0; j < 6; j++) m_chkBuzzer[i][j].Init_Ctrl("¹ÙÅÁ", 11, FALSE, COLOR_DEFAULT, RGB(0x00, 0xE0, 0xF0), CCheckCS::emRed, 0);
 
 	m_grpHidden.Init_Ctrl("¹ÙÅÁ", 10, TRUE, COLOR_DEFAULT, COLOR_DEFAULT);
-	m_lblPasswordMt.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60));
-	m_stcPasswordMt.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0xC0, 0xC0, 0xC0));
-	m_lblPasswordSi.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60));
-	m_edtPasswordSi.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, COLOR_DEFAULT);
+	m_lblPasswordOp.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60));
+	m_stcPasswordOp.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0xC0, 0xC0, 0xC0));
+	m_lblPasswordEngr.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60));
+	m_edtPasswordEngr.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, COLOR_DEFAULT);
 		
 	m_grpResultTest.Init_Ctrl("¹ÙÅÁ", 12, TRUE, COLOR_DEFAULT, COLOR_DEFAULT);
 	m_lblResultTest.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60));
@@ -227,10 +228,10 @@ void CSetupEquipDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	Display_EquipData();
 
 	m_grpHidden.ShowWindow(SW_HIDE);
-	m_lblPasswordMt.ShowWindow(SW_HIDE);
-	m_stcPasswordMt.ShowWindow(SW_HIDE);
-	m_lblPasswordSi.ShowWindow(SW_HIDE);
-	m_edtPasswordSi.ShowWindow(SW_HIDE);
+	m_lblPasswordOp.ShowWindow(SW_HIDE);
+	m_stcPasswordOp.ShowWindow(SW_HIDE);
+	m_lblPasswordEngr.ShowWindow(SW_HIDE);
+	m_edtPasswordEngr.ShowWindow(SW_HIDE);
 
 	m_grpResultTest.ShowWindow(SW_HIDE);
 	m_lblResultTest.ShowWindow(SW_HIDE);
@@ -282,7 +283,7 @@ void CSetupEquipDlg::OnStnClickedStcPasswordMt()
 		strTemp = strData.Mid(i, 1);
 		if (strTemp < "0" || strTemp > "9") { AfxMessageBox("Password Input Error......"); return; }
 	}
-	m_stcPasswordMt.SetWindowText(strData);
+	m_stcPasswordOp.SetWindowText(strData);
 }
 
 void CSetupEquipDlg::OnStnClickedStcShowHidden()
@@ -295,11 +296,11 @@ void CSetupEquipDlg::OnStnClickedStcShowHidden()
 		m_edtResultTest.ShowWindow(SW_HIDE);
 
 		m_grpHidden.ShowWindow(SW_HIDE);
-		m_lblPasswordMt.ShowWindow(SW_HIDE);
-		m_stcPasswordMt.ShowWindow(SW_HIDE);
+		m_lblPasswordOp.ShowWindow(SW_HIDE);
+		m_stcPasswordOp.ShowWindow(SW_HIDE);
 		if (g_dlgSetup.Get_LoginUser() != 2) return;
-		m_lblPasswordSi.ShowWindow(SW_HIDE);
-		m_edtPasswordSi.ShowWindow(SW_HIDE);
+		m_lblPasswordEngr.ShowWindow(SW_HIDE);
+		m_edtPasswordEngr.ShowWindow(SW_HIDE);
 	} else {
 		m_grpResultTest.ShowWindow(SW_SHOW);
 		m_lblResultTest.ShowWindow(SW_SHOW);
@@ -308,11 +309,11 @@ void CSetupEquipDlg::OnStnClickedStcShowHidden()
 
 
 		m_grpHidden.ShowWindow(SW_SHOW);
-		m_lblPasswordMt.ShowWindow(SW_SHOW);
-		m_stcPasswordMt.ShowWindow(SW_SHOW);
+		m_lblPasswordOp.ShowWindow(SW_SHOW);
+		m_stcPasswordOp.ShowWindow(SW_SHOW);
 		if (g_dlgSetup.Get_LoginUser() != 2) return;
-		m_lblPasswordSi.ShowWindow(SW_SHOW);
-		m_edtPasswordSi.ShowWindow(SW_SHOW);
+		m_lblPasswordEngr.ShowWindow(SW_SHOW);
+		m_edtPasswordEngr.ShowWindow(SW_SHOW);
 	}
 }
 
@@ -421,18 +422,23 @@ void CSetupEquipDlg::Save_EquipData()
 	pEquipData->bUseMark = m_chkMarkUse.GetCheck(); INI.Set_Bool("OPTION", "MARK_USE", pEquipData->bUseMark);
 
 
-	m_stcDelayAdd[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "FEEDER_CLOSE", nData);
-	m_stcDelayAdd[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "FEEDER_OPEN", nData);
-	m_stcDelayAdd[2].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "TRAY_PICKER_CLOSE", nData);
-	m_stcDelayAdd[3].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "TRAY_PICKER_OPEN", nData);
-	m_stcDelayAdd[4].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "INDEX_ALIGN_IN", nData);
-	m_stcDelayAdd[5].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "INDEX_ALIGN_OUT", nData);
+	m_stcDelayAdd[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "FEEDER_CLOSE", nData);
+	m_stcDelayAdd[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "FEEDER_OPEN", nData);
+	m_stcDelayAdd[2].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "TRAY_PICKER_CLOSE", nData);
+	m_stcDelayAdd[3].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "TRAY_PICKER_OPEN", nData);
+	m_stcDelayAdd[4].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "INDEX_ALIGN_IN", nData);
+	m_stcDelayAdd[5].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "INDEX_ALIGN_OUT", nData);
 
 
 
 	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) { strKey.Format("%d%d", i, j); INI.Set_Bool("TOWER", strKey, m_chkTower[i][j].GetCheck()); }
 	for (int i = 0; i < 5; i++) for (int j = 0; j < 6; j++) { strKey.Format("%d%d", i, j); INI.Set_Bool("BUZZER", strKey, m_chkBuzzer[i][j].GetCheck()); }
 
+
+	m_stcPasswordOp.GetWindowText(strData); INI.Set_String("HIDDEN", "PASSWORD_OP", strData); pEquipData->sPasswordOp = strData;
+	m_edtPasswordEngr.GetWindowText(strData); INI.Set_String("HIDDEN", "PASSWORD_ENGR", strData); pEquipData->sPasswordEngr = strData;
+	
+	
 	CString sPathSource;
 	sPathSource = gsCurrentDir + "\\System\\Model\\";
 	sPathSource += strModel;
@@ -562,7 +568,7 @@ void CSetupEquipDlg::OnStnClickedStcDoorlockTime()
 void CSetupEquipDlg::OnBnClickedBtnModelAdd()
 {
 	CString strModel;
-	m_stcEquipName.GetWindowText(strModel);
+	m_stcEquipModel.GetWindowText(strModel);
 
 	if(!strModel.IsEmpty())
 	{
@@ -625,20 +631,27 @@ void CSetupEquipDlg::OnStnClickedStcEquipModel()
 
 void CSetupEquipDlg::OnCbnSelchangeCboModelChange()
 {
-	//CString strModel;
-	//int nSel = m_cboModelChange.GetCurSel();
-	//m_cboModelChange.GetLBText(nSel, strModel);
+	CString strModel;
+	int nSel = m_cboModelChange.GetCurSel();
+	m_cboModelChange.GetLBText(nSel, strModel);
 
-	//if(!strModel.IsEmpty())
-	//{
-	//	CString sPathSource;
-	//	sPathSource = gsCurrentDir + "\\System\\Model";
-	//	sPathSource += _T("\\");
-	//	sPathSource += strModel;
-	//	sPathSource += _T("\\");
+	if(!strModel.IsEmpty())
+	{
+		CString sPathSource;
+		sPathSource = gsCurrentDir + "\\System\\Model";
+		sPathSource += _T("\\");
+		sPathSource += strModel;
+		sPathSource += _T("\\");
 
-	//	g_objDataManager.Read_ModelEquipData(sPathSource);
-	//	//		g_objDataManager.Read_ModelMoveData(sPathSource);
+		g_objDataManager.Read_ModelEquipData(sPathSource);
+		//		g_objDataManager.Read_ModelMoveData(sPathSource);
 
-	//	Display_EquipData();
+		Display_EquipData();
+	}
+}
+
+
+void CSetupEquipDlg::OnCbnDropdownCboModelChange()
+{
+	InitModelComboBox();
 }

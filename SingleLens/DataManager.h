@@ -102,6 +102,8 @@ public:
 	void Reset_MoveData();
 
 	BOOL Read_EquipData();
+	BOOL Read_ModelEquipData(CString strPath);
+
 	BOOL Read_MoveData();
 
 	EQUIP_DATA *Get_pEquipData() { return &m_EquipData; }

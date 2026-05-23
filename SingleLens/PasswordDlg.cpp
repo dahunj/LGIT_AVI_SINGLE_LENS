@@ -109,12 +109,12 @@ void CPasswordDlg::OnBnClickedBtnOk()
 	m_edtPassword.GetWindowText(strInput);
 	if (strInput == pEquipData->sPasswordOp)
 	{
-		g_nLoginUser = 1;	// MT
+		g_nLoginUser = 1;	// Operator
 		EndDialog(IDOK);
 	}
 	else if (strInput == pEquipData->sPasswordEngr)
 	{
-		g_nLoginUser = 2;	// SI
+		g_nLoginUser = 2;	// Engineer 
 		EndDialog(IDOK);
 	}
 	else

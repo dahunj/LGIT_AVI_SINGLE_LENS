@@ -106,6 +106,7 @@ BOOL CDataManager::Read_EquipData()
 	
 	m_EquipData.bUseTopVision = INI.Get_Bool("OPTION", "TOP_VISION", FALSE);	
 	m_EquipData.bUseBtmVision = INI.Get_Bool("OPTION", "BTM_VISION", FALSE);
+	m_EquipData.bUseMark = INI.Get_Bool("OPTION", "MARK_USE", FALSE);
 	
 	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) { strKey.Format("%d%d", i, j); m_EquipData.bTower[i][j] = INI.Get_Bool("TOWER", strKey, FALSE); }
 	for (int i = 0; i < 5; i++) for (int j = 0; j < 6; j++) { strKey.Format("%d%d", i, j); m_EquipData.bBuzzer[i][j] = INI.Get_Bool("BUZZER", strKey, FALSE); }
@@ -126,6 +127,84 @@ BOOL CDataManager::Read_EquipData()
 	return TRUE;
 }
 
+
+
+BOOL CDataManager::Read_ModelEquipData(CString strPath)
+{
+	CIniFileCS INI(strPath + "EquipData.ini");
+	if (!INI.Check_File()) {
+		AfxMessageBox("EquipData.ini File Not Found!!!!");
+		return FALSE;
+	}
+
+	CString strKey;
+	m_EquipData.sEquipName = INI.Get_String("EQUIPMENT", "NAME", "");
+	m_EquipData.sModelName = INI.Get_String("EQUIPMENT", "MODEL", "");
+
+	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
+	pMainDlg->Display_EquipName();
+
+
+	m_EquipData.nLotBarcodePort = INI.Get_Integer("EQUIPMENT", "LOT_BARCODE", 1);
+
+	m_EquipData.bUseDoorLock = FALSE; //INI.Get_Bool("EQUIPMENT", "DOOR_LOCK", FALSE);
+	gData.nDoorLockTime = INI.Get_Integer("EQUIPMENT","DOOR_LOCK_TIME", 0);
+	gAlm.dMotionChkPos		= INI.Get_Double("EQUIPMENT","MOTION_CHECK", 0.0);
+
+	m_EquipData.bUseMES = INI.Get_Bool("OPTION", "MES_USE", FALSE);
+
+
+	for (int i = 0; i < 3; i++) { strKey.Format("%d", i); m_EquipData.nVacOffDelay[i] = INI.Get_Integer("VAC_OFF_DELAY", strKey, 30); }
+	for (int i = 0; i < 6; i++) { strKey.Format("%d", i); m_EquipData.nDelayAdd[i] = INI.Get_Integer("DELAY_ADD", strKey, 100); }
+
+	m_EquipData.sAviIp = INI.Get_String("AVI", "AVI_IP", "");
+
+	//doorinterlock log
+	if (gDoorLock.nOpenStart == 0 && m_EquipData.bUseDoorLock == FALSE)
+		g_objLogFile.Save_Interlock(2);
+	if (gDoorLock.nOpenStart == 1 && m_EquipData.bUseDoorLock == TRUE) 
+		g_objLogFile.Save_Interlock(3);
+
+	m_EquipData.nZigArrayX =  INI.Get_Integer("COAT_ZIG", "ARRAY_X", 0); gData.nLensCntX = m_EquipData.nZigArrayX;
+	m_EquipData.nZigArrayY =  INI.Get_Integer("COAT_ZIG", "ARRAY_Y", 0); gData.nLensCntY = m_EquipData.nZigArrayY;	
+	m_EquipData.dZigPitchX = INI.Get_Double("COAT_ZIG", "PITCH_X", 0.00);
+	m_EquipData.dZigPitchY = INI.Get_Double("COAT_ZIG", "PITCH_Y", 0.00);
+
+	m_EquipData.dElevPitchZ = INI.Get_Double("ELEVATOR", "PITCH_Z", 0.00);
+
+
+	m_EquipData.dTopStart	 = INI.Get_Double("TRIGGER", "TOP_START",   0.00);
+	m_EquipData.dTopCount    = INI.Get_Double("TRIGGER", "TOP_COUNT",	 0.00);
+	m_EquipData.dTopPeriod   = INI.Get_Double("TRIGGER", "TOP_PERIOD",  0.00);
+	m_EquipData.dTopVelocity = INI.Get_Double("TRIGGER", "TOP_VEL",	 0.00);
+	m_EquipData.dBtmStart	 = INI.Get_Double("TRIGGER", "BTM_START",   0.00);
+	m_EquipData.dBtmCount    = INI.Get_Double("TRIGGER", "BTM_COUNT",	 0.00);
+	m_EquipData.dBtmPeriod   = INI.Get_Double("TRIGGER", "BTM_PERIOD",  0.00);
+	m_EquipData.dBtmVelocity = INI.Get_Double("TRIGGER", "BTM_VEL",	 0.00);
+
+	m_EquipData.bUseTopVision = INI.Get_Bool("OPTION", "TOP_VISION", FALSE);	
+	m_EquipData.bUseBtmVision = INI.Get_Bool("OPTION", "BTM_VISION", FALSE);
+	m_EquipData.bUseMark = INI.Get_Bool("OPTION", "MARK_USE", FALSE);
+
+	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) { strKey.Format("%d%d", i, j); m_EquipData.bTower[i][j] = INI.Get_Bool("TOWER", strKey, FALSE); }
+	for (int i = 0; i < 5; i++) for (int j = 0; j < 6; j++) { strKey.Format("%d%d", i, j); m_EquipData.bBuzzer[i][j] = INI.Get_Bool("BUZZER", strKey, FALSE); }
+
+	CString strIndex;
+	for(int i = 0; i < 6; i++)
+	{
+		strIndex.Format("%d", i);
+		m_EquipData.nDelayAdd[i] = INI.Get_Integer("DELAY_ADD", strIndex, 0);
+	}
+
+	m_EquipData.sPasswordOp = INI.Get_String("HIDDEN", "PASSWORD_OP", "");
+	m_EquipData.sPasswordEngr = INI.Get_String("HIDDEN", "PASSWORD_ENGR", "");
+
+	// Gloval Data		
+	m_EquipData.nResultTestNg = INI.Get_Integer("RESULT_TEST", "RESULT_NG", 0);
+	
+
+	return TRUE;
+}
 
 
 

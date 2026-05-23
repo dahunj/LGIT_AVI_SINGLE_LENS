@@ -49,10 +49,10 @@ public:
 	CCheckCS	m_chkBuzzer[5][6];
 
 	CGroupCS	m_grpHidden;
-	CLabelCS	m_lblPasswordMt;
-	CStaticCS	m_stcPasswordMt;
-	CLabelCS	m_lblPasswordSi;
-	CEditCS		m_edtPasswordSi;
+	CLabelCS	m_lblPasswordOp;
+	CStaticCS	m_stcPasswordOp;
+	CLabelCS	m_lblPasswordEngr;
+	CEditCS		m_edtPasswordEngr;
 
 	CGroupCS	m_grpResultTest;
 	CLabelCS	m_lblResultTest;
@@ -96,6 +96,7 @@ public:
 	afx_msg void OnBnClickedBtnModelAdd();
 	afx_msg void OnStnClickedStcEquipModel();
 	afx_msg void OnCbnSelchangeCboModelChange();
+	afx_msg void OnCbnDropdownCboModelChange();
 };
 
 ///////////////////////////////////////////////////////////////////////////////
