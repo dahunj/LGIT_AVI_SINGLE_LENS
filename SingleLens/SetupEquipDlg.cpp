@@ -60,8 +60,8 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_GRP_HIDDEN, m_grpHidden);
 	DDX_Control(pDX, IDC_LBL_PASSWORD_MT, m_lblPasswordOp);
 	DDX_Control(pDX, IDC_STC_PASSWORD_MT, m_stcPasswordOp);
-	DDX_Control(pDX, IDC_LBL_PASSWORD_SI, m_lblPasswordEngr);
-	DDX_Control(pDX, IDC_EDT_PASSWORD_SI, m_edtPasswordEngr);
+	DDX_Control(pDX, IDC_LBL_PASSWORD_ENGR, m_lblPasswordEngr);
+	DDX_Control(pDX, IDC_EDT_PASSWORD_ENGR, m_edtPasswordEngr);
 		
 	DDX_Control(pDX, IDC_GRP_RESULT_TEST, m_grpResultTest);
 	DDX_Control(pDX, IDC_LBL_RESULT_TEST, m_lblResultTest);
@@ -301,7 +301,9 @@ void CSetupEquipDlg::OnStnClickedStcShowHidden()
 		if (g_dlgSetup.Get_LoginUser() != 2) return;
 		m_lblPasswordEngr.ShowWindow(SW_HIDE);
 		m_edtPasswordEngr.ShowWindow(SW_HIDE);
-	} else {
+	} 
+	else 
+	{
 		m_grpResultTest.ShowWindow(SW_SHOW);
 		m_lblResultTest.ShowWindow(SW_SHOW);
 		m_chkResultTestUse.ShowWindow(SW_SHOW);

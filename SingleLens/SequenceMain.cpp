@@ -2307,7 +2307,7 @@ BOOL CSequenceMain::MarkUnitRun()
 		else
 		{
 			bInspectFail = FALSE;
-			if(!Check_InspectDone(gData.sZigIDMainIndex[eMainIndex::Mark], gData.nMZNo[eMainIndex::Mark], gData.nSlotNoMainIndex[eMainIndex::Mark], nLensNo, dwTick)) 
+			if(!Check_InspectDone(gData.sZigIDMainIndex[eMainIndex::Mark], gData.nMZNoMainIndex[eMainIndex::Mark], gData.nSlotNoMainIndex[eMainIndex::Mark], nLensNo, dwTick)) 
 			{
 				bInspectFail = TRUE;
 				break;
@@ -2318,7 +2318,7 @@ BOOL CSequenceMain::MarkUnitRun()
 		}
 		break;
 	case 6:
-		if(gData.nInspectInfo[gData.nMZNo[eMainIndex::Mark]][nMarkXPos-1][nMarkYPos-1] == 2)
+		if(gData.nInspectInfo[gData.nMZNoMainIndex[eMainIndex::Mark]][nMarkXPos-1][nMarkYPos-1] == 2)
 		{
 			g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::MarkDown);
 			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nLT[eLT::Motion]);

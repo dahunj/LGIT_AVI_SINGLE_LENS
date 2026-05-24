@@ -121,7 +121,7 @@ typedef struct
 	CString	sMZID[6];
 	CString	sZigID[6][10];
 
-	int		nMZNo[6];
+	int		nMZNo[6]; // From UI MZ Input 
 
 	int		nMZCnt;
 
