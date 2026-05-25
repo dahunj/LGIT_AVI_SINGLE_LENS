@@ -199,3 +199,13 @@ struct eVision
 	};
 
 };
+
+
+struct eVDir
+{
+	enum Name
+	{
+		fixX = 0,
+		fixY = 1,
+	};
+};

@@ -167,25 +167,25 @@ BOOL CSingleLensDlg::OnInitDialog()
 	gData.nSpeedOption = SpeedMode::Slow;
 	if(gData.nSpeedOption == SpeedMode::Slow)
 	{
-		gData.nLT[eLT::Motion] = 15000;
-		gData.nLT[eLT::Scan] = 30000;
-		gData.nLT[eLT::CV] = 30000;
-		gData.nLT[eLT::Wait] = 60000;
+		gData.nLTime[eLT::Motion] = 15000;
+		gData.nLTime[eLT::Scan] = 30000;
+		gData.nLTime[eLT::CV] = 30000;
+		gData.nLTime[eLT::Wait] = 60000;
 	}
 	else if(gData.nSpeedOption == SpeedMode::Fast)
 	{
-		gData.nLT[eLT::Motion] = 5000;
-		gData.nLT[eLT::Scan] = 30000;
-		gData.nLT[eLT::Wait] = 45000;
-		gData.nLT[eLT::CV] = 30000;
+		gData.nLTime[eLT::Motion] = 10000;
+		gData.nLTime[eLT::Scan] = 30000;
+		gData.nLTime[eLT::Wait] = 45000;
+		gData.nLTime[eLT::CV] = 30000;
 
 	}
 	else if(gData.nSpeedOption == SpeedMode::Normal)
 	{
-		gData.nLT[eLT::Motion] = 10000;
-		gData.nLT[eLT::Scan] = 30000;
-		gData.nLT[eLT::Wait] = 60000;
-		gData.nLT[eLT::CV] = 30000;
+		gData.nLTime[eLT::Motion] = 10000;
+		gData.nLTime[eLT::Scan] = 30000;
+		gData.nLTime[eLT::Wait] = 60000;
+		gData.nLTime[eLT::CV] = 30000;
 	}
 	
 
@@ -660,11 +660,11 @@ void CSingleLensDlg::Set_CurrentState(int nState)
 #ifndef DRY_RUN_TEST	// 시끄러워서 막음
 			EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 			
-			/*pDY03->oBuzzerBit0 = pEquipData->bBuzzer[nState - STATE_ALARM][0];
+			pDY03->oBuzzerBit0 = pEquipData->bBuzzer[nState - STATE_ALARM][0];
 			pDY03->oBuzzerBit1 = pEquipData->bBuzzer[nState - STATE_ALARM][1];
 			pDY03->oBuzzerBit2 = pEquipData->bBuzzer[nState - STATE_ALARM][2];
 			pDY03->oBuzzerBit3 = pEquipData->bBuzzer[nState - STATE_ALARM][3];
-			pDY03->oBuzzerBit4 = pEquipData->bBuzzer[nState - STATE_ALARM][4];*/
+			pDY03->oBuzzerBit4 = pEquipData->bBuzzer[nState - STATE_ALARM][4];
 		
 #endif
 			// Buzzer Flicker

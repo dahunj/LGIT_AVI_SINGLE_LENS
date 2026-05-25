@@ -58,7 +58,7 @@ typedef struct tag_EQUIP_DATA {
 	double	dBtmPeriod;
 	double	dBtmVelocity;
 
-
+	int		nVisionDir;
 
 
 } EQUIP_DATA;

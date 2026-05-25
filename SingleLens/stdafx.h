@@ -87,7 +87,7 @@
 
 #define MAIN_VERSION	_T("V 0.0.0.3b")
 //
-//#define AJIN_BOARD_USE
+#define AJIN_BOARD_USE
 //#define LOT_BARCODE_USE
 
 
@@ -131,7 +131,7 @@ typedef struct
 	int		nLensMaxCnt;
 	
 	//new 
-	int		nLT[10];	 //LoopTime Set Value 
+	int		nLTime[10];	 //LoopTime Set Value 
 
 	int     nStatus;
 	int		nLanguage;

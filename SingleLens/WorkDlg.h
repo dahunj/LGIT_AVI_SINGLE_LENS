@@ -161,7 +161,7 @@ public:
 	
 	int		SearchMZElevInfo(int nNo);
 	int		SearchMZCVInfo();
-	void	TransferMZInfo(int nFrom, int nTo);
+	void	TransferMZInfo(int nFrom, int nTo, int nDir);
 		
 	int 	SearchZigInfo(int nMZNo);
 	int		SearchLensCntInfo(int nMZNo);

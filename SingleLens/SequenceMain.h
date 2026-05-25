@@ -143,11 +143,13 @@ public:
 	BOOL Check_TrayAllReturn();	
 	//////////////////////////////////////////////////////////////////////////
 	void Init_TopZig();
-	BOOL Select_TopScanPos(int &nTopPosX, int &nTopPosY);		
+	BOOL Select_TopScanPos(int &nTopPosX, int &nTopPosY, int nDir);
+
 	void Init_BtmZig();
-	BOOL Select_BtmScanPos(int &nBtmPosX, int &nBtmPosY);
+	BOOL Select_BtmScanPos(int &nBtmPosX, int &nBtmPosY, int nDir);
+
 	void Init_MarkZig();
-	BOOL Select_MarkScanPos(int &nMarkPosX, int &nMarkPosY);
+	BOOL Select_MarkScanPos(int &nMarkPosX, int &nMarkPosY, int nDir);
 
 	BOOL Check_InspectDone(const CString& sZigID,int nMZNo, int sSlotNo, int sLensNo, DWORD dwStart);
 	

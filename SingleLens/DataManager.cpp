@@ -47,6 +47,8 @@ void CDataManager::Reset_EquipData()
 	
 	m_EquipData.bResultTestUse = FALSE;
 	m_EquipData.nResultTestNg = 0;
+
+	m_EquipData.nVisionDir = eVDir::fixY;
 }
 
 void CDataManager::Reset_MoveData()
@@ -118,8 +120,8 @@ BOOL CDataManager::Read_EquipData()
 		m_EquipData.nDelayAdd[i] = INI.Get_Integer("DELAY_ADD", strIndex, 0);
 	}
 
-	m_EquipData.sPasswordOp = INI.Get_String("HIDDEN", "PASSWORD_ENGR", "");
-	m_EquipData.sPasswordEngr = INI.Get_String("HIDDEN", "PASSWORD_OP", "");
+	m_EquipData.sPasswordOp = INI.Get_String("HIDDEN", "PASSWORD_OP", "");
+	m_EquipData.sPasswordEngr = INI.Get_String("HIDDEN", "PASSWORD_ENGR", "");
 
 	// Gloval Data		
 	m_EquipData.nResultTestNg = INI.Get_Integer("RESULT_TEST", "RESULT_NG", 0);

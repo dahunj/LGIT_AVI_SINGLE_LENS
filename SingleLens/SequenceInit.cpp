@@ -587,12 +587,12 @@ BOOL CSequenceInit::Initial_TopInspector()
 		{
 			g_objAJinAXL.Set_EncoderType(AX_TOP_INSPECTOR_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_TOP_INSPECTOR_Z, 1);	// Abs
-			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(5000);
+			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		}
 		break;
 	case 2:
 		g_objAJinAXL.Home_Search(AX_TOP_INSPECTOR_Z);
-		m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(15000);
+		m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		break;
 	case 3:
 		if(g_objAJinAXL.Is_Home(AX_TOP_INSPECTOR_Z))
@@ -600,55 +600,55 @@ BOOL CSequenceInit::Initial_TopInspector()
 			g_objAJinAXL.Set_EncoderType(AX_TOP_INSPECTOR_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_TOP_INSPECTOR_Z, 1);	// Abs
 			g_objAJinAXL.Clear_Scan(eVision::TC);
-			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(5000);
+			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		}
 		break;
 	case 4:
 		if(!m_tiTopInspectorLoop.Waiting_Time(100)) break;
 		g_objCommon.Move_Position(AX_TOP_INSPECTOR_Z, eTopInspect_Z::Ready);
-		m_niTopInspectorCase = 10; m_tiTopInspectorLoop.Set_LoopTime(5000);
+		m_niTopInspectorCase = 10; m_tiTopInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		break;
 	case 10:
 		if(g_objCommon.Check_Position(AX_TOP_INSPECTOR_Z, eTopInspect_Z::Ready))
 		{
-			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(5000);
+			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		}
 		break;
 	case 11:
 		g_objAJinAXL.Home_Search(AX_TOP_INSPECTOR_Y);
-		m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(5000);
+		m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		break;
 	case 12:
 		if(g_objAJinAXL.Is_Home(AX_TOP_INSPECTOR_Y))
 		{			
-			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(5000);
+			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		}
 		break;
 	case 13:
 		g_objCommon.Move_Position(AX_TOP_INSPECTOR_Y, eTopInspect_Y::Ready);
-		m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(5000);
+		m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 	case 14:
 		if(g_objCommon.Check_Position(AX_TOP_INSPECTOR_Y, eTopInspect_Y::Ready))
 		{
-			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(5000);
+			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		}
 		break;
 	case 15:
 		g_objAJinAXL.Home_Search(AX_TOP_INSPECTOR_X);
-		m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(15000);
+		m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		break;
 	case 16:		
 		if(g_objAJinAXL.Is_Home(AX_TOP_INSPECTOR_X))
 		{			
 			g_objCommon.Move_Position(AX_TOP_INSPECTOR_X, eTopInspect_X::Ready);
-			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(5000);
+			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		}
 		break;
 	case 17:
 		if(g_objCommon.Check_Position(AX_TOP_INSPECTOR_X, eTopInspect_X::Ready))
 		{
 			g_objLogFile.Save_HandlerLog("[Initial Sequence] - Top Inspector Complete");
-			m_niTopInspectorCase = 90; m_tiTopInspectorLoop.Set_LoopTime(5000);
+			m_niTopInspectorCase = 90; m_tiTopInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		}		
 
 	case 90:	// Initial Complete
@@ -681,12 +681,12 @@ BOOL CSequenceInit::Initial_BtmInspector()
 		{
 			g_objAJinAXL.Set_EncoderType(AX_BTM_INSPECTOR_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_BTM_INSPECTOR_Z, 1);	// Abs
-			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(5000);
+			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		}
 		break;
 	case 2:
 		g_objAJinAXL.Home_Search(AX_BTM_INSPECTOR_Z);
-		m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(15000);
+		m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		break;
 	case 3:
 		if(g_objAJinAXL.Is_Home(AX_BTM_INSPECTOR_Z))
@@ -694,59 +694,59 @@ BOOL CSequenceInit::Initial_BtmInspector()
 			g_objAJinAXL.Set_EncoderType(AX_BTM_INSPECTOR_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_BTM_INSPECTOR_Z, 1);	// Abs
 			g_objAJinAXL.Clear_Scan(eVision::BC);
-			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(5000);
+			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		}
 		break;
 	case 4:
 		if(!m_tiBtmInspectorLoop.Waiting_Time(100)) break;
 		g_objCommon.Move_Position(AX_BTM_INSPECTOR_Z, eBtmInspect_Z::Ready);
-		m_niBtmInspectorCase = 10; m_tiBtmInspectorLoop.Set_LoopTime(5000);
+		m_niBtmInspectorCase = 10; m_tiBtmInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		break;
 	case 10:
 		if(g_objCommon.Check_Position(AX_BTM_INSPECTOR_Z, eBtmInspect_Z::Ready))
 		{
-			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(5000);
+			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		}
 		break;
 	case 11:
 		g_objAJinAXL.Home_Search(AX_BTM_INSPECTOR_Y);
-		m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(5000);
+		m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		break;
 	case 12:
 		if(g_objAJinAXL.Is_Home(AX_BTM_INSPECTOR_Y))
 		{			
-			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(5000);
+			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		}
 		break;
 	case 13:
 		g_objCommon.Move_Position(AX_BTM_INSPECTOR_Y, eBtmInspect_Y::Ready);
-		m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(5000);
+		m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 	case 14:
 		if(g_objCommon.Check_Position(AX_BTM_INSPECTOR_Y, eBtmInspect_Y::Ready))
 		{
-			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(5000);
+			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		}
 		break;
 	case 15:
 		g_objAJinAXL.Home_Search(AX_BTM_INSPECTOR_X);
-		m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(15000);
+		m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		break;
 	case 16:		// Tray Picker Slave Out 
 		if(g_objAJinAXL.Is_Home(AX_BTM_INSPECTOR_X))
 		{			
 			g_objCommon.Move_Position(AX_BTM_INSPECTOR_X, eBtmInspect_X::Ready);
-			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(5000);
+			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		}
 		break;
 	case 17:
 		if(g_objCommon.Check_Position(AX_BTM_INSPECTOR_X, eBtmInspect_X::Ready))
 		{
 			g_objLogFile.Save_HandlerLog("[Initial Sequence] - Btm Inspector Complete");
-			m_niBtmInspectorCase = 90; m_tiBtmInspectorLoop.Set_LoopTime(5000);
+			m_niBtmInspectorCase = 90; m_tiBtmInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		}		
 
 	case 90:	// Initial Complete
-		m_tiBtmInspectorLoop.Set_LoopTime(5000);
+		m_tiBtmInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		return TRUE;
 	}
 

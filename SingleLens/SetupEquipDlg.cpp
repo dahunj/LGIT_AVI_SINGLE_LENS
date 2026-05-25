@@ -403,8 +403,9 @@ void CSetupEquipDlg::Save_EquipData()
 	m_stcDoorLockTime.GetWindowText(strData);gData.nDoorLockTime = atoi(strData);
 	INI.Set_Integer("EQUIPMENT", "DOOR_LOCK_TIME", gData.nDoorLockTime);
 	
-	m_stcZigData[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("COAT_ZIG", "ARRAY_X", nData);pEquipData->nZigArrayX = nData;
-	m_stcZigData[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("COAT_ZIG", "ARRAY_Y", nData);pEquipData->nZigArrayY = nData;
+	m_stcZigData[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("COAT_ZIG", "ARRAY_X", nData);pEquipData->nZigArrayX = nData; gData.nLensCntX = pEquipData->nZigArrayX;
+	m_stcZigData[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("COAT_ZIG", "ARRAY_Y", nData);pEquipData->nZigArrayY = nData; gData.nLensCntY = pEquipData->nZigArrayY;
+	
 	m_stcZigData[2].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("COAT_ZIG", "PITCH_X", dData, "%0.2lf");pEquipData->dZigPitchX = dData;
 	m_stcZigData[3].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("COAT_ZIG", "PITCH_Y", dData, "%0.2lf");pEquipData->dZigPitchY = dData;
 	
@@ -446,6 +447,8 @@ void CSetupEquipDlg::Save_EquipData()
 	sPathSource += strModel;
 	sPathSource += _T("\\");
 	Save_ModelEquipData(sPathSource);
+
+	Cancel_EquipData();
 
 	g_objCommon.Backup_File(gsCurrentDir + "\\System", "EquipData");
 
@@ -491,14 +494,19 @@ void CSetupEquipDlg::Save_ModelEquipData(CString sPath)
 	pEquipData->bUseTopVision = m_chkTopVision.GetCheck();INI.Set_Bool("OPTION", "TOP_VISION", pEquipData->bUseTopVision);	 
 	pEquipData->bUseBtmVision = m_chkBtmVision.GetCheck();INI.Set_Bool("OPTION", "BTM_VISION", pEquipData->bUseBtmVision);
 	pEquipData->bUseMark = m_chkMarkUse.GetCheck(); INI.Set_Bool("OPTION", "MARK_USE", pEquipData->bUseMark);
-
-
-	m_stcDelayAdd[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "FEEDER_CLOSE", nData);
-	m_stcDelayAdd[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "FEEDER_OPEN", nData);
-	m_stcDelayAdd[2].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "TRAY_PICKER_CLOSE", nData);
-	m_stcDelayAdd[3].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "TRAY_PICKER_OPEN", nData);
-	m_stcDelayAdd[4].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "INDEX_ALIGN_IN", nData);
-	m_stcDelayAdd[5].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_TIME", "INDEX_ALIGN_OUT", nData);
+	
+	m_stcDelayAdd[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "FEEDER_CLOSE", nData);
+	m_stcDelayAdd[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "FEEDER_OPEN", nData);
+	m_stcDelayAdd[2].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "TRAY_PICKER_CLOSE", nData);
+	m_stcDelayAdd[3].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "TRAY_PICKER_OPEN", nData);
+	m_stcDelayAdd[4].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "INDEX_ALIGN_IN", nData);
+	m_stcDelayAdd[5].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "INDEX_ALIGN_OUT", nData);
+		
+	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) { strKey.Format("%d%d", i, j); INI.Set_Bool("TOWER", strKey, m_chkTower[i][j].GetCheck()); }
+	for (int i = 0; i < 5; i++) for (int j = 0; j < 6; j++) { strKey.Format("%d%d", i, j); INI.Set_Bool("BUZZER", strKey, m_chkBuzzer[i][j].GetCheck()); }
+	
+	m_stcPasswordOp.GetWindowText(strData); INI.Set_String("HIDDEN", "PASSWORD_OP", strData); pEquipData->sPasswordOp = strData;
+	m_edtPasswordEngr.GetWindowText(strData); INI.Set_String("HIDDEN", "PASSWORD_ENGR", strData); pEquipData->sPasswordEngr = strData;
 
 
 	g_objLogFile.Save_HandlerLog("[Setup Equip] Model Save");
@@ -509,6 +517,7 @@ void CSetupEquipDlg::Cancel_EquipData()
 {
 	g_objDataManager.Read_EquipData();
 	g_objDataManager.Read_MoveData();
+
 	
 	Display_EquipData();
 

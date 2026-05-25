@@ -169,10 +169,13 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 	if(nV == eVision::TC) //Tc
 	{
 		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_TOP_INSPECT);
-		if (nCase != 5) 
+		DWORD dwTick = GetTickCount();
+		while (nCase != 5) 
 		{ 
+			if(GetTickCount() - dwTick > 1500) break;
+			else if(nCase == 5) break;
 			//Exception_Log("Scan Complete", sGbn, nCase); 
-			return;
+			//return;
 		}
 				
 		gData.bScanDone[eVision::TC] = TRUE;
@@ -183,10 +186,13 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 	else if(nV == eVision::BC) // Bc
 	{
 		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_BTM_INSPECT);
-		if (nCase != 5) 
+		DWORD dwTick = GetTickCount();
+		while (nCase != 5) 
 		{ 
-			//Exception_Log("Scan Complete", sGbn, nCase);
-			return; 
+			if(GetTickCount() - dwTick > 1500) break;
+			else if(nCase == 5) break;
+			//Exception_Log("Scan Complete", sGbn, nCase); 
+			//return;
 		}
 				
 		gData.bScanDone[eVision::BC] = TRUE;

@@ -330,6 +330,8 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 			m_rdoWorkStart.Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
 			m_rdoWorkStop.Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
 
+			g_objCommon.Save_MotionPos();
+
 			pMainDlg->Enable_ModeButton(TRUE);
 			g_objCommon.Locking_MainDoor(FALSE);
 
@@ -1229,6 +1231,7 @@ HBRUSH CWorkDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 int CWorkDlg::SearchMZElevInfo(int nNo)
 {
 	CString sMZInfo;
+
 	m_stcMZID[nNo].GetWindowText(sMZInfo);
 	if(sMZInfo != "")
 	{
@@ -1252,7 +1255,7 @@ int CWorkDlg::SearchMZCVInfo()
 	return -1;
 }
 
-void CWorkDlg::TransferMZInfo(int nFrom, int nTo)
+void CWorkDlg::TransferMZInfo(int nFrom, int nTo, int nDir)
 {
 	CString sMZIDFrom, sMZIDTo, sZigIDFrom, sZigIDTo, sLensCntFrom, sLensCntTo;
 	
@@ -1271,8 +1274,6 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo)
 		}
 		return ;
 	}
-
-
 	m_stcMZID[nFrom].GetWindowText(sMZIDFrom);
 	sMZIDTo = sMZIDFrom;
 	m_stcMZID[nTo].SetWindowText(sMZIDTo);
@@ -1310,51 +1311,103 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo)
 		{
 			gData.nTNoPick[eMZ::Load] = 1;
 			gData.ZigMap[eMZ::Load][i] = FALSE;
-
-			for(int j = 0; j < gData.nLensCntX; j++)
+			
+			if(nDir == eVDir::fixY)
 			{
-				for(int k = 0; k < gData.nLensCntY; k++)
+				for(int j = 0; j < gData.nLensCntY; j++)
 				{
-					nCnt++;
-					if(nCnt <= gData.nLensUseCnt[nTo][i])
+					for(int k = 0; k < gData.nLensCntX; k++)
 					{
-						gData.ZigMap[eMZ::Load][i] = TRUE; // Zig 존재함 
+						nCnt++;
+						if(nCnt <= gData.nLensUseCnt[nTo][i])
+						{
+							gData.ZigMap[eMZ::Load][i] = TRUE; // Zig 존재함 
 
-						gData.InfoMZLoad[i][j][k] = (int)eLensState::Init;
-						gData.LensMap[eMZ::Load][i][j][k] = eLensState::Init;
-					}
-					else
-					{
-						gData.InfoMZLoad[i][j][k] = eLensState::None;
-						gData.LensMap[eMZ::Load][i][j][k] = eLensState::None;
-					}
-				}			
+							gData.InfoMZLoad[i][k][j] = (int)eLensState::Init;
+							gData.LensMap[eMZ::Load][i][k][j] = eLensState::Init;
+						}
+						else
+						{
+							gData.InfoMZLoad[i][k][j] = eLensState::None;
+							gData.LensMap[eMZ::Load][i][k][j] = eLensState::None;
+						}
+					}			
+				}
 			}
+			else if(nDir == eVDir::fixX)
+			{
+				for(int j = 0; j < gData.nLensCntX; j++)
+				{
+					for(int k = 0; k < gData.nLensCntY; k++)
+					{
+						nCnt++;
+						if(nCnt <= gData.nLensUseCnt[nTo][i])
+						{
+							gData.ZigMap[eMZ::Load][i] = TRUE; // Zig 존재함 
+
+							gData.InfoMZLoad[i][j][k] = (int)eLensState::Init;
+							gData.LensMap[eMZ::Load][i][j][k] = eLensState::Init;
+						}
+						else
+						{
+							gData.InfoMZLoad[i][j][k] = eLensState::None;
+							gData.LensMap[eMZ::Load][i][j][k] = eLensState::None;
+						}
+					}			
+				}
+			}			
 		}
 		else if(nTo == eMZ::Ready)
 		{
 			gData.nTNoPick[eMZ::Ready] = 1;
 			gData.ZigMap[eMZ::Ready][i] = FALSE;
 
-			for(int j = 0; j < gData.nLensCntX; j++)
+			if(nDir == eVDir::fixY)
 			{
-				for(int k = 0; k < gData.nLensCntY; k++)
+				for(int j = 0; j < gData.nLensCntY; j++)
 				{
-					nCnt++;
-					if(nCnt <= gData.nLensUseCnt[nTo][i])
+					for(int k = 0; k < gData.nLensCntX; k++)
 					{
-						gData.ZigMap[eMZ::Ready][i] = TRUE; // Zig 존재함 
+						nCnt++;
+						if(nCnt <= gData.nLensUseCnt[nTo][i])
+						{
+							gData.ZigMap[eMZ::Ready][i] = TRUE; // Zig 존재함 
 
-						gData.InfoMZReady[i][j][k] = (int)eLensState::Init;
-						gData.LensMap[eMZ::Ready][i][j][k] = eLensState::Init;
-					}
-					else
-					{
-						gData.InfoMZReady[i][j][k] = eLensState::None;
-						gData.LensMap[eMZ::Ready][i][j][k] = eLensState::None;
-					}
-				}			
+							gData.InfoMZLoad[i][k][j] = (int)eLensState::Init;
+							gData.LensMap[eMZ::Ready][i][k][j] = eLensState::Init;
+						}
+						else
+						{
+							gData.InfoMZLoad[i][k][j] = eLensState::None;
+							gData.LensMap[eMZ::Ready][i][k][j] = eLensState::None;
+						}
+					}			
+				}
 			}
+			else if(nDir == eVDir::fixX)
+			{
+				for(int j = 0; j < gData.nLensCntX; j++)
+				{
+					for(int k = 0; k < gData.nLensCntY; k++)
+					{
+						nCnt++;
+						if(nCnt <= gData.nLensUseCnt[nTo][i])
+						{
+							gData.ZigMap[eMZ::Ready][i] = TRUE; // Zig 존재함 
+
+							gData.InfoMZLoad[i][j][k] = (int)eLensState::Init;
+							gData.LensMap[eMZ::Ready][i][j][k] = eLensState::Init;
+						}
+						else
+						{
+							gData.InfoMZLoad[i][j][k] = eLensState::None;
+							gData.LensMap[eMZ::Ready][i][j][k] = eLensState::None;
+						}
+					}			
+				}
+			}
+
+			
 		}
 		else if(nTo == eMZ::Load && nFrom == eMZ::Ready)
 		{

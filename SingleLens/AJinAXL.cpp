@@ -121,6 +121,14 @@ BOOL CAJinAXL::Initialize()
 	if (AxcTriggerSetBlockLowerPos(1, 0.0) != AXT_RT_SUCCESS) return FALSE;
 	if (AxcTriggerSetBlockUpperPos(1, 1000.0) != AXT_RT_SUCCESS) return FALSE;
 #endif
+	
+	//Init Trigger 
+	Start_Scan(eVision::TC, AX_TOP_INSPECTOR_Z, 0, 0, 500, 10, 10, 1);
+	Start_Scan(eVision::BC, AX_BTM_INSPECTOR_Z, 0, 0, 500, 10, 10, 1);
+
+	m_DY02.oMainIndexZigAlignIn = TRUE;
+	m_DY02.oMainIndexZigAlignOut = FALSE;
+	Write_Output(2);
 
 	m_bThreadAJin = TRUE;
 	m_pThreadAJin = AfxBeginThread(Thread_AJin, NULL);
