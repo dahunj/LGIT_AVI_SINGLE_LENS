@@ -88,6 +88,7 @@ public:
 	void Set_Home(int nAxis);
 	void Move_Absolute(int nAxis, double dPos);
 	void Move_AbsSlow(int nAxis, double dPos, double dRatio);	// 2023.07.25
+	void Move_AbsVel(int nAxis, double dPos, double dRatio, double dAcc);	
 	void Move_Relative(int nAxis, double dPos);
 	void Jog_Positive(int nAxis);
 	void Jog_Negative(int nAxis);

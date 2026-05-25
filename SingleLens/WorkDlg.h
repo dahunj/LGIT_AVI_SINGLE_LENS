@@ -17,6 +17,7 @@
 #define UM_INDEX_TACK			WM_USER+8
 #define UM_SHOW_MSG				WM_USER+9
 #define UM_UPDATE_LOADCELL		WM_USER+10
+#define UM_UPDATE_VISION_INFO		WM_USER+11
 
 // CWorkDlg 대화 상자입니다.
 
@@ -40,6 +41,11 @@ public:
 
 	CGridCS			m_grdLoadMZ;
 	CGridCS			m_grdRdyMZ;
+
+	CGridCS			m_grdTopVision;
+	CGridCS			m_grdBtmVision;
+	CGridCS			m_grdMarking;
+
 
 		//old 
 
@@ -106,6 +112,7 @@ protected:
 
 	afx_msg LRESULT OnUpdateModel(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUpdateMZInfo(WPARAM nTray, LPARAM lParam);
+	afx_msg LRESULT OnUpdateVisionInfo(WPARAM nVision, LPARAM lParam);
 	afx_msg LRESULT OnUpdateBarcode(WPARAM wParam, LPARAM lParam);
 	
 	afx_msg LRESULT OnResetCycleStop(WPARAM wParam, LPARAM lParam);

@@ -196,6 +196,7 @@ struct eVision
 	{
 		TC = 0,
 		BC = 1,
+		MARKING = 2,
 	};
 
 };

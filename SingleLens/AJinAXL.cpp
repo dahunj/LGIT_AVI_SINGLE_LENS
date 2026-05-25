@@ -319,12 +319,10 @@ void CAJinAXL::Move_Absolute(int nAxis, double dPos)
 #endif
 }
 
-void CAJinAXL::Move_AbsSlow(int nAxis, double dPos, double dRatio)
+void CAJinAXL::Move_AbsVel(int nAxis, double dPos, double dVel ,double dAcc)
 {
 #ifdef AJIN_BOARD_USE
 	AxmMotSetAbsRelMode(nAxis, POS_ABS_MODE);
-	double	dVel = m_Param[nAxis].dSpeedM * dRatio;
-	double	dAcc = m_Param[nAxis].dAccel * dRatio;
 	AxmMoveStartPos(nAxis, dPos, dVel, dAcc, dAcc);
 	m_Status[nAxis].bInP = FALSE; m_Status[nAxis].bRun = TRUE;
 #else
@@ -490,7 +488,7 @@ void CAJinAXL::Start_Scan(int nCh, int nAxis, double dPos, double dTrigS, double
 	AxcTriggerSetTime(nCh, dWidth);
 	AxcTriggerSetEnable(nCh, ENABLE);
 
-	Move_Absolute(nAxis, dPos);
+	Move_AbsVel(nAxis, dPos, dVel, 500);
 #endif
 }
 

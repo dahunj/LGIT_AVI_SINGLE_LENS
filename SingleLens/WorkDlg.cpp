@@ -60,6 +60,10 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Control(pDX, IDC_GRD_LOAD_MZ, m_grdLoadMZ);
 	DDX_Control(pDX, IDC_GRD_UNLOAD_MZ, m_grdRdyMZ);
+
+	DDX_Control(pDX, IDC_GRD_TOP_VISION, m_grdTopVision);
+	DDX_Control(pDX, IDC_GRD_BTM_VISION, m_grdBtmVision);
+	DDX_Control(pDX, IDC_GRD_MARKING, m_grdMarking);
 	//for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_PIC_TRAY_BACK_0 + i, m_picTrayBack[i]);
 
 	for (int i = 0; i < 7; i++) DDX_Control(pDX, IDC_STC_TRAY_NO_0 + i, m_stcTrayNo[i]);
@@ -97,6 +101,7 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 
 	ON_MESSAGE(UM_UPDATE_MODEL, &CWorkDlg::OnUpdateModel)
 	ON_MESSAGE(UM_UPDATE_MZ_INFO, &CWorkDlg::OnUpdateMZInfo)
+	ON_MESSAGE(UM_UPDATE_VISION_INFO, &CWorkDlg::OnUpdateVisionInfo)
 	ON_MESSAGE(UM_UPDATE_BARCODE, &CWorkDlg::OnUpdateBarcode)
 	
 	ON_MESSAGE(UM_RESET_CYCLE_STOP, &CWorkDlg::OnResetCycleStop)
@@ -133,6 +138,11 @@ void CWorkDlg::Initial_Controls()
 	
 	Initial_Grid(&m_grdLoadMZ, SLOT_NO_MAX, 1);
 	Initial_Grid(&m_grdRdyMZ, SLOT_NO_MAX, 1);
+
+	Initial_Grid(&m_grdTopVision, gData.nLensCntY, gData.nLensCntX);
+	Initial_Grid(&m_grdBtmVision, gData.nLensCntY, gData.nLensCntX);
+	Initial_Grid(&m_grdMarking, gData.nLensCntY, gData.nLensCntX);
+
 
 	
 	for (int i = 0; i < 7; i++) m_stcTrayNo[i].Init_Ctrl("¹ÙÅÁ", 12, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));
@@ -1014,8 +1024,55 @@ LRESULT CWorkDlg::OnUpdateMZInfo(WPARAM nTray, LPARAM lParam)
 		}
 		//g_dlgOperator.Update_TrayInfo(nTray);
 	}
+	
+	return 0;
+}
 
 
+
+LRESULT CWorkDlg::OnUpdateVisionInfo(WPARAM nVision, LPARAM lParam)
+{
+	if (nVision == eVision::TC)
+	{	
+		for (int i = 0; i < gData.nLensCntY; i++)
+		{
+			for (int j = 0; j < gData.nLensCntX; j++) 
+			{
+				if		(gData.InfoMainIndex[eMainIndex::Top][j][i] == eLensState::TopDone ) m_grdTopVision.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0x00));	// Reserve
+				else if (gData.InfoMainIndex[eMainIndex::Top][j][i] == eLensState::TopReady) m_grdTopVision.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
+				else				m_grdTopVision.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
+
+			}
+		}
+	}
+
+	if (nVision == eVision::BC)
+	{		
+		for (int i = 0; i < gData.nLensCntY; i++)
+		{
+			for (int j = 0; j < gData.nLensCntX; j++) 
+			{
+				if		(gData.InfoMainIndex[eMainIndex::Btm][j][i] == eLensState::BtmDone ) m_grdBtmVision.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0x00));	// Reserve
+				else if (gData.InfoMainIndex[eMainIndex::Btm][j][i] == eLensState::BtmReady) m_grdBtmVision.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
+				else				m_grdBtmVision.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
+
+			}
+		}
+	}
+
+	if (nVision == eVision::MARKING)
+	{		
+		for (int i = 0; i < gData.nLensCntY; i++)
+		{
+			for (int j = 0; j < gData.nLensCntX; j++) 
+			{
+				if		(gData.nInspectInfo[gData.nMZNoMainIndex[eMainIndex::Mark]][j][i] == 2 ) m_grdMarking.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0x00));	// Reserve
+				else if (gData.nInspectInfo[gData.nMZNoMainIndex[eMainIndex::Mark]][j][i] == 0) m_grdMarking.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
+				else				m_grdMarking.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
+
+			}
+		}
+	}
 
 	return 0;
 }
