@@ -110,8 +110,7 @@ private:
 	BOOL Run_Simulation();
 	
 	void Beep_Post(int nState, int nTime);
-
-
+	
 public:
 	void Job_LotStart(int nMZNo);
 	void Job_LotEnd(int nMZNo);
