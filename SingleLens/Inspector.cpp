@@ -192,7 +192,7 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 		g_objLogFile.Save_HandlerLog("Scan really Completed");
 		gData.bScanDone[eVision::TC] = TRUE;
 		gData.InfoMainIndex[eMainIndex::Top][nXPos][nYPos] = eLensState::TopDone;
-		//g_objSequenceMain.Set_MainRunCase(AUTO_TOP_INSPECT, 10);
+		g_objSequenceMain.Set_MainRunCase(AUTO_TOP_INSPECT, 10);
 
 	}
 	else if(nV == eVision::BC) // Bc
@@ -209,7 +209,7 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 				
 		gData.bScanDone[eVision::BC] = TRUE;
 		gData.InfoMainIndex[eMainIndex::Btm][nXPos][nYPos] = eLensState::BtmDone;
-		//g_objSequenceMain.Set_MainRunCase(AUTO_BTM_INSPECT, 10);
+		g_objSequenceMain.Set_MainRunCase(AUTO_BTM_INSPECT, 10);
 	}
 }
 

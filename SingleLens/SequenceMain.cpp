@@ -1980,8 +1980,8 @@ BOOL CSequenceMain::TopInspectorRun()
 		{
 			g_objLogFile.Save_HandlerLog("Stop Scan");
 			g_objAJinAXL.Stop_Scan(AX_TOP_INSPECTOR_Z);
-			gData.InfoMainIndex[eMainIndex::Top][nTopXPos-1][nTopYPos-1] = eLensState::TopDone;	//Scan Done
-			m_nTopInspectCase = 10;//eTopBr::VisionWait;
+			//gData.InfoMainIndex[eMainIndex::Top][nTopXPos-1][nTopYPos-1] = eLensState::TopDone;	//Scan Done
+			m_nTopInspectCase = eTopBr::VisionWait;//
 			
 			m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);		
 			
@@ -2181,8 +2181,8 @@ BOOL CSequenceMain::BtmInspectorRun()
 			g_objLogFile.Save_HandlerLog("Stop Scan");
 			g_objAJinAXL.Stop_Scan(AX_BTM_INSPECTOR_Z);
 
-			gData.InfoMainIndex[eMainIndex::Btm][nBtmXPos-1][nBtmYPos-1] = eLensState::BtmDone;	//Scan Done
-			m_nBtmInspectCase = 10;//eBtmBr::VisionWait; 
+			//gData.InfoMainIndex[eMainIndex::Btm][nBtmXPos-1][nBtmYPos-1] = eLensState::BtmDone;	//Scan Done
+			m_nBtmInspectCase = eBtmBr::VisionWait; 
 			m_nBtmInspectLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);		
 
 		}

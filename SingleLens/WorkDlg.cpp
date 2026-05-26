@@ -1121,57 +1121,7 @@ LRESULT CWorkDlg::OnUpdateUph(WPARAM wParam, LPARAM lParam)
 
 	dDispTakt[0] = gUph.dTaktTime;		// 현재 Lot
 
-	int nCount = gUph.nLotCount[nHour];
-	for (int i = 0; i < nCount; i++) dDispTakt[1] += gUph.dTakt[nHour][i];
-	dDispTakt[1] /= nCount;				// 1시간
-
-	int nTotalCount = 0;
-	if (nHour >= 7 && nHour < 19) {
-		for (int i = 7; i < 19; i++) {
-			nCount = gUph.nLotCount[i];
-			for (int j = 0; j < nCount; j++) dDispTakt[2] += gUph.dTakt[i][j];
-			nTotalCount += nCount;
-		}
-	} else {
-		for (int i = 0; i < 7; i++) {
-			nCount = gUph.nLotCount[i];
-			for (int j = 0; j < nCount; j++) dDispTakt[2] += gUph.dTakt[i][j];
-			nTotalCount += nCount;
-		}
-
-		for (int i = 19; i < 24; i++) {
-			nCount = gUph.nLotCount[i];
-			for (int j = 0; j < nCount; j++) dDispTakt[2] += gUph.dTakt[i][j];
-			nTotalCount += nCount;
-		}
-	}
-	dDispTakt[2] /= nTotalCount;		// 12시간
-
-	nTotalCount = 0;
-	for (int i = 0; i < 24; i++) {
-		nCount = gUph.nLotCount[i];
-		for (int j = 0; j < nCount; j++) dDispTakt[3] += gUph.dTakt[i][j];
-		nTotalCount += nCount;
-	}
-	dDispTakt[3] /= nTotalCount;		// 1일
-
-	// Takt & UPH
-	for (int i = 0; i < 4; i++) {
-		if (dDispTakt[i] == 0) strText = "";
-		else strText.Format("%0.5f", dDispTakt[i]);
-		m_stcTakt[i].SetWindowText(strText);
-
-		if (dDispTakt[i] == 0) strText = "";
-		else strText.Format("%d", int(3600 / dDispTakt[i]));
-		m_stcUph[i].SetWindowText(strText);
-	}
-
-	//생산량
-	for (int i = 0; i < 2; i++) {
-		if (gUph.nCmCount[i] == 0) strText = "";
-		else strText.Format("%d", gUph.nCmCount[i]);
-		m_stcDay[i].SetWindowText(strText);
-	}
+	
 
 	return 0;
 }

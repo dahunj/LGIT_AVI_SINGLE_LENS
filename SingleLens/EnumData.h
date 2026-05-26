@@ -210,3 +210,13 @@ struct eVDir
 		fixY = 1,
 	};
 };
+
+
+struct TimeLine
+{
+	enum Name
+	{
+		eDay = 0,
+		eNight = 1,
+	};
+};

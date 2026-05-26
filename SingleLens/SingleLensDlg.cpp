@@ -855,19 +855,7 @@ void CSingleLensDlg::Display_DateTime()
 	m_stcMainTower[1].Set_Color(COLOR_DEFAULT, crTowerY);
 	m_stcMainTower[2].Set_Color(COLOR_DEFAULT, crTowerG);
 
-	static int nUphClear = 0;
-	if (datetime.GetHour() == 7) {	// Å¬¸®¾î
-		if (nUphClear == 1) return;
-		nUphClear = 1;
-		for (int i = 0; i < 24; i++) gUph.nLotCount[i] = 0;
-		for (int i = 0; i < 2; i++) gUph.nCmCount[i] = 0;
-		Save_EquipRunTime();
-		Clear_EquipRunTime();
-	} else nUphClear = 0;
-
-	if (gDoorLock.nWriteHH != datetime.GetHour() && gData.sComName.GetLength() > 0) {
-		g_objLogFile.Save_Interlock(1);
-	}
+	
 }
 
 void CSingleLensDlg::Exit_System(int nExitNo)
@@ -910,10 +898,7 @@ void CSingleLensDlg::Exit_System(int nExitNo)
 
 void CSingleLensDlg::Global_Initial()
 {
-	gUph.dTaktTime = 0.0;
-	for (int i = 0; i < 24; i++) for (int j = 0; j < 50; j++) gUph.dTakt[i][j] = 0.0;
-	for (int i = 0; i < 24; i++) gUph.nLotCount[i] = 0;
-	for (int i = 0; i < 2; i++) gUph.nCmCount[i] = 0;
+
 }
 
 void CSingleLensDlg::Set_EquipRunStart()
