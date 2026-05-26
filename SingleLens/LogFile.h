@@ -35,10 +35,15 @@ public:
 	
 	void Save_MCCLog(const CString& sLog);
 
+	
+	
+	void Save_JobListExcel(CString sLog);	
+
+	// Log «•¡ÿ»≠
+	void Save_StdMotionLog(CString sType, int nZone, int nCase, int nValue, CString sZone, CString sMsg);
+	void Save_EfficiencyLog(int nZone, CString sStatus, int nCode, CString sNote);
 	void Get_ZoneMsg(int nZone, int nCase, CString &sZone, CString &sMsg);
 
-
-	void Save_JobListExcel(CString sLog);		
 };
 
 extern CLogFile g_objLogFile;

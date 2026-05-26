@@ -8,7 +8,6 @@
 #include "LogFile.h"
 #include "Common.h"
 #include "SequenceMain.h"
-#include "MESInterface.h"
 #include "WorkDlg.h"
 
 CSequenceInit g_objSequenceInit;

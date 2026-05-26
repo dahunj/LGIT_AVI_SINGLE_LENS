@@ -209,7 +209,7 @@ void CManualBtmDlg::OnBtnBtmInspectZClick(UINT nID)
 	if(nIndex == eBtmInspect_Z::ScanStart)
 	{
 		double dStart = pEquipData->dTopStart;
-		g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_Z, dStart-5);		
+		g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_Z, dStart - (pEquipData->dBtmPeriod/4));		
 	}
 	if(nIndex == eBtmInspect_Z::ScanEnd)
 	{
@@ -382,12 +382,11 @@ BOOL CManualBtmDlg::BtmScan_Run()
 		if (g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Z)) 
 		{
 			double dPeriod = pEquipData->dBtmPeriod;	// 33mm
-			double dWidth = 10.0;						// 10mm (고정)
 			double dTrigS = pEquipData->dBtmStart;				// Trigger Start
-			double dTrigE = dTrigS + dPeriod * pEquipData->dBtmCount + dWidth + 1.0;	// Trigger End
-			dTopZ = dTrigE + 5.0;								// Motion End (가감속)
+			double dTrigE = dTrigS + dPeriod * pEquipData->dBtmCount;	// Trigger End
+			dTopZ = dTrigE + (dPeriod/4);								// Motion End (가감속)
 			double dVelocity = pEquipData->dBtmVelocity;
-			g_objAJinAXL.Start_Scan(eVision::BC, AX_BTM_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dWidth, dVelocity);
+			g_objAJinAXL.Start_Scan(eVision::BC, AX_BTM_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
 			m_nScanCase++;
 		}
 		break;

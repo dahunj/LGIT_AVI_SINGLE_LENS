@@ -8,7 +8,6 @@
 #include "LogFile.h"
 #include "Common.h"
 
-#include "MESInterface.h"
 #include "SequenceInit.h"
 #include "SequenceMain.h"
 
@@ -146,13 +145,13 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		strErrMsg = INI.Get_String("ERROR", strErrNo, "");
 
 		CString strErrPick = "";		
-	
-// 		if (m_nErrNo == 3606 || m_nErrNo == 3706 || m_nErrNo == 6220) m_btnErrToManual.SetWindowText("Skip");
-// 		else m_btnErrToManual.SetWindowText("To Manual");
-		
-		if (m_nErrNo == 9012 || m_nErrNo == 9022) strMes.Format("==> Reason[%s] Text[%s]..", g_objMES.m_sReasonCode, g_objMES.m_sReasonText);
+			
+		if (m_nErrNo > 10 && m_nErrNo < 20) g_objSequenceInit.Set_InitComplete(FALSE);	// 3,4,5,6
 
-		if (m_nErrNo > 2 && m_nErrNo < 7) g_objSequenceInit.Set_InitComplete(FALSE);	// 3,4,5,6
+
+		int nZoneNo = (m_nErrNo - 3000) / 100;
+		if (nZoneNo >= 0 && nZoneNo <= 30) g_objLogFile.Save_EfficiencyLog(nZoneNo, "Down", m_nErrNo, m_strErrMsg);
+
 
 		m_strErrMsg = strErrMsg + strErrPick + strMes + m_strErrSubMsg;
 
@@ -194,9 +193,14 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		if (g_objSequenceInit.Get_InitComplete()) pMainDlg->Set_CurrentState(STATE_STOP);
 		else pMainDlg->Set_CurrentState(STATE_NONE);
 
+		pMainDlg->Set_LotErrorLog("RESET", 905, "Error Reset");
+
+		int nZoneNo = (m_nErrNo - 3000) / 100;
+		if (nZoneNo >= 0 && nZoneNo <= 30) g_objLogFile.Save_EfficiencyLog(nZoneNo, "Reset", 905, "Error Reset");
+
 		g_objLogFile.Save_HandlerLog("[Error Mode] Close Error");
 
-		pMainDlg->Set_LotErrorLog("RESET", 905, "Error Reset");
+		
 	}
 }
 

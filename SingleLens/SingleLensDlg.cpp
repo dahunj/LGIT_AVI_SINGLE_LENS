@@ -25,7 +25,7 @@
 
 #include "Inspector.h"
 #include "BarcodeLot.h"
-#include "MESInterface.h"
+
 
 
 #include "SequenceInit.h"
@@ -289,7 +289,7 @@ void CSingleLensDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	g_objInspector.Initialize();
 	
 	gData.sOperID = "";
-	g_objMES.Initialize(pEquipData->bUseMES);
+	
 		
 	if (!g_objBarcodeLot.Initialize()) { Exit_System(EXIT_SYSTEM_BARCODE); return; }
 
@@ -331,12 +331,6 @@ void CSingleLensDlg::OnTimer(UINT_PTR nIDEvent)
 		Set_BuzzerFlicker(TRUE);
 		break;
 	
-	case TIMER_NG_LAMP_FLKR:
-		
-		break;
-	case TIMER_GOOD_LAMP_FLKR:
-		
-		break;
 	case TIMER_DOOR_LOCK:
 		Set_DoorLock();
 		break;
@@ -635,14 +629,12 @@ void CSingleLensDlg::Set_CurrentState(int nState)
 	case STATE_ALARM:
 	case STATE_ERROR:
 	case STATE_LOTEND:
-	case STATE_SHIPTRAY:
-	case STATE_CAPTRAY:
 		pDY03->oStartLamp1 = pDY03->oStartLamp2 = FALSE;
 		pDY03->oStopLamp1  = pDY03->oStopLamp2 = FALSE;
 		pDY03->oResetLamp1 = pDY03->oResetLamp2 = TRUE;
 		break;
 	}
-	g_objAJinAXL.Write_Output(12);
+	g_objAJinAXL.Write_Output(3);
 	Set_LotStateTime();
 	// Tower
 	m_bTowerOn = TRUE;
@@ -655,7 +647,7 @@ void CSingleLensDlg::Set_CurrentState(int nState)
 
 	// Buzzer
 	if (nState == STATE_ALARM || nState == STATE_ERROR ||
-		nState == STATE_LOTEND || nState == STATE_CAPTRAY || nState == STATE_SHIPTRAY) {
+		nState == STATE_LOTEND ) {
 			m_bBuzzerOn = TRUE;
 #ifndef DRY_RUN_TEST	// 시끄러워서 막음
 			EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
@@ -670,15 +662,15 @@ void CSingleLensDlg::Set_CurrentState(int nState)
 			// Buzzer Flicker
 			if (pEquipData->bBuzzer[nState - STATE_ALARM][5]) SetTimer(TIMER_BUZZER_FLKR, 500, NULL);
 	}
-	g_objAJinAXL.Write_Output(12);
+	g_objAJinAXL.Write_Output(3);
 
 	// Load/Unload Lamp
 	if (nState == STATE_RUN) {
-		SetTimer(TIMER_LOAD1_LAMP_FLKR, 500, NULL);
-		SetTimer(TIMER_LOAD2_LAMP_FLKR, 500, NULL);
-		SetTimer(TIMER_NG_LAMP_FLKR, 500, NULL);
-		SetTimer(TIMER_GOOD_LAMP_FLKR, 500, NULL);
-		SetTimer(TIMER_EMPTY_LAMP_FLKR, 500, NULL);
+		SetTimer(TIMER_LOAD_OPEN_FLKR, 500, NULL);
+		SetTimer(TIMER_LOAD_RUN_FLKR, 500, NULL);
+		SetTimer(TIMER_UNLOAD_OPEN_FLKR, 500, NULL);
+		SetTimer(TIMER_UNLOAD_RUN_FLKR, 500, NULL);
+		
 	}
 
 	theApp.Set_MainState(nState);
@@ -716,12 +708,52 @@ void CSingleLensDlg::Set_InsideLight()
 
 void CSingleLensDlg::Set_TowerFlicker(BOOL bEnable)
 {
-	
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
+
+	if (m_bTowerOn || !bEnable) {
+		m_bTowerOn = FALSE;
+		pDY03->oTowerGreen = FALSE;
+		pDY03->oTowerYellow = FALSE;
+		pDY03->oTowerRed = FALSE;
+		if (!bEnable) KillTimer(TIMER_TOWER_FLKR);
+
+	} else {
+		m_bTowerOn = TRUE;
+		int nState = theApp.Get_MainState();
+		pDY03->oTowerGreen = pEquipData->bTower[nState][0];
+		pDY03->oTowerYellow = pEquipData->bTower[nState][1];
+		pDY03->oTowerRed = pEquipData->bTower[nState][2];
+	}
+	g_objAJinAXL.Write_Output(3);
 }
 
 void CSingleLensDlg::Set_BuzzerFlicker(BOOL bEnable)
 {
-	
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
+
+	if (m_bBuzzerOn || !bEnable) {
+		m_bBuzzerOn = FALSE;
+		pDY03->oBuzzerBit0 = FALSE;
+		pDY03->oBuzzerBit1 = FALSE;
+		pDY03->oBuzzerBit2 = FALSE;
+		pDY03->oBuzzerBit3 = FALSE;
+		pDY03->oBuzzerBit4 = FALSE;
+		if (!bEnable) KillTimer(TIMER_BUZZER_FLKR);
+
+	} else {
+		m_bBuzzerOn = TRUE;
+		//if (!gData.bDryRunTest) {	// 시끄러워서 막음
+			int nState = theApp.Get_MainState();
+			pDY03->oBuzzerBit0 = pEquipData->bBuzzer[nState-STATE_ALARM][0];
+			pDY03->oBuzzerBit1 = pEquipData->bBuzzer[nState-STATE_ALARM][1];
+			pDY03->oBuzzerBit2 = pEquipData->bBuzzer[nState-STATE_ALARM][2];
+			pDY03->oBuzzerBit3 = pEquipData->bBuzzer[nState-STATE_ALARM][3];
+			pDY03->oBuzzerBit4 = pEquipData->bBuzzer[nState-STATE_ALARM][4];
+		//}
+	}
+	g_objAJinAXL.Write_Output(12);
 }
 
 void CSingleLensDlg::Set_LampFlicker_LdOpen(BOOL bEnable)
@@ -848,11 +880,10 @@ void CSingleLensDlg::Exit_System(int nExitNo)
 	KillTimer(TIMER_TOWER_FLKR);
 	KillTimer(TIMER_DATE_TIME);
 
-	KillTimer(TIMER_LOAD1_LAMP_FLKR);
-	KillTimer(TIMER_LOAD2_LAMP_FLKR);
-	KillTimer(TIMER_NG_LAMP_FLKR);
-	KillTimer(TIMER_GOOD_LAMP_FLKR);
-	KillTimer(TIMER_EMPTY_LAMP_FLKR);
+	KillTimer(TIMER_LOAD_OPEN_FLKR);
+	KillTimer(TIMER_LOAD_RUN_FLKR);
+	KillTimer(TIMER_UNLOAD_OPEN_FLKR);
+	KillTimer(TIMER_UNLOAD_RUN_FLKR);
 	KillTimer(TIMER_DOOR_LOCK);
 		
 	g_objLogFile.Save_HandlerLog("[Main Dialog] Program Exit");

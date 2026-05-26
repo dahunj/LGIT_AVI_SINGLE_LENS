@@ -6,17 +6,19 @@
 #define TIMER_TOWER_FLKR	1
 #define TIMER_BUZZER_FLKR	2
 
-#define TIMER_LOAD1_LAMP_FLKR	3
-#define TIMER_LOAD2_LAMP_FLKR	4
-#define TIMER_NG_LAMP_FLKR		5
-#define TIMER_GOOD_LAMP_FLKR	6
-#define TIMER_EMPTY_LAMP_FLKR	7
 #define TIMER_DOOR_LOCK			8
 
 #define EXIT_SYSTEM_NONE	0
 #define EXIT_SYSTEM_AJIN	1
 #define EXIT_SYSTEM_BARCODE	2
 #define EXIT_SYSTEM_MODEL	3
+
+
+#define TIMER_LOAD_OPEN_FLKR	4
+#define TIMER_LOAD_RUN_FLKR		5
+#define TIMER_UNLOAD_OPEN_FLKR	6
+#define TIMER_UNLOAD_RUN_FLKR	7
+
 
 // CSingleLensDlg 대화 상자
 class CSingleLensDlg : public CDialogEx

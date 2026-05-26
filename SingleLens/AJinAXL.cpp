@@ -4,7 +4,6 @@
 #include "AJinAXL.h"
 #include "SingleLens.h"
 #include <math.h>
-#include "MESInterface.h"
 #include "Common.h"
 #include "DataManager.h"
 #include "FifoTaskProcessor.h"
@@ -483,10 +482,10 @@ void CAJinAXL::Start_Scan(int nCh, int nAxis, double dPos, double dTrigS, double
 	double dWidth = (dTrigP/2) / dSpeed*1000000;
 		//dTrigW / dSpeed * 1000000;	// mm => usec
 
-	AxcTriggerSetEnable(nCh, DISABLE);
+	/*AxcTriggerSetEnable(nCh, DISABLE);
 	AxcTriggerSetBlock(nCh, dTrigS, dTrigE, dTrigP);
 	AxcTriggerSetTime(nCh, dWidth);
-	AxcTriggerSetEnable(nCh, ENABLE);
+	AxcTriggerSetEnable(nCh, ENABLE);*/
 
 	Move_AbsVel(nAxis, dPos, dVel, 500);
 #endif
@@ -495,9 +494,9 @@ void CAJinAXL::Start_Scan(int nCh, int nAxis, double dPos, double dTrigS, double
 void CAJinAXL::Stop_Scan(int nAxis)
 {
 #if defined(AJIN_BOARD_USE)
-	AxcTriggerSetEnable(0, DISABLE);
-	Sleep(5);
-	AxcTriggerSetEnable(1, DISABLE);
+	//AxcTriggerSetEnable(0, DISABLE);
+	//Sleep(5);
+	//AxcTriggerSetEnable(1, DISABLE);
 #endif
 }
 

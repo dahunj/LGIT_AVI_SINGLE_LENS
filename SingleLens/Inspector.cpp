@@ -176,20 +176,24 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 	if (nV == -1) { g_objCommon.Show_Error(6102); return; }
 
 
+	g_objLogFile.Save_HandlerLog("ScanComplete First");
+
 	if(nV == eVision::TC) //Tc
 	{
 		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_TOP_INSPECT);
 		DWORD dwTick = GetTickCount();
 		while (nCase != 5) 
 		{ 
-			if(GetTickCount() - dwTick > 1500) break;
+			if(GetTickCount() - dwTick > 0) break;
 			else if(nCase == 5) break;
 			//Exception_Log("Scan Complete", sGbn, nCase); 
 			//return;
-		}				
+		}
+		g_objLogFile.Save_HandlerLog("Scan really Completed");
 		gData.bScanDone[eVision::TC] = TRUE;
 		gData.InfoMainIndex[eMainIndex::Top][nXPos][nYPos] = eLensState::TopDone;
-		g_objSequenceMain.Set_MainRunCase(AUTO_TOP_INSPECT, 10);
+		//g_objSequenceMain.Set_MainRunCase(AUTO_TOP_INSPECT, 10);
+
 	}
 	else if(nV == eVision::BC) // Bc
 	{
@@ -197,14 +201,15 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 		DWORD dwTick = GetTickCount();
 		while (nCase != 5) 
 		{ 
-			if(GetTickCount() - dwTick > 1500) break;
+			if(GetTickCount() - dwTick > 0) break;
 			else if(nCase == 5) break;
 			//Exception_Log("Scan Complete", sGbn, nCase); 
 			//return;
-		}				
+		}
+				
 		gData.bScanDone[eVision::BC] = TRUE;
 		gData.InfoMainIndex[eMainIndex::Btm][nXPos][nYPos] = eLensState::BtmDone;
-		g_objSequenceMain.Set_MainRunCase(AUTO_BTM_INSPECT, 10);
+		//g_objSequenceMain.Set_MainRunCase(AUTO_BTM_INSPECT, 10);
 	}
 }
 

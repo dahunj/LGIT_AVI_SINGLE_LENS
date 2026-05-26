@@ -169,7 +169,6 @@
     <ClInclude Include="ManualElevDlg.h" />
     <ClInclude Include="ManualIndexDlg.h" />
     <ClInclude Include="ManualBtmDlg.h" />
-    <ClInclude Include="MESInterface.h" />
     <ClInclude Include="MonitorDlg.h" />
     <ClInclude Include="MonitorInOutDlg.h" />
     <ClInclude Include="MonitorInOutTabDlg.h" />
@@ -223,7 +222,6 @@
     <ClCompile Include="ManualElevDlg.cpp" />
     <ClCompile Include="ManualIndexDlg.cpp" />
     <ClCompile Include="ManualBtmDlg.cpp" />
-    <ClCompile Include="MESInterface.cpp" />
     <ClCompile Include="MonitorDlg.cpp" />
     <ClCompile Include="MonitorInOutDlg.cpp" />
     <ClCompile Include="MonitorInOutTabDlg.cpp" />

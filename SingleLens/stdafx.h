@@ -118,16 +118,16 @@ typedef struct
 {
 	CString	sOperID;		// Operator
 
-	CString	sMZID[6];
-	CString	sZigID[6][10];
+	CString	sMZID[7];
+	CString	sZigID[7][10];
 
-	int		nMZNo[6]; // From UI MZ Input 
+	int		nMZNo[7]; // From UI MZ Input 
 
 	int		nMZCnt;
 
-	int		nCtZigTotalCnt[6];
-	int		nLensTotalCnt[6];
-	int		nLensUseCnt[6][10];
+	int		nCtZigTotalCnt[7];
+	int		nLensTotalCnt[7];
+	int		nLensUseCnt[7][10];
 	int		nLensMaxCnt;
 	
 	//new 
@@ -240,6 +240,12 @@ typedef struct
 	BOOL	bNoTrayMode;
 	BOOL	bDemoMode;
 
+	CString sStdMotionFile;
+	CString sEfficiencyFile;
+	int		nStdEqNo;	// Log 표준화 (설비번호)
+	int		nStdLotNo;	// Log 표준화 (하루 기준으로 작업한 Lot 번호)
+	int		nStdLogDay;	// Log 표준화 (작업일)
+
 } GLOVAL_DATA;
 
 
@@ -255,12 +261,15 @@ typedef struct
 	BOOL bEmptyLot[60];
 	
 	///////////old 	
-	CString sStartTime[2];
-	CString sEndTime[2];
-	DWORD	dwLotStart[2];
-	DWORD	dwLotEnd[2];	
-
+	CString sStartTime[7];
+	CString sEndTime[7];
+	DWORD	dwLotStart[7];
+	DWORD	dwLotEnd[7];	
+	
+	int		nTrayCount[7];
+	int		nLensCount[7];
 	double  dTackTime;
+	
 	int		nGoodCount[2];
 	int		nNgCount[2];
 

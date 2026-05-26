@@ -73,15 +73,11 @@ void FifoTaskProcessor::Stop()
 		CloseHandle(m_worker);
 		m_worker = 0;
 	}
-	
-
 	// 큐 정리
 	EnterCriticalSection(&m_cs);
 	m_tasks.clear();
 	m_head = 0;				
-	
-
-	
+			
 	LeaveCriticalSection(&m_cs);
 
 	// 실행 카운터 정리

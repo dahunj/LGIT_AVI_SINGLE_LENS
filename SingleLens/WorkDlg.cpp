@@ -10,7 +10,7 @@
 
 #include "Inspector.h"
 #include "BarcodeLot.h"
-#include "MESInterface.h"
+
 #include "SequenceInit.h"
 #include "SequenceMain.h"
 
@@ -270,6 +270,7 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 		g_objLogFile.Save_HandlerLog("[Work Mode] START S/W push");
 		m_rdoWorkStart.SetCheck(TRUE);
 		//pMainDlg->Set_LotErrorLog("START", 903, "Start");
+		g_objLogFile.Save_EfficiencyLog(0, "Run", 903, "Run Start");	//Start
 
 	} 
 	else if (pDX03->iStopSw && !m_rdoWorkStop.GetCheck()) 
@@ -278,6 +279,7 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 		MachineStopLog("STOP_BUTTON_PUSH");
 		m_rdoWorkStop.SetCheck(TRUE);
 		//pMainDlg->Set_LotErrorLog("STOP", 904, "Stop");
+		g_objLogFile.Save_EfficiencyLog(0, "Stop", 903, "Stop Button Push");	//Stop
 	}
 
 	if (pDX03->iResetSw) g_objCommon.Show_Alarm("", STATE_ALARM, FALSE);
@@ -520,6 +522,7 @@ void CWorkDlg::OnBnClickedRdoWorkStart()
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 
 	pMainDlg->Set_LotErrorLog("START", 903, "Start");
+	g_objLogFile.Save_EfficiencyLog(0, "Run", 903, "Run Start");
 }
 
 void CWorkDlg::OnBnClickedRdoWorkStop()
@@ -529,6 +532,7 @@ void CWorkDlg::OnBnClickedRdoWorkStop()
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 
 	pMainDlg->Set_LotErrorLog("STOP", 904, "Stop");
+	g_objLogFile.Save_EfficiencyLog(0, "Stop", 903, "Stop Button Push");
 }
 
 void CWorkDlg::OnBnClickedChkCycleStop()
@@ -1066,8 +1070,12 @@ LRESULT CWorkDlg::OnUpdateVisionInfo(WPARAM nVision, LPARAM lParam)
 		{
 			for (int j = 0; j < gData.nLensCntX; j++) 
 			{
-				if		(gData.nInspectInfo[gData.nMZNoMainIndex[eMainIndex::Mark]][j][i] == 2 ) m_grdMarking.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0x00));	// Reserve
-				else if (gData.nInspectInfo[gData.nMZNoMainIndex[eMainIndex::Mark]][j][i] == 0) m_grdMarking.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
+				//if		(gData.nInspectInfo[gData.nMZNoMainIndex[eMainIndex::Mark]][j][i] == eLensState::MarkDone ) m_grdMarking.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0x00));	// Reserve
+				//else if (gData.nInspectInfo[gData.nMZNoMainIndex[eMainIndex::Mark]][j][i] == eLensState::MarkReady) m_grdMarking.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
+				//else				m_grdMarking.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
+
+				if		(gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::MarkDone ) m_grdMarking.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0x00));	// Reserve
+				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::MarkReady) m_grdMarking.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
 				else				m_grdMarking.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
 
 			}
@@ -1211,10 +1219,14 @@ void CWorkDlg::Change_Model()
 
 void CWorkDlg::OnBnClickedButton1()
 {
+	g_objSequenceMain.Job_LotStart(1);
 }
 
 void CWorkDlg::OnBnClickedButton2()
 {
+	g_objSequenceMain.Job_LotEnd(1);
+	OnUpdateUph(NULL, NULL);
+
 }
 
 
@@ -1430,12 +1442,12 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo, int nDir)
 						{
 							gData.ZigMap[eMZ::Ready][i] = TRUE; // Zig 존재함 
 
-							gData.InfoMZLoad[i][k][j] = (int)eLensState::Init;
+							gData.InfoMZReady[i][k][j] = (int)eLensState::Init;
 							gData.LensMap[eMZ::Ready][i][k][j] = eLensState::Init;
 						}
 						else
 						{
-							gData.InfoMZLoad[i][k][j] = eLensState::None;
+							gData.InfoMZReady[i][k][j] = eLensState::None;
 							gData.LensMap[eMZ::Ready][i][k][j] = eLensState::None;
 						}
 					}			
@@ -1452,12 +1464,12 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo, int nDir)
 						{
 							gData.ZigMap[eMZ::Ready][i] = TRUE; // Zig 존재함 
 
-							gData.InfoMZLoad[i][j][k] = (int)eLensState::Init;
+							gData.InfoMZReady[i][j][k] = (int)eLensState::Init;
 							gData.LensMap[eMZ::Ready][i][j][k] = eLensState::Init;
 						}
 						else
 						{
-							gData.InfoMZLoad[i][j][k] = eLensState::None;
+							gData.InfoMZReady[i][j][k] = eLensState::None;
 							gData.LensMap[eMZ::Ready][i][j][k] = eLensState::None;
 						}
 					}			

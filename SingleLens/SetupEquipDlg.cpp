@@ -10,7 +10,7 @@
 #include "DataManager.h"
 #include "Common.h"
 #include "SetupDlg.h"
-#include "MESInterface.h"
+
 
 
 // CSetupEquipDlg 대화 상자입니다.
@@ -368,6 +368,10 @@ void CSetupEquipDlg::Display_EquipData()
 		m_stcDelayAdd[i].SetWindowText(strData);
 	}
 
+	m_chkResultTestUse.SetCheck(pEquipData->bResultTestUse);
+	strData.Format("%d", pEquipData->nResultTestNg); m_edtResultTest.SetWindowText(strData);
+
+
 }
 
 void CSetupEquipDlg::Save_EquipData()
@@ -431,17 +435,17 @@ void CSetupEquipDlg::Save_EquipData()
 	m_stcDelayAdd[3].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "TRAY_PICKER_OPEN", nData);
 	m_stcDelayAdd[4].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "INDEX_ALIGN_IN", nData);
 	m_stcDelayAdd[5].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "INDEX_ALIGN_OUT", nData);
-
-
-
+	
 	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) { strKey.Format("%d%d", i, j); INI.Set_Bool("TOWER", strKey, m_chkTower[i][j].GetCheck()); }
 	for (int i = 0; i < 5; i++) for (int j = 0; j < 6; j++) { strKey.Format("%d%d", i, j); INI.Set_Bool("BUZZER", strKey, m_chkBuzzer[i][j].GetCheck()); }
-
-
+	
 	m_stcPasswordOp.GetWindowText(strData); INI.Set_String("HIDDEN", "PASSWORD_OP", strData); pEquipData->sPasswordOp = strData;
 	m_edtPasswordEngr.GetWindowText(strData); INI.Set_String("HIDDEN", "PASSWORD_ENGR", strData); pEquipData->sPasswordEngr = strData;
-	
-	
+		
+	pEquipData->bResultTestUse = m_chkResultTestUse.GetCheck();
+	m_edtResultTest.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("RESULT_TEST", "RESULT_NG", nData);
+
+
 	CString sPathSource;
 	sPathSource = gsCurrentDir + "\\System\\Model\\";
 	sPathSource += strModel;
@@ -507,6 +511,9 @@ void CSetupEquipDlg::Save_ModelEquipData(CString sPath)
 	
 	m_stcPasswordOp.GetWindowText(strData); INI.Set_String("HIDDEN", "PASSWORD_OP", strData); pEquipData->sPasswordOp = strData;
 	m_edtPasswordEngr.GetWindowText(strData); INI.Set_String("HIDDEN", "PASSWORD_ENGR", strData); pEquipData->sPasswordEngr = strData;
+
+	pEquipData->bResultTestUse = m_chkResultTestUse.GetCheck();
+	m_edtResultTest.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("RESULT_TEST", "RESULT_NG", nData);
 
 
 	g_objLogFile.Save_HandlerLog("[Setup Equip] Model Save");

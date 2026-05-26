@@ -25,6 +25,9 @@ CCriticalSection g_csMesAgentLog;
 CCriticalSection g_csCmTrackingLog;
 CCriticalSection g_csBarcodeLog;
 CCriticalSection g_csMCCLog;
+CCriticalSection g_csStdMotionLog;
+CCriticalSection g_csEfficiencyLog;
+
 
 CLogFile::CLogFile()
 {
@@ -679,6 +682,90 @@ void CLogFile::Save_MCCLog(const CString& sLog)
 }
 
 
+
+
+
+void CLogFile::Save_StdMotionLog(CString sType, int nZone, int nCase, int nValue, CString sZone, CString sMsg)
+{
+	if (gData.sStdMotionFile.GetLength() < 10) return;
+
+	g_csStdMotionLog.Lock();
+
+	CString strPath = "D:\\EVMS\\TP\\LOGL";
+	Create_Folder(strPath);
+
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+
+	CString strFile, strKey, strCycle, strTitle, strLog, strSave;
+
+	// 파일명 : LotID_생성년월일시_공정명_Normal_#호기번호_PC이름_모델명_순번.csv => Lot Start시 생성
+	strFile.Format("%s\\%s", strPath, gData.sStdMotionFile);
+
+	strKey.Format("[CH_DV]%s%03d%03d[1]", sType, nZone, nCase);
+
+	if (sType == "Y" && nValue == 1) strCycle = "";	// 선행동작 (시작시 공란)
+	else strCycle.Format("%s%03d", sType, nCase-1);	// 선행동작 표시
+
+	strLog.Format("%s,%d,%s,%s,%s", strKey, nValue, sZone, strCycle, sMsg);
+
+	strTitle = "Time,Key,Value,Index,CycleIndex,Note\r\n";
+
+	CFile file;
+	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
+		try {
+			file.SeekToEnd();
+			if (file.GetLength() < 1) file.Write(strTitle, strTitle.GetLength());
+			strSave.Format("%04d%02d%02d%02d%02d%02d.%03d,%s\r\n",
+				time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, strLog);
+			file.Write(strSave, strSave.GetLength());
+			file.Close();
+		} catch (CFileException *pEx) {
+			pEx->Delete();
+		}
+	}
+	g_csStdMotionLog.Unlock();
+}
+
+void CLogFile::Save_EfficiencyLog(int nZone, CString sStatus, int nCode, CString sNote)
+{
+	if (gData.sEfficiencyFile.GetLength() < 10) return;
+
+	g_csEfficiencyLog.Lock();
+
+	CString strPath, strFile, strZone, strMsg, strTitle, strLog, strSave;
+
+	strPath.Format("D:\\EVMS\\TP\\LOGL");
+	Create_Folder(strPath);
+
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+
+	//파일명 : LotID_생성년월일시_공정명_Efficiency_#호기번호_PC이름_모델명_순번.csv
+	strFile.Format("%s\\%s", strPath, gData.sEfficiencyFile);
+
+	if (nZone < 0) strZone = "None";
+	else Get_ZoneMsg(nZone, 0, strZone, strMsg);
+
+	strLog.Format("%s-%s-%04d,%s", sStatus, strZone, nCode, sNote);
+
+	strTitle = "Time,Code,Comment\r\n";
+
+	CFile file;
+	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
+		try {
+			file.SeekToEnd();
+			if (file.GetLength() < 1) file.Write(strTitle, strTitle.GetLength());
+			strSave.Format("%04d-%02d-%02d-%02d-%02d-%02d.%03d,%s\r\n",
+				time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, strLog);
+			file.Write(strSave, strSave.GetLength());
+			file.Close();
+		} catch (CFileException *pEx) {
+			pEx->Delete();
+		}
+	}
+	g_csEfficiencyLog.Unlock();
+}
 
 
 void CLogFile::Get_ZoneMsg(int nZone, int nCase, CString &sZone, CString &sMsg)

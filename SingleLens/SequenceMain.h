@@ -108,15 +108,15 @@ private:
 	BOOL LotEnd_Run();
 
 	BOOL Run_Simulation();
-
-
-	void Job_LotStart();
-	void Job_LotEnd(int nMZNo);
-
+	
 	void Beep_Post(int nState, int nTime);
 
 
 public:
+	void Job_LotStart(int nMZNo);
+	void Job_LotEnd(int nMZNo);
+
+
 	double m_dTop1Z;
 	
 	BOOL Get_IsAutoRun();

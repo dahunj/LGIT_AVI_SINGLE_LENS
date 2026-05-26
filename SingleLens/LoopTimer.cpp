@@ -85,9 +85,8 @@ void CLoopTimer::Takt_End(int nZone, int nCase, BOOL bLast)
 
 	strLog.Format("MCC,(%02d) %s,(%02d) %s,%0.3lf",nZone, strZone, nCase, strMsg, (GetTickCount() - m_dwTakt) / 1000.0);
 	g_objLogFile.Save_MCCLog(strLog);
-
-	
-	//g_objLogFile.Save_StdMotionLog("X", nZone, nCase, 0, strZone, strMsg);
+		
+	g_objLogFile.Save_StdMotionLog("X", nZone, nCase, 0, strZone, strMsg);
 
 	//if (bLast) g_objLogFile.Save_StdMotionLog("Y", nZone, nCase, 0, strZone, strMsg);
 }

@@ -261,9 +261,6 @@
     <ClInclude Include="WorkInfoDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="MESInterface.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="FifoTaskProcessor.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -420,9 +417,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="WorkInfoDlg.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="MESInterface.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="FifoTaskProcessor.cpp">

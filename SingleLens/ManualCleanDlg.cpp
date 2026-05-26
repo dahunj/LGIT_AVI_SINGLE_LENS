@@ -251,7 +251,7 @@ void CManualCleanDlg::OnBtnTopInspectZClick(UINT nID)
 	if(nIndex == eTopInspect_Z::ScanStart)
 	{
 		double dStart = pEquipData->dTopStart;
-		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, dStart - 5);		
+		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, dStart - (pEquipData->dTopPeriod/4));		
 	}
 	if(nIndex == eTopInspect_Z::ScanEnd)
 	{
@@ -291,9 +291,7 @@ BOOL CManualCleanDlg::TopScan_Run()
 {
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	MOVE_DATA *pMoveData = g_objDataManager.Get_pMoveData();
-	static double dTopZ = 0.0;
-
-	
+	static double dTopZ = 0.0;	
 
 	switch (m_nScanCase) {
 	case 0:		// Start 시 1로 진행
@@ -310,17 +308,16 @@ BOOL CManualCleanDlg::TopScan_Run()
 		{
 			m_nScanCase = 3;
 			double dPeriod = pEquipData->dTopPeriod;	// 33mm
-			double dWidth = 10.0;						// 10mm (고정)
 			double dTrigS = pEquipData->dTopStart;				// Trigger Start
-			double dTrigE = dTrigS + dPeriod * pEquipData->dTopCount + dWidth + 1.0;	// Trigger End
-			dTopZ = dTrigE + 5.0;								// Motion End (가감속)
+			double dTrigE = dTrigS + dPeriod * pEquipData->dTopCount;	// Trigger End
+			dTopZ = dTrigE + (dPeriod/4);								// Motion End (가감속)
 			double dVelocity = pEquipData->dTopVelocity;
-			g_objAJinAXL.Start_Scan(eVision::TC, AX_TOP_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dWidth, dVelocity);
+			g_objAJinAXL.Start_Scan(eVision::TC, AX_TOP_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
 			
 		}
 		break;
 	case 3:		// Scan End
-		if (g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Z)) 
+		if (g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_Z, dTopZ)) 
 		{
 			g_objAJinAXL.Stop_Scan(AX_TOP_INSPECTOR_Z);
 			m_nScanCase = 0;			

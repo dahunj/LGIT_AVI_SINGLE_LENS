@@ -26,8 +26,6 @@
 #define STATE_ALARM			4
 #define STATE_ERROR			5
 #define STATE_LOTEND		6
-#define STATE_CAPTRAY		7
-#define STATE_SHIPTRAY		8
 
 // CSingleLensApp:
 // 이 클래스의 구현에 대해서는 SingleLens.cpp을 참조하십시오.
