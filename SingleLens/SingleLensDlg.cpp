@@ -860,7 +860,7 @@ void CSingleLensDlg::Display_DateTime()
 		if (nUphClear == 1) return;
 		nUphClear = 1;
 		for (int i = 0; i < 24; i++) gUph.nLotCount[i] = 0;
-		for (int i = 0; i < 2; i++) gUph.nCmCount[i] = 0;
+		for (int i = 0; i < 2; i++) gUph.nLensCount[i] = 0;
 		Save_EquipRunTime();
 		Clear_EquipRunTime();
 	} else nUphClear = 0;
@@ -913,7 +913,7 @@ void CSingleLensDlg::Global_Initial()
 	gUph.dTaktTime = 0.0;
 	for (int i = 0; i < 24; i++) for (int j = 0; j < 50; j++) gUph.dTakt[i][j] = 0.0;
 	for (int i = 0; i < 24; i++) gUph.nLotCount[i] = 0;
-	for (int i = 0; i < 2; i++) gUph.nCmCount[i] = 0;
+	for (int i = 0; i < 2; i++) gUph.nLensCount[i] = 0;
 }
 
 void CSingleLensDlg::Set_EquipRunStart()

@@ -1168,8 +1168,8 @@ LRESULT CWorkDlg::OnUpdateUph(WPARAM wParam, LPARAM lParam)
 
 	//»ý»ê·®
 	for (int i = 0; i < 2; i++) {
-		if (gUph.nCmCount[i] == 0) strText = "";
-		else strText.Format("%d", gUph.nCmCount[i]);
+		if (gUph.nLensCount[i] == 0) strText = "";
+		else strText.Format("%d", gUph.nLensCount[i]);
 		m_stcDay[i].SetWindowText(strText);
 	}
 

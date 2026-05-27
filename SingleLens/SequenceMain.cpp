@@ -256,13 +256,23 @@ void CSequenceMain::Job_LotEnd(int nMZNo)
 	gLot.sEndTime[nMNo].Format("%04d%02d%02d_%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
 
 	DWORD dwTime = gLot.dwLotEnd[nMNo] - gLot.dwLotStart[nMNo];
-	gLot.dTackTime = dwTime / 1000.0 / gData.nLensTotalCnt[nMNo];
+	gLot.dTackTime = dwTime / 1000.0 / gLot.nLensCount[nMNo];
 
 	/*strLog.Format("LotID,%s,Start_Time,%s,End_Time,%s,Time,%d,Tray_Count,%02d,CM_Count,%04d,Tack,%0.7lf",
 		gData.sMZID[nMNo], gLot.sStartTime[nMNo], gLot.sEndTime[nMNo], dwTime, gData.nCtZigTotalCnt[nMNo], nCmCnt, gLot.dTackTime);
 	g_objLogFile.Save_JobListLog(strLog);
 */
 	gUph.dTaktTime = gLot.dTackTime;
+
+	if (time.wHour >= 7 && time.wHour < 19) gUph.nLensCount[0] += gLot.nLensCount[nMNo];
+	else gUph.nLensCount[1] += gLot.nLensCount[nMNo];
+
+	int i = (int)time.wHour;
+	int j = gUph.nLotCount[i];
+	if (j > 49) return;		// 1시간에 LOT 수량 MAX 50개
+
+	gUph.dTakt[i][j] = gLot.dTackTime;
+	gUph.nLotCount[i] = j + 1;
 
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	pMainDlg->Set_LotStateTime();
@@ -667,10 +677,10 @@ BOOL CSequenceMain::MZElevRun()
 
 			if(nTo != -1)
 			{
+				nMZNo++; if(nMZNo > 3) nMZNo =1;
 				g_dlgWork.TransferMZInfo(nFrom, eMZ::Load, m_pEquipData->nVisionDir);
 				gData.sMZIDElevLoad = gData.sMZID[eMZ::Load];
-				
-				nMZNo++; if(nMZNo > 3) nMZNo =1;
+								
 				for(int i = 0; i < 10; i++)
 				{
 					gData.nMZNoMZLoad[i] = nMZNo;
@@ -678,6 +688,7 @@ BOOL CSequenceMain::MZElevRun()
 				}				
 				g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Load, NULL);
 								
+				
 				Job_LotStart(nMZNo);
 				g_objInspector.Set_LotStart(gData.sMZIDElevLoad, nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load],"Model");
 
