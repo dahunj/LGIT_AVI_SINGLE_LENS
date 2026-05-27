@@ -231,7 +231,7 @@ void CSequenceMain::Set_ClearLotData(BOOL bInit, int nLotNo)
 	
 }
 
-void CSequenceMain::Job_LotStart(int nMZNo)
+void CSequenceMain::Job_LotStart(int nMZNo, int nPos)
 {
 	SYSTEMTIME time;
 	GetLocalTime(&time);
@@ -241,7 +241,7 @@ void CSequenceMain::Job_LotStart(int nMZNo)
 	gLot.dwLotStart[nMNo] = GetTickCount();
 	
 	gLot.nTrayCount[nMNo] = gData.nCtZigTotalCnt[nMNo];
-	gLot.nLensCount[nMNo] = gData.nLensTotalCnt[nMNo];
+	gLot.nLensCount[nMNo] = gData.nLensTotalCnt[nPos];
 
 	g_objLogFile.Save_EfficiencyLog(0, "Start", 903, "Lot Start");	//Lot Start 
 }
@@ -319,12 +319,8 @@ BOOL CSequenceMain::LotEnd_Run()
 
 	g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (WPARAM)0, NULL);	// All Clear
 	
-//	if (m_nAssyPickCase == 1) m_nAssyPickCase = 0;
-
 	Set_ClearRunData(FALSE);
 	Reset_MainRunCase();
-
-	//int nPx = (gData.nULPNo < 1) ? 0 : gData.nULPNo - 1;	// ¢¬C¢¬¢ÒAo¢¬¡¤ ¡Æ©ªA¢´AI Good Tray Port No E¡Æ¢¯e.
 
 	CString strMsg;
 	strMsg.Format("Run End.\n\n");
@@ -679,6 +675,7 @@ BOOL CSequenceMain::MZElevRun()
 			{
 				nMZNo++; if(nMZNo > 3) nMZNo =1;
 				g_dlgWork.TransferMZInfo(nFrom, eMZ::Load, m_pEquipData->nVisionDir);
+			
 				gData.sMZIDElevLoad = gData.sMZID[eMZ::Load];
 								
 				for(int i = 0; i < 10; i++)
@@ -689,7 +686,7 @@ BOOL CSequenceMain::MZElevRun()
 				g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Load, NULL);
 								
 				
-				Job_LotStart(nMZNo);
+				Job_LotStart(nMZNo, eMZ::Load);
 				g_objInspector.Set_LotStart(gData.sMZIDElevLoad, nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load],"Model");
 
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
@@ -759,10 +756,11 @@ BOOL CSequenceMain::MZElevRun()
 
 			if(nTo != -1)
 			{
+				nMZNo++;if(nMZNo > 3) nMZNo =1;
 				g_dlgWork.TransferMZInfo(nFrom, eMZ::Ready, m_pEquipData->nVisionDir);
 				gData.sMZIDElevReady = gData.sMZID[eMZ::Ready];
 
-				nMZNo++;if(nMZNo > 3) nMZNo =1;
+				
 				for(int i = 0; i < 10; i++)
 				{
 					gData.nMZNoMZRdy[i] = nMZNo;
@@ -770,7 +768,7 @@ BOOL CSequenceMain::MZElevRun()
 				}				
 				g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Ready, NULL);
 
-				Job_LotStart(nMZNo);
+				Job_LotStart(nMZNo, eMZ::Ready);
 				g_objInspector.Set_LotStart(gData.sMZIDElevReady, nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready],"Model");
 
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
@@ -2452,18 +2450,6 @@ BOOL CSequenceMain::MainIndexRun()
 	case 4:
 		if(Check_IndexEmpty(-1) && !Check_CtZigInMZ(eMZ::Load) && Check_FeederEmpty() && Check_ZigPickerEmpty()) return TRUE;
 			
-		if(m_nMZElevCase != 20 && m_nFeederCase != 0 && m_nZigPickerCase != 0 ) return TRUE;
-		//if( m_nMZElevCase == 20 && m_nFeederCase == 0 && m_nZigPickerCase == 0 && !Check_IndexEmpty(eMainIndex::Unload) && !gData.bIndexDone[eMainIndex::Unload] ) // 
-		if( m_nMZElevCase == 20 && m_nFeederCase == 0 && m_nZigPickerCase == 0 && !Check_IndexEmpty(eMainIndex::Unload) && !gData.bIndexDone[eMainIndex::Unload] ) 
-		{ 
-			m_nZigPickerCase = eTrayPickerBr::Unload; // ZigPicker ¨¬IAI 			
-			m_strLog.Format("Zig Picker Unload"); m_nIndexTLoop.Takt_Save(9, m_nMainIndexCase, m_strLog);
-		}
-		else
-		{
-			gData.bIndexDone[eMainIndex::Unload] = TRUE;
-		}
-
 		if(!gData.bIndexDone[eMainIndex::Clean]) m_nLensCleanerCase = 1;		
 		if(!gData.bIndexDone[eMainIndex::Top]) m_nTopInspectCase = 1;			
 		if(!gData.bIndexDone[eMainIndex::Btm]) m_nBtmInspectCase = 1;		
@@ -2473,8 +2459,14 @@ BOOL CSequenceMain::MainIndexRun()
 		gData.bIndexDone[eMainIndex::None] = TRUE;
 		m_nMainIndexCase ++; m_nIndexTLoop.Set_LoopTime(25000);
 		return TRUE;
-	case (int) MainIndexBranch::CheckInOut:		
-		if(Check_IndexEmpty(eMainIndex::Load) 
+	case (int) MainIndexBranch::CheckInOut:	
+
+		if( m_nMZElevCase == 20 && m_nFeederCase == 0 && m_nZigPickerCase == 0 && !Check_IndexEmpty(eMainIndex::Unload) && !gData.bIndexDone[eMainIndex::Unload]) 
+		{ 
+			m_nZigPickerCase = eTrayPickerBr::Unload; // ZigPicker ¨¬IAI 			
+			m_strLog.Format("Zig Picker Unload"); m_nIndexTLoop.Takt_Save(9, m_nMainIndexCase, m_strLog);
+		}
+		else if(Check_IndexEmpty(eMainIndex::Load) 
 			&& m_nMZElevCase == 20 && m_nFeederCase == 0 && m_nZigPickerCase == 0
 			&& !gData.bIndexDone[eMainIndex::Load] && Check_CtZigInMZ(eMZ::Load)) // Unload ¡Æ¢® ¨¬n¢¯oAo¢¬e ¢¥U¨öA Load 
 		{			
@@ -2813,7 +2805,7 @@ int CSequenceMain::Check_CVMZSensors()
 
 BOOL CSequenceMain::Check_IndexDone()
 {
-	for(int i = 0 ; i < 7; i++)
+	for(int i = 0 ; i < 6; i++)
 	{
 		//if(!gData.bIndexDone[i] && !Check_IndexEmpty(i))
 		if(!gData.bIndexDone[i])
@@ -2821,6 +2813,9 @@ BOOL CSequenceMain::Check_IndexDone()
 			return FALSE;
 		}
 	}
+
+	if(!gData.bIndexDone[6] && !Check_IndexEmpty(eMainIndex::Unload)) return FALSE;
+
 	return TRUE;	
 }
 

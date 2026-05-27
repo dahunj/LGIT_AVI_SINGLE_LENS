@@ -112,7 +112,7 @@ private:
 	void Beep_Post(int nState, int nTime);
 	
 public:
-	void Job_LotStart(int nMZNo);
+	void Job_LotStart(int nMZNo, int nPos);
 	void Job_LotEnd(int nMZNo);
 
 

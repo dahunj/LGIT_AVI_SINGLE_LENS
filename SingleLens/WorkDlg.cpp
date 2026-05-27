@@ -1219,7 +1219,7 @@ void CWorkDlg::Change_Model()
 
 void CWorkDlg::OnBnClickedButton1()
 {
-	g_objSequenceMain.Job_LotStart(1);
+	//g_objSequenceMain.Job_LotStart(1);
 }
 
 void CWorkDlg::OnBnClickedButton2()
@@ -1489,6 +1489,9 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo, int nDir)
 			memset(gData.LensMap[eMZ::Ready][i], 0x00, sizeof(int)*ZIG_X*ZIG_Y);
 		}		
 	}
+
+	
+
 }
 
 int CWorkDlg::SearchZigInfo(int nMZNo)
@@ -1542,9 +1545,9 @@ void CWorkDlg::OnStnClickedStcHidden()
 		m_stcZigID[24].SetWindowText("11115");
 		m_stcZigID[25].SetWindowText("11116");
 		m_stcZigID[26].SetWindowText("11117");
-		/*m_stcZigID[27].SetWindowText("11118");
+		m_stcZigID[27].SetWindowText("11118");
 		m_stcZigID[28].SetWindowText("11119");
-		m_stcZigID[29].SetWindowText("11120");*/
+		m_stcZigID[29].SetWindowText("11120");
 		
 		m_stcLensCnt[20].SetWindowText("14");
 		m_stcLensCnt[21].SetWindowText("14");
@@ -1553,35 +1556,35 @@ void CWorkDlg::OnStnClickedStcHidden()
 		m_stcLensCnt[24].SetWindowText("14");
 		m_stcLensCnt[25].SetWindowText("14");
 		m_stcLensCnt[26].SetWindowText("14");
-		//m_stcLensCnt[27].SetWindowText("14");
-		//m_stcLensCnt[28].SetWindowText("14");
-		//m_stcLensCnt[29].SetWindowText("14");
+		m_stcLensCnt[27].SetWindowText("14");
+		m_stcLensCnt[28].SetWindowText("14");
+		m_stcLensCnt[29].SetWindowText("14");
 		
 		m_stcMZID[3].SetWindowText("MMMMM");
 		m_stcZigID[30].SetWindowText("1111");
 		m_stcZigID[31].SetWindowText("11112");
-		/*m_stcZigID[32].SetWindowText("11113");
+		m_stcZigID[32].SetWindowText("11113");
 		m_stcZigID[33].SetWindowText("11114");
 		m_stcZigID[34].SetWindowText("11115");
 		m_stcZigID[35].SetWindowText("11116");
 		m_stcZigID[36].SetWindowText("11117");
 		m_stcZigID[37].SetWindowText("11118");
 		m_stcZigID[38].SetWindowText("11119");
-		m_stcZigID[39].SetWindowText("11120");*/
+		m_stcZigID[39].SetWindowText("11120");
 
 
 		m_stcLensCnt[30].SetWindowText("14");
 		m_stcLensCnt[31].SetWindowText("14");
-		/*m_stcLensCnt[32].SetWindowText("14");
+		m_stcLensCnt[32].SetWindowText("14");
 		m_stcLensCnt[33].SetWindowText("14");
 		m_stcLensCnt[34].SetWindowText("14");
 		m_stcLensCnt[35].SetWindowText("14");
 		m_stcLensCnt[36].SetWindowText("14");
 		m_stcLensCnt[37].SetWindowText("14");
 		m_stcLensCnt[38].SetWindowText("14");
-		m_stcLensCnt[39].SetWindowText("14");*/
+		m_stcLensCnt[39].SetWindowText("14");
 		
-		/*m_stcMZID[4].SetWindowText("MMMMM3");
+		m_stcMZID[4].SetWindowText("MMMMM3");
 		m_stcZigID[40].SetWindowText("1111");
 		m_stcZigID[41].SetWindowText("11112");
 		m_stcZigID[42].SetWindowText("11113");
@@ -1602,7 +1605,7 @@ void CWorkDlg::OnStnClickedStcHidden()
 		m_stcLensCnt[46].SetWindowText("14");
 		m_stcLensCnt[47].SetWindowText("14");
 		m_stcLensCnt[48].SetWindowText("14");
-		m_stcLensCnt[49].SetWindowText("14");*/
+		m_stcLensCnt[49].SetWindowText("14");
 
 	if(m_chkNoTrayMode.IsWindowVisible())
 	{
