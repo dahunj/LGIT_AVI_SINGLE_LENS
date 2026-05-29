@@ -399,6 +399,8 @@ void CInspector::Set_LoadComplete(CString sGbn, CString sMZID, int nMZNo, CStrin
 {
 	CString	strSendCmd, strTemp;
 	strSendCmd.Format("LOAD,COMPLETE,%s,%s,%d,%s,%d,%d", sGbn, sMZID, nMZNo, sTrayID, nTrayNo, nLensNo);
+	if(sGbn == "TC") gData.bScanDone[eVision::TC] = FALSE;
+	if(sGbn == "BC") gData.bScanDone[eVision::BC] = FALSE;
 	Send_Command(VISION_PC1, strSendCmd);
 }
 

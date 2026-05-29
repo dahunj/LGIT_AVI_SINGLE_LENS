@@ -1948,10 +1948,9 @@ BOOL CSequenceMain::TopInspectorRun()
 				{
 					nLensNo = (gData.nLensCntY * (nTopXPos-1)) + nTopYPos;
 				}					
-				
-				g_objInspector.Set_LoadComplete("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.nMZNoMainIndex[eMainIndex::Top]
-				, gData.sZigIDMainIndex[eMainIndex::Top], gData.nSlotNoMainIndex[eMainIndex::Top], nLensNo);
 				m_nTopInspectCase = (int)eTopBr::VisionWait;
+				g_objInspector.Set_LoadComplete("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.nMZNoMainIndex[eMainIndex::Top]
+				, gData.sZigIDMainIndex[eMainIndex::Top], gData.nSlotNoMainIndex[eMainIndex::Top], nLensNo);				
 				m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);			
 			}
 		}
@@ -1985,14 +1984,14 @@ BOOL CSequenceMain::TopInspectorRun()
 		}
 		break;
 	case 8:		// Scan End
-		if (g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_Z, dTopZ)) 
+		if (g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_Z, dTopZ) && gData.bScanDone[eVision::TC]) 
 		{
 			g_objLogFile.Save_HandlerLog("Stop Scan");
 			g_objAJinAXL.Stop_Scan(AX_TOP_INSPECTOR_Z);
-			gData.InfoMainIndex[eMainIndex::Top][nTopXPos-1][nTopYPos-1] = eLensState::TopDone;	//Scan Done
-			m_nTopInspectCase = 10;//eTopBr::VisionWait;
-			
-			m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);		
+			//gData.InfoMainIndex[eMainIndex::Top][nTopXPos-1][nTopYPos-1] = eLensState::TopDone;	//Scan Done
+			//m_nTopInspectCase = eTopBr::VisionWait;//
+			m_nTopInspectCase = 10;
+			m_nTopInspectLoop.Set_LoopTime(900000000);		
 			
 		}
 		break;
@@ -2033,7 +2032,7 @@ BOOL CSequenceMain::TopInspectorRun()
 			}
 		}
 		g_dlgWork.PostMessage(UM_UPDATE_VISION_INFO, (int)eVision::TC, NULL);
-		m_nTopInspectCase = 3; m_nTopInspectLoop.Set_LoopTime(5000);
+		m_nTopInspectCase = 3; m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		break;	
 	case 15:
 		g_objCommon.Move_Position(AX_TOP_INSPECTOR_Z, eTopInspect_Z::Ready);
@@ -2131,7 +2130,7 @@ BOOL CSequenceMain::BtmInspectorRun()
 	case 4:
 		if (g_objAJinAXL.Is_MoveDone(AX_BTM_INSPECTOR_Y, dBtmUnitY) &&
 			g_objAJinAXL.Is_MoveDone(AX_BTM_INSPECTOR_X, dBtmUnitX) &&
-			g_objAJinAXL.Is_MoveDone(AX_BTM_INSPECTOR_Z, dBtmUnitZ))
+			g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Z))
 		{
 
 			if (!m_pEquipData->bUseBtmVision)
@@ -2153,10 +2152,11 @@ BOOL CSequenceMain::BtmInspectorRun()
 				else if(m_pEquipData->nVisionDir == eVDir::fixX)
 				{
 					nLensNo = (gData.nLensCntY * (nBtmXPos-1)) + nBtmYPos;
-				}							
+				}				
+				m_nBtmInspectCase = (int)eBtmBr::VisionWait;
 				g_objInspector.Set_LoadComplete("BC", gData.sMZIDMainIdex[eMainIndex::Btm],gData.nMZNoMainIndex[eMainIndex::Btm],
 					gData.sZigIDMainIndex[eMainIndex::Btm], gData.nSlotNoMainIndex[eMainIndex::Btm], nLensNo);				
-				m_nBtmInspectCase = (int)eBtmBr::VisionWait; m_nBtmInspectLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);			
+				 m_nBtmInspectLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);			
 			}
 		}
 		break;
@@ -2185,12 +2185,12 @@ BOOL CSequenceMain::BtmInspectorRun()
 		}
 		break;
 	case 8:		// Scan End
-		if (g_objAJinAXL.Is_MoveDone(AX_BTM_INSPECTOR_Z,dBtmZ)) 
+		if (g_objAJinAXL.Is_MoveDone(AX_BTM_INSPECTOR_Z,dBtmZ) && gData.bScanDone[eVision::BC]) 
 		{
 			g_objLogFile.Save_HandlerLog("Stop Scan");
 			g_objAJinAXL.Stop_Scan(AX_BTM_INSPECTOR_Z);
 
-			gData.InfoMainIndex[eMainIndex::Btm][nBtmXPos-1][nBtmYPos-1] = eLensState::BtmDone;	//Scan Done
+			//gData.InfoMainIndex[eMainIndex::Btm][nBtmXPos-1][nBtmYPos-1] = eLensState::BtmDone;	//Scan Done
 			m_nBtmInspectCase = 10;//eBtmBr::VisionWait; 
 			m_nBtmInspectLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);		
 

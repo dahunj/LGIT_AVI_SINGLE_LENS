@@ -196,12 +196,12 @@ void CManualCleanDlg::OnBtnTopInspectXClick(UINT nID)
 	if(nIndex == eTopInspect_X::PitchP)
 	{		
 		double dPitch = pEquipData->dZigPitchX;
-		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_X, dPitch);
+		g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_X, dPitch);
 	}
 	if(nIndex == eTopInspect_X::PitchM)
 	{
 		double dPitch = pEquipData->dZigPitchX;
-		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_X, -dPitch);
+		g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_X, -dPitch);
 	}
 	m_strLog.Format("[Manual Top Inspector X] X (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);
@@ -227,12 +227,12 @@ void CManualCleanDlg::OnBtnTopInspectYClick(UINT nID)
 	if(nIndex == eTopInspect_Y::PitchP)
 	{		
 		double dPitch = pEquipData->dZigPitchY;
-		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Y, dPitch);
+		g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_Y, dPitch);
 	}
 	if(nIndex == eTopInspect_Y::PitchM)
 	{
 		double dPitch = pEquipData->dZigPitchY;
-		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Y, -dPitch);
+		g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_Y, -dPitch);
 	}
 	m_strLog.Format("[Manual Top Inspector Y] Y (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);
