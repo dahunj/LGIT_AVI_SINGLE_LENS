@@ -1908,9 +1908,9 @@ BOOL CSequenceMain::TopInspectorRun()
 		if(Select_TopScanPos(nTopXPos, nTopYPos, m_pEquipData->nVisionDir))
 		{
 			int nIdx = (nTopYPos - 1) * gData.nLensCntX + nTopXPos;
-			dTopUnitY = m_pMoveData->dTopInspectorY[eTopInspect_Y::ScanStart] - (m_pEquipData->dZigPitchY * (nTopYPos - 1));
-			dTopUnitX = m_pMoveData->dTopInspectorX[eTopInspect_X::ScanStart] + (m_pEquipData->dZigPitchX * (nTopXPos - 1));
-			dTopUnitZ = m_pEquipData->dTopStart;//m_pMoveData->dTopInspectorZ[eTopInspect_Z::ScanStart];
+			dTopUnitY = m_pEquipData->dTopStartY - (m_pEquipData->dZigPitchY * (nTopYPos - 1));
+			dTopUnitX = m_pEquipData->dTopStartX + (m_pEquipData->dZigPitchX * (nTopXPos - 1));
+			dTopUnitZ = m_pEquipData->dTopStartZ;//m_pMoveData->dTopInspectorZ[eTopInspect_Z::ScanStart];
 			
 			g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Y, dTopUnitY);
 			g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_X, dTopUnitX);
@@ -1976,8 +1976,8 @@ BOOL CSequenceMain::TopInspectorRun()
 		if (g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Z)) 
 		{
 			double dPeriod = m_pEquipData->dTopPeriod;	// 33mm
-			double dTrigS = m_pEquipData->dTopStart;				// Trigger Start
-			double dTrigE = dTrigS + (dPeriod) * (m_pEquipData->dTopCount);	// Trigger End
+			double dTrigS = m_pEquipData->dTopStartZ;				// Trigger Start
+			double dTrigE = dTrigS + (dPeriod) * (m_pEquipData->nTopCount);	// Trigger End
 			dTopZ = dTrigE + (dPeriod/10);								// Motion End (가감속)
 			double dVelocity = m_pEquipData->dTopVelocity;
 			g_objAJinAXL.Start_Scan(eVision::TC, AX_TOP_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
@@ -2112,9 +2112,9 @@ BOOL CSequenceMain::BtmInspectorRun()
 		if(Select_BtmScanPos(nBtmXPos, nBtmYPos, m_pEquipData->nVisionDir))
 		{
 			int nIdx = (nBtmYPos - 1) * gData.nLensCntX + nBtmXPos;
-			dBtmUnitY = m_pMoveData->dBtmInspectorY[eTopInspect_Y::ScanStart] - (m_pEquipData->dZigPitchY * (nBtmYPos - 1));
-			dBtmUnitX = m_pMoveData->dBtmInspectorX[eTopInspect_X::ScanStart] + (m_pEquipData->dZigPitchX * (nBtmXPos - 1));
-			dBtmUnitZ = m_pEquipData->dBtmStart- (m_pEquipData->dBtmPeriod/10);//m_pMoveData->dBtmInspectorZ[eTopInspect_Z::ScanStart];
+			dBtmUnitY = m_pEquipData->dBtmStartY - (m_pEquipData->dZigPitchY * (nBtmYPos - 1));
+			dBtmUnitX = m_pEquipData->dBtmStartX + (m_pEquipData->dZigPitchX * (nBtmXPos - 1));
+			dBtmUnitZ = m_pEquipData->dBtmStartZ- (m_pEquipData->dBtmPeriod/10);//m_pMoveData->dBtmInspectorZ[eTopInspect_Z::ScanStart];
 
 			g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_Y, dBtmUnitY);
 			g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_X, dBtmUnitX);
@@ -2176,8 +2176,8 @@ BOOL CSequenceMain::BtmInspectorRun()
 		if (g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Z)) 
 		{
 			double dPeriod = m_pEquipData->dBtmPeriod;	// 33mm
-			double dTrigS = m_pEquipData->dBtmStart;				// Trigger Start
-			double dTrigE = dTrigS + (dPeriod) * m_pEquipData->dBtmCount ;	// Trigger End
+			double dTrigS = m_pEquipData->dBtmStartZ;				// Trigger Start
+			double dTrigE = dTrigS + (dPeriod) * m_pEquipData->nBtmCount ;	// Trigger End
 			dBtmZ = dTrigE + (dPeriod/10);								// Motion End (가감속)
 			double dVelocity = m_pEquipData->dBtmVelocity;
 			g_objAJinAXL.Start_Scan(eVision::BC, AX_BTM_INSPECTOR_Z, dBtmZ, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);

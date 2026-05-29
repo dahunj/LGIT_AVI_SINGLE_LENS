@@ -48,15 +48,23 @@ typedef struct tag_EQUIP_DATA {
 	int		nResultTestNg;		// Result Test Ng Ratio (0~100)
 
 	//Trigger 
-	double	dTopStart;
-	int	dTopCount;
+	double	dTopStartZ;
+	int		nTopCount;
 	double	dTopPeriod;
 	double	dTopVelocity;
+	double	dTopStartX;
+	double  dTopStartY;
+	double	dTopPitchX;
+	double	dTopPitchY;
 
-	double	dBtmStart;
-	int	dBtmCount;
+	double	dBtmStartZ;
+	int		nBtmCount;
 	double	dBtmPeriod;
 	double	dBtmVelocity;
+	double	dBtmStartX;
+	double  dBtmStartY;
+	double	dBtmPitchX;
+	double	dBtmPitchY;
 
 	int		nVisionDir;
 

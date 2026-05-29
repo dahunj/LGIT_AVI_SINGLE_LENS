@@ -148,16 +148,17 @@ void CManualBtmDlg::OnBtnBtmInspectXClick(UINT nID)
 	}
 	if(nIndex == eBtmInspect_X::ScanStart)
 	{
-		g_objCommon.Move_Position(AX_BTM_INSPECTOR_X, eTopInspect_X::ScanStart);
+		double dStart = pEquipData->dBtmStartX;
+		g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_X, dStart);
 	}
 	if(nIndex == eBtmInspect_X::PitchP)
 	{		
-		double dPitch = g_objDataManager.Get_pMoveData()->dBtmInspectorZ[eTopInspect_X::PitchP];
+		double dPitch = pEquipData->dZigPitchX;
 		g_objAJinAXL.Move_Relative(AX_BTM_INSPECTOR_X, dPitch);
 	}
 	if(nIndex == eBtmInspect_X::PitchM)
 	{
-		double dPitch = g_objDataManager.Get_pMoveData()->dBtmInspectorZ[eTopInspect_X::PitchP];
+		double dPitch = pEquipData->dZigPitchX;
 		g_objAJinAXL.Move_Relative(AX_BTM_INSPECTOR_X, -dPitch);
 	}
 	m_strLog.Format("[Manual Btm Inspector X] X (%d) Click", nIndex);
@@ -178,16 +179,17 @@ void CManualBtmDlg::OnBtnBtmInspectYClick(UINT nID)
 	}
 	if(nIndex == eBtmInspect_Y::ScanStart)
 	{
-		g_objCommon.Move_Position(AX_BTM_INSPECTOR_Y, eBtmInspect_Y::ScanStart);
+		double dStart = pEquipData->dBtmStartY;
+		g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_Y, dStart);
 	}
 	if(nIndex == eBtmInspect_Y::PitchP)
 	{		
-		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorY[eBtmInspect_Y::PitchP];
+		double dPitch = pEquipData->dZigPitchY;
 		g_objAJinAXL.Move_Relative(AX_BTM_INSPECTOR_Y, dPitch);
 	}
 	if(nIndex == eBtmInspect_Y::PitchM)
 	{
-		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorY[eBtmInspect_Y::PitchP];
+		double dPitch = pEquipData->dZigPitchY;
 		g_objAJinAXL.Move_Relative(AX_BTM_INSPECTOR_Y, -dPitch);
 	}
 	m_strLog.Format("[Manual Btm Inspector Y] Y (%d) Click", nIndex);
@@ -208,7 +210,7 @@ void CManualBtmDlg::OnBtnBtmInspectZClick(UINT nID)
 	}
 	if(nIndex == eBtmInspect_Z::ScanStart)
 	{
-		double dStart = pEquipData->dTopStart;
+		double dStart = pEquipData->dTopStartZ;
 		g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_Z, dStart - (pEquipData->dBtmPeriod/4));		
 	}
 	if(nIndex == eBtmInspect_Z::ScanEnd)
@@ -382,8 +384,8 @@ BOOL CManualBtmDlg::BtmScan_Run()
 		if (g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Z)) 
 		{
 			double dPeriod = pEquipData->dBtmPeriod;	// 33mm
-			double dTrigS = pEquipData->dBtmStart;				// Trigger Start
-			double dTrigE = dTrigS + dPeriod * pEquipData->dBtmCount;	// Trigger End
+			double dTrigS = pEquipData->dBtmStartZ;				// Trigger Start
+			double dTrigE = dTrigS + dPeriod * pEquipData->nBtmCount;	// Trigger End
 			dTopZ = dTrigE + (dPeriod/4);								// Motion End (°¡°¨¼Ó)
 			double dVelocity = pEquipData->dBtmVelocity;
 			g_objAJinAXL.Start_Scan(eVision::BC, AX_BTM_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);

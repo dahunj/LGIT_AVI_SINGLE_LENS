@@ -9,7 +9,6 @@
 #include "Common.h"
 
 #include "Inspector.h"
-#include "BarcodeLot.h"
 
 #include "SequenceInit.h"
 #include "SequenceMain.h"
@@ -1087,14 +1086,14 @@ LRESULT CWorkDlg::OnUpdateVisionInfo(WPARAM nVision, LPARAM lParam)
 
 LRESULT CWorkDlg::OnUpdateBarcode(WPARAM wParam, LPARAM lParam)
 {
-	CString sBarcode = g_objBarcodeLot.Get_BarcodeLot();
+	CString sBarcode;// = g_objBarcodeLot.Get_BarcodeLot();
 	sBarcode.Replace("\r","");
 	sBarcode.Replace("\n","");
 	CString strTemp, strText;
 
 	if (sBarcode.GetLength() < 2) return 0;
 
-		
+
 	return 0;
 }
 

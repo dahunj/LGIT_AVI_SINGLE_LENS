@@ -36,10 +36,10 @@ public:
 	CIPAddressCtrl	m_ipaAviIp;
 
 	CStaticCS	m_stcZigData[4];
-	CStaticCS	m_stcTriggerData[8];
+	CStaticCS	m_stcTriggerTop[8];
+	CStaticCS	m_stcTriggerBtm[8];
 
-	CStaticCS	m_stcElvData[1];
-	
+	CStaticCS	m_stcElvData[1];	
 
 	CGroupCS	m_grpTower;
 	CLabelCS	m_lblTower[10];
@@ -91,7 +91,8 @@ public:
 
 	afx_msg void OnStnClickedStcDoorlockTime();
 	afx_msg void OnStcZigDataClick(UINT nID);
-	afx_msg void OnStcTriggerDataClick(UINT nID);
+	afx_msg void OnStcTriggerTopClick(UINT nID);
+	afx_msg void OnStcTriggerBtmClick(UINT nID);
 	afx_msg void OnStcElvDataClick(UINT nID);
 	afx_msg void OnBnClickedBtnModelAdd();
 	afx_msg void OnStnClickedStcEquipModel();

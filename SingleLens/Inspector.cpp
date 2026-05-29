@@ -257,21 +257,21 @@ void CInspector::Get_AMoveRequest(int nVPc, CString sGbn, CString sZ1)
 	if(sGbn == "TC") m_dTopZ = atof(sZ1);
 	if(sGbn == "BC") m_dBtmZ = atof(sZ1);
 
-	m_pEquipData->dTopStart = m_dTopZ;
-	m_pEquipData->dBtmStart = m_dBtmZ;
+	m_pEquipData->dTopStartZ = m_dTopZ;
+	m_pEquipData->dBtmStartZ = m_dBtmZ;
 	if(theApp.Get_MainMode() == MODE_MANUAL)
 	{
-		if(sGbn == "TC") g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z,m_pEquipData->dTopStart );
-		if(sGbn == "BC") g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_Z,m_pEquipData->dBtmStart );
+		if(sGbn == "TC") g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z,m_pEquipData->dTopStartZ );
+		if(sGbn == "BC") g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_Z,m_pEquipData->dBtmStartZ );
 		while (1)
 		{
 			theApp.DoEvents();
-			if(g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_Z, m_pEquipData->dTopStart))
+			if(g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_Z, m_pEquipData->dTopStartZ))
 			{
 				if(sGbn == "TC") g_objInspector.Set_MoveComplete(VISION_PC1, "TC");				
 				break;
 			}
-			if(g_objAJinAXL.Is_MoveDone(AX_BTM_INSPECTOR_Z, m_pEquipData->dTopStart))
+			if(g_objAJinAXL.Is_MoveDone(AX_BTM_INSPECTOR_Z, m_pEquipData->dTopStartZ))
 			{				
 				if(sGbn == "BC") g_objInspector.Set_MoveComplete(VISION_PC1, "BC");
 				break;

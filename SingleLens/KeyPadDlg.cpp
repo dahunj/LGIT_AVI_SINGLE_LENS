@@ -5,8 +5,6 @@
 #include "KeyPadDlg.h"
 #include "afxdialogex.h"
 
-#include "BarcodeLot.h"
-
 // CKeyPadDlg 대화 상자입니다.
 
 IMPLEMENT_DYNAMIC(CKeyPadDlg, CDialogEx)

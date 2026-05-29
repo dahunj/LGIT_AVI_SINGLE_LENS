@@ -24,7 +24,7 @@
 #include "VersionDlg.h"
 
 #include "Inspector.h"
-#include "BarcodeLot.h"
+
 
 
 
@@ -144,8 +144,9 @@ BOOL CSingleLensDlg::OnInitDialog()
 
 	g_objCommon.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
 	g_objInspector.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
-	g_objBarcodeLot.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
 	
+
+
 	g_dlgOperator.Create(COperatorDlg::IDD, this);
 	g_dlgInitial.Create(CInitialDlg::IDD, this);
 	g_dlgWork.Create(CWorkDlg::IDD, this);
@@ -252,7 +253,7 @@ void CSingleLensDlg::OnDestroy()
 	g_dlgOperator.DestroyWindow();
 
 	g_objInspector.DestroyWindow();
-	g_objBarcodeLot.DestroyWindow();
+	
 	
 	g_objCommon.DestroyWindow();
 		
@@ -291,7 +292,7 @@ void CSingleLensDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	gData.sOperID = "";
 	
 		
-	if (!g_objBarcodeLot.Initialize()) { Exit_System(EXIT_SYSTEM_BARCODE); return; }
+
 
 	char myCom[256];
 	gethostname(myCom, sizeof(myCom));
@@ -899,9 +900,7 @@ void CSingleLensDlg::Exit_System(int nExitNo)
 	DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
 	pDY03->oInsideLight = FALSE;
 	g_objAJinAXL.Write_Output(3);
-
-	g_objBarcodeLot.Terminate();	
-	
+		
 	g_objInspector.Terminate();
 	g_objAJinAXL.Terminate();
 

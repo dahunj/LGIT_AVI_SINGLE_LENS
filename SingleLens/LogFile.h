@@ -34,6 +34,7 @@ public:
 	void Save_PCLog(int nPNo, CString sLog);
 	
 	void Save_MCCLog(const CString& sLog);
+	void Save_BarcodeLog(const CString& sLog);
 
 	
 	

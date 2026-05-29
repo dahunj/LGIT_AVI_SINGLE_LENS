@@ -190,17 +190,18 @@ void CManualCleanDlg::OnBtnTopInspectXClick(UINT nID)
 	}
 	if(nIndex == eTopInspect_X::ScanStart)
 	{
-		g_objCommon.Move_Position(AX_TOP_INSPECTOR_X, eTopInspect_X::ScanStart);
+		double dStart = pEquipData->dTopStartX;
+		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_X, dStart);
 	}
 	if(nIndex == eTopInspect_X::PitchP)
 	{		
-		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorZ[eTopInspect_X::PitchP];
-		g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_X, dPitch);
+		double dPitch = pEquipData->dZigPitchX;
+		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_X, dPitch);
 	}
 	if(nIndex == eTopInspect_X::PitchM)
 	{
-		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorZ[eTopInspect_X::PitchP];
-		g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_X, -dPitch);
+		double dPitch = pEquipData->dZigPitchX;
+		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_X, -dPitch);
 	}
 	m_strLog.Format("[Manual Top Inspector X] X (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);
@@ -220,17 +221,18 @@ void CManualCleanDlg::OnBtnTopInspectYClick(UINT nID)
 	}
 	if(nIndex == eTopInspect_Y::ScanStart)
 	{
-		g_objCommon.Move_Position(AX_TOP_INSPECTOR_Y, eTopInspect_Y::ScanStart);
+		double dStart = pEquipData->dTopStartY;
+		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Y, dStart);
 	}
 	if(nIndex == eTopInspect_Y::PitchP)
 	{		
-		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorY[eTopInspect_Y::PitchP];
-		g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_Y, dPitch);
+		double dPitch = pEquipData->dZigPitchY;
+		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Y, dPitch);
 	}
 	if(nIndex == eTopInspect_Y::PitchM)
 	{
-		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorY[eTopInspect_X::PitchP];
-		g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_Y, -dPitch);
+		double dPitch = pEquipData->dZigPitchY;
+		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Y, -dPitch);
 	}
 	m_strLog.Format("[Manual Top Inspector Y] Y (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);
@@ -250,7 +252,7 @@ void CManualCleanDlg::OnBtnTopInspectZClick(UINT nID)
 	}
 	if(nIndex == eTopInspect_Z::ScanStart)
 	{
-		double dStart = pEquipData->dTopStart;
+		double dStart = pEquipData->dTopStartZ;
 		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, dStart - (pEquipData->dTopPeriod/4));		
 	}
 	if(nIndex == eTopInspect_Z::ScanEnd)
@@ -308,8 +310,8 @@ BOOL CManualCleanDlg::TopScan_Run()
 		{
 			m_nScanCase = 3;
 			double dPeriod = pEquipData->dTopPeriod;	// 33mm
-			double dTrigS = pEquipData->dTopStart;				// Trigger Start
-			double dTrigE = dTrigS + dPeriod * pEquipData->dTopCount;	// Trigger End
+			double dTrigS = pEquipData->dTopStartZ;				// Trigger Start
+			double dTrigE = dTrigS + dPeriod * pEquipData->nTopCount;	// Trigger End
 			dTopZ = dTrigE + (dPeriod/4);								// Motion End (°¡°¨¼Ó)
 			double dVelocity = pEquipData->dTopVelocity;
 			g_objAJinAXL.Start_Scan(eVision::TC, AX_TOP_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);

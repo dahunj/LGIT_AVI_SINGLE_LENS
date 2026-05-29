@@ -79,7 +79,7 @@ void CLogFile::Save_AlarmLog(CString sLog)
 	GetLocalTime(&time);
 
 	CString strFile, strSave;
-	strFile.Format("%s\\%04d%02d%02d.txt", strPath, time.wYear, time.wMonth, time.wDay);
+	strFile.Format("%s\\%04d%02d%02d_Alarm.txt", strPath, time.wYear, time.wMonth, time.wDay);
 
 	CFile file;
 	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
@@ -141,7 +141,7 @@ void CLogFile::Save_HandlerLog(CString sLog)
 	GetLocalTime(&time);
 
 	CString strFile, strSave;
-	strFile.Format("%s\\%04d%02d%02d.txt", strPath, time.wYear, time.wMonth, time.wDay);
+	strFile.Format("%s\\%04d%02d%02d_Handler.txt", strPath, time.wYear, time.wMonth, time.wDay);
 
 	CFile file;
 	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
@@ -205,7 +205,7 @@ void CLogFile::Save_InspectorLog(CString sLog)
 	GetLocalTime(&time);
 
 	CString strFile, strSave;
-	strFile.Format("%s\\%04d%02d%02d.txt", strPath, time.wYear, time.wMonth, time.wDay);
+	strFile.Format("%s\\%04d%02d%02d_Inspector.txt", strPath, time.wYear, time.wMonth, time.wDay);
 
 	CFile file;
 	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
@@ -528,7 +528,7 @@ void CLogFile::Save_ECMTracking(CString sLog, int nTrayCount, int nPosX, int nPo
 	Create_Folder(strPath);
 
 	if (gLot.sLotID[nPortNo-1] == "") gLot.sLotID[nPortNo-1] = "LOT_ID";
-	strFile.Format("%s\\%s_%04d%02d%02d%02d_CapTracking.csv", strPath, gLot.sLotID[nPortNo-1], time.wYear, time.wMonth, time.wDay, time.wHour);
+	strFile.Format("%s\\%s_%04d%02d%02d%02d_Tracking.csv", strPath, gLot.sLotID[nPortNo-1], time.wYear, time.wMonth, time.wDay, time.wHour);
 
 
 	strTitle.Format("Time,Barcode,Judge,Port No,Tray No,CM No,Load Stage,Load Picker,Index Rotational Pos(Load),Index Pocket No(Load),NG Picker,NG Stage,Good Picker,Index Good No,Index Good Jig,Transfer Picker,NG Tray,NG Y,NG X,Ship Tray,Ship Y,Ship X\r\n");
@@ -627,6 +627,39 @@ void CLogFile::Save_PCLog(int nPNo, CString sLog)
 
 
 }
+
+
+void CLogFile::Save_BarcodeLog(const CString& sLog)
+{
+	CString strPath = gsCurrentDir + "\\LOG\\Barcode";
+	Create_Folder(strPath);
+
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+
+	CString strFile, strSave;
+	strFile.Format("%s\\%04d%02d%02d_Barcode.txt", strPath, time.wYear, time.wMonth, time.wDay);
+
+	g_csBarcodeLog.Lock();
+	
+	CFile file;
+	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyNone)) {
+		try {
+			file.SeekToEnd();
+
+			strSave.Format("%02d:%02d:%02d %03d,%s\r\n", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, sLog);
+
+			file.Write(strSave, strSave.GetLength());
+			file.Close();
+
+		} catch (CFileException *pEx) {
+			pEx->Delete();
+		}
+	}
+
+	g_csBarcodeLog.Unlock();
+}
+
 
 
 void CLogFile::Save_MCCLog(const CString& sLog)
