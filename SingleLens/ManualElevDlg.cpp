@@ -467,9 +467,9 @@ void CManualElevDlg::OnBtnElevZClick(UINT nID)
 	int nIndex = nID - IDC_BTN_ELEV_Z_0;
 
 
-	if(nIndex == eElv_Z::Ready)
+	if(nIndex == eElv_Z::FromLdCV)
 	{
-		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Ready);
+		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::FromLdCV);
 	}
 
 	if(nIndex == eElv_Z::Down)
@@ -477,9 +477,9 @@ void CManualElevDlg::OnBtnElevZClick(UINT nID)
 		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Down);
 	}
 
-	if(nIndex == eElv_Z::Up)
+	if(nIndex == eElv_Z::ToUldCV)
 	{
-		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Up);
+		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::ToUldCV);
 	}
 
 	if(nIndex == eElv_Z::Pitch)

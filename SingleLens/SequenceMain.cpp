@@ -472,7 +472,7 @@ BOOL CSequenceMain::LoadConveyorRun()
 			nDetectCnt[0]++;nDetectCnt[1] = 0; 
 			if(nDetectCnt[0] < 5) return TRUE;
 						
-			g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Ready);
+			g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::FromLdCV);
 			m_nMZElevCase = ElvBranch::Start; 
 
 			m_nLoadConveyorCase = eLoadCVBr::ElvWait; m_nLoadConveyorLoop.Set_LoopTime(5000);
@@ -521,7 +521,7 @@ BOOL CSequenceMain::MZElevRun()
 		m_nMZElevLoop.Set_LoopTime(5000);
 		return TRUE;
 	case ElvBranch::Start:
-		if(g_objCommon.Get_LdStopper1Down() && g_objCommon.Check_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Ready))
+		if(g_objCommon.Get_LdStopper1Down() && g_objCommon.Check_Position(AX_MZ_ELEVATOR_Z, eElv_Z::FromLdCV))
 		{					
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load MZ to Elev Start");
@@ -790,7 +790,7 @@ BOOL CSequenceMain::MZElevRun()
 	case ElvBranch::Unload:
 		{
 			nMZCnt = 0;
-			g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Ready);
+			g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::ToUldCV);
 			m_nMZElevCase++;m_nMZElevLoop.Set_LoopTime(25000);
 		}			
 		break;
@@ -802,7 +802,7 @@ BOOL CSequenceMain::MZElevRun()
 			m_pDX01->iUldCvMZExist3 = FALSE;
 			m_pDX01->iUldCvMZExist4 = FALSE;
 		}
-		if(!g_objCommon.Check_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Ready)) break; 
+		if(!g_objCommon.Check_Position(AX_MZ_ELEVATOR_Z, eElv_Z::ToUldCV)) break; 
 		if(m_pDX01->iUldCvMZExist1L)
 		{
 			nMZDetectCnt[0]++;
@@ -1071,7 +1071,7 @@ BOOL CSequenceMain::FeederRun()
 			gData.bFeederWorkWait = TRUE; // load Start
 
 			dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] + m_pEquipData->dElevPitchZ * (gData.nTNoPick[eMZ::Load] - 1);
-			//dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] - m_pMoveData->dMZElevZ[eElv_Z::Pitch] * (gData.nTNoPick[eMZ::Load] - 1) ;
+			
 			g_objAJinAXL.Move_Absolute(AX_MZ_ELEVATOR_Z, dPosZ);
 
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZLoad);
@@ -1276,7 +1276,7 @@ BOOL CSequenceMain::FeederRun()
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZLoad);
 
 			dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] + m_pEquipData->dElevPitchZ * (gData.nSlotNoFeeder - 1);
-			//dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] - m_pMoveData->dMZElevZ[eElv_Z::Pitch] * (gData.nTNoPick[eMZ::Load] - 1) ;
+			
 			g_objAJinAXL.Move_Absolute(AX_MZ_ELEVATOR_Z, dPosZ);
 
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
@@ -1350,10 +1350,8 @@ BOOL CSequenceMain::FeederRun()
 	case 52:
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready) || g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZReady) )
 		{
-			//¨ú¨¡¡¤¢® ¨¬IAI ¡ÆE¡íc 
 			dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] + m_pEquipData->dElevPitchZ * (gData.nTNoPick[eMZ::Ready] - 1) ;
-			//dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] - m_pMoveData->dMZElevZ[eElv_Z::Pitch] * (gData.nTNoPick[eMZ::Ready] - 1) ;
-			
+						
 			gData.bFeederWorkWait = TRUE; // load Start
 			g_objAJinAXL.Move_Absolute(AX_MZ_ELEVATOR_Z, dPosZ);
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZReady);
@@ -2677,7 +2675,7 @@ BOOL CSequenceMain::UnloadConveyorRun()
 		break;
 	case 5:
 		g_objCommon.Set_LdStopper1Down();
-		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Ready);
+		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::FromLdCV);
 		m_nMZElevCase = ElvBranch::Start; // Slide over Check 
 		m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(gData.nLTime[eLT::CV]);	
 	case 6:

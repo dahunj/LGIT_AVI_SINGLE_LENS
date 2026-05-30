@@ -91,21 +91,12 @@
 //#define LOT_BARCODE_USE
 
 
-
-
-// 테스트 런 옵션
-//#define DRY_RUN_TEST		// Dry Run Test 시 사용
-
-// #define BARCODE_CHECK   	// Cap/Ship Barcode Check
-
 #define SIM_WAITTIMES	 1		//
 #define SIM_WAITTIMEM	 1		//
 #define	VELOCITY_WEIGHT	 40
 
 //Magazine Slot MAX Number 
 const int SLOT_NO_MAX = 10;
-
-const int ZIG_MAX = 500;
 
 //Zig X-Y
 const int ZIG_X = 40, ZIG_Y = 20; // MAX

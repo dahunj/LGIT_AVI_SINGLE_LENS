@@ -338,11 +338,11 @@ BOOL CSequenceInit::Initial_MZ_Elevator()
 		break;
 	case 4:
 		if (!m_tiMZElevLoop.Waiting_Time(100)) break;
-		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Ready);
+		g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::FromLdCV);
 		m_niMZElevCase++; m_tiMZElevLoop.Set_LoopTime(5000);
 		break;
 	case 5:
-		if(g_objCommon.Check_Position(AX_MZ_ELEVATOR_Z, eElv_Z::Ready))
+		if(g_objCommon.Check_Position(AX_MZ_ELEVATOR_Z, eElv_Z::FromLdCV))
 		{
 			g_objLogFile.Save_HandlerLog("[Initial Sequence] - MZ Elevator Complete");
 			m_niMZElevCase = 90; m_tiMZElevLoop.Set_LoopTime(5000);

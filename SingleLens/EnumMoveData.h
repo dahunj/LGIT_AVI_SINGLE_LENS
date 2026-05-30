@@ -4,12 +4,12 @@ struct eElv_Z
 {
 	enum dtName
 	{
-		Ready = 0,
+		FromLdCV = 0,
 		Down = 1,
-		Up = 2,		
+		ToUldCV = 2,		
 		Pitch = 3,
 		PitchMinus = 4,
-	
+			
 	};
 };
 

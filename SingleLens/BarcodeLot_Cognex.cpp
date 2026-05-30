@@ -10,10 +10,10 @@
 
 #include "SingleLensDlg.h"
 
-#define COGNEX_IP_1		"192.168.0.31"	// Load C/V 2F IP
-#define COGNEX_IP_2		"192.168.0.32"	// Load C/V 1F IP
-#define COGNEX_IP_3		"192.168.0.33"	// Unload C/V 2F IP
-#define COGNEX_IP_4		"192.168.0.34"	// Unload C/V 1F IP
+#define COGNEX_IP_1		"192.168.0.101"	// Magazine
+#define COGNEX_IP_2		"192.168.0.102"	// Coating Zig 
+//#define COGNEX_IP_3		"192.168.0.33"	// 
+//#define COGNEX_IP_4		"192.168.0.34"	// 
 #define COGNEX_PORT		9000			// Handler Port (Server)
 
 #define LF	0x0A

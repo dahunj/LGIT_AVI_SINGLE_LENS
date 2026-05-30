@@ -465,7 +465,7 @@ void CWorkDlg::OnStcLensCountClick(UINT nID)
 	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
 
 	int nLensCnt = atoi(strNew);
-	if (nLensCnt < 1 || nLensCnt > ZIG_MAX) {
+	if (nLensCnt < 1 || nLensCnt > ZIG_X*ZIG_Y) {
 		m_stcLensCnt[ID].SetWindowText("");
 		if (gData.nLanguage == 0) AfxMessageBox(_T("Zig당 Lens수량은 200개이상 입력할수 없습니다.........."));
 		else					  AfxMessageBox(_T("Lens quantity per Zig cannot be entered more than 200."));
