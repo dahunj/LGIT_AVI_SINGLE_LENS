@@ -79,7 +79,7 @@ void CInspector::Receive_Command(int nVPc, CString sCommand)
 	}
 	else if (strCmd == "LOT")
 	{
-		if (strOp == "START") Get_LotStart(strA[0]);
+		if (strOp == "START") Get_LotStart(strA[0], strA[1]);
 	}
 	
 	
@@ -129,12 +129,12 @@ void CInspector::Get_StatusUpdate(int nInspector, CString sStatus)
 	Set_StatusReply(nInspector);
 }
 
-void CInspector::Get_LotStart(CString sLotID)
+void CInspector::Get_LotStart(CString sMZID, CString sMZNo)
 {
-	/*gData.sLotID[0] = sLotID;
+	 int nMNo = atoi(sMZNo);
 
-	Set_LotReady(1, gData.sLotID[0]);
-	Set_LotReady(2, gData.sLotID[0]);
+	Set_LotReady(1, sMZID, nMNo);
+	/*Set_LotReady(2, gData.sLotID[0]);
 	Set_LotReady(3, gData.sLotID[0]);
 	Set_LotReady(4, gData.sLotID[0]);*/
 }
@@ -200,12 +200,23 @@ void CInspector::Get_LoadComplete(CString sGbn, CString sMZID, CString sMZNo, CS
 	nTNo1 = atoi(sTNo);
 	nCNo1 = atoi(sLensNo);
 	
+	if (nTNo1 != -1 && nCNo1 != -1) Set_TriggerRequest(VISION_PC1, sGbn, sMZID, sMZNo, sTNo, sLensNo);
+	Sleep(10);
+
 	if (nTNo1 != -1 && nCNo1 != -1) Set_ScanComplete(VISION_PC1, sGbn, sMZID, sMZNo, sTNo, sLensNo);
 	Sleep(10);
 		
 	if (nTNo1 != -1 && nCNo1 != -1) Set_InspectComplete(VISION_PC1, sGbn, sMZID, sMZNo, sTNo, sLensNo);
 	Sleep(10);
 	
+}
+
+
+void CInspector::Set_TriggerRequest(int nInspector, CString sGbn, CString sMZID, CString sMZNo, CString sTNo, CString sLensNo)
+{
+	CString	strSendCmd;
+	strSendCmd.Format("TRIGGER,REQUEST,%s,%s,%s,%s,%s", sGbn, sMZID, sMZNo, sTNo, sLensNo);
+	Send_Command(nInspector, strSendCmd);
 }
 
 void CInspector::Set_ScanComplete(int nInspector, CString sGbn, CString sMZID, CString sMZNo, CString sTNo, CString sLensNo)
@@ -230,8 +241,27 @@ void CInspector::Set_InspectComplete(int nInspector, CString sGbn, CString sMZID
 		return;
 	}
 
-	m_sJudge[nPortNo - 1][nTNo - 1][nCNo - 1] = "G";
-	m_sCode[nPortNo - 1][nTNo - 1][nCNo - 1] = "G";
+
+	int nRand = Get_Random(0, 99);
+	int nNg = 50;
+
+	int nJudge = nRand < nNg ? 2 : 1;
+
+
+	if(nJudge == 2)
+	{
+
+		m_sJudge[nPortNo - 1][nTNo - 1][nCNo - 1] = "N";
+		m_sCode[nPortNo - 1][nTNo - 1][nCNo - 1] = "NG";
+	}
+	else 
+	{
+
+		m_sJudge[nPortNo - 1][nTNo - 1][nCNo - 1] = "G";
+		m_sCode[nPortNo - 1][nTNo - 1][nCNo - 1] = "G";
+	}
+
+
 
 	
 	
@@ -239,6 +269,14 @@ void CInspector::Set_InspectComplete(int nInspector, CString sGbn, CString sMZID
 	Send_Command(nInspector, strSendCmd);
 }
 
+
+int CInspector::Get_Random(int nStart, int nEnd)
+{
+	static BOOL bSeed = FALSE;
+	if (nStart >= nEnd) return 0;
+	if (!bSeed) { srand((unsigned)time(NULL)); bSeed = TRUE; }
+	return (rand() % (nEnd - nStart + 1) + nStart);
+}
 
 
 
@@ -256,10 +294,10 @@ void CInspector::Set_StatusReply(int nInspector)
 	Send_Command(nInspector, strSendCmd);
 }
 
-void CInspector::Set_LotReady(int nInspector, CString sLotID)
+void CInspector::Set_LotReady(int nInspector, CString sMZID, int nMZNo)
 {
 	CString	strSendCmd;
-	strSendCmd.Format("LOT,READY,%s,1,1928,2059,MEM", sLotID);
+	strSendCmd.Format("LOT,READY,%s,%d,1928,2059,MEM", sMZID, nMZNo);
 	Send_Command(nInspector, strSendCmd);
 }
 

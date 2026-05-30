@@ -155,6 +155,18 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 
 		m_strErrMsg = strErrMsg + strErrPick + strMes + m_strErrSubMsg;
 
+		if (m_nErrNo == 3408 || 4605 || 4905)
+		{
+			m_btnErrRetry.EnableWindow(TRUE);
+			m_btnErrRetry.ShowWindow(SW_SHOW);
+		}
+		else
+		{
+			m_btnErrRetry.EnableWindow(FALSE);
+			m_btnErrRetry.ShowWindow(SW_HIDE);
+		}
+
+
 		strShow = m_strErrMsg;
 		if (strShow.Left(1) == "#") strShow.Delete(0);
 		strShow.Replace("#", "\n\n");
@@ -256,18 +268,29 @@ void CErrorDlg::OnBnClickedBtnErrSkip()
 
 void CErrorDlg::OnBnClickedBtnErrRetry()
 {
-// 	g_objLogFile.Save_HandlerLog("[Error Mode] RETRY button push");
-// 
-// 	switch (m_nErrNo) {
-// 	}
-// 
-// 	ShowWindow(SW_HIDE);
-// 	g_dlgWork.Set_AutoRun(TRUE);
+	g_objLogFile.Save_HandlerLog("[Error Mode] RETRY button push");
+
+	switch (m_nErrNo) 
+	{
+	case 3408:
+		g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 9);
+		break;
+	case 4605:
+		g_objSequenceMain.Set_MainRunCase(AUTO_TOP_INSPECT, 3);
+		break;
+	case 4905:
+		g_objSequenceMain.Set_MainRunCase(AUTO_BTM_INSPECT, 3);
+		break;
+
+	}
+
+	ShowWindow(SW_HIDE);
+	g_dlgWork.Set_AutoRun(TRUE);
 }
 
 void CErrorDlg::OnBnClickedBtnErrOk()
 {
-	//if (m_nErrNo == 3706 || m_nErrNo == 6220) { gData.bCapDirSkip = FALSE; gData.bCapDirRetry = TRUE; }
+	
 	ShowWindow(SW_HIDE);
 	g_objLogFile.Save_HandlerLog("[Error Mode] OK button push");
 }

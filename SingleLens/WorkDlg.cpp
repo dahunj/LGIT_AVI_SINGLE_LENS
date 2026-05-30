@@ -1069,13 +1069,15 @@ LRESULT CWorkDlg::OnUpdateVisionInfo(WPARAM nVision, LPARAM lParam)
 		{
 			for (int j = 0; j < gData.nLensCntX; j++) 
 			{
-				//if		(gData.nInspectInfo[gData.nMZNoMainIndex[eMainIndex::Mark]][j][i] == eLensState::MarkDone ) m_grdMarking.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0x00));	// Reserve
-				//else if (gData.nInspectInfo[gData.nMZNoMainIndex[eMainIndex::Mark]][j][i] == eLensState::MarkReady) m_grdMarking.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
-				//else				m_grdMarking.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
-
-				if		(gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::MarkDone ) m_grdMarking.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0x00));	// Reserve
+			
+				if		(gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::Marked ) m_grdMarking.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0x00));	// Reserve
+				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::NotMarked) m_grdMarking.Set_CellBackClr(i, j, RGB(0x00, 0xFF, 0xFF));	// Empty
 				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::MarkReady) m_grdMarking.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
 				else				m_grdMarking.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
+
+				//if		(gData.nInspectInfo[gData.nMZNoMainIndex[eMainIndex::Mark]-1][j][i] == 2 ) m_grdMarking.Set_CellBackClr(i, j, RGB(0xFF, 0x00, 0x00));	// Reserve
+				//else if (gData.nInspectInfo[gData.nMZNoMainIndex[eMainIndex::Mark]-1][j][i] != 2) m_grdMarking.Set_CellBackClr(i, j, RGB(0x00, 0x00, 0xFF));	// Empty
+				//else				m_grdMarking.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
 
 			}
 		}

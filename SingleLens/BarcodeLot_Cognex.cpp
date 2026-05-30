@@ -68,7 +68,7 @@ LRESULT CBarcodeLot_Cognex::OnServerReceive(WPARAM wClientIdx, LPARAM lServerPor
 
 	if (!m_Server.Get_ClientInfo(nClient, strIP, nPort)) return 0;
 
-	int nIdx = (strIP == COGNEX_IP_1 ? 0 : (strIP == COGNEX_IP_2 ? 1 : (strIP == COGNEX_IP_3 ? 2 : (strIP == COGNEX_IP_4 ? 3 : -1))));
+	int nIdx = (strIP == COGNEX_IP_1 ? 0 : 1);
 	if (nIdx < 0) return 0;
 
 	BYTE byRecv[1025] = { 0 };	// ¸¶Áö¸· 0x00
@@ -152,7 +152,7 @@ BOOL CBarcodeLot_Cognex::Set_Trigger(int nNo, BOOL bOn)
 	int nClient = -1;
 
 	m_strBarcode[nNo-1] = "";
-	CString strTarget = (nNo == 1 ? COGNEX_IP_1 : (nNo == 2 ? COGNEX_IP_2 : (nNo == 3 ? COGNEX_IP_3 : (nNo == 4 ? COGNEX_IP_4 : ""))));
+	CString strTarget = (nNo == 1 ? COGNEX_IP_1 : COGNEX_IP_2 );
 	int nCount = m_Server.Get_ClientCount();
 
 	for (int i = 0; i < nCount; i++) {
