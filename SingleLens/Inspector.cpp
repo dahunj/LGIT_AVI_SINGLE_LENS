@@ -174,10 +174,7 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 
 	int nV = (sGbn == "TC" ? eVision::TC : (sGbn == "BC" ? eVision::BC : -1));
 	if (nV == -1) { g_objCommon.Show_Error(6102); return; }
-
-
-	g_objLogFile.Save_HandlerLog("ScanComplete First");
-
+		
 	if(nV == eVision::TC) //Tc
 	{
 		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_TOP_INSPECT);
@@ -189,7 +186,7 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 			//Exception_Log("Scan Complete", sGbn, nCase); 
 			//return;
 		}
-		g_objLogFile.Save_HandlerLog("Scan really Completed");
+	
 		gData.bScanDone[eVision::TC] = TRUE;
 		gData.InfoMainIndex[eMainIndex::Top][nXPos][nYPos] = eLensState::TopDone;
 		//g_objSequenceMain.Set_MainRunCase(AUTO_TOP_INSPECT, 10);
@@ -219,30 +216,33 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 	int nTNo = atoi(sTrayNo) - 1;	// Tray Index
 	int	nLNo = atoi(sLensNo) - 1;	// CM Index
 
-	if (nTNo < 0 || nTNo > 99 || nLNo < 0 || nLNo > 200) { g_objCommon.Show_Error(6101); return; }
+	if (nTNo < 0 || nTNo > 10 || nLNo < 0 || nLNo > ZIG_X*ZIG_Y) { g_objCommon.Show_Error(6101); return; }
 
 	int nV = (sGbn == "TC" ? eVision::TC : (sGbn == "BC" ? eVision::BC : -1));
 	if (nV == -1) { g_objCommon.Show_Error(6102); return; }
 
 
-	gData.cJudgeCode[nMNo][nTNo][nLNo] = *(LPSTR)(LPCTSTR)sJudge;
+	gData.cJudgeCode[nMNo][nTNo][nLNo][nV] = *(LPSTR)(LPCTSTR)sJudge;
 
 
 	int nMode = theApp.Get_MainMode();
 	int nPreInfo = gData.nInspectInfo[nMNo][nTNo][nLNo];
 
-	if		(sJudge == "N") { if (nPreInfo < 9) gData.nInspectInfo[nMNo][nTNo][nLNo] = 2; }	// NG
+	if (sJudge == "N") 
+	{  
+		gData.nInspectInfo[nMNo][nTNo][nLNo] = 2;
+	}	// NG
 	else if (sJudge != "G")  // Good
 	{ 
-		if (nPreInfo < 2 || nPreInfo > 8) gData.nInspectInfo[nMNo][nTNo][nLNo] = 2;  // Normal (20180831 유출 때문에 수정.)		
+		if (nPreInfo < 2 || nPreInfo > 8) gData.nInspectInfo[nMNo][nTNo][nLNo] = 2;  
 	}	
 
 	gData.byInspectDone[nMNo][nTNo][nLNo] |= (1 << nV);
 	
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
-	if (pEquipData->bUseTopVision && ((gData.byInspectDone[nMNo][nTNo][nLNo] >> 0) & 1) == 0) return;	// Angle
-	if (pEquipData->bUseBtmVision  && ((gData.byInspectDone[nMNo][nTNo][nLNo] >> 1) & 1) == 0) return;	// Btm1_Specular
+	if (pEquipData->bUseTopVision && ((gData.byInspectDone[nMNo][nTNo][nLNo] >> 0) & 1) == 0) return;	// TC
+	if (pEquipData->bUseBtmVision  && ((gData.byInspectDone[nMNo][nTNo][nLNo] >> 1) & 1) == 0) return;	// BC
 
 }
 

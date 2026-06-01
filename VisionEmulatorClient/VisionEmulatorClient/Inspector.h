@@ -47,8 +47,8 @@ private:
 	void Get_LotStart(CString sMZID, CString sMZNo);
 public:
 
-	CString m_sJudge[2][30][30];
-	CString m_sCode[2][30][30];
+	CString m_sJudge[10][30][30];
+	CString m_sCode[10][30][30];
 
 
 

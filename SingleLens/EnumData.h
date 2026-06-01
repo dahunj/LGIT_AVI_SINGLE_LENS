@@ -7,17 +7,28 @@ struct eLensState
 	{
 		// 0:Empty,1:Good, 2:NG, 3:Top Ready, 4: Top Done, 5: Btm Ready, 6 : Btm Done,  9:Init 
 		None = 0,
+		TopReady = 1,
+		TopDone = 2,
+		BtmReady = 3,
+		BtmDone = 4,
+		MarkReady = 5,
+		Marked = 6,
+		NotMarked = 7,
+		Init = 9,
+
+	};
+};
+
+
+struct eLensInfo
+{
+	enum eName
+	{
+		// 0:Empty,1:Good, 2:NG, 3:Top Ready, 4: Top Done, 5: Btm Ready, 6 : Btm Done,  9:Init 
+		Empty = 0,
 		Good = 1,
 		NG = 2,
-		TopReady = 3,
-		TopDone = 4,
-		BtmReady = 5,
-		BtmDone = 6,
-		MarkReady = 7,
-		Marked = 8,
-		NotMarked = 9,
-		Init = 10,
-
+		Init = 9,
 	};
 };
 

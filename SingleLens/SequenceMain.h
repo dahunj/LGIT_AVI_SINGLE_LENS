@@ -149,12 +149,17 @@ public:
 
 	void Init_MarkZig();
 	BOOL Select_MarkScanPos(int &nMarkPosX, int &nMarkPosY, int nDir);
+	void Init_InspectInfo(int nMZNo, int nTNo, int nLensNo);
 
-	BOOL Check_InspectDone(const CString& sZigID,int nMZNo, int sSlotNo, int sLensNo, DWORD dwStart);
+
+	BOOL Check_InspectDone(const CString& sZigID,int nMZNo, int sSlotNo, int sLensNo, int& nInfo, DWORD dwStart);
 	
 	void Init_MZSlot(int nSlotNo, int nX, int nY);
 
 	int Find_UnloadMZNo();
+	
+	void Write_LotJudge(int nMZNo, int nTrayNo, int nLensNo, int nInfo);
+
 };
 
 extern CSequenceMain g_objSequenceMain;

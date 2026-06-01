@@ -260,9 +260,6 @@ void CInspector::Set_InspectComplete(int nInspector, CString sGbn, CString sMZID
 		m_sJudge[nPortNo - 1][nTNo - 1][nCNo - 1] = "G";
 		m_sCode[nPortNo - 1][nTNo - 1][nCNo - 1] = "G";
 	}
-
-
-
 	
 	
 	strSendCmd.Format("INSPECT,COMPLETE,%s,%s,%s,%s,%s,%s,%s", sGbn, sMZID, sMZNo, sTNo, sLNo, m_sJudge[nPortNo - 1][nTNo - 1][nCNo - 1], m_sCode[nPortNo - 1][nTNo - 1][nCNo - 1]);

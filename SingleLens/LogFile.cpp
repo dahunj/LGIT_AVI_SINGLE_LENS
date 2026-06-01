@@ -715,6 +715,56 @@ void CLogFile::Save_MCCLog(const CString& sLog)
 }
 
 
+void CLogFile::Save_LotTime(int nMZNo,const CString& sLog)
+{
+	CString strPath1 = "D:\\EVMS\\TP\\Log";
+	CString strPath2 = "D:\\EVMS\\TP\\Backup";
+	CString strPath3;
+
+	Create_Folder(strPath1);
+	Create_Folder(strPath2);
+
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+
+	strPath3 = gsCurrentDir + "\\LOG\\LotTime";
+	Create_Folder(strPath3);
+
+	CString strFile1, strFile2, strFile3, strTitle, strTime, strPcName, strSave;
+	strFile1.Format("%s\\%s_%04d%02d%02d%02d_LOT_TIME.csv", strPath1, gData.sMZID[nMZNo-1], time.wYear, time.wMonth, time.wDay, time.wHour);
+	strFile2.Format("%s\\%s_%04d%02d%02d%02d_LOT_TIME.csv", strPath2, gData.sMZID[nMZNo-1], time.wYear, time.wMonth, time.wDay, time.wHour);
+	strFile3.Format("%s\\%s_LOT_TIME.csv", strPath3, gData.sMZID[nMZNo-1]);
+
+	CFile file;
+	if (!file.Open(strFile1, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) return;
+
+	strTitle.Format("Time,Station,Machine,Version,LotNum,TrayNo,LensNo,Barcode,TC,BC,CODE,Result\r\n");
+
+	try {
+		file.SeekToEnd();
+
+		if (file.GetLength() < 1) file.Write(strTitle, strTitle.GetLength());
+
+		strTime.Format("'%04d-%02d-%02d %02d:%02d:%02d.%03d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+
+		char szPcName[MAX_COMPUTERNAME_LENGTH + 1];
+		DWORD dwNameSize = MAX_COMPUTERNAME_LENGTH + 1;
+		GetComputerName(szPcName, &dwNameSize);
+
+		strSave.Format("%s,%s,%s\r\n", strTime, szPcName, sLog);
+
+		file.Write(strSave, strSave.GetLength());
+		file.Close();
+
+		CopyFile(strFile1, strFile2, FALSE);	// Backup
+		CopyFile(strFile1, strFile3, FALSE);	// SPC
+
+	} catch (CFileException *pEx) {
+		pEx->Delete();
+	}
+}
+
+
 
 
 

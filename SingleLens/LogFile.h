@@ -31,11 +31,11 @@ public:
 	void Save_CmTrackingLog(CString strOut, int nTrayCount, int nPosX, int nPosY, int nPortNo, int nTrayNo, int nCmNo);
 	void Save_ECMTracking(CString sLog, int nTrayCount, int nPosX, int nPosY, int nPortNo, int nTrayNo, int nCmNo);
 	void Save_Interlock(int nType);	
-	void Save_PCLog(int nPNo, CString sLog);
+	void Save_PCLog(int nMZNo, CString sLog);
 	
 	void Save_MCCLog(const CString& sLog);
 	void Save_BarcodeLog(const CString& sLog);
-
+	void Save_LotTime(int nPNo, const CString& sLog);
 	
 	
 	void Save_JobListExcel(CString sLog);	

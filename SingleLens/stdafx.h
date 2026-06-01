@@ -159,14 +159,14 @@ typedef struct
 	BOOL	ZigMap[3][10];
 	int		LensMap[3][10][ZIG_X][ZIG_Y];	
 		
-	CString	sMZIDElevLoad;
+	CString	sMZIDElevLoad[10];
 	CString	sZigIDElevLoad[10];
+
+	CString	sMZIDElevReady[10];
+	CString	sZigIDElevReady[10];
 
 	CString	sMZIDElevUnload;
 	CString	sZigIDElevUnload[10];
-
-	CString	sMZIDElevReady;
-	CString	sZigIDElevReady[10];
 	
 	CString	sMZIDFeeder;
 	CString	sZigIDFeeder;
@@ -192,7 +192,7 @@ typedef struct
 	
 	BOOL    bScanDone[2];            // 0:Top 1: Btm
 
-	char	cJudgeCode[7][10][ZIG_X*ZIG_Y];	
+	char	cJudgeCode[7][10][ZIG_X*ZIG_Y][2];	
 	int     nInspectInfo[7][10][ZIG_X*ZIG_Y];    // ????? (0:Empty, 1:Good, 2:NG, 3:NoResult, 7:Request, 8:NG, 9:Init)
 	BYTE	byInspectDone[7][10][ZIG_X*ZIG_Y];	// 검사완료 (2bit 사용 ==> 0:T1, 1:Btm1)
 
