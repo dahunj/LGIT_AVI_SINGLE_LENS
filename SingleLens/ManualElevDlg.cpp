@@ -12,6 +12,8 @@
 #include "Common.h"
 #include "SequenceMain.h"
 
+#include "BarcodeLot_Cognex.h"
+
 // CManualElevDlg 대화 상자입니다.
 
 IMPLEMENT_DYNAMIC(CManualElevDlg, CDialogEx)
@@ -31,6 +33,9 @@ void CManualElevDlg::DoDataExchange(CDataExchange* pDX)
 
 	//for (int i = 0; i < 17; i++) DDX_Control(pDX, IDC_GROUP_0 + i, m_Group[i]);
 	//for (int i = 0; i < 11; i++) DDX_Control(pDX, IDC_LABEL_0 + i, m_Label[i]);
+	DDX_Control(pDX, IDC_STC_MZ_BARCODE,m_stcBarcode);
+	DDX_Control(pDX, IDC_STC_ZIG_BARCODE,m_stcZigBarcode);
+
 	for (int i = 0; i < 1; i++) DDX_Control(pDX, IDC_STC_AXIS_POS_0 + i, m_stcAxisPos[i]);
 	for (int i = 0; i < 5; i++) DDX_Control(pDX, IDC_LED_LD_CV_EXIST_0 + i, m_LedLdCVIO[i]);
 	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_CHK_LD_CV_R_0 + i, m_ChkLdCVIO[i]);
@@ -66,6 +71,9 @@ BEGIN_MESSAGE_MAP(CManualElevDlg, CDialogEx)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_CHK_ULD_CV_R_0, IDC_CHK_ULD_CV_R_2, OnChkUldCVIOClick)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_ULD_CV_STOPPER_0, IDC_BTN_ULD_CV_STOPPER_1, OnBtnUldCVStopperClick)
 
+	ON_BN_CLICKED(IDC_BTN_MZ_BARCODE, &CManualElevDlg::OnBnClickedBtnMzBarcode)
+	ON_BN_CLICKED(IDC_BTN_MZ_BARCODE_INIT, &CManualElevDlg::OnBnClickedBtnMzBarcodeInit)
+	ON_BN_CLICKED(IDC_BTN_ZIG_BARCODE, &CManualElevDlg::OnBnClickedBtnZigBarcode)
 END_MESSAGE_MAP()
 
 // CManualElevDlg 메시지 처리기입니다.
@@ -575,3 +583,56 @@ void CManualElevDlg::OnBtnElevReadyZClick(UINT nID)
 //	}
 //}
 
+
+
+void CManualElevDlg::OnBnClickedBtnMzBarcode()
+{
+	m_stcBarcode.SetWindowText("");
+	g_objBarcodeLot_Cognex.Set_Trigger(1, TRUE);
+
+	CString strData = "";
+	if (TRUE) {
+		DWORD dwStart = GetTickCount();
+		while (GetTickCount() - dwStart < 3000) {
+			strData = g_objBarcodeLot_Cognex.Get_BarcodeLot(1);
+			if (strData != "") break;
+			theApp.DoEvents();
+		}
+		if (strData.GetLength() > 0) m_stcBarcode.SetWindowText(strData);
+		if (strData.GetLength() < 1) { g_objBarcodeLot_Cognex.Set_Trigger(1, FALSE); AfxMessageBox("Reading Fail."); }
+	}
+
+	m_strLog.Format("[Manual MZ Load] Barcode Trigger (%d) Click - No:%d, Data:%s", 1, 1, strData);
+	g_objLogFile.Save_HandlerLog(m_strLog);
+}
+
+
+void CManualElevDlg::OnBnClickedBtnMzBarcodeInit()
+{
+	DWORD dTemp = GetTickCount();
+	g_objBarcodeLot_Cognex.Terminate(); 
+	while (TRUE) { if (GetTickCount() - dTemp > 2000) break;}
+	g_objBarcodeLot_Cognex.Initialize();	Sleep(5000);
+}
+
+
+void CManualElevDlg::OnBnClickedBtnZigBarcode()
+{
+	m_stcZigBarcode.SetWindowText("");
+	g_objBarcodeLot_Cognex.Set_Trigger(2, TRUE);
+
+	CString strData = "";
+	if (TRUE) {
+		DWORD dwStart = GetTickCount();
+		while (GetTickCount() - dwStart < 3000) {
+			strData = g_objBarcodeLot_Cognex.Get_BarcodeLot(2);
+			if (strData != "") break;
+			theApp.DoEvents();
+		}
+		if (strData.GetLength() > 0) m_stcZigBarcode.SetWindowText(strData);
+		if (strData.GetLength() < 1) { g_objBarcodeLot_Cognex.Set_Trigger(2, FALSE); AfxMessageBox("Reading Fail."); }
+	}
+
+	m_strLog.Format("[Manual Tray Load] Barcode Trigger (%d) Click - No:%d, Data:%s", 2, 2, strData);
+	g_objLogFile.Save_HandlerLog(m_strLog);
+}

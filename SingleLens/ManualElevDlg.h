@@ -43,7 +43,8 @@ public:
 	CLedCS		m_LedUldCVStopper[2];
 	CButtonCS	m_BtnUldCVStopper[2];
 
-		
+	CStaticCS	m_stcBarcode;
+	CStaticCS	m_stcZigBarcode;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
@@ -77,4 +78,7 @@ private:
 
 public:
 	void Display_Status();
+	afx_msg void OnBnClickedBtnMzBarcode();
+	afx_msg void OnBnClickedBtnMzBarcodeInit();
+	afx_msg void OnBnClickedBtnZigBarcode();
 };
