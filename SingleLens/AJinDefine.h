@@ -109,8 +109,8 @@ typedef union tag_DX_DATA_00 {
 		DWORD i0005 : 1;						// X0005
 		DWORD i0006 : 1;				// X0006
 		DWORD i0007 : 1;			// X0007
-		DWORD iLdCVLift1UpR : 1;				// X0008
-		DWORD iLdCVLift1Dn : 1;				// X0009
+		DWORD iLdCVStpr1UpR : 1;				// X0008
+		DWORD iLdCVStpr1Dn : 1;				// X0009
 		DWORD iLdCVLift2Up : 1;			// X0010
 		DWORD iLdCVLift2Dn : 1;		// X0011
 		DWORD i0012 : 1;			// X0012
@@ -181,8 +181,8 @@ typedef union tag_DX_DATA_02 {
 		DWORD iIndexPosBit1 			: 1;		// X0201
 		DWORD iIndexPosBit2		: 1;		// X0202
 		DWORD i0203		: 1;		// X0203
-		DWORD iMainIndexZigAlignIn		: 1;		// X0204
-		DWORD iMainIndexZigAlignOut		: 1;	    // X0205
+		DWORD iMainIndexZigAlignOut		: 1;		// X0204
+		DWORD iMainIndexZigAlignIn		: 1;	    // X0205
 		DWORD iIndexTZigExist : 1;		// X0206
 		DWORD i0207 : 1;					// X0207
 		DWORD iCleanerTopDn : 1;			// X0208
@@ -233,10 +233,10 @@ typedef union tag_DX_DATA_03 {
 		DWORD i0315 : 1;			// X0315
 		DWORD iResetSw : 1;			// X0316
 		DWORD i0317 : 1;			// X0317
-		DWORD iUnloadOpenSw : 1;	// X0318				//¹è¼± ÀÌ½´·Î ÀÚ¸® ¹Ù²Þ 
-		DWORD iUnloadRunSw : 1;		// X0319
-		DWORD iLoadOpenSw : 1;		// X0320 iUnloadOpenSw
-		DWORD iLoadRunSw : 1;		// X0321 iUnloadRunSw
+		DWORD iLoadOpenSw : 1;	// X0318				//¹è¼± ÀÌ½´·Î ÀÚ¸® ¹Ù²Þ 
+		DWORD iLoadRunSw : 1;		// X0319
+		DWORD iUnloadOpenSw : 1;		// X0320 iUnloadOpenSw
+		DWORD iUnloadRunSw : 1;		// X0321 iUnloadRunSw
 		DWORD iDoor01Unlock : 1;	// X0322
 		DWORD iDoor02Unlock : 1;	// X0323
 		DWORD iDoor03Unlock : 1;		// X0324

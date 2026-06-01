@@ -140,8 +140,8 @@ void CManualElevDlg::Display_Status()
 	m_LedLdCVIO[3].Set_On(pDX00->iLdCVMZExist4);
 	m_LedLdCVIO[4].Set_On(pDX00->iLdCVMZExist5);
 
-	m_LedLdCVStopper[0].Set_On(pDX00->iLdCVLift1UpR);
-	m_LedLdCVStopper[1].Set_On(pDX00->iLdCVLift1Dn);
+	m_LedLdCVStopper[0].Set_On(pDX00->iLdCVStpr1UpR);
+	m_LedLdCVStopper[1].Set_On(pDX00->iLdCVStpr1Dn);
 	m_LedLdCVStopper[2].Set_On(pDX00->iLdCVLift2Up);
 	m_LedLdCVStopper[3].Set_On(pDX00->iLdCVLift2Dn);
 
@@ -317,7 +317,7 @@ void CManualElevDlg::OnBtnLdCVStopperClick(UINT nID)
 	{
 		pDY00->oLdCVStpr2Up = FALSE; pDY00->oLdCVStpr2Dn = TRUE;
 	}
-	g_objAJinAXL.Write_Output(1);
+	g_objAJinAXL.Write_Output(0);
 
 	m_strLog.Format("[Manual LD CV] LD CV Stoppper (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);
@@ -612,7 +612,10 @@ void CManualElevDlg::OnBnClickedBtnMzBarcodeInit()
 	DWORD dTemp = GetTickCount();
 	g_objBarcodeLot_Cognex.Terminate(); 
 	while (TRUE) { if (GetTickCount() - dTemp > 2000) break;}
-	g_objBarcodeLot_Cognex.Initialize();	Sleep(5000);
+	BOOL nRet = g_objBarcodeLot_Cognex.Initialize();	Sleep(500);
+
+	if(nRet) AfxMessageBox("Success");
+	else AfxMessageBox("fail");
 }
 
 

@@ -10,8 +10,8 @@
 
 #include "SingleLensDlg.h"
 
-#define COGNEX_IP_1		"192.168.0.101"	// Magazine
-#define COGNEX_IP_2		"192.168.0.102"	// Coating Zig 
+#define COGNEX_IP_1		"192.168.0.102"	// Magazine
+#define COGNEX_IP_2		"192.168.0.101"	// Coating Zig 
 //#define COGNEX_IP_3		"192.168.0.33"	// 
 //#define COGNEX_IP_4		"192.168.0.34"	// 
 #define COGNEX_PORT		9000			// Handler Port (Server)
@@ -51,8 +51,8 @@ LRESULT CBarcodeLot_Cognex::OnServerAccept(WPARAM wClientIdx, LPARAM lServerPort
 	UINT nPort = 0;
 
 	if (!m_Server.Get_ClientInfo(nClient, strIP, nPort)) return 0;
-	if (nClient >= 0 && nClient <= 3) m_bConnect[nClient] = TRUE;
-	if (m_bConnect[0] && m_bConnect[1] && m_bConnect[2] && m_bConnect[3]) m_bConnected = TRUE;
+	if (nClient >= 0 && nClient <= 1) m_bConnect[nClient] = TRUE;
+	if (m_bConnect[0] && m_bConnect[1]) m_bConnected = TRUE;
 
 	strLog.Format(_T("Cognex Barcode Connected. IP:%s, Client:%d"), strIP, nClient);
 	g_objLogFile.Save_BarcodeLog(strLog);
@@ -115,7 +115,7 @@ BOOL CBarcodeLot_Cognex::Initialize()
 
 	if (m_bConnected) return TRUE;
 
-	for (int i = 0; i < 4; i++) m_bConnect[i] = FALSE;
+	for (int i = 0; i < 2; i++) m_bConnect[i] = FALSE;
 	m_Server.Listen_Socket(COGNEX_PORT, this);
 
 	CString strLog;

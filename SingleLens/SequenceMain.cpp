@@ -435,7 +435,7 @@ BOOL CSequenceMain::LoadConveyorRun()
 			nDetectCnt[1]++; nDetectCnt[0] = 0; nDetectCnt[2] = 0;
 			if(nDetectCnt[1] < 5) return TRUE;
 
-			g_objCommon.Set_LdStopper1Up();
+			//g_objCommon.Set_LdStopper1Up();
 			m_nLoadConveyorCase++; m_nLoadConveyorLoop.Set_LoopTime(5000);
 		}		
 		else
@@ -448,7 +448,7 @@ BOOL CSequenceMain::LoadConveyorRun()
 		}
 		return TRUE;
 	case 2:	
-		if(g_objCommon.Get_LdStopper1Up() )
+		//if(g_objCommon.Get_LdStopper1Up() )
 		{
 			if(!m_nLoadConveyorLoop.Waiting_Time(300)) break;
 
@@ -1206,7 +1206,7 @@ BOOL CSequenceMain::FeederRun()
 		}
 		break;
 	case 15:
-		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready))
+		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready) && m_pDX01->iRailZigExist)
 		{
 			g_objCommon.Set_RailAlignIn();
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
@@ -1558,7 +1558,7 @@ BOOL CSequenceMain::ZigPickerRun()
 		}
 		break;	
 	case 5:
-		if(g_objCommon.Get_TrayPickMasterSlaveIn())
+		if(g_objCommon.Get_TrayPickMasterSlaveIn() && m_pDX01->iZigPickerExist)
 		{
 			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TrayPickGrip])) break;
 			//Info Processing
@@ -1745,7 +1745,7 @@ BOOL CSequenceMain::ZigPickerRun()
 		}
 		break;
 	case 30:
-		if(g_objCommon.Get_TrayPickMasterSlaveOut())
+		if(g_objCommon.Get_TrayPickMasterSlaveOut() && m_pDX02->iIndexTZigExist)
 		{
 			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TrayPickUnGrip])) break;
 			//Info Processing 
