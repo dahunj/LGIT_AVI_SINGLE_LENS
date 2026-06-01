@@ -307,9 +307,9 @@ BOOL CSequenceInit::Initial_MZ_Elevator()
 			Sleep(10);
 			g_objCommon.Set_ElevLift1Down();
 			Sleep(10);
-			g_objCommon.Set_ElevStopper2Out();
+			g_objCommon.Set_ElevLift2Out();
 			Sleep(10);
-			g_objCommon.Set_ElevStopper2Down();
+			g_objCommon.Set_ElevLift2Down();
 			Sleep(10);
 			
 			g_objAJinAXL.Set_EncoderType(AX_MZ_ELEVATOR_Z, 0);	// Inc

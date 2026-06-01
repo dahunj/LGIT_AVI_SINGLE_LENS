@@ -103,14 +103,14 @@ public:
 	BOOL Get_ElevLift1Up();
 	BOOL Get_ElevLift1Down();
 	
-	void Set_ElevStopper2In();
-	void Set_ElevStopper2Out();
-	void Set_ElevStopper2Up();
-	void Set_ElevStopper2Down();
-	BOOL Get_ElevStopper2In();
-	BOOL Get_ElevStopper2Out();
-	BOOL Get_ElevStopper2Up();
-	BOOL Get_ElevStopper2Down();
+	void Set_ElevLift2In();
+	void Set_ElevLift2Out();
+	void Set_ElevLift2Up();
+	void Set_ElevLift2Down();
+	BOOL Get_ElevLift2In();
+	BOOL Get_ElevLift2Out();
+	BOOL Get_ElevLift2Up();
+	BOOL Get_ElevLift2Down();
 	
 	void Set_IndexLoadAlignIn();
 	void Set_IndexLoadAlignOut();

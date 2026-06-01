@@ -666,7 +666,7 @@ BOOL CCommon::Get_ElevLift1Down()
 
 
 //////////////////////
-void CCommon::Set_ElevStopper2In()
+void CCommon::Set_ElevLift2In()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
@@ -676,7 +676,7 @@ void CCommon::Set_ElevStopper2In()
 
 }
 
-void CCommon::Set_ElevStopper2Out()
+void CCommon::Set_ElevLift2Out()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
@@ -685,7 +685,7 @@ void CCommon::Set_ElevStopper2Out()
 	g_objAJinAXL.Write_Output(0);
 }
 
-void CCommon::Set_ElevStopper2Up()
+void CCommon::Set_ElevLift2Up()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
@@ -695,7 +695,7 @@ void CCommon::Set_ElevStopper2Up()
 
 }
 
-void CCommon::Set_ElevStopper2Down()
+void CCommon::Set_ElevLift2Down()
 {
 	DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 
@@ -705,7 +705,7 @@ void CCommon::Set_ElevStopper2Down()
 
 }
 
-BOOL CCommon::Get_ElevStopper2In()
+BOOL CCommon::Get_ElevLift2In()
 {
 	if(gData.bDemoMode) return TRUE;
 
@@ -718,7 +718,7 @@ BOOL CCommon::Get_ElevStopper2In()
 	return FALSE;	
 }
 
-BOOL CCommon::Get_ElevStopper2Out()
+BOOL CCommon::Get_ElevLift2Out()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
@@ -730,7 +730,7 @@ BOOL CCommon::Get_ElevStopper2Out()
 }
 
 
-BOOL CCommon::Get_ElevStopper2Up()
+BOOL CCommon::Get_ElevLift2Up()
 {
 	if(gData.bDemoMode) return TRUE;
 
@@ -744,7 +744,7 @@ BOOL CCommon::Get_ElevStopper2Up()
 }
 
 
-BOOL CCommon::Get_ElevStopper2Down()
+BOOL CCommon::Get_ElevLift2Down()
 {
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
