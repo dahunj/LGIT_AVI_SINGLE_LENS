@@ -65,8 +65,8 @@ private:
 	int			m_nLensCleanerCase;		//  5. (Error : 4300)
 	int			m_nTopInspectCase;		//  6. (Error : 4600)
 	int			m_nBtmInspectCase;		//  7. (Error : 4900)
-	int			m_nMarkUnitCase;			//  8. (Error : 5200)
-	int			m_nMainIndexCase;			//  9. (Error : 5500)  
+	int			m_nMarkUnitCase;		//  8. (Error : 5200)
+	int			m_nMainIndexCase;		//  9. (Error : 5500)  
 	int			m_nUnloadConveyorCase;	//  10. (Error : 5800)
 
 	DWORD		m_dwLoadConveyor;		//  1. (Error : 3100)

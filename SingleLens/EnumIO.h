@@ -107,8 +107,8 @@ struct eMarkUnit
 {
 	enum dtName
 	{
-		PenIn = 0,
-		PenOut = 1,		
+		PenDown = 0,
+		PenUp = 1,		
 	};
 };
 

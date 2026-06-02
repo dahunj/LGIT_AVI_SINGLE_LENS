@@ -965,8 +965,8 @@ void CAJinAXL::Sim_SetOutToIn(int nNo)
 		m_DX02.iCleanerBtmUp =				m_DY02.oCleanerBtmUp;
 		m_DX02.iCleanerBtmFwd =				m_DY02.oCleanerBtmFwd;
 		m_DX02.iCleanerBtmBwd =				m_DY02.oCleanerBtmBwd;
-		m_DX02.IMarkPenIn =					m_DY02.oMarkPenIn;
-		m_DX02.IMarkPenOut =				m_DY02.oMarkPenOut;
+		m_DX02.IMarkPenDown =					m_DY02.oMarkPenDown;
+		m_DX02.IMarkPenUp =				m_DY02.oMarkPenUp;
 	}
 
 	if(nNo == 3)

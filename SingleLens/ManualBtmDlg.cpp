@@ -127,8 +127,8 @@ void CManualBtmDlg::Display_Status()
 
 	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
 
-	m_LedMarkUnitIO[0].Set_On(pDX02->IMarkPenIn);
-	m_LedMarkUnitIO[1].Set_On(pDX02->IMarkPenOut);
+	m_LedMarkUnitIO[0].Set_On(pDX02->IMarkPenDown);
+	m_LedMarkUnitIO[1].Set_On(pDX02->IMarkPenUp);
 	m_LedMarkUnitIO[2].Set_On(pDX02->IMarkPenExist);
 	
 }
@@ -331,13 +331,13 @@ void CManualBtmDlg::OnBtnMarkUnitIOClick(UINT nID)
 
 	int nIndex = nID - IDC_BTN_MARK_UNIT_IO_0;
 
-	if(nIndex == eMarkUnit::PenIn)
+	if(nIndex == eMarkUnit::PenDown)
 	{
-		pDY02->oMarkPenIn = TRUE; pDY02->oMarkPenOut = FALSE;
+		pDY02->oMarkPenDown = TRUE; pDY02->oMarkPenUp = FALSE;
 	}
-	if(nIndex == eMarkUnit::PenOut)
+	if(nIndex == eMarkUnit::PenUp)
 	{
-		pDY02->oMarkPenIn = FALSE; pDY02->oMarkPenOut = TRUE;
+		pDY02->oMarkPenDown = FALSE; pDY02->oMarkPenUp = TRUE;
 	}
 	
 	g_objAJinAXL.Write_Output(2);

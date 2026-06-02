@@ -1094,14 +1094,14 @@ BOOL CSequenceMain::FeederRun()
 		}
 		
 		break;
-	case 5:
-		//if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::CheckExist))
+	case 5:		
 		{			
 			int nExist = -1;
 			nExist = g_dlgWork.CheckZigExistInMZ(0, gData.nTNoPick[eMZ::Load]);
 			
 			if( nExist == gData.nTNoPick[eMZ::Load])
 			{				
+				if(!m_pDX01->iFeederZigExist) break;
 				g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad);
 				m_nFeederCase = 10; m_nFeederLoop.Set_LoopTime(5000);
 				m_strLog.Format("Feeder Y Move (Grip Zig)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
@@ -1119,7 +1119,6 @@ BOOL CSequenceMain::FeederRun()
 				}
 				else
 				{
-					
 					m_nFeederCase = eFeederBr::LoadSearch; m_nFeederLoop.Set_LoopTime(5000);
 					m_strLog.Format("Elev Z Move to search Zig"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 				}
@@ -1602,7 +1601,7 @@ BOOL CSequenceMain::ZigPickerRun()
 		}
 		break;
 	case 15:
-		if(g_objCommon.Get_TrayPickMasterSlaveOut())
+		if(g_objCommon.Get_TrayPickMasterSlaveOut() && m_pDX02->iIndexTZigExist)
 		{
 			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TrayPickUnGrip])) break;
 			//Info Processing 
@@ -1727,7 +1726,7 @@ BOOL CSequenceMain::ZigPickerRun()
 		}
 		break;
 	case 30:
-		if(g_objCommon.Get_TrayPickMasterSlaveOut() && m_pDX02->iIndexTZigExist)
+		if(g_objCommon.Get_TrayPickMasterSlaveOut() )
 		{
 			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TrayPickUnGrip])) break;
 			//Info Processing 

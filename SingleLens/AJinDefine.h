@@ -150,7 +150,7 @@ typedef union tag_DX_DATA_01 {
 		DWORD iFeederGripOpen : 1;			// X0108
 		DWORD iFeederGripClose : 1;			// X0109
 		DWORD iFeederZigExist : 1;			// X0110
-		DWORD i0111 : 1;					// X0111
+		DWORD iFeederZigExistEmit : 1;					// X0111
 		DWORD iMagazineZigExist : 1;		// X0112
 		DWORD iRailZigExist : 1;			// X0113
 		DWORD iRailZigAlignIn : 1;		// X0114
@@ -201,8 +201,8 @@ typedef union tag_DX_DATA_02 {
 		DWORD i0221 : 1;					// X0221
 		DWORD i0222 : 1;					// X0222
 		DWORD i0223 : 1;					// X0223
-		DWORD IMarkPenIn : 1;		// X0224
-		DWORD IMarkPenOut : 1;		// X0225
+		DWORD IMarkPenDown : 1;		// X0224
+		DWORD IMarkPenUp : 1;		// X0225
 		DWORD IMarkPenExist : 1;		// X0226
 		DWORD i0227 : 1;		// X0227
 		DWORD i0228 : 1;					// X0228
@@ -356,8 +356,8 @@ typedef union tag_DY_DATA_02 {
 		DWORD oCleanerBtmBlowOff :	1;					// Y0221
 		DWORD o0222 : 1;					// Y0222
 		DWORD o0223 : 1;					// Y0223
-		DWORD oMarkPenIn : 1;					// Y0224
-		DWORD oMarkPenOut : 1;					// Y0225
+		DWORD oMarkPenDown : 1;					// Y0224
+		DWORD oMarkPenUp : 1;					// Y0225
 		DWORD o0226 : 1;					// Y0226
 		DWORD o0227 : 1;					// Y0227
 		DWORD o0228 : 1;					// Y0228

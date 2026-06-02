@@ -44,6 +44,7 @@ struct eFeeder_Y
 		MZReady = 1,
 		MZLoad = 2,
 		TrayGrip = 3,
+		Avoid =4, 
 	};
 };
 

@@ -87,7 +87,7 @@
 
 #define MAIN_VERSION	_T("V 0.0.0.12b")
 //
-#define AJIN_BOARD_USE
+//#define AJIN_BOARD_USE
 //#define LOT_BARCODE_USE
 
 
@@ -236,6 +236,8 @@ typedef struct
 	int		nStdEqNo;	// Log 표준화 (설비번호)
 	int		nStdLotNo;	// Log 표준화 (하루 기준으로 작업한 Lot 번호)
 	int		nStdLogDay;	// Log 표준화 (작업일)
+
+	int		nSelectNo;
 
 } GLOVAL_DATA;
 

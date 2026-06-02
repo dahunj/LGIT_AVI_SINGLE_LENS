@@ -38,7 +38,8 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_LABEL_0 + i, m_Label[i]);	
 	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_LBL_LOT_0 + i, m_lblLot[i]);*/
 
-	//new 
+	for (int i = 0; i <40; i++) DDX_Control(pDX, IDC_RDO_MZ_SLOT_NO_20 + i, m_rdoSelectNo[i]);
+
 	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_STC_MZID_0 + i, m_stcMZID[i]);
 	for (int i = 0; i < 60; i++) DDX_Control(pDX, IDC_STC_MZ_ZIGID_0 + i, m_stcZigID[i]);
 	for (int i = 0; i < 60; i++) DDX_Control(pDX, IDC_STC_MZ_LENS_CNT_0+ i, m_stcLensCnt[i]);
@@ -63,7 +64,7 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_GRD_TOP_VISION, m_grdTopVision);
 	DDX_Control(pDX, IDC_GRD_BTM_VISION, m_grdBtmVision);
 	DDX_Control(pDX, IDC_GRD_MARKING, m_grdMarking);
-	//for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_PIC_TRAY_BACK_0 + i, m_picTrayBack[i]);
+	
 
 	for (int i = 0; i < 7; i++) DDX_Control(pDX, IDC_STC_TRAY_NO_0 + i, m_stcTrayNo[i]);
 
@@ -112,7 +113,9 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON1, &CWorkDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CWorkDlg::OnBnClickedButton2)
 	
-		
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_RDO_MZ_SLOT_NO_20, IDC_RDO_MZ_SLOT_NO_59, OnBnClickedRdoZigID)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_RDO_MZ_ID_0, IDC_RDO_MZ_ID_5, OnBnClickedRdoMZID)	
+
 	ON_BN_CLICKED(IDC_BTN_SIMUL1, &CWorkDlg::OnBnClickedBtnSimul1)
 	
 
@@ -196,6 +199,8 @@ BOOL CWorkDlg::OnInitDialog()
 
 	Initial_Controls();
 	
+	m_bShowWindow = FALSE;
+
 	m_bAutoRunning = FALSE;
 	m_nGroupNo = 0;
 
@@ -440,7 +445,128 @@ void CWorkDlg::OnStcZigIDClick(UINT nID)
 	//OnStcCmsCountSClick(IDC_STC_CMS_COUNT_S_0+ID);	//2018.9.11+
 }
 
+void CWorkDlg::OnBnClickedRdoMZID(UINT nID)
+{
+	int ID = nID - IDC_RDO_MZ_ID_0;
 
+	if (m_rdoWorkStart.GetCheck()) {
+		if (gData.nLanguage == 0) AfxMessageBox(_T("장비 Stop 상태에서 진행이 가능합니다....."));
+		else					  AfxMessageBox(_T("You can proceed with the equipment stopped."));
+		m_rdoSelectNo[ID].SetCheck(FALSE);
+		return;
+	}
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	if (pEquipData->bUseMES)
+	{
+		AfxMessageBox(_T("MES사용시 Lot정보 수정할 수 없습니다."));
+		m_rdoSelectNo[ID].SetCheck(FALSE);
+		return;
+	}
+
+	static int nTotalClick = 0;
+
+	nTotalClick++;
+	if(nTotalClick == 1)
+	{	
+		if (g_objCommon.Show_MsgBox(2, "Data를 삭제 하시겠습니까?") != IDOK) return;
+		m_stcMZID[ID].SetWindowText(""); nTotalClick = 0;
+	}
+
+	if(nTotalClick == 2)
+	{
+		if (g_objCommon.Show_MsgBox(2, "전체 Data를 삭제 하시겠습니까?") != IDOK) return;
+		m_stcMZID[ID].SetWindowText(""); nTotalClick = 0;
+
+		for(int i = 0; i < 10; i++)
+		{
+			m_stcZigID[ID*10 + i].SetWindowText("");
+			m_stcLensCnt[ID*10 + i].SetWindowText("");
+		}
+	}
+}
+
+void CWorkDlg::OnBnClickedRdoZigID(UINT nID)
+{
+	CString strTemp, strLog;
+	int ID = nID - IDC_RDO_MZ_SLOT_NO_0;
+	
+	if (m_rdoWorkStart.GetCheck()) {
+		if (gData.nLanguage == 0) AfxMessageBox(_T("장비 Stop 상태에서 진행이 가능합니다....."));
+		else					  AfxMessageBox(_T("You can proceed with the equipment stopped."));
+		m_rdoSelectNo[ID].SetCheck(FALSE);
+		return;
+	}
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	if (pEquipData->bUseMES)
+	{
+		AfxMessageBox(_T("MES사용시 Lot정보 수정할 수 없습니다."));
+		m_rdoSelectNo[ID].SetCheck(FALSE);
+		return;
+	}
+
+	static int nTotalClick = 0;
+	static int nClickNo[60] = {0,};
+
+	nClickNo[ID]++;
+	nTotalClick++;
+
+	int j = 0, k = 0, m = 0;
+	for(int i = 0; i < 60; i++)
+	{
+		if(nClickNo[i] == 2)
+		{
+			j = i;			
+			break;
+		}
+		else if(nClickNo[i] == 1)
+		{
+			if(k != 0) m = i;
+			if(k == 0) k = i;
+			
+			
+		}
+	}
+	if(nTotalClick != 2) return;
+
+	CString sID, sCnt, sTemp;
+	if(k != 0 && k > m)
+	{
+		m_stcZigID[m].GetWindowText(sID);
+		m_stcLensCnt[m].GetWindowText(sCnt);
+		for(int i = m; i <= k; i++)
+		{
+			sTemp.Format("%s-%d",sID,i);
+			m_stcZigID[i].SetWindowText(sTemp);
+			m_stcLensCnt[i].SetWindowText(sCnt);
+		}
+		for(int i = 0; i < 60; i++) nClickNo[i] = 0;
+		nTotalClick = 0;
+	}
+	else if(k != 0 && m > k)
+	{
+		m_stcZigID[k].GetWindowText(sID);
+		m_stcLensCnt[k].GetWindowText(sCnt);
+		for(int i = k; i <= m; i++)
+		{
+			sTemp.Format("%s-%d",sID,i);
+			m_stcZigID[i].SetWindowText(sTemp);
+			m_stcLensCnt[i].SetWindowText(sCnt);
+		}
+		for(int i = 0; i < 60; i++) nClickNo[i] = 0;
+		nTotalClick = 0;
+	}
+	if(nClickNo[ID] !=2) return;
+
+
+	if(nClickNo[ID] == 2) if (g_objCommon.Show_MsgBox(2, "Data를 삭제 하시겠습니까?") != IDOK) return;
+	for(int i = 0; i < 60; i++) nClickNo[i] = 0;
+	nTotalClick = 0;
+	m_stcZigID[ID].SetWindowText("");
+	m_stcLensCnt[ID].SetWindowText("");
+
+}
 
 
 void CWorkDlg::OnStcLensCountClick(UINT nID)

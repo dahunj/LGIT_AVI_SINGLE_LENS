@@ -12,9 +12,9 @@ public:
 
 protected:
 	DECLARE_MESSAGE_MAP()
-	afx_msg LRESULT OnServerAccept(WPARAM wClientIdx, LPARAM lServerPort);
-	afx_msg LRESULT OnServerReceive(WPARAM wClientIdx, LPARAM lServerPort);
-	afx_msg LRESULT OnServerRemove(WPARAM wClientIdx, LPARAM lServerPort);
+	afx_msg LRESULT OnServerAccept(WPARAM wServerPort, LPARAM lClientIdx);
+	afx_msg LRESULT OnServerReceive(WPARAM wServerPort, LPARAM lClientIdx);
+	afx_msg LRESULT OnServerRemove(WPARAM wServerPort, LPARAM lClientIdx);
 
 private:
 	CServerSocketCS m_Server;

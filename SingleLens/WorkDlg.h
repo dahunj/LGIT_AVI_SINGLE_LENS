@@ -35,6 +35,7 @@ public:
 	//new 
 	CPictureCS		m_picUphBack;
 	
+	CRadioCS		m_rdoSelectNo[40]; // 20 ~ 59 
 	CStaticCS		m_stcMZID[6];
 	CStaticCS		m_stcZigID[60];
 	CStaticCS		m_stcLensCnt[60];
@@ -46,8 +47,6 @@ public:
 	CGridCS			m_grdBtmVision;
 	CGridCS			m_grdMarking;
 
-
-		//old 
 
 	CGroupCS		m_Group[10];
 	CLabelCS		m_Label[7];
@@ -77,14 +76,12 @@ public:
 	
 	CButtonCS		m_btnMesCancel;
 
-	CStaticCS			m_stcTrayNo[7];
+	CStaticCS		m_stcTrayNo[7];
 	CLedCS			m_ledMZDetect[11];
-
-
+	
 	CStaticCS		m_stcHidden;
 	CCheckCS		m_chkNoTrayMode;
 	
-
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
@@ -95,12 +92,13 @@ protected:
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 
-	//new 
 	afx_msg void OnStcMZIDClick(UINT nID);
 	afx_msg void OnStcZigIDClick(UINT nID);
 	afx_msg void OnStcLensCountClick(UINT nID);	
 
-	//old 
+	afx_msg void OnBnClickedRdoZigID(UINT nID);
+	afx_msg void OnBnClickedRdoMZID(UINT nID);
+
 	afx_msg void OnStnClickedLblLot0();
 	afx_msg void OnStnClickedLblLot3();
 	
@@ -129,6 +127,9 @@ protected:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
 private:
+
+	BOOL	m_bShowWindow;
+
 	BOOL	m_bAutoRunning;
 	BOOL	m_bCycleStopRun;
 

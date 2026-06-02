@@ -44,9 +44,9 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // Message Handlers
 
-LRESULT CBarcodeLot_Cognex::OnServerAccept(WPARAM wClientIdx, LPARAM lServerPort)
+LRESULT CBarcodeLot_Cognex::OnServerAccept(WPARAM wServerPort, LPARAM lClientIdx)
 {
-	int nClient = (int)wClientIdx;
+	int nClient = (int)lClientIdx;
 	CString strIP = "", strLog;
 	UINT nPort = 0;
 
@@ -60,9 +60,9 @@ LRESULT CBarcodeLot_Cognex::OnServerAccept(WPARAM wClientIdx, LPARAM lServerPort
 	return 0;
 }
 
-LRESULT CBarcodeLot_Cognex::OnServerReceive(WPARAM wClientIdx, LPARAM lServerPort)
+LRESULT CBarcodeLot_Cognex::OnServerReceive(WPARAM wServerPort, LPARAM lClientIdx)
 {
-	int nClient = (int)wClientIdx;
+	int nClient = (int)lClientIdx;
 	CString strIP = _T(""), strLog;
 	UINT nPort = 0;
 
@@ -89,9 +89,9 @@ LRESULT CBarcodeLot_Cognex::OnServerReceive(WPARAM wClientIdx, LPARAM lServerPor
 	return 0;
 }
 
-LRESULT CBarcodeLot_Cognex::OnServerRemove(WPARAM wClientIdx, LPARAM lServerPort)
+LRESULT CBarcodeLot_Cognex::OnServerRemove(WPARAM wServerPort, LPARAM lClientIdx)
 {
-	int nClient = (int)wClientIdx;
+	int nClient = (int)lClientIdx;
 	CString strIP = "", strLog;
 	UINT nPort = 0;
 
