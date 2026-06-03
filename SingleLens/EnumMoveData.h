@@ -196,3 +196,13 @@ struct eIndex_R
 		MoveM = 2,
 	};
 };
+
+
+struct eBarcode
+{
+	enum Name
+	{
+		MZ = 1,
+		CtZig = 2,
+	};
+};

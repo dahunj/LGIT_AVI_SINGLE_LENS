@@ -151,6 +151,7 @@
     <ClInclude Include="EnumIO.h" />
     <ClInclude Include="EnumMoveData.h" />
     <ClInclude Include="InspectV1.h" />
+    <ClInclude Include="MesAgent.h" />
     <ClInclude Include="SequenceMain.h" />
     <ClInclude Include="SingleLens.h" />
     <ClInclude Include="SingleLensDlg.h" />
@@ -204,6 +205,7 @@
     <ClCompile Include="AlarmDlg.cpp" />
     <ClCompile Include="BarcodeLot_Cognex.cpp" />
     <ClCompile Include="InspectV1.cpp" />
+    <ClCompile Include="MesAgent.cpp" />
     <ClCompile Include="SequenceMain.cpp" />
     <ClCompile Include="SingleLens.cpp" />
     <ClCompile Include="SingleLensDlg.cpp" />

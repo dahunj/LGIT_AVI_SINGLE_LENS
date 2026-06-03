@@ -102,7 +102,7 @@ void CMonitorMotionTabDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	int nMaxAxis = (m_nMotionTab == 2 ? 3 : 16);
 	int nStartAx = m_nMotionTab * 16;
 
-	for (int i = 0; i < 16; i++) {
+	for (int i = 0; i < 15; i++) {
 		BOOL bVisible = (i < nMaxAxis ? TRUE : FALSE);
 		if (m_nMotionTab == 0 && i == 3) bVisible = FALSE;
 

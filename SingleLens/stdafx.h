@@ -95,6 +95,8 @@
 #define SIM_WAITTIMEM	 1		//
 #define	VELOCITY_WEIGHT	 40
 
+#define MES_WAITTIME	10000
+
 //Magazine Slot MAX Number 
 const int SLOT_NO_MAX = 10;
 
@@ -108,12 +110,11 @@ extern CString gsCurrentDir;	// 현재 프로젝트 폴더
 typedef struct
 {
 	CString	sOperID;		// Operator
-
+	
 	CString	sMZID[7];
 	CString	sZigID[7][10];
 
 	int		nMZNo[7]; // From UI MZ Input 
-
 	int		nMZCnt;
 
 	int		nCtZigTotalCnt[7];
@@ -121,7 +122,6 @@ typedef struct
 	int		nLensUseCnt[7][10];
 	int		nLensMaxCnt;
 	
-	//new 
 	int		nLTime[10];	 //LoopTime Set Value 
 
 	int     nStatus;
@@ -271,8 +271,6 @@ typedef struct
 	DWORD	dwStopTime;
 	DWORD	dwErrorTime;
 
-
-
 } GLOVAL_LOT;
 
 typedef struct {
@@ -301,6 +299,9 @@ typedef struct {
 
 typedef struct {
 	int		nLotStatus;				// 0:Stop, 1:Start Send, 2:Start Receive
+	DWORD	dwMesTime;
+
+
 	DWORD	dwLotStartTime;			// Lot Start time
 
 	// Host 전공정 Data

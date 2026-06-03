@@ -310,8 +310,7 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 			g_objCommon.Locking_MainDoor(TRUE);
 			pMainDlg->Enable_ModeButton(FALSE);
 			pMainDlg->Set_CurrentState(STATE_RUN);
-
-			
+						
 			//If it was running before Stop, then run again 
 			if (m_bLoadCVRun ) g_objCommon.Set_LoadCVRunCW(); Sleep(5); 
 			if (m_bUnloadCVRun) g_objCommon.Set_UnloadCVRunCW(); Sleep(5);

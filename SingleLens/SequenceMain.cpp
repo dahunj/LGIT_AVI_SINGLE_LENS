@@ -6,7 +6,7 @@
 #include "Inspector.h"
 #include "LogFile.h"
 #include "WorkDlg.h"
-
+#include "BarcodeLot_Cognex.h"
 
 CSequenceMain g_objSequenceMain;
 
@@ -502,6 +502,8 @@ BOOL CSequenceMain::MZElevRun()
 	static int	nMZDetectCnt[6] = {0,0,0,0,0,0};
 	static DWORD dwTick1 = 0, dwTick2 = 0;
 	
+	CString sBarcode;
+
 	if(gData.bFeederWorkWait ) return TRUE;	
 
 	//Suppose MZ on Right of Elev
@@ -591,7 +593,7 @@ BOOL CSequenceMain::MZElevRun()
 			if(nMZDetectCnt[5] > 5)
 			{
 				for(int i = 0; i < 6; i++) nMZDetectCnt[i] = 0;
-				dwTick1 = GetTickCount();
+				
 
 				m_nMZElevCase = 0; m_nMZElevLoop.Set_LoopTime(30000);
 				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elevator Full");
@@ -607,14 +609,46 @@ BOOL CSequenceMain::MZElevRun()
 			}
 		}
 		
-		if(m_pDX00->iElvMZExist1)
+		if(m_pEquipData->bUseMES)
 		{
-			g_objCommon.Set_LoadCVStop(); Sleep(5);
-			g_objCommon.Set_LoadCVRunCCW(); Sleep(5);
-			g_objCommon.Set_ElevCVRunCW();
-			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(gData.nLTime[eLT::CV]);
-			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load CV CW Stop & Elev CV CW Start");			
-		}	
+			if(m_pDX00->iElvMZExist1)
+			{
+				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Exist 1 Detect");	
+
+				g_objCommon.Set_LoadCVStop(); Sleep(5);
+				g_objCommon.Set_ElevCVStop(); Sleep(5);
+				sBarcode.Empty(); g_objBarcodeLot_Cognex.Set_Trigger(eBarcode::MZ,TRUE);
+				dwTick1 = GetTickCount();
+
+				m_nMZElevCase = 70; m_nMZElevLoop.Set_LoopTime(gData.nLTime[eLT::CV]);						
+			}	
+		}
+		else
+		{
+			if(m_pDX00->iElvMZExist1)
+			{
+				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load CV CW Stop & Elev CV CW Start");
+
+				g_objCommon.Set_LoadCVStop(); Sleep(5);
+				g_objCommon.Set_LoadCVRunCCW(); Sleep(5);
+				g_objCommon.Set_ElevCVRunCW();
+				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(gData.nLTime[eLT::CV]);
+							
+			}	
+		}
+		break;
+	case 70:
+		if(GetTickCount() - dwTick1 < 3000)
+		{
+			sBarcode = g_objBarcodeLot_Cognex.Get_BarcodeLot(eBarcode::MZ);
+			if (sBarcode != "") 
+			{
+				g_objCommon.Set_LoadCVStop(); Sleep(5);
+				g_objCommon.Set_LoadCVRunCCW(); Sleep(5);
+				g_objCommon.Set_ElevCVRunCW();
+				m_nMZElevCase = 4; m_nMZElevLoop.Set_LoopTime(gData.nLTime[eLT::CV]);
+			}			
+		}			 
 		break;
 	case 4:
 		if(gData.bDemoMode)
