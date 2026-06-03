@@ -298,10 +298,12 @@ typedef struct {
 } GLOVAL_UPH;
 
 typedef struct {
-	int		nLotStatus;				// 0:Stop, 1:Start Send, 2:Start Receive
+	
+	int			nMGZConfirm;
+	CString		sMGZID[2]; // 0: Load, 1: Ready 
+
 	DWORD	dwMesTime;
-
-
+	
 	DWORD	dwLotStartTime;			// Lot Start time
 
 	// Host Àü°øÁ¤ Data

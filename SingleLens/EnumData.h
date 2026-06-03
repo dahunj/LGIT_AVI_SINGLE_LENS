@@ -222,3 +222,16 @@ struct eVDir
 		fixY = 1,
 	};
 };
+
+
+struct eEquipState
+{
+	enum name
+	{
+		RUN = 1,
+		IDLE_STARVED = 2,
+		IDLE_BLOCKED = 3,
+		IDLE = 4,
+		DOWN = 5,
+	};
+};

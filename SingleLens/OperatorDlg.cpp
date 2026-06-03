@@ -15,6 +15,8 @@
 #include "MonitorDlg.h"
 #include "SingleLensDlg.h"
 
+#include "MesAgent.h"
+
 // COperatorDlg 대화 상자입니다.
 COperatorDlg g_dlgOperator;
 
@@ -223,6 +225,7 @@ void COperatorDlg::OnStnClickedStcOperOperId()
 
 	gData.sOperID = strKey;
 	m_stcOperOperId.SetWindowText(strKey);
+	g_objMesAgent.Set_OperUpdate(gData.sOperID);
 
 	CString sLog;
 	sLog.Format("[Operator] Operator ID Input....  OperID[%s]", gData.sOperID);

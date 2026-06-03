@@ -26,55 +26,22 @@ CHandler::~CHandler()
 }
 
 BEGIN_MESSAGE_MAP(CHandler, CWnd)
-	ON_MESSAGE(UM_SERVER_ACCEPT, OnServerAccept)
-	ON_MESSAGE(UM_SERVER_REMOVE, OnServerRemove)
-	ON_MESSAGE(UM_SERVER_RECEIVE, OnServerReceive)
+	ON_MESSAGE(UM_SERVER_ACCEPT, &CHandler::OnServerAccept)
+	ON_MESSAGE(UM_SERVER_RECEIVE, &CHandler::OnServerReceive)
+	ON_MESSAGE(UM_SERVER_REMOVE, &CHandler::OnServerRemove)
 END_MESSAGE_MAP()
 
 // CHandler 메시지 처리기입니다.
 
 void CHandler::Initialize()
 {
-	m_bConnected = FALSE;
-	m_nClientIdx = 0;
-	m_Server.Listen_Socket(HANDLER_PORT, this);
+	m_nLPort = HANDLER_PORT;
+	m_Server.Listen_Socket(m_nLPort, this);
 }
 
 void CHandler::Terminate()
 {
-	m_bConnected = FALSE;
 	m_Server.Close_Socket();
-	if (g_objHost.Is_Connected()) g_objHost.Set_S6F11_ControlState(2);	//1:Online, 2:Offline
-}
-
-/////////////////////////////////////////////////////////////////////////////
-
-LRESULT CHandler::OnServerAccept(WPARAM wClientIdx, LPARAM lServerPort)
-{
-	int nClient = (int)wClientIdx;
-	int nServerPort = (int)lServerPort;
-
-	CString strIP = "";
-	UINT nPort = 0;
-	if (!m_Server.Get_ClientInfo(nClient, strIP, nPort)) return 0;
-	m_nClientIdx = nClient;
-
-	CString strLog = "Handler Connected.";
-	g_objLogFile.Save_HandlerLog(strLog);
-
-	CMesAgentDlg *pMainDlg = (CMesAgentDlg*)AfxGetMainWnd();
-	pMainDlg->Set_HandlerConnect(TRUE);
-
-	m_bConnected = TRUE;
-
-	if (g_objHost.Is_Connected()) g_objHost.Set_S6F11_ControlState(1);	//1:Online, 2:Offline
-
-	return 0;
-}
-
-LRESULT CHandler::OnServerRemove(WPARAM wClientIdx, LPARAM lServerPort)
-{
-	m_bConnected = FALSE;
 
 	CString strLog = "Handler Disconnected.";
 	g_objLogFile.Save_HandlerLog(strLog);
@@ -83,29 +50,48 @@ LRESULT CHandler::OnServerRemove(WPARAM wClientIdx, LPARAM lServerPort)
 	pMainDlg->Set_HandlerConnect(FALSE);
 
 	if (g_objHost.Is_Connected()) g_objHost.Set_S6F11_ControlState(2);	//1:Online, 2:Offline
+}
+
+/////////////////////////////////////////////////////////////////////////////
+
+LRESULT CHandler::OnServerAccept(WPARAM wLocalPort, LPARAM lClientIdx)
+{
+	UINT nPort = (UINT)wLocalPort;
+	int nClient = (int)lClientIdx;
+
+	if (nPort != m_nLPort) { g_objLogFile.Save_HandlerLog("OnServerAccept - Local Port Mismatch"); return 0; }
+
+	if (lClientIdx > 0) { for (int i = 0; i < m_Server.Get_ClientCount()-1; i++) m_Server.Close_Client(i); }
+	m_bConnected = TRUE;
+
+	CString strLog = "Handler Connected.";
+	g_objLogFile.Save_HandlerLog(strLog);
+
+	CMesAgentDlg *pMainDlg = (CMesAgentDlg*)AfxGetMainWnd();
+	pMainDlg->Set_HandlerConnect(TRUE);
+
+	if (g_objHost.Is_Connected()) g_objHost.Set_S6F11_ControlState(1);	//1:Online, 2:Offline
 
 	return 0;
 }
 
-LRESULT CHandler::OnServerReceive(WPARAM wClientIdx, LPARAM lServerPort)
+LRESULT CHandler::OnServerReceive(WPARAM wLocalPort, LPARAM lClientIdx)
 {
-	int nClient = (int)wClientIdx;
-	int nServerPort = (int)lServerPort;
+	UINT nPort = (UINT)wLocalPort;
+	int nClient = (int)lClientIdx;
 
-	CString strIP = "";
-	UINT nPort = 0;
-	if (!m_Server.Get_ClientInfo(nClient, strIP, nPort)) return 0;
+	if (nPort != m_nLPort) { g_objLogFile.Save_HandlerLog("OnServerReceive - Local Port Mismatch"); return 0; }
 
-	BYTE byRecv[1025] = { 0 };	// Buffer 1024 -> Last 0x00
-	int nLen = m_Server.Read_Socket(nClient, byRecv);
+	BYTE byRecv[8193] = { 0 };	// 마지막 0x00
+	int nLen = m_Server.Read_Socket(0, byRecv);
+	if (nLen < 1) { g_objLogFile.Save_HandlerLog("OnServerReceive - Data Zero"); return 0; }
 
 	CString strRecvSocket, strLog;
 	strRecvSocket.Format("%s", byRecv);
 	m_strRecvCmd += strRecvSocket;
 
 	CMesAgentDlg *pMainDlg = (CMesAgentDlg*)AfxGetMainWnd();
-	while (!m_strRecvCmd.IsEmpty()) 
-	{
+	while (!m_strRecvCmd.IsEmpty()) {
 		int nStart = m_strRecvCmd.Find("@");
 		int nEnd = m_strRecvCmd.Find("\n");
 
@@ -133,70 +119,76 @@ LRESULT CHandler::OnServerReceive(WPARAM wClientIdx, LPARAM lServerPort)
 		AfxExtractSubString(strCmd, strRecv, 0, chSep);
 		AfxExtractSubString(strOp, strRecv, 1, chSep);
 
-		CString strArg[10];
-		for (int i = 0; i < 10; i++) AfxExtractSubString(strArg[i], strRecv, i + 2, chSep);
+		CString strA[7];
+		for (int i = 0; i < 7; i++) AfxExtractSubString(strA[i], strRecv, i + 2, chSep);
 
 		if (strCmd == "OPER") {
-			if (strOp == "UPDATE") Get_OperUpdate(strArg[0]);
-
-		} else if (strCmd == "EQUIP") {
-			if (strOp == "STATE") Get_EquipState(strArg[0]);
-
-		} else if (strCmd == "ERROR") {
-			if (strOp == "UPDATE") Get_ErrorUpdate(strArg[0], strArg[1]);
+			if (strOp == "UPDATE") Get_OperUpdate(strA[0]);
 
 		} else if (strCmd == "CONTROL") {
-			if (strOp == "STATE") Get_ControlState(strArg[0], strArg[1]);
+			if (strOp == "STATE") Get_ControlState(strA[0], strA[1]);
+
+		} else if (strCmd == "EQUIP") {
+			if (strOp == "STATE") Get_EquipState(strA[0]);
+
+		} else if (strCmd == "ERROR") {
+			if (strOp == "UPDATE") Get_ErrorUpdate(strA[0], strA[1], strA[2]);
 
 		} else if (strCmd == "LOT") {
-			if (strOp == "START")	Get_LotStart(strArg[0], strArg[1], strArg[2], strArg[3]);
-			if (strOp == "ABORT")	Get_LotAbort(strArg[0]);
-			if (strOp == "END")		Get_LotEnd(strArg[0], strArg[1], strArg[2], strArg[3], strArg[4], strRecv);
-
-//			if (strOp == "REPORT")	Get_LotIdReport(strArg[0], strArg[1], strArg[2]);
-// 			if (strOp == "READY")	Get_LotReady(strArg[0], strArg[1]);
-//			if (strOp == "CANCEL")	Get_Cancel(strArg[0], strArg[1]);
-
-		} else if (strCmd == "NGLOT") {
-			if (strOp == "REQUEST")	Get_NGLotRequest();
-			if (strOp == "START")	Get_NGLotStart(strArg[0], strArg[1]);
-			if (strOp == "END")		Get_NGLotEnd(strArg[0], strArg[1]);
-
-		} else if (strCmd == "CM") {
-			if (strOp == "REQUEST")	Get_CmRequest(strArg[0], strArg[1]);
-			if (strOp == "END")		Get_CmEnd(strArg[0], strArg[1], strArg[2], strArg[3], strArg[4], strArg[5]);
-
-		} else if (strCmd == "RECIPE") {
-			if (strOp == "REQUEST")	Get_RecipeList(strRecv);
-			if (strOp == "REPORT") Get_RecipeReport(strArg[0]);
+			if (strOp == "READY")   Get_LotReady(strA[0]);
+			if (strOp == "STARTED") Get_LotStarted(strA[0], strA[1]);
+			if (strOp == "END")     Get_LotEnd(strA[0], strA[1], strA[2], strA[3], strA[4], strA[5], strA[6]);
+			if (strOp == "ABORT")   Get_LotAbort(strA[0], strA[1]);
 
 		} else if (strCmd == "IDLE") {
-// 			if (strOp == "REQUEST") Get_IdleRequest();
-			if (strOp == "REPORT") 	Get_IdleReport(strArg[0], strArg[1], strArg[2], strArg[3], strArg[4]);
+			if (strOp == "SET")    Get_IdleSet(strA[0], strA[1]);
+			if (strOp == "RESET")  Get_IdleReset(strA[0], strA[1]);
+			if (strOp == "REPORT") Get_IdleReport(strA[0], strA[1], strA[2], strA[3], strA[4]);
 
-		} else if (strCmd == "TERMINAL") {
-			if (strOp == "MSG") 	Get_TerminalOK();
+		} else if (strCmd == "CM") {
+			if (strOp == "END") Get_CmEnd(strA[0], strA[1], strA[2], strA[3], strA[4], strA[5]);
 
-//		} else if (strCmd == "MGZ") {
-//			if (strOp == "ID")		Get_MGZIdReport(strArg[0], strArg[1], strArg[2]);
-// 			if (strOp == "CANCEL")	Get_Cancel(strArg[0], strArg[1]);
+		} else if (strCmd == "LOTID") {	// Retest Lot-ID
+			if (strOp == "REQUEST") {
+				int nTotal = atoi(strA[4]);
+				int nCount = atoi(strA[5]);
+				if (nTotal < 1 || nTotal > 100 || nCount < 1 || nCount > 100) return 0;	// Error
+				for (int i = 0; i < nCount; i++) AfxExtractSubString(gData.sReCmId[i], strRecv, i + 8, chSep);
+				Get_LotIdRequest(strA[0], strA[1], strA[2], strA[3], nTotal, nCount);
+			}
 
-//		} else if (strCmd == "CARRIER") {
-//			if (strOp == "LOAD")	Get_CarrierLoad(strArg[0], strArg[1], strArg[2]);
-//			if (strOp == "START")	Get_CarrierStart(strArg[0], strArg[1], strArg[2], strArg[3], strArg[4]);
-//			if (strOp == "ID")		Get_CarrierIdReport(strArg[0], strArg[1], strArg[2], strArg[3],strArg[4], strArg[5]);
-//			if (strOp == "END")		Get_CarrierEnd(strArg[0], strArg[1], strArg[2], strArg[3], strArg[4], strArg[5], strArg[6], strArg[7]);
-//			if (strOp == "UNLOAD")	Get_CarrierUnload(strArg[0], strArg[1], strArg[2]);
-// 			if (strOp == "CANCEL")	Get_Cancel(strArg[0], strArg[1]);
-//			if (strOp == "INFO")	Get_CarrierInfo(strArg[0], strArg[1], strArg[2], strArg[3], strArg[4], strArg[5], strArg[6]);
+		} else if (strCmd == "CAPID") {		// Cap-ID
+			if (strOp == "REQUEST")  Get_CapIdRequest(strA[0]);
+			if (strOp == "COMPLETE") Get_CapIdComplete(strA[0]);
 
-		} 
-		else if (strCmd == "RMS")
-		{
-			if (strOp == "CHECK")		Get_RMSCheck();
-			
-		} 
+		} else if (strCmd == "SHIPID") {	// Ship-ID
+			if (strOp == "REQUEST")  Get_ShipIdRequest(strA[0]);
+			if (strOp == "COMPLETE") Get_ShipIdComplete(strA[0]);
+
+		} else if ("RECIPE") {
+			if (strOp == "SELECTED") Get_RecipeSelected(strA[0], strA[1]);
+		}
 	}
+
+	return 0;
+}
+
+LRESULT CHandler::OnServerRemove(WPARAM wLocalPort, LPARAM lClientIdx)
+{
+	UINT nLocalPort = (UINT)wLocalPort;
+	int nClient = (int)lClientIdx;
+
+	if (nLocalPort != m_nLPort) return 0;
+
+	m_bConnected = FALSE;
+
+	CString strLog = "Handler Disconnected.";
+	g_objLogFile.Save_HandlerLog(strLog);
+
+	CMesAgentDlg *pMainDlg = (CMesAgentDlg*)AfxGetMainWnd();
+	pMainDlg->Set_HandlerConnect(FALSE);
+
+	if (g_objHost.Is_Connected()) g_objHost.Set_S6F11_ControlState(2);	//1:Online, 2:Offline
 
 	return 0;
 }
@@ -209,209 +201,128 @@ void CHandler::Get_OperUpdate(CString sOperId)
 	gData.sOperId = sOperId;
 }
 
-void CHandler::Get_EquipState(CString sState)
+void CHandler::Get_ControlState(CString sFlag, CString sOperId)
 {
-	int nState = atoi(sState);
-	g_objHost.Set_S6F11_EquipState(nState, 0);
+	int nState = atoi(sFlag);	// 1:Online, 2:Offline
+	gData.sOperId = sOperId;
+	if (!g_objHost.Is_Connected()) return;
+
+	g_objHost.Set_S6F11_ControlState(nState);
 }
 
-void CHandler::Get_ErrorUpdate(CString sFlag, CString sErrNo)
+void CHandler::Get_EquipState(CString sState)
 {
-	int nFlag = atoi(sFlag);
-	int nErrNo = atoi(sErrNo);
-	CString strErrFile, strErrMsg;
+	int nState = atoi(sState);	// 1:Run, 4:Idle, 5:Down
+	g_objHost.Set_S6F11_EquipState(nState, "0", "0", "");
+}
 
+void CHandler::Get_ErrorUpdate(CString sFlag, CString sErrNo, CString sCategory)
+{
+	int nSet = atoi(sFlag);
+
+	CString strErrFile, strErrMsg;
 	strErrFile.Format("%s\\%s", gsCurrentDir, gData.sErrFile);
 	CIniFileCS INI(strErrFile);
 	if (!INI.Check_File()) { AfxMessageBox(strErrFile + " File Not Found!!!"); return; }
 
-	gData.sAlarmTxt = INI.Get_String("ERROR", sErrNo, "");
+	gAlarm.nAlmSet = nSet;
+	gAlarm.sAlmNo = sErrNo;
+	gAlarm.sAlmCat = sCategory;
+	gAlarm.sAlmMsg = INI.Get_String("ERROR", sErrNo, "");
 
-	if (nFlag == 1) {
-		g_objHost.Set_S6F11_EquipState(6, nErrNo);	//Down
-		g_objHost.Set_S5F1_Alarm(1, nErrNo);
-	} else {
-		g_objHost.Set_S5F1_Alarm(0, nErrNo);
-		g_objHost.Set_S6F11_EquipState(5, 0);		//Run
-	}
+	g_objHost.Set_S5F1_AlarmReport(nSet, sErrNo, gAlarm.sAlmMsg);
 }
 
-void CHandler::Get_ControlState(CString sFlag, CString sOperId)
+void CHandler::Get_LotReady(CString sLotId)
 {
-	gData.sOperId = sOperId;
-	int nState = atoi(sFlag);
-	if (g_objHost.Is_Connected()) g_objHost.Set_S6F11_ControlState(nState);	// 1:Online, 2:Offline
-	if (nState == 1)			  g_objHost.Set_S6F11_EquipState(2, 0);	// Idle
+	gMes.sHostLotId = gMes.sHostRecipe = "";
+	gMes.nHostCmCount = 0;
+	g_objHost.Set_S6F11_LotReady(sLotId);
 }
 
-void CHandler::Get_LotStart(CString sType, CString sLotId, CString sRecipe, CString sCount)
+void CHandler::Get_LotStarted(CString sLotId, CString sCmCnt)
 {
-	int nCount = atoi(sCount);
-	int nType  = atoi(sType);
-
-	if (nType == 0) g_objHost.Set_S6F11_LotReport(sLotId, sRecipe);
-	if (nType == 1) g_objHost.Set_S6F11_LotStart(sLotId, sRecipe, nCount);
+	int nCount = atoi(sCmCnt);
+	g_objHost.Set_S6F11_LotStarted(sLotId, nCount);
 }
 
-void CHandler::Get_LotEnd(CString sLotId, CString sRecipe, CString sHCount, CString sOk, CString sNg, CString sRcvData)
+void CHandler::Get_LotEnd(CString sLotId, CString sRecipe, CString sCount, CString sOk, CString sNg, CString sBNg, CString sFlag)
 {
+	int nCnt = atoi(sCount);
 	int nOk = atoi(sOk);
 	int nNg = atoi(sNg);
-	int nHCount = atoi(sHCount);
-	for (int i = 0; i < 11; i++) AfxExtractSubString(gData.sGMESData[i], sRcvData, i + 7, ',');
-	g_objHost.Set_S6F11_LotEnd(sLotId, sRecipe, nHCount, nOk, nNg);
+	int nBNg = atoi(sBNg);
+	g_objHost.Set_S6F11_LotEnd(sLotId, sRecipe, nCnt, nOk, nNg, nBNg, sFlag);
 }
 
-void CHandler::Get_LotAbort(CString sLotId)
+void CHandler::Get_LotAbort(CString sLotId, CString sRecipe)
 {
-	g_objHost.Set_S6F11_LotAbort(sLotId);
+	g_objHost.Set_S6F11_LotAbort(sLotId, sRecipe);
 }
 
-void CHandler::Get_CmEnd(CString sLotId, CString sCmId, CString sResult, CString sNgCode, CString sPocket, CString sMarginal)
-{
-	int nPocket = atoi(sPocket);
-	g_objHost.Set_S6F11_CmEnd(sLotId, sCmId, sResult, sNgCode, nPocket, sMarginal);
-}
-
-void CHandler::Get_IdleReport(CString sOperId, CString sSTime, CString sETime, CString sCode, CString sType)
+void CHandler::Get_IdleSet(CString sOperId, CString sCode)
 {
 	gData.sOperId = sOperId;
-// 	gIdle.nCount = nCount;	// CNS 요청으로 첫번째 1개만 전송
-	gIdle.sStartTime = sSTime;
-	gIdle.sEndTime = sETime;
-	gIdle.sCode = sCode;
-// 	gIdle.sText = sText;
-	if (sType == "1") g_objHost.Set_S6F11_IdleReportSet(TRUE);	//Idle Start
-	else			  g_objHost.Set_S6F11_IdleReportSet(FALSE);	//Idle End
+	gIdle.sIdleCode = sCode;
+	g_objHost.Set_S6F11_IdleSet();
 }
 
-void CHandler::Get_RecipeList(CString sRecipeData)
+void CHandler::Get_IdleReset(CString sOperId, CString sCode)
 {
-	char chSep = ',';
-	CString sOption, sCount;
-
-	AfxExtractSubString(sOption, sRecipeData, 2, chSep);
-	AfxExtractSubString(sCount,  sRecipeData, 3, chSep);
-
-	if (sOption == "1") {	//CurrentRecipe
-		AfxExtractSubString(gData.sCurrentRecipe, sRecipeData, 4, chSep);
-		g_objHost.Set_S1F4();
-	} else {				//All Recipe
-		gData.nRcpCount = atoi(sCount);
-		for (int i = 0; i < 100; i++) {
-			AfxExtractSubString(gData.sRecipList[i], sRecipeData, i + 4, chSep);
-			if (i+1 >= gData.nRcpCount) break;
-		}
-		g_objHost.Set_S7F20();
-	}
+	gData.sOperId = sOperId;
+	gIdle.sIdleCode = sCode;
+	g_objHost.Set_S6F11_IdleReset();
 }
 
-void CHandler::Get_RecipeReport(CString sVersion)
+void CHandler::Get_IdleReport(CString sOperId, CString sCode, CString sText, CString sSTime, CString sETime)
 {
-	g_objHost.Set_S6F11_PPSelectReport(gMes.sHostLotId);	
+	gData.sOperId = sOperId;
+	gIdle.sIdleCode = sCode;
+	gIdle.sIdleText = sText;
+	gIdle.sIdleSTime = sSTime;
+	gIdle.sIdleETime = sETime;
+	g_objHost.Set_S6F11_IdleReport();
 }
 
-void CHandler::Get_CmRequest(CString sLotId, CString sCmId)
+void CHandler::Get_CmEnd(CString sLotId, CString sTray, CString sPocket, CString sResult, CString sNgCode, CString sCmId)
 {
-	g_objHost.Set_S6F11_CmRequest(sLotId, sCmId);
+	int nTray = atoi(sTray);
+	int nPocket = atoi(sPocket);
+	g_objHost.Set_S6F11_CmEnd(sLotId, nTray, nPocket, sResult, sNgCode, sCmId);
 }
 
-void CHandler::Get_TerminalOK()
+void CHandler::Get_LotIdRequest(CString sSite, CString sEqNo, CString sLabel, CString sRtstId, int nTotal, int nCount)
 {
-	g_objHost.Set_S6F11_Terminal();
+	g_objHost.Set_S6F11_RetestLotRequest(sSite, sEqNo, sLabel, sRtstId, nTotal, nCount);
 }
 
-void CHandler::Get_NGLotRequest()
+void CHandler::Get_CapIdRequest(CString sCapId)
 {
-	gMes.sHostNGLotId = gMes.sHostNGVendor = gMes.sHostNGConfig = gMes.sHostNGProcID = gMes.sHostNGModel = gMes.sHostNGRecipe = "";
-	g_objHost.Set_S6F11_NGLotRequest();
+	g_objHost.Set_S6F11_MaterialReport(1, sCapId);
 }
 
-void CHandler::Get_NGLotStart(CString sNGLotId, CString sCount)
+void CHandler::Get_ShipIdRequest(CString sShipId)
 {
-	int nCount = atoi(sCount);
-	g_objHost.Set_S6F11_NGLotStart(sNGLotId, nCount);
+	g_objHost.Set_S6F11_MaterialReport(2, sShipId);
 }
 
-void CHandler::Get_NGLotEnd(CString sNGLotId, CString sCount)
+void CHandler::Get_CapIdComplete(CString sCapId)
 {
-	int nCount = atoi(sCount);
-	g_objHost.Set_S6F11_NGLotEnd(sNGLotId, nCount);
-
+	g_objHost.Set_S6F11_MaterialComplete(1, sCapId);
 }
 
-void CHandler::Get_RMSCheck()
+void CHandler::Get_ShipIdComplete(CString sShipId)
 {
-	gData.bRMSLoad_ALL = FALSE;
-	if(gData.bRMSLoad_ALL)
-	{
-		Set_RMSAlreadyDone();
-	}
-	else
-	{
-		g_objCommon.Load_RMSData();
-		g_objCommon.BuildDataIdValueVector(gData.sRMSPath +"\\EquipData.ini", gData.sRMSPath + "\\MoveData.ini", vecHandlerData);
-		//do nothing
-	}
+	g_objHost.Set_S6F11_MaterialComplete(2, sShipId);
+}
+
+void CHandler::Get_RecipeSelected(CString sLotId, CString sRecipe)
+{
+	g_objHost.Set_S6F11_PPSelected(sLotId, sRecipe);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Set Command
-
-void CHandler::Set_LotStart()
-{
-	CString strSend;
-	strSend.Format("LOT,START,%s,%s,%d,%s,%s", gMes.sHostLotId, gMes.sHostRecipe, gMes.nHostCmCount, gMes.sHostVendor, gMes.sHostConfig);
-	Send_Command(strSend);
-}
-
-void CHandler::Set_CmResult()
-{
-	char chSep = ',';
-	CString strTemp, strSend;
-	CString strNgCode = "", strNgText = "";
-
-	if (gMes.sPDHostJudge == "NG") {
-		strNgCode = "00"; strNgText = "NON";
-
-		AfxExtractSubString(strTemp, gMes.sPDHostDetail, 1, chSep);	// 혼입검사 우선
-		if (strTemp == "NG") {
-			strSend.Format("CM,RESULT,%s,%s,%s,02,혼입검사", gMes.sPDHostLotId, gMes.sPDHostCmId, gMes.sPDHostJudge);
-			Send_Command(strSend);
-		
-		} else {
-			for(int i = 0; i < 10; i++) {
-				AfxExtractSubString(strTemp, gMes.sPDHostDetail, i, chSep);
-				if (strTemp != "NG") continue;
-
-				strNgCode.Format("%02d", i + 1);
-				if (i == 0) strNgText = "성능검사";
-				if (i == 1) strNgText = "혼입검사";
-				if (i == 2) strNgText = "VERSION 체크";
-				if (i == 3) strNgText = "WEEK CODE 체크";
-				if (i == 4) strNgText = "NA";
-				if (i == 5) strNgText = "COSMECTIC 판정값";
-				if (i == 6) strNgText = "NA";
-				if (i == 7) strNgText = "NA";
-				if (i == 8) strNgText = "NA";
-				if (i == 9) strNgText = "등록된 모듈 체크";
-				break;
-			}
-			if (gData.bJahwa && strNgCode == "10") {
-				gMes.sPDHostJudge = "OK"; strNgCode = "";
-			}
-		}
-	}
-	strSend.Format("CM,RESULT,%s,%s,%s,%s,%s,%s", gMes.sPDHostLotId, gMes.sPDHostCmId, gMes.sPDHostJudge, strNgCode, strNgText, gMes.sPDHostMarginal);
-	Send_Command(strSend);
-}
-
-void CHandler::Set_ModuleFail()
-{
-	CString strSend;
-	strSend.Format("CM,FAIL,%s,%s,%s,%s", gMes.sCancelLotId, gMes.sCancelModule, gMes.sCancelCode, gMes.sCancelText);
-	Send_Command(strSend);
-}
 
 void CHandler::Set_ControlState(int nFlag)
 {
@@ -420,27 +331,74 @@ void CHandler::Set_ControlState(int nFlag)
 	Send_Command(strSend);
 }
 
-void CHandler::Set_LotCancel()
+void CHandler::Set_ErrorReply()
 {
 	CString strSend;
-	strSend.Format("LOT,CANCEL,%s,%s,%s", gMes.sCancelLotId, gMes.sCancelCode, gMes.sCancelText);
+	strSend.Format("ERROR,REPLY");
 	Send_Command(strSend);
 }
 
-void CHandler::Set_RecipeListRequest(BOOL bList)
+void CHandler::Set_LotStart(CString sLotId, CString sRecipe, int nCmCnt)
 {
 	CString strSend;
-	if (bList)	strSend.Format("RECIPE,REQUEST,0");	//All Recipe
-	else		strSend.Format("RECIPE,REQUEST,1");	//Current Recipe
+	strSend.Format("LOT,START,%s,%s,%d", sLotId, sRecipe, nCmCnt);
 	Send_Command(strSend);
 }
 
-void CHandler::Set_HostMsg(CString sMsg)
+void CHandler::Set_LotIdFail(CString sLotId, CString sRtstId, CString sLabel, CString sCode, CString sText)
 {
-	CString strSend; 
+	CString strSend;
+	strSend.Format("LOTID,FAIL,%s,%s,%s,%s,%s", sLotId, sRtstId, sLabel, sCode, sText);
+	Send_Command(strSend);
+}
 
-	strSend.Format("HOST,MESSAGE,%s", sMsg);
-	g_objHandler.Send_Command(strSend);
+void CHandler::Set_LotIdSucess(CString sLotId, CString sRecipe, int nCmCount, CString sRtstId, CString sLabel)
+{
+	CString strSend;
+	strSend.Format("LOTID,SUCESS,%s,%s,%d,%s,%s", sLotId, sRecipe, nCmCount, sRtstId, sLabel);
+	Send_Command(strSend);
+}
+
+void CHandler::Set_CapIdSucess(CString sLotId)
+{
+	CString strSend;
+	strSend.Format("CAPID,SUCESS,%s", sLotId);
+	Send_Command(strSend);
+}
+
+void CHandler::Set_ShipIdSucess(CString sLotId)
+{
+	CString strSend;
+	strSend.Format("SHIPID,SUCESS,%s", sLotId);
+	Send_Command(strSend);
+}
+
+void CHandler::Set_CapIdFail(CString sLotId, CString sCode, CString sText)
+{
+	CString strSend;
+	strSend.Format("CAPID,FAIL,%s,%s,%s", sLotId, sCode, sText);
+	Send_Command(strSend);
+}
+
+void CHandler::Set_ShipIdFail(CString sLotId, CString sCode, CString sText)
+{
+	CString strSend;
+	strSend.Format("SHIPID,FAIL,%s,%s,%s", sLotId, sCode, sText);
+	Send_Command(strSend);
+}
+
+void CHandler::Set_RecipeSelect(CString sLotId, CString sRecipe)
+{
+	CString strSend;
+	strSend.Format("RECIPE,SELECT,%s,%s", sLotId, sRecipe);
+	Send_Command(strSend);
+}
+
+void CHandler::Set_TerminalDisplay(CString sDisplay)
+{
+	CString strSend;
+	strSend.Format("TERMINAL,DISPLAY,%s", sDisplay);
+	Send_Command(strSend);
 }
 
 void CHandler::Set_TimeSync()
@@ -450,78 +408,6 @@ void CHandler::Set_TimeSync()
 	Send_Command(strSend);
 }
 
-void CHandler::Set_ModuleData()
-{
-	int nSendCount;
-	CString strSend, sData;
-
-	sData = "";
-	if (gMes.nModuleCount > 320) nSendCount = 320;
-	else						 nSendCount = gMes.nModuleCount;
-	for(int i=0; i<nSendCount; i++) {
-		for(int j=0; j<11; j++) {
-			sData = sData + "," + gMes.sModuleData[i][j];
-		}
-	}
-	strSend.Format("MODULE,DATA1,%d%s", gMes.nModuleCount, sData);
-	Send_Command(strSend);
-
-	if (gMes.nModuleCount > 320) {
-		sData = "";
-		for(int i=320; i<gMes.nModuleCount; i++) {
-			for(int j=0; j<11; j++) {
-				sData = sData + "," + gMes.sModuleData[i][j];
-			}
-		}
-		strSend.Format("MODULE,DATA2,%d%s", gMes.nModuleCount, sData);
-		Send_Command(strSend);
-	}
-}
-
-void CHandler::Set_NGLotStart()
-{
-	CString strSend;
-	strSend.Format("NGLOT,START,%s,%s,%s", gMes.sHostNGLotId, gMes.sHostNGVendor, gMes.sHostNGConfig);
-	Send_Command(strSend);
-}
-
-void CHandler::Set_PPSelect()
-{
-	CString strSend;
-	strSend.Format("RECIPE,SELECT,%s,%s", gMes.sHostLotId, gMes.sHostRecipe);
-	Send_Command(strSend);
-}
-
-void CHandler::Set_PPUploadCompletedReport()
-{
-	CString strSend;
-	strSend.Format("RECIPE,COMPLETE,%s,%s", gMes.sHostLotId, gMes.sHostRecipe);
-	Send_Command(strSend);
-}
-
-void CHandler::Set_PPUploadFail()
-{
-	CString strSend;
-	strSend.Format("RECIPE,FAIL,%s,%s,%s,%s", gMes.sHostLotId, gMes.sHostRecipe, gMes.sCancelCode, gMes.sCancelText);
-	Send_Command(strSend);
-}
-
-void CHandler::Set_RMSLoadDone()
-{
-	CString strSend;
-	strSend.Format("RMS,LOADDONE");
-	Send_Command(strSend);
-}
-
-void CHandler::Set_RMSAlreadyDone()
-{
-	CString strSend;
-	strSend.Format("RMS,ALREADYDONE");
-	Send_Command(strSend);
-}
-
-
-
 ///////////////////////////////////////////////////////////////////////////////
 
 void CHandler::Send_Command(CString sSend)
@@ -530,11 +416,11 @@ void CHandler::Send_Command(CString sSend)
 
 	strSendSocket.Format("@%s\n", sSend);
 
-	char chSend[92160] = { 0 };	// Max 1000
+	char chSend[8192] = { 0 };
 	int nLength = strSendSocket.GetLength();
 	memcpy(chSend, (LPSTR)(LPCSTR)strSendSocket, nLength);
 
-	if (!m_Server.Write_Socket(m_nClientIdx, (BYTE*)chSend, nLength)) return;
+	if (!m_Server.Write_Socket(0, (BYTE*)chSend, nLength)) return;
 
 	// Handler Log ////////////////////////////////////////////////////////////
 	strLog.Format("[->] %s", sSend);
@@ -546,7 +432,3 @@ void CHandler::Send_Command(CString sSend)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
-
-
-

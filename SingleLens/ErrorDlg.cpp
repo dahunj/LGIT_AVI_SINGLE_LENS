@@ -7,6 +7,7 @@
 
 #include "LogFile.h"
 #include "Common.h"
+#include "MesAgent.h"
 
 #include "SequenceInit.h"
 #include "SequenceMain.h"
@@ -135,6 +136,8 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		CString strMes = "";
 		
 		pMainDlg->Set_CurrentState(STATE_ERROR);
+
+		g_objMesAgent.Set_ErrorUpdate(1, strErrNo);
 
 		strErrNo.Format("%04d", m_nErrNo);
 		strErrCode.Format("%05d", m_nErrCode);

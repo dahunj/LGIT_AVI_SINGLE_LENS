@@ -1,4 +1,3 @@
-///////////////////////////////////////////////////////////////////////////////
 // CSServerSocket.h
 //
 #pragma once
@@ -37,23 +36,25 @@ public:
 	virtual void OnAccept(int nErrorCode);
 
 private:
+	UINT	m_nLocalPort;
 	CWnd*	m_pParent;
-	int		m_nPort;
 	CList<CDataSocketCS*, CDataSocketCS*> m_pListDataSocket;
 
 public:
 	BOOL Listen_Socket(UINT nLocalPort, CWnd* pParent = NULL);
 	void Close_Socket();
 
-	int Read_Socket(int nIndex, BYTE* pBuffer);
+	int  Read_Socket(int nIndex, BYTE* pBuffer);
 	BOOL Write_Socket(int nIndex, BYTE* pBuffer, int nLength);
 
+	UINT Get_LocalPort() { return m_nLocalPort; }
+	int  Get_ClientCount() { return (int)m_pListDataSocket.GetCount(); }
 	BOOL Get_ClientInfo(int nIndex, CString& strIp, UINT& nPort);
-	int Get_ClientCount();
+	void Close_Client(int nClientIdx);
+	void Clear_Client();
 
 	void Receive_Client(CDataSocketCS *pDataSocket);
 	void Remove_Client(CDataSocketCS *pDataSocket);
-	void Clear_Client();
 };
 
 ///////////////////////////////////////////////////////////////////////////////

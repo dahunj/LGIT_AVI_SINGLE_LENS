@@ -15,7 +15,6 @@ public:
 	void Save_AgentLog(CString sLog);
 	void Save_HandlerLog(CString sLog);
 	void Save_HostLog(CString sLog);
-	void Save_InspectorLog(CString sLog);
 };
 
 extern CLogFile g_objLogFile;

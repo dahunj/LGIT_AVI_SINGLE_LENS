@@ -3,7 +3,6 @@
 #pragma once
 
 #include "LedStatic.h"
-#include "afxcmn.h"
 
 // CMesAgentDlg 대화 상자
 class CMesAgentDlg : public CDialogEx
@@ -16,8 +15,7 @@ public:
 	enum { IDD = IDD_MESAGENT_DIALOG };
 	CLedStatic	m_ledHandlerState;
 	CLedStatic	m_ledHostState;
-	CLedStatic	m_ledVisionState;
-	CProgressCtrl m_PgrCtrlRMS;
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 지원입니다.
 
@@ -43,19 +41,13 @@ protected:
 	afx_msg void OnDblclkLstHandlerMsg();
 	afx_msg void OnDblclkLstHostMsg();
 	afx_msg void OnBnClickedBtnTest();
-	afx_msg void OnBnClickedBtnVisionOpen();
-	afx_msg void OnBnClickedBtnVisionClose();
-	afx_msg void OnBnClickedBtnVisionConnect();
 
 private:
 	void Check_DeleteLog();
-	void Test_Data();
 
 public:
 	void Set_HandlerConnect(BOOL bConnected);
 	void Set_HostConnect(BOOL bConnected, CString strIp, int nPort);
 	void Set_HandlerMsg(CString sMsg);
 	void Set_HostMsg(CString sMsg);
-	void Set_VisionConnect(BOOL bConnected);
-	afx_msg void OnBnClickedBtnRmsLoad();
 };

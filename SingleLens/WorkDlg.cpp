@@ -7,14 +7,16 @@
 
 #include "LogFile.h"
 #include "Common.h"
-
 #include "Inspector.h"
+#include "MesAgent.h"
 
 #include "SequenceInit.h"
 #include "SequenceMain.h"
 
 #include "OperatorDlg.h"
 #include "SingleLensDlg.h"
+
+
 
 // CWorkDlg 대화 상자입니다.
 CWorkDlg g_dlgWork;
@@ -74,6 +76,8 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_LED_VISION_STATUS_0 + i, m_ledVisionStatus[i]);
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_LED_EQUIP_OPTION_0 + i, m_ledEquipOption[i]);
 
+	DDX_Control(pDX, IDC_STC_OPER_ID, m_stcOperId);
+
 	m_pDY00 = g_objAJinAXL.Get_pDY00();
 	m_pDY01 = g_objAJinAXL.Get_pDY01();
 	m_pDY02 = g_objAJinAXL.Get_pDY02();
@@ -91,7 +95,6 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MZ_ZIGID_0, IDC_STC_MZ_ZIGID_59, OnStcZigIDClick)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MZ_LENS_CNT_0, IDC_STC_MZ_LENS_CNT_59, OnStcLensCountClick)
 	
-	//old 
 	ON_STN_CLICKED(IDC_LBL_LOT_0, &CWorkDlg::OnStnClickedLblLot0)
 	ON_STN_CLICKED(IDC_LBL_LOT_3, &CWorkDlg::OnStnClickedLblLot3)
 		
@@ -118,10 +121,12 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 
 	ON_BN_CLICKED(IDC_BTN_SIMUL1, &CWorkDlg::OnBnClickedBtnSimul1)
 	
-
 	ON_STN_CLICKED(IDC_STC_HIDDEN, &CWorkDlg::OnStnClickedStcHidden)
 	ON_BN_CLICKED(IDC_CHK_NO_TRAY, &CWorkDlg::OnBnClickedChkNoTray)
 	ON_BN_CLICKED(IDC_BTN_LIGHT, &CWorkDlg::OnBnClickedBtnLight)
+	ON_STN_CLICKED(IDC_STC_OPER_ID, &CWorkDlg::OnStnClickedStcOperId)
+	ON_BN_CLICKED(IDC_BTN_MES_ONLINE, &CWorkDlg::OnBnClickedBtnMesOnline)
+	ON_BN_CLICKED(IDC_BTN_MES_OFFLINE, &CWorkDlg::OnBnClickedBtnMesOffline)
 END_MESSAGE_MAP()
 
 // CWorkDlg 메시지 처리기입니다.
@@ -144,9 +149,7 @@ void CWorkDlg::Initial_Controls()
 	Initial_Grid(&m_grdTopVision, gData.nLensCntY, gData.nLensCntX);
 	Initial_Grid(&m_grdBtmVision, gData.nLensCntY, gData.nLensCntX);
 	Initial_Grid(&m_grdMarking, gData.nLensCntY, gData.nLensCntX);
-
-
-	
+		
 	for (int i = 0; i < 7; i++) m_stcTrayNo[i].Init_Ctrl("바탕", 12, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));
 
 	// 비트맵 로드
@@ -304,8 +307,8 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 			m_bAutoRunning = TRUE;
 			if (gData.bCycleStop && !m_bCycleStopRun) m_bCycleStopRun = TRUE;
 
-			//if (gAlm.bBegin) g_objMesAgent.Reset_AlarmLog();
-			//g_objMesAgent.Set_EquipState(1, 0, 0);		// Run
+		
+			g_objMesAgent.Set_EquipState(eEquipState::RUN);	//Run
 
 			g_objCommon.Locking_MainDoor(TRUE);
 			pMainDlg->Enable_ModeButton(FALSE);
@@ -337,6 +340,8 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 			g_objCommon.Set_LoadCVStop();Sleep(5);
 			g_objCommon.Set_ElevCVStop();Sleep(5);
 			g_objSequenceMain.End_MainRunThread();
+
+			g_objMesAgent.Set_EquipState(eEquipState::DOWN);	//Down
 			
 			int nState = theApp.Get_MainState();
 			if (nState != STATE_ALARM && nState != STATE_ERROR) pMainDlg->Set_CurrentState(STATE_STOP);
@@ -657,6 +662,8 @@ void CWorkDlg::OnBnClickedRdoWorkStop()
 
 	pMainDlg->Set_LotErrorLog("STOP", 904, "Stop");
 	g_objLogFile.Save_EfficiencyLog(0, "Stop", 903, "Stop Button Push");
+
+	
 }
 
 void CWorkDlg::OnBnClickedChkCycleStop()
@@ -984,7 +991,7 @@ void CWorkDlg::Reset_AlarmLog()
 	g_objLogFile.Save_AlarmResetLog(strLog);	// Alarm Reset
 
 	strErrNo.Format("%04d", gAlm.nAlmNo);
-//	g_objMesAgent.Set_ErrorUpdate(0, strErrNo);
+	g_objMesAgent.Set_ErrorUpdate(0, strErrNo);
 
 	g_objLogFile.Save_ECMLog(1, strLog);
 }
@@ -1770,4 +1777,42 @@ void CWorkDlg::OnBnClickedBtnLight()
 	}
 	
 	g_objAJinAXL.Write_Output(3);
+}
+
+
+void CWorkDlg::OnStnClickedStcOperId()
+{
+	CString strKey, sLog;
+	if (g_objCommon.Show_KeyPad(strKey) != IDOK) return;
+
+	m_stcOperId.SetWindowText(strKey);
+	gData.sOperID = strKey;
+	g_objMesAgent.Set_OperUpdate(gData.sOperID);
+	g_dlgOperator.m_stcOperOperId.SetWindowText(strKey);
+
+	sLog.Format("[Work Dialog] Oper ID Button Click. [%s]", gData.sOperID);
+	g_objLogFile.Save_HandlerLog(sLog);
+}
+
+
+void CWorkDlg::OnBnClickedBtnMesOnline()
+{
+	if (gData.sOperID.GetLength() < 4) { AfxMessageBox("Input the Operator ID....."); return; }
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	if (!pEquipData->bUseMES) return;
+
+	g_objMesAgent.Set_ControlState(1, gData.sOperID);
+
+	g_objLogFile.Save_HandlerLog("[Work Dialog] MES Online Button Click.");
+}
+
+
+void CWorkDlg::OnBnClickedBtnMesOffline()
+{
+	if (gData.sOperID.GetLength() < 4) { AfxMessageBox("Input the Operator ID....."); return; }
+
+	g_objMesAgent.Set_ControlState(2, gData.sOperID);
+
+	g_objLogFile.Save_HandlerLog("[Work Dialog] MES Offline Button Click.");
 }

@@ -6,6 +6,10 @@
 // CLogFile
 CLogFile g_objLogFile;
 
+CCriticalSection g_csAgentLog;
+CCriticalSection g_csHandlerLog;
+CCriticalSection g_csHostLog;
+
 CLogFile::CLogFile()
 {
 }
@@ -28,6 +32,8 @@ void CLogFile::Create_Folder(CString sPath)
 
 void CLogFile::Save_AgentLog(CString sLog)
 {
+	g_csAgentLog.Lock();
+
 	CString strPath = gsCurrentDir + "\\LOG\\Agent";
 
 	Create_Folder(strPath);
@@ -43,7 +49,7 @@ void CLogFile::Save_AgentLog(CString sLog)
 		try {
 			file.SeekToEnd();
 
-			strSave.Format("[%02d:%02d:%02d %03d] %s\r\n", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, sLog);
+			strSave.Format("[%02d:%02d:%02d.%03d] %s\r\n", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, sLog);
 
 			file.Write(strSave, strSave.GetLength());
 			file.Close();
@@ -52,11 +58,14 @@ void CLogFile::Save_AgentLog(CString sLog)
 			pEx->Delete();
 		}
 	}
+	g_csAgentLog.Unlock();
 }
 
 void CLogFile::Save_HandlerLog(CString sLog)
 {
 	if (!gData.bHandlerLog) return;
+
+	g_csHandlerLog.Lock();
 
 	CString strPath = gsCurrentDir + "\\LOG\\Handler";
 
@@ -73,7 +82,7 @@ void CLogFile::Save_HandlerLog(CString sLog)
 		try {
 			file.SeekToEnd();
 
-			strSave.Format("[%02d:%02d:%02d %03d] %s\r\n", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, sLog);
+			strSave.Format("[%02d:%02d:%02d.%03d] %s\r\n", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, sLog);
 
 			file.Write(strSave, strSave.GetLength());
 			file.Close();
@@ -82,12 +91,14 @@ void CLogFile::Save_HandlerLog(CString sLog)
 			pEx->Delete();
 		}
 	}
+	g_csHandlerLog.Unlock();
 }
 
 void CLogFile::Save_HostLog(CString sLog)
 {
 	if (!gData.bHostLog) return;
 
+	g_csHostLog.Lock();
 	CString strPath = gsCurrentDir + "\\LOG\\Host";
 
 	Create_Folder(strPath);
@@ -103,7 +114,7 @@ void CLogFile::Save_HostLog(CString sLog)
 		try {
 			file.SeekToEnd();
 
-			strSave.Format("[%02d:%02d:%02d %03d] %s\r\n", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, sLog);
+			strSave.Format("[%02d:%02d:%02d.%03d] %s\r\n", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, sLog);
 
 			file.Write(strSave, strSave.GetLength());
 			file.Close();
@@ -112,33 +123,7 @@ void CLogFile::Save_HostLog(CString sLog)
 			pEx->Delete();
 		}
 	}
+	g_csHostLog.Unlock();
 }
 
-void CLogFile::Save_InspectorLog(CString sLog)
-{
-	CString strPath = gsCurrentDir + "\\LOG\\Inspect";
-
-	Create_Folder(strPath);
-
-	SYSTEMTIME time;
-	GetLocalTime(&time);
-
-	CString strFile, strSave;
-	strFile.Format("%s\\%04d%02d%02d.txt", strPath, time.wYear, time.wMonth, time.wDay);
-
-	CFile file;
-	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyNone)) {
-		try {
-			file.SeekToEnd();
-
-			strSave.Format("[%02d:%02d:%02d %03d], %s\r\n", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, sLog);
-
-			file.Write(strSave, strSave.GetLength());
-			file.Close();
-
-		} catch (CFileException *pEx) {
-			pEx->Delete();
-		}
-	}
-}
 ///////////////////////////////////////////////////////////////////////////////

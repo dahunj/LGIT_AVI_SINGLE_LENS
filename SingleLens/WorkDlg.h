@@ -46,8 +46,7 @@ public:
 	CGridCS			m_grdTopVision;
 	CGridCS			m_grdBtmVision;
 	CGridCS			m_grdMarking;
-
-
+	
 	CGroupCS		m_Group[10];
 	CLabelCS		m_Label[7];
 	CGroupCS		m_grpLot[2];
@@ -81,6 +80,11 @@ public:
 	
 	CStaticCS		m_stcHidden;
 	CCheckCS		m_chkNoTrayMode;
+
+	CLabelCS		m_lblOperId;
+	CStaticCS		m_stcOperId;
+	CStaticCS		m_stcMesConnect;
+	CStaticCS		m_stcMesOnline;
 	
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
@@ -188,6 +192,9 @@ public:
 	afx_msg void OnStnClickedStcHidden();
 	afx_msg void OnBnClickedChkNoTray();
 	afx_msg void OnBnClickedBtnLight();
+	afx_msg void OnStnClickedStcOperId();
+	afx_msg void OnBnClickedBtnMesOnline();
+	afx_msg void OnBnClickedBtnMesOffline();
 };
 
 

@@ -34,6 +34,10 @@ private:
 	void Get_LotStart(CString sLotId, CString sRecipe, CString sCmCount, CString sVendor, CString sConfig);
 	void Get_LotCancel(CString sLotId, CString sCode, CString sText);
 
+	void Get_PPSelect(CString sLotId, CString sRecipe);
+	void Get_PPSelectFail(CString sLotId, CString sRecipe, CString sCode, CString sText);
+
+
 	void Send_Command(CString sSend);
 
 public:
@@ -46,12 +50,15 @@ public:
 
 	void Set_OperUpdate(CString sOperId);				// Operator ID 변경시 보고
 	void Set_ControlState(int nFlag, CString sOperId);	// 1:Onine, 2:Offline
-	void Set_EquipState(int nFlag);						// 1:Init, 2:Idle, 3:Setup, 4:Ready, 5:Run(=Executing), 6;Pause(=Down)
+	void Set_EquipState(int nFlag);						// 
 	void Set_ErrorUpdate(int nFlag, CString sErrNo);	// 0:해제, 1:발생
-	void Set_RecipeList(int nFlag);						// 0:All, 1:Current Recipe
+		
 	void Set_IdleReport(CString sOperId, CString sSTime, CString sETime, CString sCode, CString sType);	//1:Start, 2:End
 
+	void Set_MGZIDReport(CString sMGZID);	
+	void Set_PPSelectedReport(CString sLotId, CString sVersion);
 
+	void Set_LotStart(CString sLotId, CString sMGZId, int nSlot, CString sTrayID, CString sRecipe);
 };
 
 

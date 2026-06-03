@@ -250,6 +250,26 @@ void CMesAgent::Get_LotCancel(CString sLotId, CString sCode, CString sText)
 	g_objCommon.Show_Error(9002);
 }
 
+
+void CMesAgent::Get_PPSelect(CString sLotId, CString sRecipe)
+{
+	gMes.sHostLotID = sLotId;
+	gMes.sHostRecipe = sRecipe;
+	if (gMes.sHostLotID.GetLength() < 5 || gMes.sHostRecipe.GetLength() < 2) {
+		g_objCommon.Show_Error(9004); return;
+	}	
+	gMes.nMGZConfirm = 1;
+}
+
+void CMesAgent::Get_PPSelectFail(CString sLotId, CString sRecipe, CString sCode, CString sText)
+{
+	gMes.sHostLotID = sLotId;
+	gMes.sHostRecipe = sRecipe;
+	gMes.sHostCancelCode = sCode;
+	gMes.sHostCancelText = sText;
+	g_objCommon.Show_Error(9030);
+}
+
 //Set
 
 void CMesAgent::Set_EquipState(int nFlag)
@@ -291,46 +311,23 @@ void CMesAgent::Set_IdleReport(CString sOperId, CString sSTime, CString sETime, 
 }
 
 
-void CMesAgent::Set_RecipeList(int nFlag)						// 0:All, 1:Current Recipe
+void CMesAgent::Set_MGZIDReport(CString sMGZId)
 {
-	CString strSend;
-
-	if (nFlag == 1) {	// 1:Current Recipe
-		EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-		strSend.Format("RECIPE,REQUEST,1,1,%s", pEquipData->sModelName);
-		Send_Command(strSend);
-	}
-	if (nFlag == 0) {	// 0:All Recipe
-		int		nCount = 0;
-		CString sPathSource, sRcipeData = "";
-
-		sPathSource = gsCurrentDir + "\\System\\Model";
-
-		if (GetFileAttributes(sPathSource) == -1) {	// 디렉토리 없음
-			strSend.Format("RECIPE,REQUEST,0,%d,%s", nCount, sRcipeData);
-			Send_Command(strSend);
-			return;
-		}
-
-		CFileFind ff;
-		BOOL bFile = ff.FindFile(sPathSource + _T("\\*.*"));
-
-		while(bFile)
-		{
-			bFile = ff.FindNextFile();
-
-			CString str;	// = ff.GetFileName();
-			if(ff.IsDots()) continue;
-
-			if(ff.IsDirectory()){
-				str = ff.GetFileName();	nCount++;
-				if (nCount == 1) sRcipeData = str;
-				else			 sRcipeData = sRcipeData + "," + str;
-			}
-		}
-		ff.Close();
-
-		strSend.Format("RECIPE,REQUEST,0,%d,%s", nCount, sRcipeData);
-		Send_Command(strSend);
-	}
+	CString strSend; 
+	strSend.Format("MGZ,ID,%s", sMGZId);
+	Send_Command(strSend);
 }
+
+void CMesAgent::Set_PPSelectedReport(CString sLotId, CString sVersion)
+{
+
+}
+
+void CMesAgent::Set_LotStart(CString sLotId, CString sMGZId, int nSlot, CString sTrayID, CString sRecipe)
+{
+	CString strSend, strLogID;
+	
+	strSend.Format("LOT,START,%s,%s,%d,%s,%s", strLogID, sMGZId, nSlot, sTrayID, sRecipe);
+	Send_Command(strSend);
+}
+

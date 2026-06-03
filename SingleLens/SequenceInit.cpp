@@ -7,7 +7,10 @@
 
 #include "LogFile.h"
 #include "Common.h"
+#include "MesAgent.h"
+
 #include "SequenceMain.h"
+
 #include "WorkDlg.h"
 
 CSequenceInit g_objSequenceInit;
@@ -245,6 +248,7 @@ BOOL CSequenceInit::Initial_MainInit()
 		// 변수 초기화
 		g_objSequenceMain.Reset_MainRunCase();
 		g_objSequenceMain.Set_ClearRunData(TRUE);
+		g_objMesAgent.Set_EquipState(eEquipState::IDLE);	//Idle
 		if (gData.bCycleStop) g_dlgWork.PostMessage(UM_RESET_CYCLE_STOP, NULL, NULL);
 
 		

@@ -69,9 +69,6 @@
     <ClInclude Include="Host.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Inspector.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MesAgent.cpp">
@@ -108,9 +105,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Host.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Inspector.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

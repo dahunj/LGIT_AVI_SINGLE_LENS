@@ -4,7 +4,7 @@
 #include "MesAgent.h"
 #include "MesAgentDlg.h"
 #include "afxdialogex.h"
-#include "Inspector.h"
+
 #include "Common.h"
 #include "LogFile.h"
 #include "Handler.h"
@@ -27,8 +27,6 @@ void CMesAgentDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LED_HANDLER_STATE, m_ledHandlerState);
 	DDX_Control(pDX, IDC_LED_HOST_STATE, m_ledHostState);
-	DDX_Control(pDX, IDC_LED_VISION_STATE, m_ledVisionState);
-	DDX_Control(pDX, IDC_PROGRESS_RMS, m_PgrCtrlRMS);
 }
 
 BEGIN_MESSAGE_MAP(CMesAgentDlg, CDialogEx)
@@ -46,10 +44,6 @@ BEGIN_MESSAGE_MAP(CMesAgentDlg, CDialogEx)
 	ON_LBN_DBLCLK(IDC_LST_HANDLER_MSG, &CMesAgentDlg::OnDblclkLstHandlerMsg)
 	ON_LBN_DBLCLK(IDC_LST_HOST_MSG, &CMesAgentDlg::OnDblclkLstHostMsg)
 	ON_BN_CLICKED(IDC_BTN_TEST, &CMesAgentDlg::OnBnClickedBtnTest)
-	ON_BN_CLICKED(IDC_BTN_VISION_OPEN, &CMesAgentDlg::OnBnClickedBtnVisionOpen)
-	ON_BN_CLICKED(IDC_BTN_VISION_CLOSE, &CMesAgentDlg::OnBnClickedBtnVisionClose)
-	ON_BN_CLICKED(IDC_BTN_VISION_REQUEST, &CMesAgentDlg::OnBnClickedBtnVisionConnect)
-	ON_BN_CLICKED(IDC_BTN_RMS_LOAD, &CMesAgentDlg::OnBnClickedBtnRmsLoad)
 END_MESSAGE_MAP()
 
 // CMesAgentDlg 메시지 처리기
@@ -66,43 +60,18 @@ BOOL CMesAgentDlg::OnInitDialog()
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
 	m_ledHandlerState.SetColor(RGB(0x00, 0xFF, 0x00), RGB(0x40, 0x40, 0x40));
 	m_ledHostState.SetColor(RGB(0x00, 0xFF, 0x00), RGB(0x40, 0x40, 0x40));
-	m_ledVisionState.SetColor(RGB(0x00, 0xFF, 0x00), RGB(0x40, 0x40, 0x40));
 
 	g_objCommon.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
-	g_objInspector.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
 	g_objHandler.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
 	g_objHost.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
 
-	CString sTemp;
-	sTemp.Format("MesAgent - Varo - Tray - %s", MAIN_VERSION);
-	SetWindowText(sTemp);
-	g_objCommon.Clean_Data();
+	if (!g_objCommon.Read_Config()) return FALSE;
 
-	gData.nRMSPgr = 0;
-	gData.nTotalCnt = 0;
+	CString strType, strText;
+	strType = (gData.nAgentType == 1) ? "CAP" : "UAO";
+	strText.Format("MesAgent (%s) - %s", strType, MAIN_VERSION);
+	SetWindowText(strText);
 
-
-	for(int i = 0; i < 5; i++)
-	{
-		sTemp.Format("%d", i+1);
-		CIniFileCS INI("D:\\Vision Data\\Recipe\\FaiMeasureSpec_Final_PC"+sTemp+".ini");
-		if (!INI.Check_File()) 
-		{ 
-			AfxMessageBox("FaiMeasureSpec_Final_PC"+sTemp+".ini File Not Found!!!");
-			return FALSE; 
-		}
-
-		gData.nFAICnt[i] = INI.Get_Integer("FAI_COUNT","FAI_INSPECT_COUNT_PC"+sTemp, 0);
-		gData.nTotalCnt += gData.nFAICnt[i]; 
-	}
-
-	m_PgrCtrlRMS.SetRange(0,gData.nTotalCnt);
-
-	g_objCommon.Read_Config();
-
-	g_objCommon.Load_RMSData();
-	g_objCommon.BuildDataIdValueVector(gData.sRMSPath + "\\EquipData.ini", gData.sRMSPath + "\\MoveData.ini", vecHandlerData);
-	
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
@@ -154,12 +123,14 @@ void CMesAgentDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
 
+	CString strLog;
+	strLog.Format("Program(%d) End ............... [%s]", gData.nAgentType, MAIN_VERSION);
+	g_objLogFile.Save_AgentLog(strLog);
+
 	g_objHost.Terminate();
 	g_objHandler.Terminate();
-	g_objLogFile.Save_AgentLog("Program End ...............");
 
 	g_objHost.DestroyWindow();
-	g_objInspector.DestroyWindow();
 	g_objHandler.DestroyWindow();
 	g_objCommon.DestroyWindow();
 }
@@ -169,8 +140,6 @@ void CMesAgentDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	CDialogEx::OnShowWindow(bShow, nStatus);
 
 	if (!bShow) return;
-
-	g_objCommon.Read_Config();
 
 	SetDlgItemInt(IDC_STC_HANDLER_PORT, HANDLER_PORT);
 	((CButton*)GetDlgItem(IDC_CHK_HANDLER_LOG))->SetCheck(gData.bHandlerLog);
@@ -185,24 +154,14 @@ void CMesAgentDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	GetDlgItem(IDC_BTN_HOST_CLOSE)->EnableWindow(TRUE);
 	SetDlgItemText(IDC_STC_HOST_IP, "0.0.0.0");
 
-	m_ledVisionState.Off();
-	GetDlgItem(IDC_BTN_VISION_OPEN)->EnableWindow(FALSE);
-	GetDlgItem(IDC_BTN_VISION_CLOSE)->EnableWindow(TRUE);
-
-	CString sLog;
-	sLog.Format("Program Begin - Varo - Tray ............... [%s]", MAIN_VERSION);
-	g_objLogFile.Save_AgentLog(sLog);
+	CString strLog;
+	strLog.Format("Program(%d) Begin ............. [%s]", gData.nAgentType, MAIN_VERSION);
+	g_objLogFile.Save_AgentLog(strLog);
 
 	g_objHandler.Initialize();
 	g_objHost.Initialize();
-	g_objInspector.Initialize();
-
 	gData.sOperId = "00000";
-	gData.nPreEquipState = gData.nCurEquipState = 0; 
-
-	g_objCommon.Load_RMSData();
-	g_objCommon.BuildDataIdValueVector(gData.sRMSPath +"\\EquipData.ini", gData.sRMSPath + "\\MoveData.ini", vecHandlerData);
-
+	gData.nPreEquipState = gData.nCurEquipState = 0;
 
 	SetTimer(0, 1000, NULL);
 }
@@ -214,13 +173,10 @@ void CMesAgentDlg::OnTimer(UINT_PTR nIDEvent)
 	Check_DeleteLog();	// 오래된 로그 삭제
 
 	DWORD dwTerm = GetTickCount() - g_objHost.Get_LastTime();
-	if (g_objHost.Is_Connected() && g_objHost.Is_HostOnline() && dwTerm > 60000) {
+	if (g_objHost.Is_Connected() && g_objHost.Is_HostOnline() && dwTerm > 20000) {
 		g_objHost.Set_S6F11_ControlState(2);	// 1:Online, 2:Offline
 		g_objHandler.Set_ControlState(2);		// 1:Online, 2:Offline
 	}
-
-	m_PgrCtrlRMS.SetPos(gData.nRMSPgr);
-	
 
 	SetTimer(0, 1000, NULL);
 	CDialogEx::OnTimer(nIDEvent);
@@ -259,7 +215,6 @@ void CMesAgentDlg::OnBnClickedBtnHostListen()
 	GetDlgItem(IDC_BTN_HOST_LISTEN)->EnableWindow(FALSE);
 	GetDlgItem(IDC_BTN_HOST_CLOSE)->EnableWindow(TRUE);
 
-	g_objCommon.Read_Config();
 	g_objHost.Initialize();
 }
 
@@ -279,56 +234,6 @@ void CMesAgentDlg::OnBnClickedBtnHostClose()
 
 	m_ledHostState.Off();
 	g_objHost.Terminate();
-}
-
-void CMesAgentDlg::OnBnClickedBtnVisionOpen()
-{
-	GetDlgItem(IDC_BTN_VISION_OPEN)->EnableWindow(FALSE);
-	GetDlgItem(IDC_BTN_VISION_CLOSE)->EnableWindow(TRUE);
-
-	SYSTEMTIME time;
-	GetLocalTime(&time);
-
-	CString strMsg;
-	strMsg.Format("[%02d:%02d:%02d] Vision Open -> Connect Requests.", time.wHour, time.wMinute, time.wSecond);
-	Set_HandlerMsg(strMsg);
-	g_objLogFile.Save_InspectorLog(strMsg);
-
-	m_ledVisionState.Off();
-	g_objInspector.Initialize();	
-}
-
-void CMesAgentDlg::OnBnClickedBtnVisionClose()
-{
-	GetDlgItem(IDC_BTN_VISION_OPEN)->EnableWindow(TRUE);
-	GetDlgItem(IDC_BTN_VISION_CLOSE)->EnableWindow(FALSE);
-
-	SYSTEMTIME time;
-	GetLocalTime(&time);
-
-	CString strMsg;
-	strMsg.Format("[%02d:%02d:%02d] Vision Close.", time.wHour, time.wMinute, time.wSecond);
-	g_objLogFile.Save_InspectorLog(strMsg);
-	Set_HandlerMsg(strMsg);
-
-	m_ledVisionState.Off();
-	g_objInspector.Terminate();
-
-//	Test_Data();	//gjc
-}
-
-void CMesAgentDlg::OnBnClickedBtnVisionConnect()
-{
-	SYSTEMTIME time;
-	GetLocalTime(&time);
-
-	CString strMsg;
-	strMsg.Format("[%02d:%02d:%02d] Vision Connect Request.", time.wHour, time.wMinute, time.wSecond);
-	g_objLogFile.Save_InspectorLog(strMsg);
-	Set_HandlerMsg(strMsg);
-
-	m_ledVisionState.Off();
-	g_objInspector.Set_ConnectRequest(INSPECTOR_ALL);
 }
 
 void CMesAgentDlg::OnDblclkLstHandlerMsg()
@@ -379,21 +284,6 @@ void CMesAgentDlg::Set_HandlerConnect(BOOL bConnected)
 	Set_HandlerMsg(strMsg);
 }
 
-void CMesAgentDlg::Set_VisionConnect(BOOL bConnected)
-{
-	bConnected ? m_ledVisionState.On() : m_ledVisionState.Off();
-
-	SYSTEMTIME time;
-	GetLocalTime(&time);
-
-	CString strMsg, strTemp;
-	strTemp = (bConnected ? "Connected" : "Disconnected");
-	strMsg.Format("[%02d:%02d:%02d] Vision %s.", time.wHour, time.wMinute, time.wSecond, strTemp);
-
-	g_objLogFile.Save_InspectorLog(strMsg);
-	Set_HandlerMsg(strMsg);
-}
-
 void CMesAgentDlg::Set_HostConnect(BOOL bConnected, CString strIp, int nPort)
 {
 	bConnected ? m_ledHostState.On() : m_ledHostState.Off();
@@ -437,32 +327,5 @@ void CMesAgentDlg::Set_HostMsg(CString sMsg)
 
 void CMesAgentDlg::OnBnClickedBtnTest()
 {
-
-	g_objCommon.BuildDataIdValueVector(gData.sRMSPath +"\\EquipData.ini", gData.sRMSPath + "\\MoveData.ini", vecHandlerData);
-	//gData.bRMSLoad_ALL = FALSE;
-	//g_objCommon.Load_RMSData();
-	//g_objHost.Test_Set();
-}
-
-void CMesAgentDlg::Test_Data()
-{
-	gMar.nCycleNo = 0;
-	
-	for(int i=0; i<50; i++) gMar.sBar[i] = "1234567890123456789012345678901234567890";
-	for(int i=0; i<50; i++) gMar.sLot[i] = "123456789012345678901234567890";
-	for(int i=0; i<50; i++) gMar.nCnt[i] = 50;
-	for(int i=0; i<50; i++) for(int j =0; j<20; j++) {
-		gMar.sNGcd[i][j].Format("AAAAAAAAAABBBBBBBBBB%10d", j+1);
-	}
-	for(int i=0; i<50; i++) for(int j =0; j<20; j++) for(int k=0; k<5; k++) gMar.nData[i][j][k] = 1234567890;
-
-	g_objHost.Test_Send();
-}
-
-
-void CMesAgentDlg::OnBnClickedBtnRmsLoad()
-{
-	g_objCommon.Load_RMSData();
-	g_objCommon.BuildDataIdValueVector(gData.sRMSPath +"\\EquipData.ini", gData.sRMSPath + "\\MoveData.ini", vecHandlerData);
-	
+	g_objHost.Test_Command();
 }

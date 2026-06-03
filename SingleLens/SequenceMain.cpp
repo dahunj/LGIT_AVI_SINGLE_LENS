@@ -2,11 +2,16 @@
 #include "SingleLens.h"
 #include "SingleLensDlg.h"
 #include "SequenceMain.h"
+
 #include "Common.h"
 #include "Inspector.h"
 #include "LogFile.h"
-#include "WorkDlg.h"
 #include "BarcodeLot_Cognex.h"
+#include "MesAgent.h"
+
+#include "WorkDlg.h"
+
+
 
 CSequenceMain g_objSequenceMain;
 
@@ -327,6 +332,8 @@ BOOL CSequenceMain::LotEnd_Run()
 	Set_ClearRunData(FALSE);
 	Reset_MainRunCase();
 
+	g_objMesAgent.Set_EquipState(eEquipState::IDLE);	
+
 	CString strMsg;
 	strMsg.Format("Run End.\n\n");
 	g_objCommon.Show_Alarm(strMsg, STATE_LOTEND);
@@ -632,7 +639,7 @@ BOOL CSequenceMain::MZElevRun()
 				g_objCommon.Set_LoadCVStop(); Sleep(5);
 				g_objCommon.Set_LoadCVRunCCW(); Sleep(5);
 				g_objCommon.Set_ElevCVRunCW();
-				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(gData.nLTime[eLT::CV]);
+				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 							
 			}	
 		}
@@ -646,10 +653,21 @@ BOOL CSequenceMain::MZElevRun()
 				g_objCommon.Set_LoadCVStop(); Sleep(5);
 				g_objCommon.Set_LoadCVRunCCW(); Sleep(5);
 				g_objCommon.Set_ElevCVRunCW();
-				m_nMZElevCase = 4; m_nMZElevLoop.Set_LoopTime(gData.nLTime[eLT::CV]);
+
+				gMes.sMGZID[eMZ::Load] = sBarcode; gMes.nMGZConfirm = 0;
+				g_objMesAgent.Set_MGZIDReport(gMes.sMGZID[eMZ::Load]);
+				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 			}			
 		}			 
 		break;
+	case 71:
+		if(gMes.nMGZConfirm > 0)
+		{
+			gMes.nMGZConfirm = 0;
+			m_nMZElevCase = 4; m_nMZElevLoop.Set_LoopTime(10000);
+		}
+		break;
+
 	case 4:
 		if(gData.bDemoMode)
 		{
@@ -709,6 +727,7 @@ BOOL CSequenceMain::MZElevRun()
 				g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Load, NULL);								
 				
 				Job_LotStart(nMZNo, eMZ::Load);
+				if(m_pEquipData->bUseMES) g_objMesAgent.Set_LotStart()
 				g_objInspector.Set_LotStart(gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load],"Model");
 
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
