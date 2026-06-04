@@ -146,15 +146,15 @@ LRESULT CHost::OnServerReceive(WPARAM wLocalPort, LPARAM lClientIdx)
 			else if (m_strStFn == "S1F3")  Get_S1F3_State();	// Equip Status Request
 			else if (m_strStFn == "S2F3")  Get_S2F3_Link();		// Link Test Request
 			else if (m_strStFn == "S2F31") Get_S2F31_Time();	// Date and Time Set Request
-			else if (m_strStFn == "S2F49" && m_strRcmd == "LOT_START")			 Get_S2F49_LotStart();
-			else if (m_strStFn == "S2F49" && m_strRcmd == "LOT_ID_FAIL")		 Get_S2F49_LotIdFail();
-			else if (m_strStFn == "S2F49" && m_strRcmd == "RETEST_LOT_DATA")	 Get_S2F49_RetestLotData();
-			else if (m_strStFn == "S2F49" && m_strRcmd == "MATERIAL_ID_CONFIRM") Get_S2F49_MaterialConfirm();
-			else if (m_strStFn == "S2F49" && m_strRcmd == "MATERIAL_ID_FAIL")	 Get_S2F49_MaterialFail();
-			else if (m_strStFn == "S2F49" && m_strRcmd == "MATERIAL_ID_FAIL")	 Get_S2F49_MaterialFail();
-			else if (m_strStFn == "S2F49" && m_strRcmd == "PP_SELECT")			 Get_S2F49_PPSelect();
-			else if (m_strStFn == "S5F2")  Get_S5F2_AlarmAck();	// Alarm Report Acknowledge
-			else if (m_strStFn == "S10F3") Get_S10F3_Display();
+			/*else if (m_strStFn == "S2F49" && m_strRcmd == "LOT_START")			 Get_S2F49_LotStart();
+			else if (m_strStFn == "S2F49" && m_strRcmd == "LOT_ID_FAIL")		 Get_S2F49_LotIdFail();*/
+			//else if (m_strStFn == "S2F49" && m_strRcmd == "RETEST_LOT_DATA")	 Get_S2F49_RetestLotData();
+			//else if (m_strStFn == "S2F49" && m_strRcmd == "MATERIAL_ID_CONFIRM") Get_S2F49_MaterialConfirm();
+			//else if (m_strStFn == "S2F49" && m_strRcmd == "MATERIAL_ID_FAIL")	 Get_S2F49_MaterialFail();
+			//else if (m_strStFn == "S2F49" && m_strRcmd == "MATERIAL_ID_FAIL")	 Get_S2F49_MaterialFail();
+			//else if (m_strStFn == "S2F49" && m_strRcmd == "PP_SELECT")			 Get_S2F49_PPSelect();
+			//else if (m_strStFn == "S5F2")  Get_S5F2_AlarmAck();	// Alarm Report Acknowledge
+			//else if (m_strStFn == "S10F3") Get_S10F3_Display();
 		}
 	}
 
@@ -404,15 +404,7 @@ void CHost::Get_S2F31_Time()
 	g_objHandler.Set_TimeSync();
 }
 
-void CHost::Get_S2F49_LotStart()
-{
-	g_objHandler.Set_LotStart(gMes.sHostLotId, gMes.sHostRecipe, gMes.nHostCmCount);
-}
 
-void CHost::Get_S2F49_LotIdFail()
-{
-	g_objHandler.Set_LotIdFail(gMes.sHostLotId, gMes.sHostRtstId, gMes.sHostLabel, gMes.sFailCode, gMes.sFailText);
-}
 
 
 
@@ -534,7 +526,7 @@ void CHost::Set_S6F11_EquipState(int nState, CString sErrNo, CString sCategory, 
 	gData.nPreEquipState = gData.nCurEquipState;
 }
 
-void CHost::Set_S6F11_MGZIDReport(CString sMGZId)
+void CHost::Set_S6F11_MGZIDReport(CString sType, CString sMGZId)
 {
 	SYSTEMTIME time;
 	GetLocalTime(&time);
@@ -553,9 +545,9 @@ void CHost::Set_S6F11_MGZIDReport(CString sMGZId)
 	strSend += "    <CEID NAME=\"CEID\" VALUE=\"20203\" />" + CRLF;
 	strSend += "    <RPTID NAME=\"RPTID\" VALUE=\"20203\" />" + CRLF;
 	strSend += "    <DVLIST COUNT=\"4\">" + CRLF;
-	strSend += "      <DV NAME=\"TIME\" VALUE=\"" + strTime + "\" />" + CRLF;
-	strSend += "      <DV NAME=\"PORTNO\" VALUE=\"1\" />" + CRLF;
-	strSend += "      <DV NAME=\"MGZID\" VALUE=\"" + sMGZId + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"TIME\" VALUE=\""		+ strTime + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"PORTNO\" VALUE=\""		+ sType +"\" />" + CRLF;
+	strSend += "      <DV NAME=\"MGZID\" VALUE=\""		+ sMGZId + "\" />" + CRLF;
 	strSend += "      <DV NAME=\"OPERATORID\" VALUE=\"" + gData.sOperId + "\" />" + CRLF;
 	strSend += "    </DVLIST>" + CRLF;
 	strSend += "  </ITEM>" + CRLF;

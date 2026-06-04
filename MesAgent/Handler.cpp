@@ -134,40 +134,12 @@ LRESULT CHandler::OnServerReceive(WPARAM wLocalPort, LPARAM lClientIdx)
 		} else if (strCmd == "ERROR") {
 			if (strOp == "UPDATE") Get_ErrorUpdate(strA[0], strA[1], strA[2]);
 
-		} else if (strCmd == "LOT") {
-			if (strOp == "READY")   Get_LotReady(strA[0]);
-			if (strOp == "STARTED") Get_LotStarted(strA[0], strA[1]);
-			if (strOp == "END")     Get_LotEnd(strA[0], strA[1], strA[2], strA[3], strA[4], strA[5], strA[6]);
-			if (strOp == "ABORT")   Get_LotAbort(strA[0], strA[1]);
-
-		} else if (strCmd == "IDLE") {
-			if (strOp == "SET")    Get_IdleSet(strA[0], strA[1]);
-			if (strOp == "RESET")  Get_IdleReset(strA[0], strA[1]);
-			if (strOp == "REPORT") Get_IdleReport(strA[0], strA[1], strA[2], strA[3], strA[4]);
-
-		} else if (strCmd == "CM") {
-			if (strOp == "END") Get_CmEnd(strA[0], strA[1], strA[2], strA[3], strA[4], strA[5]);
-
-		} else if (strCmd == "LOTID") {	// Retest Lot-ID
-			if (strOp == "REQUEST") {
-				int nTotal = atoi(strA[4]);
-				int nCount = atoi(strA[5]);
-				if (nTotal < 1 || nTotal > 100 || nCount < 1 || nCount > 100) return 0;	// Error
-				for (int i = 0; i < nCount; i++) AfxExtractSubString(gData.sReCmId[i], strRecv, i + 8, chSep);
-				Get_LotIdRequest(strA[0], strA[1], strA[2], strA[3], nTotal, nCount);
-			}
-
-		} else if (strCmd == "CAPID") {		// Cap-ID
-			if (strOp == "REQUEST")  Get_CapIdRequest(strA[0]);
-			if (strOp == "COMPLETE") Get_CapIdComplete(strA[0]);
-
-		} else if (strCmd == "SHIPID") {	// Ship-ID
-			if (strOp == "REQUEST")  Get_ShipIdRequest(strA[0]);
-			if (strOp == "COMPLETE") Get_ShipIdComplete(strA[0]);
-
-		} else if ("RECIPE") {
-			if (strOp == "SELECTED") Get_RecipeSelected(strA[0], strA[1]);
 		}
+		else if(strCmd == "MGZ")
+		{
+			if(strOp == "ID") Get_MGZIDReport(strA[0], strA[1]);
+		} 
+		
 	}
 
 	return 0;
@@ -233,93 +205,12 @@ void CHandler::Get_ErrorUpdate(CString sFlag, CString sErrNo, CString sCategory)
 	g_objHost.Set_S5F1_AlarmReport(nSet, sErrNo, gAlarm.sAlmMsg);
 }
 
-void CHandler::Get_LotReady(CString sLotId)
+void CHandler::Get_MGZIDReport(CString sType, CString sMGZId)
 {
-	gMes.sHostLotId = gMes.sHostRecipe = "";
-	gMes.nHostCmCount = 0;
-	g_objHost.Set_S6F11_LotReady(sLotId);
+	
+	g_objHost.Set_S6F11_MGZIDReport(sType, sMGZId);
 }
 
-void CHandler::Get_LotStarted(CString sLotId, CString sCmCnt)
-{
-	int nCount = atoi(sCmCnt);
-	g_objHost.Set_S6F11_LotStarted(sLotId, nCount);
-}
-
-void CHandler::Get_LotEnd(CString sLotId, CString sRecipe, CString sCount, CString sOk, CString sNg, CString sBNg, CString sFlag)
-{
-	int nCnt = atoi(sCount);
-	int nOk = atoi(sOk);
-	int nNg = atoi(sNg);
-	int nBNg = atoi(sBNg);
-	g_objHost.Set_S6F11_LotEnd(sLotId, sRecipe, nCnt, nOk, nNg, nBNg, sFlag);
-}
-
-void CHandler::Get_LotAbort(CString sLotId, CString sRecipe)
-{
-	g_objHost.Set_S6F11_LotAbort(sLotId, sRecipe);
-}
-
-void CHandler::Get_IdleSet(CString sOperId, CString sCode)
-{
-	gData.sOperId = sOperId;
-	gIdle.sIdleCode = sCode;
-	g_objHost.Set_S6F11_IdleSet();
-}
-
-void CHandler::Get_IdleReset(CString sOperId, CString sCode)
-{
-	gData.sOperId = sOperId;
-	gIdle.sIdleCode = sCode;
-	g_objHost.Set_S6F11_IdleReset();
-}
-
-void CHandler::Get_IdleReport(CString sOperId, CString sCode, CString sText, CString sSTime, CString sETime)
-{
-	gData.sOperId = sOperId;
-	gIdle.sIdleCode = sCode;
-	gIdle.sIdleText = sText;
-	gIdle.sIdleSTime = sSTime;
-	gIdle.sIdleETime = sETime;
-	g_objHost.Set_S6F11_IdleReport();
-}
-
-void CHandler::Get_CmEnd(CString sLotId, CString sTray, CString sPocket, CString sResult, CString sNgCode, CString sCmId)
-{
-	int nTray = atoi(sTray);
-	int nPocket = atoi(sPocket);
-	g_objHost.Set_S6F11_CmEnd(sLotId, nTray, nPocket, sResult, sNgCode, sCmId);
-}
-
-void CHandler::Get_LotIdRequest(CString sSite, CString sEqNo, CString sLabel, CString sRtstId, int nTotal, int nCount)
-{
-	g_objHost.Set_S6F11_RetestLotRequest(sSite, sEqNo, sLabel, sRtstId, nTotal, nCount);
-}
-
-void CHandler::Get_CapIdRequest(CString sCapId)
-{
-	g_objHost.Set_S6F11_MaterialReport(1, sCapId);
-}
-
-void CHandler::Get_ShipIdRequest(CString sShipId)
-{
-	g_objHost.Set_S6F11_MaterialReport(2, sShipId);
-}
-
-void CHandler::Get_CapIdComplete(CString sCapId)
-{
-	g_objHost.Set_S6F11_MaterialComplete(1, sCapId);
-}
-
-void CHandler::Get_ShipIdComplete(CString sShipId)
-{
-	g_objHost.Set_S6F11_MaterialComplete(2, sShipId);
-}
-
-void CHandler::Get_RecipeSelected(CString sLotId, CString sRecipe)
-{
-	g_objHost.Set_S6F11_PPSelected(sLotId, sRecipe);
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Set Command
@@ -338,61 +229,6 @@ void CHandler::Set_ErrorReply()
 	Send_Command(strSend);
 }
 
-void CHandler::Set_LotStart(CString sLotId, CString sRecipe, int nCmCnt)
-{
-	CString strSend;
-	strSend.Format("LOT,START,%s,%s,%d", sLotId, sRecipe, nCmCnt);
-	Send_Command(strSend);
-}
-
-void CHandler::Set_LotIdFail(CString sLotId, CString sRtstId, CString sLabel, CString sCode, CString sText)
-{
-	CString strSend;
-	strSend.Format("LOTID,FAIL,%s,%s,%s,%s,%s", sLotId, sRtstId, sLabel, sCode, sText);
-	Send_Command(strSend);
-}
-
-void CHandler::Set_LotIdSucess(CString sLotId, CString sRecipe, int nCmCount, CString sRtstId, CString sLabel)
-{
-	CString strSend;
-	strSend.Format("LOTID,SUCESS,%s,%s,%d,%s,%s", sLotId, sRecipe, nCmCount, sRtstId, sLabel);
-	Send_Command(strSend);
-}
-
-void CHandler::Set_CapIdSucess(CString sLotId)
-{
-	CString strSend;
-	strSend.Format("CAPID,SUCESS,%s", sLotId);
-	Send_Command(strSend);
-}
-
-void CHandler::Set_ShipIdSucess(CString sLotId)
-{
-	CString strSend;
-	strSend.Format("SHIPID,SUCESS,%s", sLotId);
-	Send_Command(strSend);
-}
-
-void CHandler::Set_CapIdFail(CString sLotId, CString sCode, CString sText)
-{
-	CString strSend;
-	strSend.Format("CAPID,FAIL,%s,%s,%s", sLotId, sCode, sText);
-	Send_Command(strSend);
-}
-
-void CHandler::Set_ShipIdFail(CString sLotId, CString sCode, CString sText)
-{
-	CString strSend;
-	strSend.Format("SHIPID,FAIL,%s,%s,%s", sLotId, sCode, sText);
-	Send_Command(strSend);
-}
-
-void CHandler::Set_RecipeSelect(CString sLotId, CString sRecipe)
-{
-	CString strSend;
-	strSend.Format("RECIPE,SELECT,%s,%s", sLotId, sRecipe);
-	Send_Command(strSend);
-}
 
 void CHandler::Set_TerminalDisplay(CString sDisplay)
 {

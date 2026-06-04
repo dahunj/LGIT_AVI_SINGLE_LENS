@@ -80,6 +80,7 @@ public:
 	
 	CStaticCS		m_stcHidden;
 	CCheckCS		m_chkNoTrayMode;
+	CCheckCS		m_chkMESUse;
 
 	CLabelCS		m_lblOperId;
 	CStaticCS		m_stcOperId;
@@ -195,6 +196,7 @@ public:
 	afx_msg void OnStnClickedStcOperId();
 	afx_msg void OnBnClickedBtnMesOnline();
 	afx_msg void OnBnClickedBtnMesOffline();
+	afx_msg void OnBnClickedChkMesUse();
 };
 
 

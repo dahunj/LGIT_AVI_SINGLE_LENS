@@ -50,8 +50,7 @@ private:
 	void Get_S1F3_State();				// Equip Status Request
 	void Get_S2F3_Link();				// Link Test Request
 	void Get_S2F31_Time();				// Date and Time Set Request
-	void Get_S2F49_LotStart();			// Enhanced Remote Command
-	void Get_S2F49_LotIdFail();			// Enhanced Remote Command
+
 	
 
 	void Reply_HeartBeat();				// Heart Beat
@@ -72,7 +71,7 @@ public:
 	void Set_S6F11_ControlState(int nState);	// 1:Online, 2:Offline
 	void Set_S6F11_EquipState(int nState, CString sErrNo, CString sCategory, CString sErrMsg);	// 2:Idle, 5:Run, 6:Down
 
-	void Set_S6F11_MGZIDReport(CString sMGZId);
+	void Set_S6F11_MGZIDReport(CString sType, CString sMGZId);
 	void Set_S6F11_PPSelectedReport(CString sLotId, CString sMGZId, CString sRecipeId);
 	void Set_S6F11_PPUploadCompleted(CString sLotId, CString sMGZId, CString sRecipeId);
 

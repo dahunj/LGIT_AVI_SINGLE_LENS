@@ -54,6 +54,7 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LED_INIT_COMPLETE, m_ledInitComplete);
 	DDX_Control(pDX, IDC_CHK_CYCLE_STOP, m_chkCycleStop);
 	DDX_Control(pDX, IDC_CHK_NO_TRAY, m_chkNoTrayMode);
+	DDX_Control(pDX, IDC_CHK_MES_USE, m_chkMESUse);
 
 	for (int i = 0; i < AUTO_COUNT; i++) DDX_Control(pDX, IDC_STC_WORK_CASE_0 + i, m_stcWorkCase[i]);	
 	for (int i = 0; i < 7; i++) DDX_Control(pDX, IDC_LED_INDEX_DONE_0 + i, m_ledIndexDone[i]);
@@ -127,6 +128,7 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_STN_CLICKED(IDC_STC_OPER_ID, &CWorkDlg::OnStnClickedStcOperId)
 	ON_BN_CLICKED(IDC_BTN_MES_ONLINE, &CWorkDlg::OnBnClickedBtnMesOnline)
 	ON_BN_CLICKED(IDC_BTN_MES_OFFLINE, &CWorkDlg::OnBnClickedBtnMesOffline)
+	ON_BN_CLICKED(IDC_CHK_MES_USE, &CWorkDlg::OnBnClickedChkMesUse)
 END_MESSAGE_MAP()
 
 // CWorkDlg 메시지 처리기입니다.
@@ -1815,4 +1817,11 @@ void CWorkDlg::OnBnClickedBtnMesOffline()
 	g_objMesAgent.Set_ControlState(2, gData.sOperID);
 
 	g_objLogFile.Save_HandlerLog("[Work Dialog] MES Offline Button Click.");
+}
+
+
+void CWorkDlg::OnBnClickedChkMesUse()
+{
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	pEquipData->bUseMES = m_chkMESUse.GetCheck();
 }

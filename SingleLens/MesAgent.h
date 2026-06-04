@@ -55,7 +55,7 @@ public:
 		
 	void Set_IdleReport(CString sOperId, CString sSTime, CString sETime, CString sCode, CString sType);	//1:Start, 2:End
 
-	void Set_MGZIDReport(CString sMGZID);	
+	void Set_MGZIDReport(int nType, CString sMGZID);	//1: Load, 2:Unload 
 	void Set_PPSelectedReport(CString sLotId, CString sVersion);
 
 	void Set_LotStart(CString sLotId, CString sMGZId, int nSlot, CString sTrayID, CString sRecipe);

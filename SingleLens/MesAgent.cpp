@@ -311,10 +311,10 @@ void CMesAgent::Set_IdleReport(CString sOperId, CString sSTime, CString sETime, 
 }
 
 
-void CMesAgent::Set_MGZIDReport(CString sMGZId)
+void CMesAgent::Set_MGZIDReport(int nType, CString sMGZId)
 {
 	CString strSend; 
-	strSend.Format("MGZ,ID,%s", sMGZId);
+	strSend.Format("MGZ,ID,%d,%s", nType, sMGZId);
 	Send_Command(strSend);
 }
 

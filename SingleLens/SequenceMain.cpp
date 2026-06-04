@@ -397,6 +397,7 @@ void CSequenceMain::Beep_Post(int nState, int nTime)
 BOOL CSequenceMain::LoadConveyorRun()
 {
 	static int nDetectCnt[6] = {0, 0, 0, 0, 0, 0}; 
+	static DWORD dwTick;
 
 	if(gData.bLdMZWait )
 	{
@@ -435,6 +436,7 @@ BOOL CSequenceMain::LoadConveyorRun()
 	case 2:	
 		if(g_objCommon.Get_LdStopper1Up())
 		{
+			dwTick = GetTickCount();
 			if(!m_pDX00->iLdCVMZExist1R )
 			{
 				g_objCommon.Set_LoadCVRunCW();
@@ -447,11 +449,16 @@ BOOL CSequenceMain::LoadConveyorRun()
 		}		
 		break;
 	case 3:
-		if(m_pDX00->iLdCVMZExist1R)
+		if(m_pDX00->iLdCVMZExist1R )
 		{
 			g_objCommon.Set_LoadCVStop();			
 			m_nLoadConveyorCase++; m_nLoadConveyorLoop.Set_LoopTime(5000);
 		}		
+		else if(GetTickCount() - dwTick > 10000)
+		{
+			g_objCommon.Set_LoadCVStop();
+			m_nLoadConveyorCase = 0; m_nLoadConveyorLoop.Set_LoopTime(5000);
+		}
 		break;
 	case 4:
 		m_nLoadConveyorCase++; m_nLoadConveyorLoop.Set_LoopTime(5000);		
@@ -655,7 +662,7 @@ BOOL CSequenceMain::MZElevRun()
 				g_objCommon.Set_ElevCVRunCW();
 
 				gMes.sMGZID[eMZ::Load] = sBarcode; gMes.nMGZConfirm = 0;
-				g_objMesAgent.Set_MGZIDReport(gMes.sMGZID[eMZ::Load]);
+				g_objMesAgent.Set_MGZIDReport(1, gMes.sMGZID[eMZ::Load]);
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 			}			
 		}			 
@@ -727,7 +734,7 @@ BOOL CSequenceMain::MZElevRun()
 				g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Load, NULL);								
 				
 				Job_LotStart(nMZNo, eMZ::Load);
-				if(m_pEquipData->bUseMES) g_objMesAgent.Set_LotStart()
+				//if(m_pEquipData->bUseMES) g_objMesAgent.Set_LotStart()
 				g_objInspector.Set_LotStart(gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load],"Model");
 
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
@@ -1154,6 +1161,10 @@ BOOL CSequenceMain::FeederRun()
 			
 			if( nExist == gData.nTNoPick[eMZ::Load])
 			{				
+
+#ifndef AJIN_BOARD_USE
+	m_pDX01->iFeederZigExist  = TRUE;
+#endif
 				if(!m_pDX01->iFeederZigExist) break;
 				g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad);
 				m_nFeederCase = 10; m_nFeederLoop.Set_LoopTime(5000);
@@ -1242,6 +1253,9 @@ BOOL CSequenceMain::FeederRun()
 		}
 		break;
 	case 15:
+#ifndef AJIN_BOARD_USE
+		m_pDX01->iRailZigExist  = TRUE;
+#endif
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready) && m_pDX01->iRailZigExist)
 		{
 			g_objCommon.Set_RailAlignIn();
@@ -1592,6 +1606,9 @@ BOOL CSequenceMain::ZigPickerRun()
 		}
 		break;	
 	case 5:
+#ifndef AJINB_BOARD_USE
+	m_pDX01->iZigPickerExist = TRUE;
+#endif
 		if(g_objCommon.Get_TrayPickMasterSlaveIn() && m_pDX01->iZigPickerExist)
 		{
 			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TrayPickGrip])) break;
@@ -1654,6 +1671,9 @@ BOOL CSequenceMain::ZigPickerRun()
 		}
 		break;
 	case 15:
+#ifndef AJINB_BOARD_USE
+		m_pDX02->iIndexTZigExist = TRUE;
+#endif
 		if(g_objCommon.Get_TrayPickMasterSlaveOut() && m_pDX02->iIndexTZigExist)
 		{
 			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TrayPickUnGrip])) break;
