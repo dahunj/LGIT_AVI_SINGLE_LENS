@@ -464,7 +464,7 @@ void CHost::Set_S6F11_ControlState(int nState)
 
 	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
-	strSend += "<EIF VERSION=\"1.4\" ID=\"S6F11\" NAME=\"Event Report\">" + CRLF;
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S6F11\" NAME=\"Event Report\">" + CRLF;
 	strSend += "  <ELEMENT>" + CRLF;
 	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
 	strSend += "  </ELEMENT>" + CRLF;

@@ -494,7 +494,7 @@ void CLogFile::Save_MesAgentLog(CString sLog)
 	GetLocalTime(&time);
 
 	CString strFile, strSave;
-	strFile.Format("%s\\%04d%02d%02d.txt", strPath, time.wYear, time.wMonth, time.wDay);
+	strFile.Format("%s\\%04d%02d%02d_MesAgent.txt", strPath, time.wYear, time.wMonth, time.wDay);
 
 	CFile file;
 	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {

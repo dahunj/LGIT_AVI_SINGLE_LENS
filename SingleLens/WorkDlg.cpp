@@ -77,7 +77,10 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_LED_VISION_STATUS_0 + i, m_ledVisionStatus[i]);
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_LED_EQUIP_OPTION_0 + i, m_ledEquipOption[i]);
 
+	DDX_Control(pDX, IDC_LBL_OPER_ID, m_lblOperId);
 	DDX_Control(pDX, IDC_STC_OPER_ID, m_stcOperId);
+	DDX_Control(pDX, IDC_STC_MES_CONNECT, m_stcMesConnect);
+	DDX_Control(pDX, IDC_STC_MES_ONLINE, m_stcMesOnline);
 
 	m_pDY00 = g_objAJinAXL.Get_pDY00();
 	m_pDY01 = g_objAJinAXL.Get_pDY01();
@@ -129,6 +132,10 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_MES_ONLINE, &CWorkDlg::OnBnClickedBtnMesOnline)
 	ON_BN_CLICKED(IDC_BTN_MES_OFFLINE, &CWorkDlg::OnBnClickedBtnMesOffline)
 	ON_BN_CLICKED(IDC_CHK_MES_USE, &CWorkDlg::OnBnClickedChkMesUse)
+	ON_BN_CLICKED(IDC_BTN_MES_CONNECT, &CWorkDlg::OnBnClickedBtnMesConnect)
+	ON_BN_CLICKED(IDC_BTN_MES_DISCONNECT, &CWorkDlg::OnBnClickedBtnMesDisconnect)
+	ON_BN_CLICKED(IDC_BTN_MES_ABORT, &CWorkDlg::OnBnClickedBtnMesAbort)
+	ON_BN_CLICKED(IDC_BTN_IDLE_REPORT, &CWorkDlg::OnBnClickedBtnIdleReport)
 END_MESSAGE_MAP()
 
 // CWorkDlg 메시지 처리기입니다.
@@ -192,6 +199,11 @@ void CWorkDlg::Initial_Controls()
 	for (int i = 0; i < 2; i++) m_ledVisionStatus[i].Init_Ctrl("Arial", 10, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em16);
 	
 	for (int i = 0; i < 2; i++) m_ledEquipOption[i].Init_Ctrl("Arial", 10, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em16);
+
+	m_stcMesConnect.Init_Ctrl("바탕", 8, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00));
+	m_stcMesOnline.Init_Ctrl("바탕", 10, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00));
+	m_lblOperId.Init_Ctrl("바탕", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x20, 0x20, 0x80));
+	m_stcOperId.Init_Ctrl("바탕", 12, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
 
 }
 
@@ -928,6 +940,15 @@ void CWorkDlg::Display_Status()
 {
 	CString strTemp, strText;
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	if (g_objMesAgent.Is_Connected()) { m_stcMesConnect.Set_Text("Connected"); m_stcMesConnect.Set_Color(RGB(0x00, 0x00, 0x00), RGB(0x00, 0xFF, 0x00)); }
+	else { m_stcMesConnect.Set_Text("Disconnected"); m_stcMesConnect.Set_Color(RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00)); }
+
+	if (g_objMesAgent.Is_HostOnline()) { m_stcMesOnline.Set_Text("Online"); m_stcMesOnline.Set_Color(RGB(0x00, 0x00, 0x00), RGB(0x00, 0xFF, 0x00)); }
+	else { m_stcMesOnline.Set_Text("Offline"); m_stcMesOnline.Set_Color(RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00)); }
+
+	BOOL bInitComplete = g_objSequenceInit.Get_InitComplete();
+	m_ledInitComplete.Set_On(bInitComplete);
+
 
 	int *pCase = g_objSequenceMain.Get_pMainRunCase();
 	for (int i = 0; i < AUTO_COUNT; i++) { strText.Format("%02d", *(pCase + i)); m_stcWorkCase[i].Set_Text(strText); }
@@ -967,8 +988,7 @@ void CWorkDlg::Display_Status()
 	//strText.Format("%d", nIndexPos + 1);
 	//m_stcIndexPos.SetWindowText(strText);
 
-	BOOL bInitComplete = g_objSequenceInit.Get_InitComplete();
-	m_ledInitComplete.Set_On(bInitComplete);
+
 
 	m_ledVisionStatus[0].Set_On(g_objInspector.Check_Connect(VISION_PC1));
 	m_ledEquipOption[0].Set_On(pEquipData->bUseTopVision);
@@ -1824,4 +1844,79 @@ void CWorkDlg::OnBnClickedChkMesUse()
 {
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	pEquipData->bUseMES = m_chkMESUse.GetCheck();
+}
+
+
+void CWorkDlg::OnBnClickedBtnMesConnect()
+{
+	if (gData.sOperID.GetLength() < 4) { AfxMessageBox("Input the Operator ID....."); return; }
+
+	g_objMesAgent.Initialize();
+	g_objLogFile.Save_HandlerLog("[Work Dialog] MES Connect Button Click.");
+}
+
+
+void CWorkDlg::OnBnClickedBtnMesDisconnect()
+{
+	if (gData.sOperID.GetLength() < 4) { AfxMessageBox("Input the Operator ID....."); return; }
+
+	g_objMesAgent.Terminate();
+	g_objLogFile.Save_HandlerLog("[Work Dialog] MES Disconnect Button Click.");
+}
+
+
+void CWorkDlg::OnBnClickedBtnMesAbort()
+{
+	if (gData.sOperID.GetLength() < 4) { AfxMessageBox("Input the Operator ID....."); return; }
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	if (!pEquipData->bUseMES) return;
+
+	if (!g_objMesAgent.Is_Connected()) { AfxMessageBox("MES Disconnect 상태에서는 처리를 할수 없습니다."); return; }
+	if (!g_objMesAgent.Is_HostOnline()) { AfxMessageBox("MES Offline 상태에서는 처리를 할수 없습니다."); return; }
+	if (gData.nSelectNo < 1 || gData.nSelectNo > 6) { AfxMessageBox("Abort Lot을 먼저 선택해 주세요."); return; }
+	if (!m_rdoWorkStop.GetCheck()) { AfxMessageBox("장비 Stop상태에서 Abort처리 하세요."); return; }
+	//if (gMes.nLotStatus[gData.nSelectNo-1] == 0) { AfxMessageBox("진행중인 Lot만 Abort처리가 가능합니다."); return; }
+
+	//int nCase1 = g_objSequenceMain.Get_MainRunCase(AUTO_LOAD_STAGE_1);
+	//int nCase2 = g_objSequenceMain.Get_MainRunCase(AUTO_LOAD_STAGE_2);
+	//if ((nCase1 > 5 && nCase1 < 8) || (nCase2 > 5 && nCase2 < 8)) {
+
+	//	CString sData;
+	//	sData.Format("Are you want to cancel this Port[%d] Lot[%s]?", gData.nSelectNo, gLot.sLotID[gData.nSelectNo-1]);
+	//	if (g_objCommon.Show_MsgBox(2, sData) != IDOK) return;
+
+	//	gMes.nLotStatus[gData.nSelectNo-1] = 0;
+	//	g_objMesAgent.Set_LotAbort(gLot.sLotID[gData.nSelectNo-1]);
+
+	//	//	int nCase1 = g_objSequenceMain.Get_MainRunCase(AUTO_TRANSFER_1);
+	//	//	if (nCase1 == 7) g_objSequenceMain.Set_MainRunCase(AUTO_TRANSFER_1, 0);
+	//	if (nCase1 > 5 && nCase1 < 8) g_objSequenceMain.Set_MainRunCase(AUTO_LOAD_STAGE_1, 20);
+	//	if (nCase2 > 5 && nCase2 < 8) g_objSequenceMain.Set_MainRunCase(AUTO_LOAD_STAGE_2, 20);
+
+	//	m_stcLotsIdS[gData.nSelectNo-1].SetWindowText("");
+	//	m_stcCmsCountS[gData.nSelectNo-1].SetWindowText("");
+	//	g_objCommon.Set_LotDataClear(gData.nSelectNo-1);
+
+	//	sData.Format("[Work Dialog] MES Abort Button Click. PortNo[%d] LotID[%s]", gData.nSelectNo, gLot.sLotID[gData.nSelectNo-1]);
+	//	g_objLogFile.Save_HandlerLog(sData);
+	//} else {
+	//	AfxMessageBox("진행중인 Lot만 Abort처리가 가능합니다.");
+	//}
+}
+
+
+void CWorkDlg::OnBnClickedBtnIdleReport()
+{
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	if (!pEquipData->bUseMES) return;
+
+	if (m_rdoWorkStart.GetCheck()) {
+		if (gData.nLanguage == 0) AfxMessageBox(_T("장비 Stop 상태에서 진행이 가능합니다....."));
+		else					  AfxMessageBox(_T("You can proceed with the equipment stopped."));
+		return;
+	}
+
+	/*if (g_dlgNoWork.IsWindowVisible()) g_dlgNoWork.ShowWindow(SW_HIDE);
+	else g_dlgNoWork.ShowWindow(SW_SHOW);	*/
 }

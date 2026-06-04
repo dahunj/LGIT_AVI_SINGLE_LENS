@@ -48,18 +48,23 @@ void CMesAgent::Initialize()
 {
 	if (m_bConnected) return;
 
-	m_Client.Open_Socket(MES_AGENT_IP, MES_AGENT_PORT, this);	Sleep(3000);
+	BOOL ret = m_Client.Open_Socket(MES_AGENT_IP, MES_AGENT_PORT, this);	
+	Sleep(2000);
 
-	CString sLog, sKey;
-	CIniFileCS INI(gsCurrentDir + "\\System\\SizeNGOrder.ini");
-	if (!INI.Check_File()) {
-		sLog.Format("MesAgent-Initialize => SizeNGOrder.ini File Not Found!!!!");
-		g_objLogFile.Save_MesAgentLog(sLog);
-		AfxMessageBox(sLog);
-		return;
+	if(ret)
+	{
+		//pass
 	}
-	
-	g_objLogFile.Save_MesAgentLog(sLog);
+	else
+	{
+		m_Client.Close_Socket();
+		AfxMessageBox("Connect Fail");
+	}
+
+
+	/*CString sLog, sKey;
+	sLog.Format("MesAgent Initialize");
+	g_objLogFile.Save_MesAgentLog(sLog);*/
 }
 
 void CMesAgent::Terminate()

@@ -23,6 +23,7 @@
 #include "AlarmDlg.h"
 #include "VersionDlg.h"
 
+#include "MesAgent.h"
 #include "Inspector.h"
 #include "BarcodeLot_Cognex.h"
 
@@ -157,6 +158,7 @@ BOOL CSingleLensDlg::OnInitDialog()
 	g_dlgError.Create(CErrorDlg::IDD, this);
 	g_dlgAlarm.Create(CAlarmDlg::IDD, this);
 	g_dlgVersion.Create(CVersionDlg::IDD, this);
+	g_objMesAgent.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
 
 	g_objBarcodeLot_Cognex.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
 
@@ -253,7 +255,7 @@ void CSingleLensDlg::OnDestroy()
 	g_dlgWork.DestroyWindow();
 	g_dlgInitial.DestroyWindow();
 	g_dlgOperator.DestroyWindow();
-
+	g_objMesAgent.DestroyWindow();
 	g_objInspector.DestroyWindow();
 	g_objBarcodeLot_Cognex.DestroyWindow();
 	
@@ -290,6 +292,7 @@ void CSingleLensDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	if (!g_objAJinAXL.Initialize()) { Exit_System(EXIT_SYSTEM_AJIN); return; }
 
 	g_objInspector.Initialize();
+	g_objMesAgent.Initialize();
 	
 	gData.sOperID = "";
 	
@@ -907,6 +910,7 @@ void CSingleLensDlg::Exit_System(int nExitNo)
 	g_objInspector.Terminate();
 	g_objAJinAXL.Terminate();
 	g_objBarcodeLot_Cognex.Terminate();
+	g_objMesAgent.Terminate();
 
 	EndDialog(IDOK);
 }
