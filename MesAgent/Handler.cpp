@@ -142,7 +142,7 @@ LRESULT CHandler::OnServerReceive(WPARAM wLocalPort, LPARAM lClientIdx)
 		else if(strCmd == "PP")
 		{
 			if(strOp == "SELECTED") Get_PPSelectedReport(strA[0], strA[1], strA[2]);
-			if(strOp == "UPLOAD") Get_PPUploadCompletedReport(strA[0], strA[1], strA[2]);
+			if(strOp == "COMPLETED") Get_PPUploadCompletedReport(strA[0], strA[1], strA[2]);
 		}
 		
 	}
@@ -254,6 +254,28 @@ void CHandler::Set_PP_Upload_Confirm()
 {
 	CString strSend;
 	strSend.Format("PP,CONFIRM,%s", gMes.sHostRecipe);
+	Send_Command(strSend);
+}
+
+void CHandler::Set_PP_Upload_Fail()
+{
+	CString strSend;
+	strSend.Format("PP,FAIL,%s,%s,%s", gMes.sHostRecipe, gMes.sFailCode, gMes.sFailText);
+	Send_Command(strSend);
+}
+
+void CHandler::Set_Lot_Start()
+{
+	CString strSend;
+	strSend.Format("LOT,START,%s,%s", gMes.sHostLotId, gMes.sHostLdMGZId);
+	Send_Command(strSend);
+}
+
+
+void CHandler::Set_Lot_ID_Fail()
+{
+	CString strSend;
+	strSend.Format("LOT,FAIL,%s,%s", gMes.sHostLotId, gMes.sFailCode, gMes.sFailText);
 	Send_Command(strSend);
 }
 

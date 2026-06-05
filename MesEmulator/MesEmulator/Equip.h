@@ -66,7 +66,8 @@ public:
 	void Set_S2F49_MGZ_CANCEL();
 
 	void Set_S2F49_MGZ_CONFIRM();
-	void Set_S2F49_PP_UPLOAD_CONFRIM();
+	void Set_S2F49_PP_UPLOAD_CONFIRM();
+	void Set_S2F49_PP_UPLOAD_FAIL();
 
 	void Set_S2F49_LOT_START();
 	/////////////////////////////////////

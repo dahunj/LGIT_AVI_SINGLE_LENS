@@ -57,7 +57,9 @@ public:
 
 	void Set_MGZ_Confirm();
 	void Set_PP_Upload_Confirm();
-
+	void Set_PP_Upload_Fail();
+	void Set_Lot_Start();
+	void Set_Lot_ID_Fail();
 };
 
 extern CHandler g_objHandler;

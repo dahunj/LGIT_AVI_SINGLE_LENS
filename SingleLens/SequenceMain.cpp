@@ -631,10 +631,10 @@ BOOL CSequenceMain::MZElevRun()
 
 				g_objCommon.Set_LoadCVStop(); Sleep(5);
 				g_objCommon.Set_ElevCVStop(); Sleep(5);
-				sBarcode.Empty(); g_objBarcodeLot_Cognex.Set_Trigger(eBarcode::MZ,TRUE);
+				
 				dwTick1 = GetTickCount();
 
-				m_nMZElevCase = 70; m_nMZElevLoop.Set_LoopTime(gData.nLTime[eLT::CV]);						
+				m_nMZElevCase = 71; m_nMZElevLoop.Set_LoopTime(gData.nLTime[eLT::CV]);						
 			}	
 		}
 		else
@@ -642,16 +642,21 @@ BOOL CSequenceMain::MZElevRun()
 			if(m_pDX00->iElvMZExist1)
 			{
 				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load CV CW Stop & Elev CV CW Start");
-
 				g_objCommon.Set_LoadCVStop(); Sleep(5);
 				g_objCommon.Set_LoadCVRunCCW(); Sleep(5);
 				g_objCommon.Set_ElevCVRunCW();
-				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
-							
+				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);							
 			}	
 		}
 		break;
-	case 70:
+	case 71:
+		if(m_nMZElevLoop.Waiting_Time(500))
+		{
+			sBarcode.Empty(); g_objBarcodeLot_Cognex.Set_Trigger(eBarcode::MZ,TRUE);
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);		
+		}		
+		break;
+	case 72:
 		if(GetTickCount() - dwTick1 < 3000)
 		{
 			sBarcode = g_objBarcodeLot_Cognex.Get_BarcodeLot(eBarcode::MZ);
@@ -660,30 +665,29 @@ BOOL CSequenceMain::MZElevRun()
 				g_objCommon.Set_LoadCVStop(); Sleep(5);
 				g_objCommon.Set_LoadCVRunCCW(); Sleep(5);
 				g_objCommon.Set_ElevCVRunCW();
-
 				gMes.sMGZID[eMZ::Load] = sBarcode; gMes.bMGZIDReported = FALSE;
 				g_objMesAgent.Set_MGZIDReport(1, gMes.sMGZID[eMZ::Load]);
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 			}			
 		}			 
 		break;
-	case 71:
+	case 73:
 		if(gMes.bMGZIDReported)
 		{
 			gMes.bMGZIDReported = FALSE;
-			m_nMZElevCase = 73; m_nMZElevLoop.Set_LoopTime(10000);
+			m_nMZElevCase = 75; m_nMZElevLoop.Set_LoopTime(10000);
 		}
 		break;
-	case 72: //  retry 
+	case 74: //  retry 
 		g_objMesAgent.Set_MGZIDReport(1, gMes.sMGZID[eMZ::Load]);
-		m_nMZElevCase = 71; m_nMZElevLoop.Set_LoopTime(10000);
+		m_nMZElevCase = 73; m_nMZElevLoop.Set_LoopTime(10000);
 		break;
-	case 73:
+	case 75:
 		gMes.bPPUploaded = FALSE;		
 		g_objMesAgent.Set_PPSelectedReport(gMes.sHostLotID, gMes.sMGZID[eMZ::Load], gMes.sHostRecipe);
 		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 		break;
-	case 74:
+	case 76:
 		if(gMes.bPPUploaded)
 		{
 			g_objMesAgent.Set_PPUploadCompletedReport(gMes.sHostLotID, gMes.sMGZID[eMZ::Load], gMes.sHostRecipe);
@@ -749,7 +753,7 @@ BOOL CSequenceMain::MZElevRun()
 				g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Load, NULL);								
 				
 				Job_LotStart(nMZNo, eMZ::Load);
-				//if(m_pEquipData->bUseMES) g_objMesAgent.Set_LotStart()
+				if(m_pEquipData->bUseMES) g_objMesAgent.Set_LotStartedReport(gMes.sHostLotID, gMes.sHostMGZID, gMes.sHostRecipe);
 				g_objInspector.Set_LotStart(gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load],"Model");
 
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
@@ -778,18 +782,34 @@ BOOL CSequenceMain::MZElevRun()
 			}
 		}
 		
-		if(m_pDX00->iElvMZExist1)
+		if(m_pEquipData->bUseMES)
 		{
-			g_objCommon.Set_ElevCVStop();Sleep(5);
-			g_objCommon.Set_LoadCVStop();Sleep(5);
-			sBarcode.Empty(); g_objBarcodeLot_Cognex.Set_Trigger(eBarcode::MZ,TRUE);
-			dwTick1 = GetTickCount();
-			g_objCommon.Set_ElevLift1Out();
-			m_nMZElevCase = 80; m_nMZElevLoop.Set_LoopTime(10000);
-			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load CV CW Stop & Elev CV CW Start");
+			if(m_pDX00->iElvMZExist1)
+			{
+				g_objCommon.Set_ElevCVStop();Sleep(5);
+				g_objCommon.Set_LoadCVStop();Sleep(5);
+				
+				dwTick1 = GetTickCount();
+				g_objCommon.Set_ElevLift1Out();
+				m_nMZElevCase = 81; m_nMZElevLoop.Set_LoopTime(10000);
+				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load CV CW Stop & Elev CV CW Start");
+			}
 		}
-		break;	
-	case 80:
+		else
+		{
+			if(m_pDX00->iElvMZExist1)
+			{
+				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load CV CW Stop & Elev CV CW Start");
+
+				g_objCommon.Set_LoadCVStop(); Sleep(5);
+				g_objCommon.Set_LoadCVRunCCW(); Sleep(5);
+				g_objCommon.Set_ElevCVStop();
+				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
+
+			}	
+		}
+		break;
+	case 82:
 		if(GetTickCount() - dwTick1 < 3000)
 		{
 			sBarcode = g_objBarcodeLot_Cognex.Get_BarcodeLot(eBarcode::MZ);
@@ -805,15 +825,34 @@ BOOL CSequenceMain::MZElevRun()
 		}			 
 		break;
 	case 81:
+		if(m_nMZElevLoop.Waiting_Time(500))
+		{
+			sBarcode.Empty(); g_objBarcodeLot_Cognex.Set_Trigger(eBarcode::MZ,TRUE);
+			m_nMZElevCase = 81; m_nMZElevLoop.Set_LoopTime(10000);
+		}		
+		break;
+	case 83:
 		if(gMes.bMGZIDReported)
 		{
 			gMes.bMGZIDReported = FALSE;
-			m_nMZElevCase = 12; m_nMZElevLoop.Set_LoopTime(10000);
+			m_nMZElevCase = 85; m_nMZElevLoop.Set_LoopTime(10000);
 		}
 		break;
-	case 82: //  retry
+	case 84: //  retry
 		g_objMesAgent.Set_MGZIDReport(1, gMes.sMGZID[eMZ::Ready]);
-		m_nMZElevCase = 81; m_nMZElevLoop.Set_LoopTime(10000);
+		m_nMZElevCase = 83; m_nMZElevLoop.Set_LoopTime(10000);
+		break;
+	case 85:
+		gMes.bPPUploaded = FALSE;		
+		g_objMesAgent.Set_PPSelectedReport(gMes.sHostLotID, gMes.sMGZID[eMZ::Ready], gMes.sHostRecipe);
+		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
+		break;
+	case 86:
+		if(gMes.bPPUploaded)
+		{
+			g_objMesAgent.Set_PPUploadCompletedReport(gMes.sHostLotID, gMes.sMGZID[eMZ::Ready], gMes.sHostRecipe);
+			m_nMZElevCase = 12; m_nMZElevLoop.Set_LoopTime(10000);
+		}
 		break;
 
 	case 12:
@@ -864,6 +903,7 @@ BOOL CSequenceMain::MZElevRun()
 
 				Job_LotStart(nMZNo, eMZ::Ready);
 				g_objInspector.Set_LotStart(gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready] - 1], nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready],"Model");
+				if(m_pEquipData->bUseMES) g_objMesAgent.Set_LotStartedReport(gMes.sHostLotID, gMes.sHostMGZID, gMes.sHostRecipe);
 
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Stopper2 In Done");

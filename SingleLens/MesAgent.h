@@ -31,14 +31,16 @@ private:
 	void Get_ControlState(CString sFlag);	// 1:Online, 2:Offline
 	void Get_TimeSync();
 
-	void Get_LotStart(CString sLotId, CString sRecipe, CString sCmCount, CString sVendor, CString sConfig);
-	void Get_LotCancel(CString sLotId, CString sCode, CString sText);
+	void Get_LotStart(CString sLotId, CString sMGZId);
+	void Get_LotIDFail(CString sLotId, CString sCode, CString sText);
+
 
 	void Get_PPSelect(CString sLotId, CString sRecipe, CString sLensCount);
 	void Get_MGZCancel(CString sMGZId, CString sCode, CString sText);
 
 	void Get_MGZ_Confirm(CString sMGZId);
 	void Get_PPUpload_Confirm(CString sRecipeID);
+	void Get_PPUpload_Fail(CString sRecipeID, CString sFailCode, CString sFailText);
 
 	void Send_Command(CString sSend);
 
@@ -61,7 +63,7 @@ public:
 	void Set_PPSelectedReport(CString sLotId, CString sMGZId, CString sRecipeId);
 	void Set_PPUploadCompletedReport(CString sLotId, CString sMGZId, CString sRecipeId);
 
-	void Set_LotStart(CString sLotId, CString sMGZId, int nSlot, CString sTrayID, CString sRecipe);
+	void Set_LotStartedReport(CString sLotId, CString sMGZId, CString sRecipe);
 };
 
 

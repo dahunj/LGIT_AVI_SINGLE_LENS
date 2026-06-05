@@ -59,7 +59,10 @@ private:
 	void Get_S2F49_MGZ_CONFIRM();
 
 	void Get_S2F49_PP_UPLOAD_CONFIRM();
+	void Get_S2F49_PP_UPLOAD_FAIL();
 
+	void Get_S2F49_LOT_START();
+	void Get_S2F49_LOT_ID_FAIL();
 
 	void Send_Command(CString sSend, BOOL bReply, CString sStFn, CString sRcmd="");	// XML
 
@@ -91,9 +94,10 @@ public:
 	void Set_S2F50_MGZ_CONFIRM();
 
 	void Set_S2F50_PP_UPLOAD_CONFIRM();
-
+	void Set_S2F50_PP_UPLOAD_FAIL();
 	
-
+	void Set_S2F50_LOT_START();
+	void Set_S2F50_LOT_ID_FAIL();
 
 	void Set_S9F13_Timeout();	// Conversation Timeout
 

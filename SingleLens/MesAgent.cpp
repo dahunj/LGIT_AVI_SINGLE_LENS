@@ -141,8 +141,8 @@ LRESULT CMesAgent::OnClientReceive(WPARAM wParam, LPARAM lParam)
 			if (strOp == "STATE") Get_ControlState(strArg[0]);
 
 		} else if (strCmd == "LOT") {
-			if (strOp == "START")  Get_LotStart(strArg[0], strArg[1], strArg[2], strArg[3], strArg[4]);
-			if (strOp == "CANCEL") Get_LotCancel(strArg[0], strArg[1],  strArg[2]);
+			if (strOp == "START")  Get_LotStart(strArg[0], strArg[1]);
+			if (strOp == "FAIL") Get_LotIDFail(strArg[0], strArg[1], strArg[2]);
 
 		} else if (strCmd == "TIME") {
 			if (strOp == "UPDATE") Get_TimeSync();
@@ -152,6 +152,7 @@ LRESULT CMesAgent::OnClientReceive(WPARAM wParam, LPARAM lParam)
 		{
 			if (strOp == "SELECT")	Get_PPSelect(strArg[0], strArg[1], strArg[2]);
 			if (strOp == "CONFIRM") Get_PPUpload_Confirm(strArg[0]);
+			if (strOp == "FAIL") Get_PPUpload_Fail(strArg[0], strArg[1], strArg[2]);
 		}
 		else if (strCmd == "MGZ")
 		{			
@@ -216,18 +217,18 @@ void CMesAgent::Get_ControlState(CString sFlag)
 	m_bHostOnline = (nOnline == 1 ? TRUE : FALSE);
 }
 
-void CMesAgent::Get_LotStart(CString sLotId, CString sRecipe, CString sCmCount, CString sVendor, CString sConfig)
+void CMesAgent::Get_LotStart(CString sLotId, CString sMGZId)
 {
-	
-
+	gMes.sHostLotID = sLotId;
+	gMes.sHostMGZID = sMGZId;
 }
 
-void CMesAgent::Get_LotCancel(CString sLotId, CString sCode, CString sText)
+void CMesAgent::Get_LotIDFail(CString sLotId, CString sCode, CString sText)
 {
-	//gMes.sHostCancelLotId = sLotId;
-	gMes.sHostCancelCode = sCode;
-	gMes.sHostCancelText = sText;
-	g_objCommon.Show_Error(9002);
+	gMes.sHostFailLotId = sLotId;
+	gMes.sHostFailCode = sCode;
+	gMes.sHostFailText = sText;
+	g_objCommon.Show_Error(9032);
 }
 
 
@@ -236,11 +237,11 @@ void CMesAgent::Get_PPSelect(CString sLotId, CString sRecipe, CString sLensCount
 	gMes.sHostLotID = sLotId;
 	gMes.sHostRecipe = sRecipe;
 	gMes.nHostCount = atoi(sLensCount);
-	if (gMes.sHostLotID.GetLength() < 5 || gMes.sHostRecipe.GetLength() < 2) {
+	if (gMes.sHostLotID.GetLength() < 5 || gMes.sHostRecipe.GetLength() < 2) 
+	{
 		g_objCommon.Show_Error(9004); return;
 	}	
-	gMes.bMGZIDReported = TRUE;
-	
+	gMes.bMGZIDReported = TRUE;	
 }
 
 void CMesAgent::Get_MGZCancel(CString sMGZId, CString sCode, CString sText)
@@ -262,6 +263,14 @@ void CMesAgent::Get_PPUpload_Confirm(CString sRecipeID)
 	gMes.bPPUploaded = TRUE;
 }
 
+void CMesAgent::Get_PPUpload_Fail(CString sRecipeID, CString sFailCode, CString sFailText)
+{
+	gMes.sHostRecipe = sRecipeID;
+	gMes.bPPUploaded = FALSE;
+	gMes.sHostCancelCode = sFailCode;
+	gMes.sHostCancelText = sFailText;
+	g_objCommon.Show_Error(9031);
+}
 
 
 //Set
@@ -322,16 +331,16 @@ void CMesAgent::Set_PPSelectedReport(CString sLotId, CString sMGZId, CString sRe
 void CMesAgent::Set_PPUploadCompletedReport(CString sLotId, CString sMGZId, CString sRecipeId)
 {
 	CString strSend; 
-	strSend.Format("PP,UPLOAD,%s,%s,%s", sLotId, sMGZId, sRecipeId);
+	strSend.Format("PP,COMPLETED,%s,%s,%s", sLotId, sMGZId, sRecipeId);
 	Send_Command(strSend);
 }
 
 
-void CMesAgent::Set_LotStart(CString sLotId, CString sMGZId, int nSlot, CString sTrayID, CString sRecipe)
+void CMesAgent::Set_LotStartedReport(CString sLotId, CString sMGZId, CString sRecipe)
 {
 	CString strSend, strLogID;
 	
-	strSend.Format("LOT,START,%s,%s,%d,%s,%s", strLogID, sMGZId, nSlot, sTrayID, sRecipe);
+	strSend.Format("LOT,START,%s,%s,%d,%s,%s", strLogID, sMGZId, sRecipe);
 	Send_Command(strSend);
 }
 

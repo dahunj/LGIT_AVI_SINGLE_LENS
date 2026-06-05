@@ -149,13 +149,10 @@ LRESULT CHost::OnServerReceive(WPARAM wLocalPort, LPARAM lClientIdx)
 			else if (m_strStFn == "S2F49" && m_strRcmd == "PP_SELECT")			 Get_S2F49_PPSelect();
 			else if (m_strStFn == "S2F49" && m_strRcmd == "MGZ_CANCEL")			 Get_S2F49_MGZ_CANCEL();
 			else if (m_strStFn == "S2F49" && m_strRcmd == "MGZ_ID_CONFIRM")		 Get_S2F49_MGZ_CONFIRM();
-
-			/*else if (m_strStFn == "S2F49" && m_strRcmd == "LOT_START")			 Get_S2F49_LotStart();
-			else if (m_strStFn == "S2F49" && m_strRcmd == "LOT_ID_FAIL")		 Get_S2F49_LotIdFail();*/
-			//else if (m_strStFn == "S2F49" && m_strRcmd == "RETEST_LOT_DATA")	 Get_S2F49_RetestLotData();
-			//else if (m_strStFn == "S2F49" && m_strRcmd == "MATERIAL_ID_CONFIRM") Get_S2F49_MaterialConfirm();
-			//else if (m_strStFn == "S2F49" && m_strRcmd == "MATERIAL_ID_FAIL")	 Get_S2F49_MaterialFail();
-			//else if (m_strStFn == "S2F49" && m_strRcmd == "MATERIAL_ID_FAIL")	 Get_S2F49_MaterialFail();
+			else if (m_strStFn == "S2F49" && m_strRcmd == "PP_UPLOAD_CONFIRM")	 Get_S2F49_PP_UPLOAD_CONFIRM();
+			else if (m_strStFn == "S2F49" && m_strRcmd == "PP_UPLOAD_FAIL")		 Get_S2F49_PP_UPLOAD_FAIL();
+			else if (m_strStFn == "S2F49" && m_strRcmd == "LOT_START")			 Get_S2F49_LOT_START();
+			else if (m_strStFn == "S2F49" && m_strRcmd == "LOT_ID_FAIL")		 Get_S2F49_LOT_ID_FAIL();
 			
 			//else if (m_strStFn == "S5F2")  Get_S5F2_AlarmAck();	// Alarm Report Acknowledge
 			//else if (m_strStFn == "S10F3") Get_S10F3_Display();
@@ -246,8 +243,7 @@ BOOL CHost::Extract_Xml(CString sXmlData)
 			 gMes.sCancelCode = nodeE.GetChild("CODE")->GetAttribute("VALUE");
 			 gMes.sCancelText = nodeE.GetChild("TEXT")->GetAttribute("VALUE");
 		 }	
-
-
+		 
 		 if (m_strRcmd == "MGZ_ID_CONFIRM") 
 		 {
 			 CXmlNodes nodes = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("CPLIST")->GetChildren();
@@ -260,6 +256,70 @@ BOOL CHost::Extract_Xml(CString sXmlData)
 				 if (strName == "MGZID")		gMes.sHostUldMGZId = strData;				
 			 }
 		 }	
+
+		 if (m_strRcmd == "PP_UPLOAD_CONFIRM") 
+		 {
+			 CXmlNodes nodes = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("CPLIST")->GetChildren();
+			 int nCount = nodes.GetCount();
+
+			 for (int i = 0; i < nCount; i++) 
+			 {
+				 CString strName = nodes[i]->GetChild("CPNAME")->GetAttribute("VALUE");
+				 CString strData = nodes[i]->GetChild("CPVAL")->GetAttribute("VALUE");
+
+				 if (strName == "LOTID")			gMes.sHostLotId = strData;
+				 if (strName == "MGZID")			gMes.sHostLdMGZId = strData;
+				 if (strName == "RECIPEID")		gMes.sHostRecipe = strData;							
+			 }		
+		 }		
+
+		 if (m_strRcmd == "PP_UPLOAD_FAIL") 
+		 {
+			 CXmlNodes nodes = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("CPLIST")->GetChildren();
+			 int nCount = nodes.GetCount();
+
+			 for (int i = 0; i < nCount; i++) {
+				 CString strName = nodes[i]->GetChild("CPNAME")->GetAttribute("VALUE");
+				 CString strData = nodes[i]->GetChild("CPVAL")->GetAttribute("VALUE");
+
+				 if (strName == "RECIPEID")			gMes.sHostRecipe = strData;				
+			 }
+
+			 nodeE = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("RESULT");
+			 gMes.sFailCode = nodeE.GetChild("CODE")->GetAttribute("VALUE");
+			 gMes.sFailText = nodeE.GetChild("TEXT")->GetAttribute("VALUE");
+		 }	
+		 if (m_strRcmd == "LOT_START") 
+		 {
+			 CXmlNodes nodes = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("CPLIST")->GetChildren();
+			 int nCount = nodes.GetCount();
+
+			 for (int i = 0; i < nCount; i++) 
+			 {
+				 CString strName = nodes[i]->GetChild("CPNAME")->GetAttribute("VALUE");
+				 CString strData = nodes[i]->GetChild("CPVAL")->GetAttribute("VALUE");
+
+				 if (strName == "LOTID")			gMes.sHostLotId = strData;
+				 if (strName == "MGZID")			gMes.sHostLdMGZId = strData;								
+			 }		
+		 }	
+		 if (m_strRcmd == "LOT_ID_FAIL") 
+		 {
+			 CXmlNodes nodes = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("CPLIST")->GetChildren();
+			 int nCount = nodes.GetCount();
+
+			 for (int i = 0; i < nCount; i++) {
+				 CString strName = nodes[i]->GetChild("CPNAME")->GetAttribute("VALUE");
+				 CString strData = nodes[i]->GetChild("CPVAL")->GetAttribute("VALUE");
+
+				 if (strName == "LOTID")			gMes.sHostLotId = strData;				
+			 }
+
+			 nodeE = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("RESULT");
+			 gMes.sFailCode = nodeE.GetChild("CODE")->GetAttribute("VALUE");
+			 gMes.sFailText = nodeE.GetChild("TEXT")->GetAttribute("VALUE");
+		 }	
+
 
 	} 
 	else if(m_strStFn == "S7F25")
@@ -404,6 +464,23 @@ void CHost::Get_S2F49_PP_UPLOAD_CONFIRM()
 }
 
 
+void CHost::Get_S2F49_PP_UPLOAD_FAIL()
+{
+	Set_S2F50_PP_UPLOAD_FAIL();
+	g_objHandler.Set_PP_Upload_Fail();
+}
+
+void CHost::Get_S2F49_LOT_START()
+{
+	Set_S2F50_LOT_START();
+	g_objHandler.Set_Lot_Start();
+}
+
+void CHost::Get_S2F49_LOT_ID_FAIL()
+{
+	Set_S2F50_LOT_ID_FAIL();
+	g_objHandler.Set_Lot_ID_Fail();
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Set Command
@@ -718,6 +795,67 @@ void CHost::Set_S2F50_PP_UPLOAD_CONFIRM()
 
 	Send_Command(strSend, TRUE, "S2F50", "PP_SELECT");
 }
+
+
+void CHost::Set_S2F50_PP_UPLOAD_FAIL()
+{
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
+
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F50\" NAME=\"Enhanced Remote Command Acknowledge\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "  <ITEM>" + CRLF;
+	strSend += "    <RCMDCP>" + CRLF;
+	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"PP_UPLOAD_FAIL\" />" + CRLF;
+	strSend += "    </RCMDCP>" + CRLF;
+	strSend += "    <HCACK NAME=\"HCACK\" VALUE=\"0\" />" + CRLF;
+	strSend += "  </ITEM>" + CRLF;
+	strSend += "</EIF>";
+
+	Send_Command(strSend, TRUE, "S2F50", "PP_SELECT");
+}
+
+
+void CHost::Set_S2F50_LOT_START()
+{
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
+
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F50\" NAME=\"Enhanced Remote Command Acknowledge\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "  <ITEM>" + CRLF;
+	strSend += "    <RCMDCP>" + CRLF;
+	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"LOT_START\" />" + CRLF;
+	strSend += "    </RCMDCP>" + CRLF;
+	strSend += "    <HCACK NAME=\"HCACK\" VALUE=\"0\" />" + CRLF;
+	strSend += "  </ITEM>" + CRLF;
+	strSend += "</EIF>";
+
+	Send_Command(strSend, TRUE, "S2F50", "PP_SELECT");
+}
+
+
+void CHost::Set_S2F50_LOT_ID_FAIL()
+{
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
+
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F50\" NAME=\"Enhanced Remote Command Acknowledge\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "  <ITEM>" + CRLF;
+	strSend += "    <RCMDCP>" + CRLF;
+	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"LOT_ID_FAIL\" />" + CRLF;
+	strSend += "    </RCMDCP>" + CRLF;
+	strSend += "    <HCACK NAME=\"HCACK\" VALUE=\"0\" />" + CRLF;
+	strSend += "  </ITEM>" + CRLF;
+	strSend += "</EIF>";
+
+	Send_Command(strSend, TRUE, "S2F50", "PP_SELECT");
+}
+
 
 
 void CHost::Set_S9F13_Timeout()	// Conversation Timeout
