@@ -1289,13 +1289,13 @@ BOOL CSequenceMain::FeederRun()
 //			gData.sZigIDElev = m_strLog;
 //#endif
 			//gData.sZigIDElev = Get barcode 
-			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::TrayGrip);
+			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::TrayOpen);
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 			m_strLog.Format("Feeder Y Move (PickUp)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}
 		break;
 	case 12:
-		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::TrayGrip))
+		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::TrayOpen))
 		{
 			gData.bFeederWorkWait = FALSE;
 			//Info Processing 		
@@ -1384,13 +1384,13 @@ BOOL CSequenceMain::FeederRun()
 			&& g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip)
 			&& g_objCommon.Get_FeederOpen())
 		{
-			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::TrayGrip);
+			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::TrayOpen);
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 			m_strLog.Format("Feeder Y Move (To Pick) "); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}
 		break;
 	case 32:
-		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::TrayGrip) && g_objCommon.Get_FeederOpen())
+		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::TrayOpen) && g_objCommon.Get_FeederOpen())
 		{
 			g_objCommon.Set_FeederClose();
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
@@ -1568,13 +1568,13 @@ BOOL CSequenceMain::FeederRun()
 			//			gData.sZigIDElev = m_strLog;
 			//#endif
 			//gData.sZigIDElev = Get barcode 
-			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::TrayGrip);
+			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::TrayOpen);
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 			m_strLog.Format("Feeder Y Move (PickUp)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}
 		break;
 	case 62:
-		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::TrayGrip))
+		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::TrayOpen))
 		{
 			gData.bFeederWorkWait = FALSE;	
 		

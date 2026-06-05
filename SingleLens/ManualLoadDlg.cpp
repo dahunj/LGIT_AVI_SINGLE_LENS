@@ -193,9 +193,9 @@ void CManualLoadDlg::OnBtnFeederYClick(UINT nID)
 	{
 		g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad);
 	}
-	if(nIndex == eFeeder_Y::TrayGrip)
+	if(nIndex == eFeeder_Y::TrayOpen)
 	{
-		g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::TrayGrip);
+		g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::TrayOpen);
 	}	
 
 	m_strLog.Format("[Manual Feeder Y] Feeder Y (%d) Click", nIndex);
