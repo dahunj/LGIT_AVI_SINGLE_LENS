@@ -1613,8 +1613,27 @@ BOOL CSequenceMain::FeederRun()
 		}
 		break;
 	case 65:
-		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready))
+#ifndef AJIN_BOARD_USE
+		m_pDX01->iRailZigExist  = TRUE;
+#endif
+		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready) && m_pDX01->iRailZigExist)
 		{
+			g_objCommon.Set_RailAlignIn();
+			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
+			m_strLog.Format("Zig Picker load Start "); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+		}
+		break;
+	case 66:
+		if(g_objCommon.Get_RailAlignIn())
+		{
+			if(!m_nFeederLoop.Waiting_Time(300)) break;
+			g_objCommon.Set_RailAlignOut();
+			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 67:
+		if(g_objCommon.Get_RailAlignOut())
+		{	
 			//Info Processing 
 			gData.sMZIDRail = gData.sMZIDFeeder; gData.sMZIDFeeder.Empty();
 			gData.sZigIDRail = gData.sZigIDFeeder; gData.sZigIDFeeder.Empty();
