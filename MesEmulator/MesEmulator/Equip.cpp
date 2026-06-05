@@ -197,6 +197,28 @@ BOOL CEquip::Extract_Xml(CString sXmlData)
 
 			Set_S2F49_LOT_START();
 		}
+
+		if(m_strRcmd == "20301")
+		{
+			CXmlNodes nodes = m_xml.GetRoot()->GetChild("ITEM")->GetChild("DVLIST")->GetChildren();
+			int nCount = nodes.GetCount();
+
+			CString sType = nodes[1]->GetAttribute("VALUE", "");
+			if(sType == "1") // Load Tray ID report 
+			{
+				gData.sHostTrayID =  nodes[2]->GetAttribute("VALUE", "");
+				gData.sOperId = nodes[3]->GetAttribute("VALUE", "");
+
+				Set_S2F49_TRAY_ID_CONFIRM();
+				//Set_S2F49_TRAY_CANCEL();
+			}
+			else if(sType == "2") // unload Tray ID report 
+			{
+				gData.sHostMGZID = nodes[2]->GetAttribute("VALUE", "");
+				//Set_S2F49_MGZ_CONFIRM();
+				//Set_S2F49_TRAY_CANCEL();
+			}			
+		}
 	}	
 	if(m_strStFn == "S7F26")
 	{
@@ -484,7 +506,96 @@ void CEquip::Set_S2F49_LOT_START()
 	Send_Command(strSend, FALSE, "S2F49");
 }
 
+void CEquip::Set_S2F49_TRAY_ID_CONFIRM()
+{
+	gData.sEquipId = "AVI-TEST";
+	CString strSend = "<?xml version=\"2.0\" encoding=\"utf-16\"?>" + CRLF;
 
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F49\" NAME=\"Enhanced Remote Command\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "  <ITEM>" + CRLF;
+	strSend += "    <RCMDCP>" + CRLF;
+	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"TRAY_ID_CONFIRM\" />" + CRLF;
+	strSend += "      <CPLIST COUNT=\"5\">" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"20251215000000\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TRAYID\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"" + gData.sHostTrayID +"\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;      	  
+	strSend += "      <MAPINFO>" + CRLF;
+	strSend += "        <PRODUCTLIST COUNT=\"5\">" +CRLF;
+	strSend += "			<PRODUCTINFO>" +CRLF;
+	strSend += "				<POCKETNO VALUE=\"1\" />" +CRLF;
+	strSend += "				<RESULT VALUE=\"OK\" />" +CRLF;
+	strSend += "			</PRODUCTINFO>" +CRLF;
+	strSend += "			<PRODUCTINFO>" +CRLF;
+	strSend += "				<POCKETNO VALUE=\"2\" />" +CRLF;
+	strSend += "				<RESULT VALUE=\"OK\" />" +CRLF;
+	strSend += "			</PRODUCTINFO>" +CRLF;
+	strSend += "			<PRODUCTINFO>" +CRLF;
+	strSend += "				<POCKETNO VALUE=\"3\" />" +CRLF;
+	strSend += "				<RESULT VALUE=\"OK\" />" +CRLF;
+	strSend += "			</PRODUCTINFO>" +CRLF;
+	strSend += "			<PRODUCTINFO>" +CRLF;
+	strSend += "				<POCKETNO VALUE=\"4\" />" +CRLF;
+	strSend += "				<RESULT VALUE=\"OK\" />" +CRLF;
+	strSend += "			</PRODUCTINFO>" +CRLF;
+	strSend += "			<PRODUCTINFO>" +CRLF;
+	strSend += "				<POCKETNO VALUE=\"5\" />" +CRLF;
+	strSend += "				<RESULT VALUE=\"OK\" />" +CRLF;
+	strSend += "			</PRODUCTINFO>" +CRLF;
+	strSend += "        </PRODUCTLIST>" +CRLF;
+	strSend += "      </MAPINFO>" + CRLF;
+	strSend += "    </RCMDCP>" + CRLF;
+	strSend += "  </ITEM>" + CRLF;
+	strSend += "</EIF>";
+
+	Send_Command(strSend, FALSE, "S2F49");
+}
+
+
+
+
+void CEquip::Set_S2F49_TRAY_CANCEL()
+{
+	gData.sEquipId = "AVI-TEST";
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
+
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F49\" NAME=\"Enhanced Remote Command\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "  <ITEM>" + CRLF;
+	strSend += "    <RCMDCP>" + CRLF;
+	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"TRAY_CANCEL\" />" + CRLF;
+	strSend += "      <CPLIST COUNT=\"3\">" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"20251215000000\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TRAYID\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"" + gData.sHostTrayID +"\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\""+ gData.sHostOperID + "\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "      </CPLIST>" + CRLF;	  
+	strSend += "      <RESULT>" + CRLF;
+	strSend += "        <CODE VALUE=\"1245\" />" + CRLF;
+	strSend += "        <TEXT VALUE=\"TRAY_CANCEL\" />" + CRLF;
+	strSend += "      </RESULT>" + CRLF;
+	strSend += "    </RCMDCP>" + CRLF;
+	strSend += "  </ITEM>" + CRLF;
+	strSend += "</EIF>";
+
+	Send_Command(strSend, FALSE, "S2F49");
+}
 
 
 void CEquip::Set_S7F25()

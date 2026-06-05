@@ -59,6 +59,7 @@ typedef struct {
 	CString		sHostMGZID;
 	CString		sHostOperID;
 	CString		sHostRecipeID;
+	CString		sHostTrayID;
 	
 	int			nHostPort;
 	CString		sEquipId;

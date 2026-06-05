@@ -77,6 +77,7 @@ typedef struct {
 	CString		sHostLotId;
 	CString		sHostLdMGZId;
 	CString		sHostUldMGZId;
+	CString		sHostTrayID;
 	CString		sHostRecipe;
 	int			nHostLensCount;
 	CString		sHostRtstId;	// ReTest Lot-ID
@@ -88,6 +89,10 @@ typedef struct {
 	CString		sFailCode;
 	CString		sFailText;
 	int			nHostType;		// 0:LotId, 1:CapId, 2:ShipId
+
+	CString		sPocketNo[141];
+	CString		sResult[141];
+
 } GLOVAL_MES;
 
 typedef struct {

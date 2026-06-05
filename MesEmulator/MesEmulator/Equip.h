@@ -70,6 +70,10 @@ public:
 	void Set_S2F49_PP_UPLOAD_FAIL();
 
 	void Set_S2F49_LOT_START();
+
+
+	void Set_S2F49_TRAY_ID_CONFIRM();
+	void Set_S2F49_TRAY_CANCEL();
 	/////////////////////////////////////
 	
 

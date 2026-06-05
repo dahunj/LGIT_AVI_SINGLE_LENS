@@ -153,7 +153,8 @@ LRESULT CHost::OnServerReceive(WPARAM wLocalPort, LPARAM lClientIdx)
 			else if (m_strStFn == "S2F49" && m_strRcmd == "PP_UPLOAD_FAIL")		 Get_S2F49_PP_UPLOAD_FAIL();
 			else if (m_strStFn == "S2F49" && m_strRcmd == "LOT_START")			 Get_S2F49_LOT_START();
 			else if (m_strStFn == "S2F49" && m_strRcmd == "LOT_ID_FAIL")		 Get_S2F49_LOT_ID_FAIL();
-			
+			else if (m_strStFn == "S2F49" && m_strRcmd == "TRAY_ID_CONFIRM")	 Get_S2F49_TRAY_ID_CONFIRM();
+			else if (m_strStFn == "S2F49" && m_strRcmd == "TRAY_CANCEL")		 Get_S2F49_TRAY_CANCEL();
 			//else if (m_strStFn == "S5F2")  Get_S5F2_AlarmAck();	// Alarm Report Acknowledge
 			//else if (m_strStFn == "S10F3") Get_S10F3_Display();
 		}
@@ -267,8 +268,8 @@ BOOL CHost::Extract_Xml(CString sXmlData)
 				 CString strName = nodes[i]->GetChild("CPNAME")->GetAttribute("VALUE");
 				 CString strData = nodes[i]->GetChild("CPVAL")->GetAttribute("VALUE");
 
-				 if (strName == "LOTID")			gMes.sHostLotId = strData;
-				 if (strName == "MGZID")			gMes.sHostLdMGZId = strData;
+				 if (strName == "LOTID")		gMes.sHostLotId = strData;
+				 if (strName == "MGZID")		gMes.sHostLdMGZId = strData;
 				 if (strName == "RECIPEID")		gMes.sHostRecipe = strData;							
 			 }		
 		 }		
@@ -320,6 +321,44 @@ BOOL CHost::Extract_Xml(CString sXmlData)
 			 gMes.sFailText = nodeE.GetChild("TEXT")->GetAttribute("VALUE");
 		 }	
 
+		 if (m_strRcmd == "TRAY_ID_CONFIRM") 
+		 {
+			 CXmlNodes nodes = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("CPLIST")->GetChildren();
+			 int nCount = nodes.GetCount();
+
+			 for (int i = 0; i < nCount; i++) {
+				 CString strName = nodes[i]->GetChild("CPNAME")->GetAttribute("VALUE");
+				 CString strData = nodes[i]->GetChild("CPVAL")->GetAttribute("VALUE");
+
+				 if (strName == "TRAYID")		gMes.sHostTrayID = strData;				
+			 }
+
+			 CXmlNodes nodeP = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("MAPINFO")->GetChild("PRODUCTLIST")->GetChildren();
+			 nCount = nodeP.GetCount();
+
+			 for (int i = 0; i < nCount; i++) 
+			 {
+				 gMes.sPocketNo[i] = nodeP[i]->GetChild("POCKETNO")->GetAttribute("VALUE");
+				 gMes.sResult[i] = nodeP[i]->GetChild("RESULT")->GetAttribute("VALUE");	
+			 }
+		 }	
+
+		 if (m_strRcmd == "TRAY_CANCEL") 
+		 {
+			 CXmlNodes nodes = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("CPLIST")->GetChildren();
+			 int nCount = nodes.GetCount();
+
+			 for (int i = 0; i < nCount; i++) {
+				 CString strName = nodes[i]->GetChild("CPNAME")->GetAttribute("VALUE");
+				 CString strData = nodes[i]->GetChild("CPVAL")->GetAttribute("VALUE");
+
+				 if (strName == "TRAYID")			gMes.sHostTrayID = strData;				
+			 }
+
+			 nodeE = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("RESULT");
+			 gMes.sCancelCode = nodeE.GetChild("CODE")->GetAttribute("VALUE");
+			 gMes.sCancelText = nodeE.GetChild("TEXT")->GetAttribute("VALUE");
+		 }	
 
 	} 
 	else if(m_strStFn == "S7F25")
@@ -480,6 +519,19 @@ void CHost::Get_S2F49_LOT_ID_FAIL()
 {
 	Set_S2F50_LOT_ID_FAIL();
 	g_objHandler.Set_Lot_ID_Fail();
+}
+
+
+void CHost::Get_S2F49_TRAY_ID_CONFIRM()
+{
+	Set_S2F50_TRAY_ID_CONFIRM();
+	g_objHandler.Set_TrayID_Confirm();
+}
+
+void CHost::Get_S2F49_TRAY_CANCEL()
+{
+	Set_S2F50_TRAY_CANCEL();
+	g_objHandler.Set_Tray_Cancel();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -803,7 +855,7 @@ void CHost::Set_S2F50_MGZ_CONFIRM()
 	strSend += "  </ITEM>" + CRLF;
 	strSend += "</EIF>";
 
-	Send_Command(strSend, TRUE, "S2F50", "PP_SELECT");
+	Send_Command(strSend, TRUE, "S2F50", "MGZ_ID_CONFIRM");
 }
 
 void CHost::Set_S2F50_PP_UPLOAD_CONFIRM()
@@ -822,7 +874,7 @@ void CHost::Set_S2F50_PP_UPLOAD_CONFIRM()
 	strSend += "  </ITEM>" + CRLF;
 	strSend += "</EIF>";
 
-	Send_Command(strSend, TRUE, "S2F50", "PP_SELECT");
+	Send_Command(strSend, TRUE, "S2F50", "PP_UPLOAD_CONFIRM");
 }
 
 
@@ -842,7 +894,7 @@ void CHost::Set_S2F50_PP_UPLOAD_FAIL()
 	strSend += "  </ITEM>" + CRLF;
 	strSend += "</EIF>";
 
-	Send_Command(strSend, TRUE, "S2F50", "PP_SELECT");
+	Send_Command(strSend, TRUE, "S2F50", "PP_UPLOAD_FAIL");
 }
 
 
@@ -862,7 +914,7 @@ void CHost::Set_S2F50_LOT_START()
 	strSend += "  </ITEM>" + CRLF;
 	strSend += "</EIF>";
 
-	Send_Command(strSend, TRUE, "S2F50", "PP_SELECT");
+	Send_Command(strSend, TRUE, "S2F50", "LOT_START");
 }
 
 
@@ -882,8 +934,48 @@ void CHost::Set_S2F50_LOT_ID_FAIL()
 	strSend += "  </ITEM>" + CRLF;
 	strSend += "</EIF>";
 
-	Send_Command(strSend, TRUE, "S2F50", "PP_SELECT");
+	Send_Command(strSend, TRUE, "S2F50", "LOT_ID_FAIL");
 }
+
+
+void CHost::Set_S2F50_TRAY_ID_CONFIRM()
+{
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
+
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F50\" NAME=\"Enhanced Remote Command Acknowledge\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "  <ITEM>" + CRLF;
+	strSend += "    <RCMDCP>" + CRLF;
+	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"TRAY_ID_CONFIRM\" />" + CRLF;
+	strSend += "    </RCMDCP>" + CRLF;
+	strSend += "    <HCACK NAME=\"HCACK\" VALUE=\"0\" />" + CRLF;
+	strSend += "  </ITEM>" + CRLF;
+	strSend += "</EIF>";
+
+	Send_Command(strSend, TRUE, "S2F50", "TRAY_ID_CONFIRM");
+}
+
+void CHost::Set_S2F50_TRAY_CANCEL()
+{
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
+
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F50\" NAME=\"Enhanced Remote Command Acknowledge\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "  <ITEM>" + CRLF;
+	strSend += "    <RCMDCP>" + CRLF;
+	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"TRAY_CANCEL\" />" + CRLF;
+	strSend += "    </RCMDCP>" + CRLF;
+	strSend += "    <HCACK NAME=\"HCACK\" VALUE=\"0\" />" + CRLF;
+	strSend += "  </ITEM>" + CRLF;
+	strSend += "</EIF>";
+
+	Send_Command(strSend, TRUE, "S2F50", "TRAY_CANCEL");
+}
+
 
 
 

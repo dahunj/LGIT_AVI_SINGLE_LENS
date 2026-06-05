@@ -64,6 +64,9 @@ private:
 	void Get_S2F49_LOT_START();
 	void Get_S2F49_LOT_ID_FAIL();
 
+	void Get_S2F49_TRAY_ID_CONFIRM();
+	void Get_S2F49_TRAY_CANCEL();
+
 	void Send_Command(CString sSend, BOOL bReply, CString sStFn, CString sRcmd="");	// XML
 
 public:
@@ -101,6 +104,9 @@ public:
 	
 	void Set_S2F50_LOT_START();
 	void Set_S2F50_LOT_ID_FAIL();
+
+	void Set_S2F50_TRAY_ID_CONFIRM();
+	void Set_S2F50_TRAY_CANCEL();
 
 	void Set_S9F13_Timeout();	// Conversation Timeout
 

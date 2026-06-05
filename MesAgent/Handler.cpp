@@ -289,6 +289,29 @@ void CHandler::Set_Lot_ID_Fail()
 }
 
 
+void CHandler::Set_TrayID_Confirm()
+{
+	CString strSend, strTemp;
+	strSend.Format("TRAY,CONFIRM,%s", gMes.sHostTrayID);
+
+	for (int i = 0; i < 141; i++)
+	{
+		strTemp.Format(",%s,%s", gMes.sPocketNo[i], gMes.sResult[i]);
+		strSend += strTemp;
+	}
+
+	Send_Command(strSend);
+}
+
+
+void CHandler::Set_Tray_Cancel()
+{
+	CString strSend;
+	strSend.Format("TRAY,CANCEL,%s,%s", gMes.sHostTrayID, gMes.sFailCode, gMes.sFailText);
+	Send_Command(strSend);
+}
+
+
 void CHandler::Set_ControlState(int nFlag)
 {
 	CString strSend;
