@@ -21,9 +21,8 @@ const int AX_BTM_INSPECTOR_Z	= 10;
 const int AX_MARK_UNIT_X			= 11;
 const int AX_MARK_UNIT_Y			= 12;
 const int AX_MARK_UNIT_Z			= 13;	
-
 const int AX_MAIN_INDEX_R		= 14;
-//const int AX_INDEX_TABLE_R2		= 15;
+
 
 
 

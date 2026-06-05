@@ -56,9 +56,9 @@ private:
 	DY_DATA_03	m_DY03;					// Output (Y0300 - Y0331)
 
 
-	AXIS_STATUS	m_Status[AXIS_COUNT];		// Axis Status Data
-	AXIS_PARAM	m_Param[AXIS_COUNT];		// Axis Parameter Data
-	CString		m_strAxisName[AXIS_COUNT];	// Axis Name
+	AXIS_STATUS	m_Status[AXIS_COUNT+1];		// Axis Status Data
+	AXIS_PARAM	m_Param[AXIS_COUNT+1];		// Axis Parameter Data
+	CString		m_strAxisName[AXIS_COUNT+1];	// Axis Name
 
 	BOOL		m_bReadVelocity;		// Setup Mode 에서만 읽기
 
