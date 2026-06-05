@@ -63,6 +63,7 @@ typedef struct {
 	int			nAgentType;		// 0:UAO, 1:CAP
 	int			nHostPort;
 	CString		sEquipId;
+	CString		sVersion;
 	BOOL		bHandlerLog;
 	BOOL		bHostLog;
 	CString		sErrFile;
@@ -74,10 +75,16 @@ typedef struct {
 
 typedef struct {
 	CString		sHostLotId;
+	CString		sHostLdMGZId;
+	CString		sHostUldMGZId;
 	CString		sHostRecipe;
-	int			nHostCmCount;
+	int			nHostLensCount;
 	CString		sHostRtstId;	// ReTest Lot-ID
 	CString		sHostLabel;		// AVI NG, CAP OK, AVI OK
+
+	CString		sCancelCode;
+	CString		sCancelText;
+
 	CString		sFailCode;
 	CString		sFailText;
 	int			nHostType;		// 0:LotId, 1:CapId, 2:ShipId

@@ -55,6 +55,11 @@
 extern CString gsCurrentDir;
 
 typedef struct {
+	CString		sHostLotID;
+	CString		sHostMGZID;
+	CString		sHostOperID;
+	CString		sHostRecipeID;
+	
 	int			nHostPort;
 	CString		sEquipId;
 	BOOL		bHandlerLog;

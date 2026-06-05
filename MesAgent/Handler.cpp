@@ -139,6 +139,11 @@ LRESULT CHandler::OnServerReceive(WPARAM wLocalPort, LPARAM lClientIdx)
 		{
 			if(strOp == "ID") Get_MGZIDReport(strA[0], strA[1]);
 		} 
+		else if(strCmd == "PP")
+		{
+			if(strOp == "SELECTED") Get_PPSelectedReport(strA[0], strA[1], strA[2]);
+			if(strOp == "UPLOAD") Get_PPUploadCompletedReport(strA[0], strA[1], strA[2]);
+		}
 		
 	}
 
@@ -206,14 +211,52 @@ void CHandler::Get_ErrorUpdate(CString sFlag, CString sErrNo, CString sCategory)
 }
 
 void CHandler::Get_MGZIDReport(CString sType, CString sMGZId)
-{
-	
+{	
 	g_objHost.Set_S6F11_MGZIDReport(sType, sMGZId);
 }
 
+void CHandler::Get_PPSelectedReport(CString sLotID, CString sMGZId, CString sRecipeId)
+{	
+	g_objHost.Set_S6F11_PPSelectedReport(sLotID, sMGZId,sRecipeId);
+}
+
+void CHandler::Get_PPUploadCompletedReport(CString sLotID, CString sMGZId, CString sRecipeId)
+{	
+	g_objHost.Set_S6F11_PPUploadCompleted(sLotID, sMGZId,sRecipeId);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Set Command
+
+
+void CHandler::Set_PPSelect()
+{
+	CString strSend;
+	strSend.Format("PP,SELECT,%s,%s,%d", gMes.sHostLotId, gMes.sHostRecipe, gMes.nHostLensCount);
+	Send_Command(strSend);
+}
+
+void CHandler::Set_MGZ_Cancel()
+{
+	CString strSend;
+	strSend.Format("MGZ,CANCEL,%s,%s,%s", gMes.sHostLdMGZId, gMes.sCancelCode, gMes.sCancelText);
+	Send_Command(strSend);
+}
+
+void CHandler::Set_MGZ_Confirm()
+{
+	CString strSend;
+	strSend.Format("MGZ,CONFIRM,%s", gMes.sHostUldMGZId);
+	Send_Command(strSend);
+}
+
+void CHandler::Set_PP_Upload_Confirm()
+{
+	CString strSend;
+	strSend.Format("PP,CONFIRM,%s", gMes.sHostRecipe);
+	Send_Command(strSend);
+}
+
 
 void CHandler::Set_ControlState(int nFlag)
 {

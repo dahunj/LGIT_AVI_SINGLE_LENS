@@ -146,13 +146,17 @@ LRESULT CHost::OnServerReceive(WPARAM wLocalPort, LPARAM lClientIdx)
 			else if (m_strStFn == "S1F3")  Get_S1F3_State();	// Equip Status Request
 			else if (m_strStFn == "S2F3")  Get_S2F3_Link();		// Link Test Request
 			else if (m_strStFn == "S2F31") Get_S2F31_Time();	// Date and Time Set Request
+			else if (m_strStFn == "S2F49" && m_strRcmd == "PP_SELECT")			 Get_S2F49_PPSelect();
+			else if (m_strStFn == "S2F49" && m_strRcmd == "MGZ_CANCEL")			 Get_S2F49_MGZ_CANCEL();
+			else if (m_strStFn == "S2F49" && m_strRcmd == "MGZ_ID_CONFIRM")		 Get_S2F49_MGZ_CONFIRM();
+
 			/*else if (m_strStFn == "S2F49" && m_strRcmd == "LOT_START")			 Get_S2F49_LotStart();
 			else if (m_strStFn == "S2F49" && m_strRcmd == "LOT_ID_FAIL")		 Get_S2F49_LotIdFail();*/
 			//else if (m_strStFn == "S2F49" && m_strRcmd == "RETEST_LOT_DATA")	 Get_S2F49_RetestLotData();
 			//else if (m_strStFn == "S2F49" && m_strRcmd == "MATERIAL_ID_CONFIRM") Get_S2F49_MaterialConfirm();
 			//else if (m_strStFn == "S2F49" && m_strRcmd == "MATERIAL_ID_FAIL")	 Get_S2F49_MaterialFail();
 			//else if (m_strStFn == "S2F49" && m_strRcmd == "MATERIAL_ID_FAIL")	 Get_S2F49_MaterialFail();
-			//else if (m_strStFn == "S2F49" && m_strRcmd == "PP_SELECT")			 Get_S2F49_PPSelect();
+			
 			//else if (m_strStFn == "S5F2")  Get_S5F2_AlarmAck();	// Alarm Report Acknowledge
 			//else if (m_strStFn == "S10F3") Get_S10F3_Display();
 		}
@@ -186,7 +190,8 @@ BOOL CHost::Extract_Xml(CString sXmlData)
 	m_strStFn = m_strRcmd = "";	// ÃÊ±âÈ­
 
 	CMesAgentDlg *pMainDlg = (CMesAgentDlg*)AfxGetMainWnd();
-	if (!m_xml.LoadXml(sXmlData) ) {
+	if (!m_xml.LoadXml(sXmlData) ) 
+	{
 		CString strLog, strMsg;
 
 		strMsg.Format("[Extract_Xml] CXml Data Load Fail.");
@@ -204,12 +209,14 @@ BOOL CHost::Extract_Xml(CString sXmlData)
 	if (m_strStFn == "S2F31") {
 		CXmlNode nodeTime = m_xml.GetRoot()->GetChild("ITEM")->GetChild("TIME");
 		m_strSetTime = nodeTime.GetAttribute("VALUE", "");
-
-	} else if (m_strStFn == "S2F49") {
+	} 
+	else if (m_strStFn == "S2F49")
+	{
 		CXmlNode nodeE = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("RCMD");
 		m_strRcmd = nodeE.GetAttribute("VALUE", "");
-
-		if (m_strRcmd == "LOT_START") {
+		
+		 if (m_strRcmd == "PP_SELECT") 
+		 {
 			CXmlNodes nodes = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("CPLIST")->GetChildren();
 			int nCount = nodes.GetCount();
 
@@ -217,87 +224,50 @@ BOOL CHost::Extract_Xml(CString sXmlData)
 				CString strName = nodes[i]->GetChild("CPNAME")->GetAttribute("VALUE");
 				CString strData = nodes[i]->GetChild("CPVAL")->GetAttribute("VALUE");
 
-				if (strName == "LOTID")		gMes.sHostLotId = strData;
-				if (strName == "RECIPEID")	gMes.sHostRecipe = strData;
-				if (strName == "TOTALQTY")	gMes.nHostCmCount = atoi(strData);
+				if (strName == "LOTID")			gMes.sHostLotId = strData;
+				if (strName == "RECIPEID")		gMes.sHostRecipe = strData;
+				if (strName == "LOTCOUNT")		gMes.nHostLensCount = atoi(strData);
 			}
+		 }	
 
-		} else if (m_strRcmd == "LOT_ID_FAIL") {
-			CXmlNodes nodes = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("CPLIST")->GetChildren();
-			int nCount = nodes.GetCount();
+		 if (m_strRcmd == "MGZ_CANCEL") 
+		 {
+			 CXmlNodes nodes = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("CPLIST")->GetChildren();
+			 int nCount = nodes.GetCount();
 
-			for (int i = 0; i < nCount; i++) {
-				CString strName = nodes[i]->GetChild("CPNAME")->GetAttribute("VALUE");
-				CString strData = nodes[i]->GetChild("CPVAL")->GetAttribute("VALUE");
+			 for (int i = 0; i < nCount; i++) {
+				 CString strName = nodes[i]->GetChild("CPNAME")->GetAttribute("VALUE");
+				 CString strData = nodes[i]->GetChild("CPVAL")->GetAttribute("VALUE");
 
-				if (strName == "LOTID")     gMes.sHostLotId = strData;
-				if (strName == "RTSTID")    gMes.sHostRtstId = strData;
-				if (strName == "LABELTYPE") gMes.sHostLabel = strData;
-				gMes.nHostType = 0;		// 0:Lot
-			}
+				 if (strName == "MGZID")			gMes.sHostLdMGZId = strData;				
+			 }
 
-			nodeE = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("RESULT");
-			gMes.sFailCode = nodeE.GetChild("CODE")->GetAttribute("VALUE");
-			gMes.sFailText = nodeE.GetChild("TEXT")->GetAttribute("VALUE");
+			 nodeE = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("RESULT");
+			 gMes.sCancelCode = nodeE.GetChild("CODE")->GetAttribute("VALUE");
+			 gMes.sCancelText = nodeE.GetChild("TEXT")->GetAttribute("VALUE");
+		 }	
 
-		} else if (m_strRcmd == "RETEST_LOT_DATA") {
-			CXmlNodes nodes = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("CPLIST")->GetChildren();
-			int nCount = nodes.GetCount();
 
-			for (int i = 0; i < nCount; i++) {
-				CString strName = nodes[i]->GetChild("CPNAME")->GetAttribute("VALUE");
-				CString strData = nodes[i]->GetChild("CPVAL")->GetAttribute("VALUE");
+		 if (m_strRcmd == "MGZ_ID_CONFIRM") 
+		 {
+			 CXmlNodes nodes = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("CPLIST")->GetChildren();
+			 int nCount = nodes.GetCount();
 
-				if (strName == "LOTID")     gMes.sHostLotId = strData;
-				if (strName == "RECIPEID")  gMes.sHostRecipe = strData;
-				if (strName == "TOTALQTY")  gMes.nHostCmCount = atoi(strData);
-				if (strName == "RTSTID")    gMes.sHostRtstId = strData;
-				if (strName == "LABELTYPE") gMes.sHostLabel = strData;
-				gMes.nHostType = 0;		// 0:Lot
-			}
+			 for (int i = 0; i < nCount; i++) {
+				 CString strName = nodes[i]->GetChild("CPNAME")->GetAttribute("VALUE");
+				 CString strData = nodes[i]->GetChild("CPVAL")->GetAttribute("VALUE");
 
-		} else if (m_strRcmd == "MATERIAL_ID_CONFIRM") {
-			CXmlNodes nodes = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("CPLIST")->GetChildren();
-			int nCount = nodes.GetCount();
+				 if (strName == "MGZID")		gMes.sHostUldMGZId = strData;				
+			 }
+		 }	
 
-			for (int i = 0; i < nCount; i++) {
-				CString strName = nodes[i]->GetChild("CPNAME")->GetAttribute("VALUE");
-				CString strData = nodes[i]->GetChild("CPVAL")->GetAttribute("VALUE");
-
-				if (strName == "MATERIALID") 	gMes.sHostLotId = strData;
-				if (strName == "MOUNTLOCATION") gMes.nHostType = atoi(strData);	// 1:Cap, 2:Ship
-			}
-
-		} else if (m_strRcmd == "MATERIAL_ID_FAIL") {
-			CXmlNodes nodes = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("CPLIST")->GetChildren();
-			int nCount = nodes.GetCount();
-
-			for (int i = 0; i < nCount; i++) {
-				CString strName = nodes[i]->GetChild("CPNAME")->GetAttribute("VALUE");
-				CString strData = nodes[i]->GetChild("CPVAL")->GetAttribute("VALUE");
-
-				if (strName == "MATERIALID") 	gMes.sHostLotId = strData;
-				if (strName == "MOUNTLOCATION") gMes.nHostType = atoi(strData);	// 1:Cap, 2:Ship
-			}
-
-			nodeE = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("RESULT");
-			gMes.sFailCode = nodeE.GetChild("CODE")->GetAttribute("VALUE");
-			gMes.sFailText = nodeE.GetChild("TEXT")->GetAttribute("VALUE");
-
-		} else if (m_strRcmd == "PP_SELECT") {
-			CXmlNodes nodes = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("CPLIST")->GetChildren();
-			int nCount = nodes.GetCount();
-
-			for (int i = 0; i < nCount; i++) {
-				CString strName = nodes[i]->GetChild("CPNAME")->GetAttribute("VALUE");
-				CString strData = nodes[i]->GetChild("CPVAL")->GetAttribute("VALUE");
-
-				if (strName == "LOTID")		gMes.sHostLotId = strData;
-				if (strName == "RECIPEID")	gMes.sHostRecipe = strData;
-			}
-		}
-
-	} else if (m_strStFn == "S10F3") {
+	} 
+	else if(m_strStFn == "S7F25")
+	{
+		Set_S7F26();
+	}
+	else if (m_strStFn == "S10F3")
+	{
 		m_strDisplay = m_xml.GetRoot()->GetChild("ITEM")->GetChild("TEXT")->GetAttribute("VALUE");
 	}
 
@@ -405,12 +375,63 @@ void CHost::Get_S2F31_Time()
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+// Get Command 
 
+void CHost::Get_S2F49_PPSelect()
+{
+	Set_S2F50_PPSelect();
+	g_objHandler.Set_PPSelect();
+}
+
+
+void CHost::Get_S2F49_MGZ_CANCEL()
+{
+	Set_S2F50_MGZ_Cancel();
+	g_objHandler.Set_MGZ_Cancel();
+}
+
+void CHost::Get_S2F49_MGZ_CONFIRM()
+{
+	Set_S2F50_MGZ_CONFIRM();
+	g_objHandler.Set_MGZ_Confirm();
+}
+
+void CHost::Get_S2F49_PP_UPLOAD_CONFIRM()
+{
+	Set_S2F50_PP_UPLOAD_CONFIRM();
+	g_objHandler.Set_PP_Upload_Confirm();
+}
 
 
 
 ///////////////////////////////////////////////////////////////////////////////
 // Set Command
+
+void CHost::Set_S7F26()
+{
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
+
+	CString sBodyName, sBodyData;
+
+	sBodyName = "Name";
+	sBodyData = "Data";
+
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S7F26\" NAME=\"Formatted Process Program Data\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "  <ITEM>" + CRLF;
+	strSend += "    <PPID VALUE=\"" + gMes.sHostRecipe + "\" />" + CRLF;
+	strSend += "    <MDLN VALUE=\"0\"/>" + CRLF;
+	strSend += "    <SOFTREV VALUE=\"" + gData.sVersion + "\" />" + CRLF;
+	strSend += "    <LOTID VALUE=\"" + gMes.sHostLotId + "\" />" + CRLF;
+	strSend += "    <PCLIST COUNT=\"152\">" + CRLF;
+	strSend += "    <LIST>" + CRLF;
+	strSend += "      <CCODE VALUE=\"" + sBodyName + "\" />" + CRLF;
+	strSend += "      <PPARM VALUE=\"" + sBodyData + "\" />" + CRLF;
+	strSend += "    </LIST>" + CRLF;
+}
 
 void CHost::Set_S1F1_Ready()
 {
@@ -533,8 +554,7 @@ void CHost::Set_S6F11_MGZIDReport(CString sType, CString sMGZId)
 
 	CString strTime, sPortID;
 	strTime.Format("%04d%02d%02d%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
-
-
+	
 	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
 	strSend += "<EIF VERSION=\"2.0\" ID=\"S6F11\" NAME=\"Event Report\">" + CRLF;
@@ -559,6 +579,8 @@ void CHost::Set_S6F11_MGZIDReport(CString sType, CString sMGZId)
 
 
 
+
+
 void CHost::Set_S6F11_PPSelectedReport(CString sLotId, CString sMGZId, CString sRecipeId)
 {
 	SYSTEMTIME time;
@@ -569,7 +591,7 @@ void CHost::Set_S6F11_PPSelectedReport(CString sLotId, CString sMGZId, CString s
 
 	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
-	strSend += "<EIF VERSION=\"1.4\" ID=\"S6F11\" NAME=\"Event Report\">" + CRLF;
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S6F11\" NAME=\"Event Report\">" + CRLF;
 	strSend += "  <ELEMENT>" + CRLF;
 	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
 	strSend += "  </ELEMENT>" + CRLF;
@@ -610,9 +632,9 @@ void CHost::Set_S6F11_PPUploadCompleted(CString sLotId, CString sMGZId, CString 
 	strSend += "    <RPTID NAME=\"RPTID\" VALUE=\"40103\" />" + CRLF;
 	strSend += "    <DVLIST COUNT=\"5\">" + CRLF;
 	strSend += "      <DV NAME=\"TIME\" VALUE=\"" + strTime + "\" />" + CRLF;
-	strSend += "      <DV NAME=\"LOTID\" VALUE=\"" + gMes.sHostLotId + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"LOTID\" VALUE=\"" + sLotId + "\" />" + CRLF;
 	strSend += "      <DV NAME=\"MGZID\" VALUE=\"" + sMGZId + "\" />" + CRLF;
-	strSend += "      <DV NAME=\"RECIPEID\" VALUE=\"" + gMes.sHostRecipe + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"RECIPEID\" VALUE=\"" + sRecipeId + "\" />" + CRLF;
 	strSend += "      <DV NAME=\"OPERATORID\" VALUE=\"" + gData.sOperId + "\" />" + CRLF;
 	strSend += "    </DVLIST>" + CRLF;
 	strSend += "  </ITEM>" + CRLF;
@@ -621,14 +643,81 @@ void CHost::Set_S6F11_PPUploadCompleted(CString sLotId, CString sMGZId, CString 
 	Send_Command(strSend, FALSE, "S6F11", "40103");
 }
 
+void CHost::Set_S2F50_PPSelect()
+{
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F50\" NAME=\"Enhanced Remote Command Acknowledge\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "  <ITEM>" + CRLF;
+	strSend += "    <RCMDCP>" + CRLF;
+	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"PP_SELECT\" />" + CRLF;
+	strSend += "    </RCMDCP>" + CRLF;
+	strSend += "    <HCACK NAME=\"HCACK\" VALUE=\"0\" />" + CRLF;
+	strSend += "  </ITEM>" + CRLF;
+	strSend += "</EIF>";
 
+	Send_Command(strSend, TRUE, "S2F50", "PP_SELECT");
+}
 
+void CHost::Set_S2F50_MGZ_Cancel()
+{
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F50\" NAME=\"Enhanced Remote Command Acknowledge\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "  <ITEM>" + CRLF;
+	strSend += "    <RCMDCP>" + CRLF;
+	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"MGZ_CANCEL\" />" + CRLF;
+	strSend += "    </RCMDCP>" + CRLF;
+	strSend += "    <HCACK NAME=\"HCACK\" VALUE=\"0\" />" + CRLF;
+	strSend += "  </ITEM>" + CRLF;
+	strSend += "</EIF>";
 
+	Send_Command(strSend, TRUE, "S2F50", "MGZ_CANCEL");
+}
 
+void CHost::Set_S2F50_MGZ_CONFIRM()
+{
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F50\" NAME=\"Enhanced Remote Command Acknowledge\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "  <ITEM>" + CRLF;
+	strSend += "    <RCMDCP>" + CRLF;
+	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"MGZ_ID_CONFIRM\" />" + CRLF;
+	strSend += "    </RCMDCP>" + CRLF;
+	strSend += "    <HCACK NAME=\"HCACK\" VALUE=\"0\" />" + CRLF;
+	strSend += "  </ITEM>" + CRLF;
+	strSend += "</EIF>";
 
+	Send_Command(strSend, TRUE, "S2F50", "PP_SELECT");
+}
+
+void CHost::Set_S2F50_PP_UPLOAD_CONFIRM()
+{
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
+
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F50\" NAME=\"Enhanced Remote Command Acknowledge\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "  <ITEM>" + CRLF;
+	strSend += "    <RCMDCP>" + CRLF;
+	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"PP_UPLOAD_CONFIRM\" />" + CRLF;
+	strSend += "    </RCMDCP>" + CRLF;
+	strSend += "    <HCACK NAME=\"HCACK\" VALUE=\"0\" />" + CRLF;
+	strSend += "  </ITEM>" + CRLF;
+	strSend += "</EIF>";
+
+	Send_Command(strSend, TRUE, "S2F50", "PP_SELECT");
+}
 
 
 void CHost::Set_S9F13_Timeout()	// Conversation Timeout

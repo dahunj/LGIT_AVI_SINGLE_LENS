@@ -148,42 +148,17 @@ LRESULT CMesAgent::OnClientReceive(WPARAM wParam, LPARAM lParam)
 			if (strOp == "UPDATE") Get_TimeSync();
 
 		} 
-		/*else if (strCmd == "RECIPE")
+		else if(strCmd == "PP")
 		{
-		if (strOp == "REQUEST") Get_RecipeList(strArg[0]);
-		if (strOp == "SELECT")	Get_PPSelect(strArg[0], strArg[1]);
-		if (strOp == "FAIL")	Get_PPSelectFail(strArg[0], strArg[1], strArg[2], strArg[3]);
-
-		} 
-		else if (strCmd == "CM")
-		{
-		if (strOp == "RESULT") Get_CmResult(strArg[0], strArg[1],  strArg[2], strArg[3], strArg[4]);
-		if (strOp == "FAIL")   Get_CmFail(strArg[0], strArg[1],  strArg[2], strArg[3]);
-
-		} 
-		else if (strCmd == "HOST") 
-		{
-		if (strOp == "MESSAGE") Get_HostMessage(strArg[0]);
-
+			if (strOp == "SELECT")	Get_PPSelect(strArg[0], strArg[1], strArg[2]);
+			if (strOp == "CONFIRM") Get_PPUpload_Confirm(strArg[0]);
 		}
 		else if (strCmd == "MGZ")
-		{
-		if (strOp == "CONFIRM") Get_MGZConfirm(strArg[0]);
-		if (strOp == "CANCEL")  Get_MGZCancel(strArg[0], strArg[1],  strArg[2]);
-
+		{			
+			if (strOp == "CANCEL")  Get_MGZCancel(strArg[0], strArg[1],  strArg[2]);
+			if (strOp == "CONFIRM")  Get_MGZ_Confirm(strArg[0]);
 		} 		
-		else if (strCmd == "MODULE")
-		{
-		if (strOp == "DATA") Get_ModuleData(strRecv);
-
-		}
-		else if (strCmd == "RMS")
-		{
-		if (strOp == "ALREADYDONE") Get_RMSAlreadyDone();
-		if (strOp == "LOADDONE") Get_RMSAlreadyDone();
-		}*/
 	}
-
 	return 0;
 }
 
@@ -256,24 +231,38 @@ void CMesAgent::Get_LotCancel(CString sLotId, CString sCode, CString sText)
 }
 
 
-void CMesAgent::Get_PPSelect(CString sLotId, CString sRecipe)
+void CMesAgent::Get_PPSelect(CString sLotId, CString sRecipe, CString sLensCount)
 {
 	gMes.sHostLotID = sLotId;
 	gMes.sHostRecipe = sRecipe;
+	gMes.nHostCount = atoi(sLensCount);
 	if (gMes.sHostLotID.GetLength() < 5 || gMes.sHostRecipe.GetLength() < 2) {
 		g_objCommon.Show_Error(9004); return;
 	}	
-	gMes.nMGZConfirm = 1;
+	gMes.bMGZIDReported = TRUE;
+	
 }
 
-void CMesAgent::Get_PPSelectFail(CString sLotId, CString sRecipe, CString sCode, CString sText)
+void CMesAgent::Get_MGZCancel(CString sMGZId, CString sCode, CString sText)
 {
-	gMes.sHostLotID = sLotId;
-	gMes.sHostRecipe = sRecipe;
+	gMes.sHostMGZID = sMGZId;
 	gMes.sHostCancelCode = sCode;
 	gMes.sHostCancelText = sText;
 	g_objCommon.Show_Error(9030);
 }
+
+void CMesAgent::Get_MGZ_Confirm(CString sMGZId)
+{
+	gMes.sHostUldMGZID = sMGZId;
+}
+
+void CMesAgent::Get_PPUpload_Confirm(CString sRecipeID)
+{
+	gMes.sHostRecipe = sRecipeID;
+	gMes.bPPUploaded = TRUE;
+}
+
+
 
 //Set
 
@@ -323,10 +312,20 @@ void CMesAgent::Set_MGZIDReport(int nType, CString sMGZId)
 	Send_Command(strSend);
 }
 
-void CMesAgent::Set_PPSelectedReport(CString sLotId, CString sVersion)
+void CMesAgent::Set_PPSelectedReport(CString sLotId, CString sMGZId, CString sRecipeId)
 {
-
+	CString strSend; 
+	strSend.Format("PP,SELECTED,%s,%s,%s", sLotId, sMGZId, sRecipeId);
+	Send_Command(strSend);
 }
+
+void CMesAgent::Set_PPUploadCompletedReport(CString sLotId, CString sMGZId, CString sRecipeId)
+{
+	CString strSend; 
+	strSend.Format("PP,UPLOAD,%s,%s,%s", sLotId, sMGZId, sRecipeId);
+	Send_Command(strSend);
+}
+
 
 void CMesAgent::Set_LotStart(CString sLotId, CString sMGZId, int nSlot, CString sTrayID, CString sRecipe)
 {

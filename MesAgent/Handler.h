@@ -34,7 +34,9 @@ private:
 	void Get_ErrorUpdate(CString sFlag, CString sErrNo, CString sCategory);
 
 	void Get_MGZIDReport(CString sType, CString sMGZId);
-		
+	void Get_PPSelectedReport(CString sLotID, CString sMGZId, CString sRecipeId);
+	void Get_PPUploadCompletedReport(CString sLotID, CString sMGZId, CString sRecipeId);	
+
 	void Send_Command(CString sSend);
 
 public:
@@ -48,6 +50,14 @@ public:
 
 	void Set_TerminalDisplay(CString sDisplay);
 	void Set_TimeSync();
+	
+	//New 
+	void Set_PPSelect();
+	void Set_MGZ_Cancel();
+
+	void Set_MGZ_Confirm();
+	void Set_PP_Upload_Confirm();
+
 };
 
 extern CHandler g_objHandler;

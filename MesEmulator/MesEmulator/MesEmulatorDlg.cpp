@@ -104,7 +104,7 @@ BOOL CMesEmulatorDlg::OnInitDialog()
 
 	g_objEquip.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
 
-	SetTimer(0, 50000, NULL);
+	SetTimer(0, 5000, NULL);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }

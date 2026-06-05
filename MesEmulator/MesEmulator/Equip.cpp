@@ -9,7 +9,7 @@
 
 
 #define	EQUIP_IP	"127.0.0.1"
-#define EQUIP_PORT	11000		// Equip Handler Port
+#define EQUIP_PORT	10001		// Equip Handler Port
 
 const char STX = 0x02;
 const char ETX = 0x03;
@@ -151,106 +151,62 @@ BOOL CEquip::Extract_Xml(CString sXmlData)
 	{
 		CXmlNode node = m_xml.GetRoot()->GetChild("ITEM")->GetChild("CEID");
 		m_strRcmd = node.GetAttribute("VALUE", "");
-		if(m_strRcmd == "20310")
+		
+		if(m_strRcmd == "20203")
 		{
-			
-			//Set_S6F12_CarrierOutReport();
-		}
-		else if(m_strRcmd =="20301")
-		{
-			Set_S2F49_PP_SELECT();
-			//Set_S6F12_CarrierIDReport();
-			//Sleep(10);
-			
-		}
-		else if(m_strRcmd =="40103")
-		{
-			Set_S2F49_TRAY_LOT_START();
-			//Set_S6F12_CarrierIDReport();
-			//Sleep(10);
+			CXmlNodes nodes = m_xml.GetRoot()->GetChild("ITEM")->GetChild("DVLIST")->GetChildren();
+			int nCount = nodes.GetCount();
 
+			CString sType = nodes[1]->GetAttribute("VALUE", "");
+			if(sType == "1") // Load MGZ ID report 
+			{
+				CString sMGZId =  nodes[2]->GetAttribute("VALUE", "");
+				CString sOperId = nodes[3]->GetAttribute("VALUE", "");
+
+				Set_S2F49_PP_SELECT(sMGZId, sOperId);
+			}
+			else if(sType == "2") // unload MGZ ID report 
+			{
+				gData.sHostMGZID = nodes[2]->GetAttribute("VALUE", "");
+				Set_S2F49_MGZ_CONFIRM();
+			}
+
+			
 		}
-	}	
-	else if(m_strStFn == "S2F50")
-	{
-		CXmlNode node = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("RCMD");
-		m_strRcmd = node.GetAttribute("VALUE", "");
-		if(m_strRcmd == "PP_SELECT")
+
+		if(m_strRcmd == "40102") //PP Selected Report 
 		{
+			CXmlNodes nodes = m_xml.GetRoot()->GetChild("ITEM")->GetChild("DVLIST")->GetChildren();
+			int nCount = nodes.GetCount();
+
+			gData.sHostLotID = nodes[1]->GetAttribute("VALUE","");
+			gData.sHostMGZID = nodes[2]->GetAttribute("VALUE", "");
+			gData.sHostRecipeID = nodes[3]->GetAttribute("VALUE", "");
+
 			Set_S7F25();
 		}
-		else if(m_strRcmd == "LOT_START")
-		{
 
+		if(m_strRcmd == "40103") //PP Upload Completed Report 
+		{
+			CXmlNodes nodes = m_xml.GetRoot()->GetChild("ITEM")->GetChild("DVLIST")->GetChildren();
+			int nCount = nodes.GetCount();
+
+			gData.sHostLotID = nodes[1]->GetAttribute("VALUE","");
+			gData.sHostMGZID = nodes[2]->GetAttribute("VALUE", "");
+			gData.sHostRecipeID = nodes[3]->GetAttribute("VALUE", "");
+
+			Set_S2F49_LOT_START();
 		}
-	}
-	else if(m_strStFn == "S7F26")
+	}	
+	if(m_strStFn == "S7F26")
 	{
-		CXmlNode node = m_xml.GetRoot()->GetChild("ITEM")->GetChild("PCLIST");
-		m_strRcmd = node.GetAttribute("COUNT", "");
-		int nTemp = atoi(m_strRcmd);
-
-		CXmlNodes nodes = m_xml.GetRoot()->GetChild("ITEM")->GetChild("PCLIST")->GetChildren();
-		int nCount = nodes.GetCount();
-
-		/*for (int i = 0; i < nCount; i++) 
-		{
-		CString strName = nodes[i]->GetChild("CCODE")->GetAttribute("VALUE");
-		CString strData = nodes[i]->GetChild("PPARM")->GetAttribute("VALUE");
-
-		}*/
-		if(nCount < nTemp)
-		{
-			return FALSE;
-		}
-		Set_S2F49_PP_UPLOAD_CONFIRM();
-
+		Set_S2F49_PP_UPLOAD_CONFRIM();
 	}
+
 	m_xml.Close();
 	return TRUE;
 }
 
-
-void CEquip::Set_S6F12_CarrierIDReport()
-{
-	gData.sEquipId = "AVI-TEST";
-
-	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
-
-	strSend += "<EIF VERSION=\"2.0\" ID=\"S6F12\" NAME=\"Event Report Acknowledge\">" + CRLF;
-	strSend += "  <ELEMENT>" + CRLF;
-	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
-	strSend += "  </ELEMENT>" + CRLF;
-	strSend += "  <ITEM>" + CRLF;
-	strSend += "    <CEID NAME=\"CEID\" VALUE=\"20301\"/>" + CRLF;
-	strSend += "    <RPTID NAME=\"RPTID\" VALUE=\"20301\"/>" + CRLF;
-	strSend += "    <ACKC NAME=\"ACKC\" VALUE=\"0\"/>" + CRLF;
-	strSend += "  </ITEM>" + CRLF;
-	strSend += "</EIF>";
-
-	Send_Command(strSend, FALSE, "S6F12");
-}
-
-
-void CEquip::Set_S6F12_CarrierOutReport()
-{
-	gData.sEquipId = "AVI-TEST";
-
-	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
-
-	strSend += "<EIF VERSION=\"2.0\" ID=\"S6F12\" NAME=\"Event Report Acknowledge\">" + CRLF;
-	strSend += "  <ELEMENT>" + CRLF;
-	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
-	strSend += "  </ELEMENT>" + CRLF;
-	strSend += "  <ITEM>" + CRLF;
-	strSend += "    <CEID NAME=\"CEID\" VALUE=\"20310\"/>" + CRLF;
-	strSend += "    <RPTID NAME=\"RPTID\" VALUE=\"20310\"/>" + CRLF;
-	strSend += "    <ACKC NAME=\"ACKC\" VALUE=\"0\"/>" + CRLF;
-	strSend += "  </ITEM>" + CRLF;
-	strSend += "</EIF>";
-
-	Send_Command(strSend, FALSE, "S6F12");
-}
 
 
 
@@ -270,8 +226,7 @@ void CEquip::Set_S2F3_LINK_REQUEST()
 }
 
 
-
-void CEquip::Set_S2F49_PP_SELECT()
+void CEquip::Set_S2F49_MGZ_CANCEL()
 {
 	gData.sEquipId = "AVI-TEST";
 	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
@@ -282,8 +237,45 @@ void CEquip::Set_S2F49_PP_SELECT()
 	strSend += "  </ELEMENT>" + CRLF;
 	strSend += "  <ITEM>" + CRLF;
 	strSend += "    <RCMDCP>" + CRLF;
+	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"MGZ_CANCEL\" />" + CRLF;
+	strSend += "      <CPLIST COUNT=\"3\">" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"20251215000000\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"MGZID\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"" + gData.sHostMGZID +"\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\""+ gData.sHostOperID + "\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "      </CPLIST>" + CRLF;	  
+	strSend += "      <RESULT>" + CRLF;
+	strSend += "        <CODE VALUE=\"1\" />" + CRLF;
+	strSend += "        <TEXT VALUE=\"MGZ_CANCEL\" />" + CRLF;
+	strSend += "      </RESULT>" + CRLF;
+	strSend += "    </RCMDCP>" + CRLF;
+	strSend += "  </ITEM>" + CRLF;
+	strSend += "</EIF>";
+
+	Send_Command(strSend, FALSE, "S2F49");
+}
+
+
+void CEquip::Set_S2F49_PP_SELECT(CString sMGZID, CString sOperID)
+{
+	gData.sEquipId = "AVI-TEST";
+	CString strSend = "<?xml version=\"2.0\" encoding=\"utf-16\"?>" + CRLF;
+
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F49\" NAME=\"Enhanced Remote Command\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "  <ITEM>" + CRLF;
+	strSend += "    <RCMDCP>" + CRLF;
 	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"PP_SELECT\" />" + CRLF;
-	strSend += "      <CPLIST COUNT=\"5\">" + CRLF;
+	strSend += "      <CPLIST COUNT=\"6\">" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\" />" + CRLF;
 	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"20251215000000\" />" + CRLF;
@@ -293,16 +285,20 @@ void CEquip::Set_S2F49_PP_SELECT()
 	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"TESTLOT\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
-	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"PROCID\" />" + CRLF;
-	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"TEST001\" />" + CRLF;
-	strSend += "        </CP>" + CRLF;
-	strSend += "        <CP>" + CRLF;
-	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"PRODUCTID\" />" + CRLF;
-	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"MAMV.KM00\" />" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"MGZID\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"" + sMGZID +"\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"RECIPEID\" />" + CRLF;
 	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"A53B_DPAMS_REV0\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"LOTCOUNT\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"140\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\""+ sOperID + "\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
 	strSend += "      </CPLIST>" + CRLF;	  
 	strSend += "      <RESULT>" + CRLF;
@@ -317,37 +313,35 @@ void CEquip::Set_S2F49_PP_SELECT()
 }
 
 
-void CEquip::Set_S2F49_PP_UPLOAD_CONFIRM()
+void CEquip::Set_S2F49_MGZ_CONFIRM()
 {
 	gData.sEquipId = "AVI-TEST";
-
-	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
+	CString strSend = "<?xml version=\"2.0\" encoding=\"utf-16\"?>" + CRLF;
 
 	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F49\" NAME=\"Enhanced Remote Command\">" + CRLF;
 	strSend += "  <ELEMENT>" + CRLF;
 	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
 	strSend += "  </ELEMENT>" + CRLF;
-
 	strSend += "  <ITEM>" + CRLF;
 	strSend += "    <RCMDCP>" + CRLF;
-	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"PP_UPLOAD_CONFIRM\" />" + CRLF;
+	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"MGZ_ID_CONFIRM\" />" + CRLF;
 	strSend += "      <CPLIST COUNT=\"3\">" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\" />" + CRLF;
 	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"20251215000000\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
-	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"LOTID\" />" + CRLF;
-	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"TEST_LOT\" />" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"MGZID\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"" + gData.sHostMGZID +"\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
-	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"RECIPEID\" />" + CRLF;
-	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"A53B_DPAMS_REV0\" />" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\""+ gData.sHostOperID + "\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
-	strSend += "      </CPLIST>" + CRLF;
+	strSend += "      </CPLIST>" + CRLF;	  
 	strSend += "      <RESULT>" + CRLF;
 	strSend += "        <CODE NAME=\"CODE\" VALUE=\"\" />" + CRLF;
-	strSend += "        <TEXT NAME=\"CODE\" VALUE=\"\" />" + CRLF;
+	strSend += "        <TEXT VALUE=\"CODE\" />" + CRLF;
 	strSend += "      </RESULT>" + CRLF;
 	strSend += "    </RCMDCP>" + CRLF;
 	strSend += "  </ITEM>" + CRLF;
@@ -357,180 +351,86 @@ void CEquip::Set_S2F49_PP_UPLOAD_CONFIRM()
 }
 
 
-//[00:29:40 147] [<-] 0000082837341<?xml version="1.0" encoding="utf-16"?>
-//	<EIF VERSION="2.0" ID="S2F49" NAME="Enhanced Remote Command">
-//	<ELEMENT>
-//	<EQPID VALUE="AVI-00413" />
-//	</ELEMENT>
-//	<ITEM>
-//	<RCMDCP>
-//	<RCMD NAME="RCMD" VALUE="PP_UPLOAD_CONFIRM" />
-//	<CPLIST COUNT="3">
-//	<CP>
-//	<CPNAME NAME="CPNAME" VALUE="TIME" />
-//	<CPVAL NAME="CPVAL" VALUE="20251210002939" />
-//	</CP>
-//	<CP>
-//	<CPNAME NAME="CPNAME" VALUE="LOTID" />
-//	<CPVAL NAME="CPVAL" VALUE="GPSZ0A0BFC91EYA" />
-//	</CP>
-//	<CP>
-//	<CPNAME NAME="CPNAME" VALUE="RECIPEID" />
-//	<CPVAL NAME="CPVAL" VALUE="A53B_DPAMS_REV0" />
-//	</CP>
-//	</CPLIST>
-//	<RESULT>
-//	<CODE NAME="CODE" VALUE="" />
-//	<TEXT VALUE="" />
-//	</RESULT>
-//	</RCMDCP>
-//	</ITEM>
-//	</EIF>
-
-
-
-//------------------
-//[00:32:04 747] [->] 0000050272441<?xml version="1.0" encoding="utf-16"?>
-//	<EIF VERSION="2.0" ID="S6F11" NAME="Event Report">
-//	<ELEMENT>
-//	<EQPID VALUE="AVI-00413" />
-//	</ELEMENT>
-//	<ITEM>
-//	<CEID NAME="CEID" VALUE="40103" />
-//	<RPTID NAME="RPTID" VALUE="40103" />
-//	<DVLIST COUNT="4">
-//	<DV NAME="TIME" VALUE="20251210003204" />
-//	<DV NAME="LOTID" VALUE="GPSZ0A0BFC91GYA" />
-//	<DV NAME="RECIPEID" VALUE="A53B_DPAMS_REV0" />
-//	<DV NAME="OPERATORID" VALUE="113447" />
-//	</DVLIST>
-//	</ITEM>
-//	</EIF>
-//	[00:32:04 790] [<-] 0000031072441<?xml version="1.0" encoding="utf-16"?>
-//	<EIF VERSION="2.0" ID="S6F12" NAME="Event Report Acknowledge">
-//	<ELEMENT>
-//	<EQPID VALUE="AVI-00413" />
-//	</ELEMENT>
-//	<ITEM>
-//	<CEID NAME="CEID" VALUE="40103" />
-//	<RPTID NAME="RPTID" VALUE="40103" />
-//	<ACKC NAME="ACKC" VALUE="0" />
-//	</ITEM>
-//	</EIF>
-//	[00:32:05 087] [<-] 0000165839171<?xml version="1.0" encoding="utf-16"?>
-//	<EIF VERSION="2.0" ID="S2F49" NAME="Enhanced Remote Command">
-//	<ELEMENT>
-//	<EQPID VALUE="AVI-00413" />
-//	</ELEMENT>
-//	<ITEM>
-//	<RCMDCP>
-//	<RCMD NAME="RCMD" VALUE="TRAY_LOT_START" />
-//	<CPLIST COUNT="10">
-//	<CP>
-//	<CPNAME NAME="CPNAME" VALUE="TIME" />
-//	<CPVAL NAME="CPVAL" VALUE="20251210003205" />
-//	</CP>
-//	<CP>
-//	<CPNAME NAME="CPNAME" VALUE="PROCID" />
-//	<CPVAL NAME="CPVAL" VALUE="AA10152" />
-//	</CP>
-//	<CP>
-//	<CPNAME NAME="CPNAME" VALUE="MODEL" />
-//	<CPVAL NAME="CPVAL" VALUE="MAMVSZ0A0B.KM00" />
-//	</CP>
-//	<CP>
-//	<CPNAME NAME="CPNAME" VALUE="VENDOR_TYPE" />
-//	<CPVAL NAME="CPVAL" VALUE="DPAMS" />
-//	</CP>
-//	<CP>
-//	<CPNAME NAME="CPNAME" VALUE="MODEL_CONFIG_CODE" />
-//	<CPVAL NAME="CPVAL" VALUE="DPAMS - Compeq" />
-//	</CP>
-//	<CP>
-//	<CPNAME NAME="CPNAME" VALUE="LOTID" />
-//	<CPVAL NAME="CPVAL" VALUE="GPSZ0A0BFC91GYA" />
-//	</CP>
-//	<CP>
-//	<CPNAME NAME="CPNAME" VALUE="TRAYID" />
-//	<CPVAL NAME="CPVAL" VALUE="" />
-//	</CP>
-//	<CP>
-//	<CPNAME NAME="CPNAME" VALUE="RECIPEID" />
-//	<CPVAL NAME="CPVAL" VALUE="A53B_DPAMS_REV0" />
-//	</CP>
-//	<CP>
-//	<CPNAME NAME="CPNAME" VALUE="TOTALQTY" />
-//	<CPVAL NAME="CPVAL" VALUE="40" />
-//	</CP>
-//	<CP>
-//	<CPNAME NAME="CPNAME" VALUE="OPERATORID" />
-//	<CPVAL NAME="CPVAL" VALUE="113447" />
-//	</CP>
-//	</CPLIST>
-//	</RCMDCP>
-//	</ITEM>
-//	</EIF>
-
-
-void CEquip::Set_S2F49_TRAY_LOT_START()
+void CEquip::Set_S2F49_PP_UPLOAD_CONFRIM()
 {
 	gData.sEquipId = "AVI-TEST";
-
-	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
+	CString strSend = "<?xml version=\"2.0\" encoding=\"utf-16\"?>" + CRLF;
 
 	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F49\" NAME=\"Enhanced Remote Command\">" + CRLF;
 	strSend += "  <ELEMENT>" + CRLF;
 	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
 	strSend += "  </ELEMENT>" + CRLF;
-
 	strSend += "  <ITEM>" + CRLF;
 	strSend += "    <RCMDCP>" + CRLF;
-	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"TRAY_LOT_START\" />" + CRLF;
-	strSend += "      <CPLIST COUNT=\"10\">" + CRLF;
+	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"PP_UPLOAD_COMFIRM\" />" + CRLF;
+	strSend += "      <CPLIST COUNT=\"5\">" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\" />" + CRLF;
 	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"20251215000000\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
-	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"PROCID\" />" + CRLF;
-	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"AA10152\" />" + CRLF;
-	strSend += "        </CP>" + CRLF;
-	strSend += "        <CP>" + CRLF;
-	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"MODEL\" />" + CRLF;
-	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"MAMVSZ0A0B.KM00\" />" + CRLF;
-	strSend += "        </CP>" + CRLF;
-	strSend += "        <CP>" + CRLF;
-	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"VENDOR_TYPE\" />" + CRLF;
-	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"DPAMS\" />" + CRLF;
-	strSend += "        </CP>" + CRLF;
-	strSend += "        <CP>" + CRLF;
-	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"MODEL_CONFIG_CODE\" />" + CRLF;
-	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"DPAMS - Compeq\" />" + CRLF;
-	strSend += "        </CP>" + CRLF;
-	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"LOTID\" />" + CRLF;
-	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"TestLot\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"" + gData.sHostLotID +"\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
-	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TRAYID\" />" + CRLF;
-	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"MAMVSZ0A0B.KM00\" />" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"MGZID\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"" + gData.sHostMGZID +"\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"RECIPEID\" />" + CRLF;
-	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"A53B_DPAMS_REV0\" />" + CRLF;
-	strSend += "        </CP>" + CRLF;
-	strSend += "        <CP>" + CRLF;
-	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TOTALQTY\" />" + CRLF;
-	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"40\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\""+ gData.sHostRecipeID + "\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\" />" + CRLF;
-	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"113447\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\""+ gData.sHostOperID + "\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
-	strSend += "      </CPLIST>" + CRLF;
+	strSend += "      </CPLIST>" + CRLF;	  
 	strSend += "      <RESULT>" + CRLF;
 	strSend += "        <CODE NAME=\"CODE\" VALUE=\"\" />" + CRLF;
-	strSend += "        <TEXT NAME=\"CODE\" VALUE=\"\" />" + CRLF;
+	strSend += "        <TEXT VALUE=\"CODE\" />" + CRLF;
+	strSend += "      </RESULT>" + CRLF;
+	strSend += "    </RCMDCP>" + CRLF;
+	strSend += "  </ITEM>" + CRLF;
+	strSend += "</EIF>";
+
+	Send_Command(strSend, FALSE, "S2F49");
+}
+
+
+
+void CEquip::Set_S2F49_LOT_START()
+{
+	gData.sEquipId = "AVI-TEST";
+	CString strSend = "<?xml version=\"2.0\" encoding=\"utf-16\"?>" + CRLF;
+
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F49\" NAME=\"Enhanced Remote Command\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "  <ITEM>" + CRLF;
+	strSend += "    <RCMDCP>" + CRLF;
+	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"LOT_START\" />" + CRLF;
+	strSend += "      <CPLIST COUNT=\"5\">" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"20251215000000\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"LOTID\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"" + gData.sHostLotID +"\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"MGZID\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"" + gData.sHostMGZID +"\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\""+ gData.sHostOperID + "\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "      </CPLIST>" + CRLF;	  
+	strSend += "      <RESULT>" + CRLF;
+	strSend += "        <CODE NAME=\"CODE\" VALUE=\"\" />" + CRLF;
+	strSend += "        <TEXT VALUE=\"CODE\" />" + CRLF;
 	strSend += "      </RESULT>" + CRLF;
 	strSend += "    </RCMDCP>" + CRLF;
 	strSend += "  </ITEM>" + CRLF;
@@ -546,33 +446,21 @@ void CEquip::Set_S7F25()
 {
 	gData.sEquipId = "AVI-TEST";
 
-	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
+	CString strSend = "<?xml version=\"2.0\" encoding=\"utf-16\"?>" + CRLF;
 
 	strSend += "<EIF VERSION=\"2.0\" ID=\"S7F25\" NAME=\"Formatted Process Program Request\">" + CRLF;
 	strSend += "  <ELEMENT>" + CRLF;
 	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
 	strSend += "  </ELEMENT>" + CRLF;	
 	strSend += "  <ITEM>" + CRLF;
-	strSend += "    <PPID NAME=\"PPID\" VALUE=\"A53B_DPAMS_REV0\" />" + CRLF;
-	strSend += "    <LOTID NAME=\"LOTID\" VALUE=\"TEST-LOT\" />" + CRLF;
+	strSend += "    <PPID NAME=\"PPID\" VALUE=\"" + gData.sHostRecipeID + "\" />" + CRLF;
+	strSend += "    <LOTID NAME=\"LOTID\" VALUE=\"" + gData.sHostLotID + "\" />" + CRLF;
 	strSend += "  </ITEM>" + CRLF;	
 	strSend += "</EIF>";
 
 	Send_Command(strSend, FALSE, "S7F25");
 }
 
-//
-//[00:29:39 968] [<-] 0000030337331<?xml version="1.0" encoding="utf-16"?>
-//	<EIF VERSION="2.0" ID="S7F25" NAME="Formatted Process Program Request">
-//	<ELEMENT>
-//	<EQPID VALUE="AVI-00413" />
-//	</ELEMENT>
-//	<ITEM>
-//	<PPID NAME="PPID" VALUE="A53B_DPAMS_REV0" />
-//	<LOTID NAME="LOTID" VALUE="GPSZ0A0BFC91EYA" />
-//	</ITEM>
-//	</EIF>
-//
 
 void CEquip::Send_Command(CString sSend, BOOL bReply, CString sStFn, CString sRcmd)
 {

@@ -299,7 +299,11 @@ typedef struct {
 
 typedef struct {
 	
-	int			nMGZConfirm;
+	BOOL		bMGZIDReported;
+	BOOL		bPPUploaded;
+
+	
+	CString		sLotID[2];
 	CString		sMGZID[2]; // 0: Load, 1: Ready 
 
 	DWORD	dwMesTime;
@@ -309,6 +313,8 @@ typedef struct {
 	// Host 전공정 Data
 	CString		sHostLotID;			//Host 수신 Lot ID
 	CString		sHostRecipe;		//Host 수신 Recipe ID
+	CString		sHostMGZID;			//Host 수신 Load 부 ID
+	CString		sHostUldMGZID;			//Host 수신 Load 부 ID
 	CString		sHostModel;			//Host 수신 Recipe ID
 	int			nHostCount;			//Host 수신 CM 총갯수
 	CString		sHostCancelCode;	//Host Cancel 수신 code

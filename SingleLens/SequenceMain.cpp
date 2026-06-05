@@ -661,20 +661,35 @@ BOOL CSequenceMain::MZElevRun()
 				g_objCommon.Set_LoadCVRunCCW(); Sleep(5);
 				g_objCommon.Set_ElevCVRunCW();
 
-				gMes.sMGZID[eMZ::Load] = sBarcode; gMes.nMGZConfirm = 0;
+				gMes.sMGZID[eMZ::Load] = sBarcode; gMes.bMGZIDReported = FALSE;
 				g_objMesAgent.Set_MGZIDReport(1, gMes.sMGZID[eMZ::Load]);
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 			}			
 		}			 
 		break;
 	case 71:
-		if(gMes.nMGZConfirm > 0)
+		if(gMes.bMGZIDReported)
 		{
-			gMes.nMGZConfirm = 0;
+			gMes.bMGZIDReported = FALSE;
+			m_nMZElevCase = 73; m_nMZElevLoop.Set_LoopTime(10000);
+		}
+		break;
+	case 72: //  retry 
+		g_objMesAgent.Set_MGZIDReport(1, gMes.sMGZID[eMZ::Load]);
+		m_nMZElevCase = 71; m_nMZElevLoop.Set_LoopTime(10000);
+		break;
+	case 73:
+		gMes.bPPUploaded = FALSE;		
+		g_objMesAgent.Set_PPSelectedReport(gMes.sHostLotID, gMes.sMGZID[eMZ::Load], gMes.sHostRecipe);
+		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
+		break;
+	case 74:
+		if(gMes.bPPUploaded)
+		{
+			g_objMesAgent.Set_PPUploadCompletedReport(gMes.sHostLotID, gMes.sMGZID[eMZ::Load], gMes.sHostRecipe);
 			m_nMZElevCase = 4; m_nMZElevLoop.Set_LoopTime(10000);
 		}
 		break;
-
 	case 4:
 		if(gData.bDemoMode)
 		{
@@ -766,13 +781,41 @@ BOOL CSequenceMain::MZElevRun()
 		if(m_pDX00->iElvMZExist1)
 		{
 			g_objCommon.Set_ElevCVStop();Sleep(5);
-			g_objCommon.Set_LoadCVRunCCW();Sleep(5);
-			
+			g_objCommon.Set_LoadCVStop();Sleep(5);
+			sBarcode.Empty(); g_objBarcodeLot_Cognex.Set_Trigger(eBarcode::MZ,TRUE);
+			dwTick1 = GetTickCount();
 			g_objCommon.Set_ElevLift1Out();
-			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
+			m_nMZElevCase = 80; m_nMZElevLoop.Set_LoopTime(10000);
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Load CV CW Stop & Elev CV CW Start");
 		}
 		break;	
+	case 80:
+		if(GetTickCount() - dwTick1 < 3000)
+		{
+			sBarcode = g_objBarcodeLot_Cognex.Get_BarcodeLot(eBarcode::MZ);
+			if (sBarcode != "") 
+			{
+				g_objCommon.Set_ElevCVStop(); Sleep(5);
+				g_objCommon.Set_LoadCVRunCCW(); Sleep(5);
+			
+				gMes.sMGZID[eMZ::Ready] = sBarcode; gMes.bMGZIDReported = FALSE;
+				g_objMesAgent.Set_MGZIDReport(1, gMes.sMGZID[eMZ::Ready]);
+				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
+			}			
+		}			 
+		break;
+	case 81:
+		if(gMes.bMGZIDReported)
+		{
+			gMes.bMGZIDReported = FALSE;
+			m_nMZElevCase = 12; m_nMZElevLoop.Set_LoopTime(10000);
+		}
+		break;
+	case 82: //  retry
+		g_objMesAgent.Set_MGZIDReport(1, gMes.sMGZID[eMZ::Ready]);
+		m_nMZElevCase = 81; m_nMZElevLoop.Set_LoopTime(10000);
+		break;
+
 	case 12:
 		if(g_objCommon.Get_ElevLift1Out() && g_objCommon.Get_ElevLift1Down())
 		{
@@ -810,9 +853,7 @@ BOOL CSequenceMain::MZElevRun()
 			{
 				nMZNo++;if(nMZNo > 3) nMZNo =1;
 				g_dlgWork.TransferMZInfo(nFrom, eMZ::Ready, m_pEquipData->nVisionDir);
-				
-
-				
+								
 				for(int i = 0; i < 10; i++)
 				{
 					gData.sMZIDElevReady[i] = gData.sMZID[eMZ::Ready];
@@ -842,7 +883,6 @@ BOOL CSequenceMain::MZElevRun()
 
 	case 20: // working 
 		//If additional M/Z added from operator with UI, case can be changed 
-		
 		return TRUE;
 
 	case ElvBranch::Unload:
@@ -952,6 +992,7 @@ BOOL CSequenceMain::MZElevRun()
 		{
 			Job_LotEnd(Find_UnloadMZNo());
 			g_objInspector.Set_LotEnd(gData.sMZIDElevUnload, Find_UnloadMZNo());
+			g_objMesAgent.Set_MGZIDReport(2, gData.sMZIDElevUnload);
 
 			g_dlgWork.TransferMZInfo(eMZ::Load, -1, m_pEquipData->nVisionDir); // From Load To Out(-1)
 			//Info Processing
