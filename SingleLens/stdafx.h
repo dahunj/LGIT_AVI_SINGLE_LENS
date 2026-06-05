@@ -300,7 +300,7 @@ typedef struct {
 typedef struct {
 	
 	BOOL		bMGZIDReported;
-	BOOL		bPPUploaded;
+	BOOL		bPPConfirm;
 	BOOL		bTrayIDConfirm;
 
 	

@@ -134,13 +134,7 @@ LRESULT CMesAgent::OnClientReceive(WPARAM wParam, LPARAM lParam)
 		AfxExtractSubString(strCmd, strRecv, 0, chSep);
 		AfxExtractSubString(strOp, strRecv, 1, chSep);
 				
-		if(strCmd == "TRAY")
-		{
-			if(strOp == "CONFIRM")
-			{
-				Get_TrayID_Confirm(strRecv);				
-			}
-		}
+		
 
 		CString strArg[10];
 		for (int i = 0; i < 5; i++) AfxExtractSubString(strArg[i], strRecv, i + 2, chSep);
@@ -164,9 +158,14 @@ LRESULT CMesAgent::OnClientReceive(WPARAM wParam, LPARAM lParam)
 		}
 		else if (strCmd == "MGZ")
 		{			
-			if (strOp == "CANCEL")  Get_MGZCancel(strArg[0], strArg[1],  strArg[2]);
+			if (strOp == "CANCEL")  Get_MGZCancel(strArg[0], strArg[1], strArg[2]);
 			if (strOp == "CONFIRM")  Get_MGZ_Confirm(strArg[0]);
-		} 		
+		} 	
+		else if(strCmd == "TRAY")
+		{
+			if(strOp == "CONFIRM") Get_TrayID_Confirm(strRecv);
+			if(strOp == "CANCEL") Get_Tray_Cancel(strArg[0], strArg[1], strArg[2]);
+		}
 	}
 	return 0;
 }
@@ -268,13 +267,13 @@ void CMesAgent::Get_MGZ_Confirm(CString sMGZId)
 void CMesAgent::Get_PPUpload_Confirm(CString sRecipeID)
 {
 	gMes.sHostRecipe = sRecipeID;
-	gMes.bPPUploaded = TRUE;
+	gMes.bPPConfirm = TRUE;
 }
 
 void CMesAgent::Get_PPUpload_Fail(CString sRecipeID, CString sFailCode, CString sFailText)
 {
 	gMes.sHostRecipe = sRecipeID;
-	gMes.bPPUploaded = FALSE;
+	gMes.bPPConfirm = FALSE;
 	gMes.sHostCancelCode = sFailCode;
 	gMes.sHostCancelText = sFailText;
 	g_objCommon.Show_Error(9031);
@@ -294,10 +293,17 @@ void CMesAgent::Get_TrayID_Confirm(CString sStrings)
 		gMes.sPocketNo[i] = strTemp[1];
 		gMes.sResult[i] = strTemp[2];
 	}
+	gMes.bTrayIDConfirm = TRUE;
 
 }
 
-
+void CMesAgent::Get_Tray_Cancel(CString sTrayID, CString sCode, CString sText)
+{
+	gMes.sHostTrayID = sTrayID;
+	gMes.sHostCancelCode = sCode;
+	gMes.sHostCancelText = sText;
+	g_objCommon.Show_Error(9035);
+}
 
 //Set
 

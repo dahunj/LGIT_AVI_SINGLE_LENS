@@ -43,6 +43,7 @@ private:
 	void Get_PPUpload_Fail(CString sRecipeID, CString sFailCode, CString sFailText);
 
 	void Get_TrayID_Confirm(CString sStrings);
+	void Get_Tray_Cancel(CString sTrayID, CString sCode, CString sText);
 
 	void Send_Command(CString sSend);
 
