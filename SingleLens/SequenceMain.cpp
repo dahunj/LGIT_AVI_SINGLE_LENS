@@ -1189,7 +1189,8 @@ BOOL CSequenceMain::MZElevRun()
 BOOL CSequenceMain::FeederRun()
 {	
 	static double dPosZ = 0.0;
-		
+	static DWORD dwTick = 0;
+	CString sBarcode;	
 	
 	if( gData.bElvSlideOverWait || gData.bElvLoadWait || gData.bElvUnloadWait) return TRUE;
 	
@@ -1340,8 +1341,62 @@ BOOL CSequenceMain::FeederRun()
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready) && m_pDX01->iRailZigExist)
 		{
 			g_objCommon.Set_RailAlignIn();
-			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
+
+			if(m_pEquipData->bUseMES)
+			{
+				m_nFeederCase = 71; m_nFeederLoop.Set_LoopTime(5000);
+			}
+			else
+			{
+				m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
+			}			
 			m_strLog.Format("Zig Picker load Start "); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+		}
+		break;
+	case 71:
+		if(g_objCommon.Get_RailAlignIn() && g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready))
+		{
+			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::Barcode);
+			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 72:
+		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::Barcode))
+		{
+			if(!m_nFeederLoop.Waiting_Time(300)) break;
+			dwTick = GetTickCount();
+			g_objBarcodeLot_Cognex.Set_Trigger(eBarcode::CtZig, TRUE);
+			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 73:
+		if(GetTickCount() - dwTick < 5000)
+		{
+			
+			sBarcode.Empty(); sBarcode = g_objBarcodeLot_Cognex.Get_BarcodeLot(eBarcode::CtZig);
+			if(sBarcode != "")
+			{
+				m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
+			}
+		}
+		break;
+	case 74:
+		if(m_pEquipData->bUseMES)
+		{
+			//Load : 1
+			g_objMesAgent.Set_TrayIDReport(1, sBarcode); gMes.bTrayIDConfirm = FALSE;
+			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
+		}
+		else m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
+		break;
+	case 75:
+		if(m_pEquipData->bUseMES && gMes.bTrayIDConfirm)
+		{
+
+		}
+		else
+		{
+
 		}
 		break;
 	case 16:

@@ -720,6 +720,35 @@ void CHost::Set_S6F11_PPUploadCompleted(CString sLotId, CString sMGZId, CString 
 	Send_Command(strSend, FALSE, "S6F11", "40103");
 }
 
+void CHost::Set_S6F11_TrayIDReport(CString sType, CString sTrayID)
+{
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+
+	CString strTime;
+	strTime.Format("%04d%02d%02d%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
+
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
+
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S6F11\" NAME=\"Event Report\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "  <ITEM>" + CRLF;
+	strSend += "    <CEID NAME=\"CEID\" VALUE=\"20301\" />" + CRLF;
+	strSend += "    <RPTID NAME=\"RPTID\" VALUE=\"20301\" />" + CRLF;
+	strSend += "    <DVLIST COUNT=\"5\">" + CRLF;
+	strSend += "      <DV NAME=\"TIME\" VALUE=\"" + strTime + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"PORTNO\" VALUE=\"" + sType + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"TRAYID\" VALUE=\"" + sTrayID + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"OPERATORID\" VALUE=\"" + gData.sOperId + "\" />" + CRLF;
+	strSend += "    </DVLIST>" + CRLF;
+	strSend += "  </ITEM>" + CRLF;
+	strSend += "</EIF>";
+
+	Send_Command(strSend, FALSE, "S6F11", "20301");
+}
+
 void CHost::Set_S2F50_PPSelect()
 {
 	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;

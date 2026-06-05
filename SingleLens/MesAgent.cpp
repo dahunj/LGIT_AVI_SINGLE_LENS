@@ -133,6 +133,14 @@ LRESULT CMesAgent::OnClientReceive(WPARAM wParam, LPARAM lParam)
 
 		AfxExtractSubString(strCmd, strRecv, 0, chSep);
 		AfxExtractSubString(strOp, strRecv, 1, chSep);
+				
+		if(strCmd == "TRAY")
+		{
+			if(strOp == "CONFIRM")
+			{
+				Get_TrayID_Confirm(strRecv);				
+			}
+		}
 
 		CString strArg[10];
 		for (int i = 0; i < 5; i++) AfxExtractSubString(strArg[i], strRecv, i + 2, chSep);
@@ -272,6 +280,24 @@ void CMesAgent::Get_PPUpload_Fail(CString sRecipeID, CString sFailCode, CString 
 	g_objCommon.Show_Error(9031);
 }
 
+void CMesAgent::Get_TrayID_Confirm(CString sStrings)
+{
+	CString strTemp[3];
+	char chSep = ',';
+	AfxExtractSubString(strTemp[0], sStrings, 2, chSep);
+	gMes.sHostTrayID = strTemp[0];
+
+	for (int i = 0; i < 141; i++)
+	{
+		AfxExtractSubString(strTemp[1], sStrings, i*2 + 3, chSep);
+		AfxExtractSubString(strTemp[2], sStrings, i*2 + 4, chSep);
+		gMes.sPocketNo[i] = strTemp[1];
+		gMes.sResult[i] = strTemp[2];
+	}
+
+}
+
+
 
 //Set
 
@@ -344,3 +370,10 @@ void CMesAgent::Set_LotStartedReport(CString sLotId, CString sMGZId, CString sRe
 	Send_Command(strSend);
 }
 
+void CMesAgent::Set_TrayIDReport(int nType, CString sTrayID)
+{
+	CString strSend, strLogID;
+
+	strSend.Format("TRAY,ID,%d,%s", nType, sTrayID);
+	Send_Command(strSend);
+}

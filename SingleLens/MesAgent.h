@@ -42,6 +42,8 @@ private:
 	void Get_PPUpload_Confirm(CString sRecipeID);
 	void Get_PPUpload_Fail(CString sRecipeID, CString sFailCode, CString sFailText);
 
+	void Get_TrayID_Confirm(CString sStrings);
+
 	void Send_Command(CString sSend);
 
 public:
@@ -64,6 +66,7 @@ public:
 	void Set_PPUploadCompletedReport(CString sLotId, CString sMGZId, CString sRecipeId);
 
 	void Set_LotStartedReport(CString sLotId, CString sMGZId, CString sRecipe);
+	void Set_TrayIDReport(int nType, CString sTrayID); //1: Load, 2:Unload 
 };
 
 

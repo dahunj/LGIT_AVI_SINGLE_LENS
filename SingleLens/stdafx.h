@@ -301,6 +301,7 @@ typedef struct {
 	
 	BOOL		bMGZIDReported;
 	BOOL		bPPUploaded;
+	BOOL		bTrayIDConfirm;
 
 	
 	CString		sLotID[2];
@@ -317,6 +318,7 @@ typedef struct {
 	CString		sHostUldMGZID;		//Host 熱褐 Load 睡 ID
 	CString		sHostModel;			//Host 熱褐 Recipe ID
 	int			nHostCount;			//Host 熱褐 CM 識偎熱
+	CString		sHostTrayID;
 
 	CString		sHostFailLotId;
 	CString		sHostFailCode;
@@ -324,6 +326,9 @@ typedef struct {
 
 	CString		sHostCancelCode;
 	CString		sHostCancelText;
+
+	CString		sPocketNo[141];
+	CString		sResult[141];
 	
 } GLOVAL_MES;
 

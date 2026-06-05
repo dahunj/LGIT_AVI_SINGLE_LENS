@@ -144,6 +144,10 @@ LRESULT CHandler::OnServerReceive(WPARAM wLocalPort, LPARAM lClientIdx)
 			if(strOp == "SELECTED") Get_PPSelectedReport(strA[0], strA[1], strA[2]);
 			if(strOp == "COMPLETED") Get_PPUploadCompletedReport(strA[0], strA[1], strA[2]);
 		}
+		else if(strCmd == "TRAY")
+		{
+			if(strOp == "ID") Get_TrayIDReport(strA[0], strA[1]);
+		}
 		
 	}
 
@@ -223,6 +227,11 @@ void CHandler::Get_PPSelectedReport(CString sLotID, CString sMGZId, CString sRec
 void CHandler::Get_PPUploadCompletedReport(CString sLotID, CString sMGZId, CString sRecipeId)
 {	
 	g_objHost.Set_S6F11_PPUploadCompleted(sLotID, sMGZId,sRecipeId);
+}
+
+void CHandler::Get_TrayIDReport(CString sType, CString sTrayID)
+{
+	g_objHost.Set_S6F11_TrayIDReport(sType, sTrayID);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

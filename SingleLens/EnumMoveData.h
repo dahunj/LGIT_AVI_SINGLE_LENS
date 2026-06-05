@@ -33,6 +33,7 @@ struct eFeeder_X
 		MZReady = 1,
 		MZLoad = 2,
 		TrayGrip= 3,
+		Barcode = 4,
 	};
 };
 

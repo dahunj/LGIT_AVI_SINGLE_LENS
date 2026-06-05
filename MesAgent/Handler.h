@@ -37,6 +37,8 @@ private:
 	void Get_PPSelectedReport(CString sLotID, CString sMGZId, CString sRecipeId);
 	void Get_PPUploadCompletedReport(CString sLotID, CString sMGZId, CString sRecipeId);	
 
+	void Get_TrayIDReport(CString sType, CString sTrayID);
+
 	void Send_Command(CString sSend);
 
 public:
