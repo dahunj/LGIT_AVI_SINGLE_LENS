@@ -198,7 +198,7 @@ void CSequenceMain::Set_ClearRunData(BOOL bInit)
 	memset(gData.InfoCtZigRdy, 0x00, sizeof(int)*10);
 	memset(gData.InfoCtZigUnload, 0x00, sizeof(int)*10);
 
-	memset(gData.cJudgeCode, 0x00, sizeof(char)*7*10*ZIG_X*ZIG_Y);
+	memset(gData.cJudgeCode, 0x00, sizeof(char)*7*10*ZIG_X*ZIG_Y*2);
 	memset(gData.nInspectInfo, 0x00, sizeof(int)*7*10*ZIG_X*ZIG_Y);
 	memset(gData.byInspectDone, 0x00, sizeof(BYTE)*7*10*ZIG_X*ZIG_Y);
 
@@ -255,7 +255,7 @@ void CSequenceMain::Job_LotEnd(int nMZNo)
 {
 	int nMNo = nMZNo -1 ;
 
-	memset(gData.cJudgeCode[nMNo], 0x00, sizeof(char)*10*ZIG_X*ZIG_Y);
+	memset(gData.cJudgeCode[nMNo], 0x00, sizeof(char)*10*ZIG_X*ZIG_Y*2);
 	memset(gData.nInspectInfo[nMNo], 0x00, sizeof(int)*10*ZIG_X*ZIG_Y);
 	memset(gData.byInspectDone[nMNo], 0x00, sizeof(BYTE)*10*ZIG_X*ZIG_Y);
 
@@ -2659,7 +2659,8 @@ BOOL CSequenceMain::MarkUnitRun()
 				break;
 			}
 			if(bInspectFail) break; //Not Complete
-			//g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gMes)
+			g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], nLensNo, 
+				gData.sJudgeCode[gData.nMZNoMainIndex[eMainIndex::Mark]][gData.nSlotNoMainIndex[eMainIndex::Mark]][nLensNo][eVision::MARKING], gData.sNGCode[gData.nMZNoMainIndex[eMainIndex::Mark]][gData.nSlotNoMainIndex[eMainIndex::Mark]][nLensNo][eVision::MARKING] );
 			Write_LotJudge(gData.nMZNoMainIndex[eMainIndex::Mark], gData.nSlotNoMainIndex[eMainIndex::Mark],nLensNo, nTempInfo);
 			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 		}

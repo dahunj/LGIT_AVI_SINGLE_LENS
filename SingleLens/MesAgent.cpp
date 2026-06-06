@@ -393,10 +393,10 @@ void CMesAgent::Set_TrayStartedReport(CString sLotID, CString sTrayID, CString s
 	Send_Command(strSend);
 }
 
-void CMesAgent::Set_ProductCompletedReport(CString sLotID, CString sTrayID, CString sRecipeID, CString sPocketNo, CString sResult, CString sReasonCode)
+void CMesAgent::Set_ProductCompletedReport(CString sLotID, CString sTrayID, CString sRecipeID, int nPocketNo, CString sResult, CString sReasonCode)
 {
 	CString strSend, strLogID;
 
-	strSend.Format("PRODUCT,COMPLETED,%s,%s,%s", sLotID, sTrayID,sRecipeID);
+	strSend.Format("PRODUCT,COMPLETED,%s,%s,%s,%d,%s,%s", sLotID, sTrayID,sRecipeID,nPocketNo,sResult,sReasonCode);
 	Send_Command(strSend);
 }

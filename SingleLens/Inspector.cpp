@@ -223,15 +223,17 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 
 
 	gData.cJudgeCode[nMNo][nTNo][nLNo][nV] = *(LPSTR)(LPCTSTR)sJudge;
+	
+	
 
-
-	int nMode = theApp.Get_MainMode();
 	int nPreInfo = gData.nInspectInfo[nMNo][nTNo][nLNo];
 
 	if (sJudge == "N") 
 	{  
 		gData.nInspectInfo[nMNo][nTNo][nLNo] = 2;
-	}	// NG
+		gData.sJudgeCode[nMNo][nTNo][nLNo][eVision::MARKING] = sJudge;
+		gData.sNGCode[nMNo][nTNo][nLNo][eVision::MARKING] = sNgCode;
+	}		
 	else if (sJudge != "G")  // Good
 	{ 
 		if (nPreInfo < 2 || nPreInfo > 8) gData.nInspectInfo[nMNo][nTNo][nLNo] = 2;  

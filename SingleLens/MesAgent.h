@@ -71,7 +71,7 @@ public:
 	void Set_TrayIDReport(int nType, CString sTrayID); //1: Load, 2:Unload 
 	void Set_TrayStartedReport(CString sLotID, CString sTrayID, CString sRecipeID);
 
-	void Set_ProductCompletedReport(CString sLotID, CString sTrayID, CString sRecipeID, CString sPocketNo, CString sResult, CString sReasonCode);
+	void Set_ProductCompletedReport(CString sLotID, CString sTrayID, CString sRecipeID, int nPocketNo, CString sResult, CString sReasonCode);
 };
 
 

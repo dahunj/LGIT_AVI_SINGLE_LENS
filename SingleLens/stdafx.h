@@ -209,7 +209,9 @@ typedef struct
 	
 	BOOL    bScanDone[2];            // 0:Top 1: Btm
 
-	char	cJudgeCode[7][10][ZIG_X*ZIG_Y][2];	
+	char	cJudgeCode[7][10][ZIG_X*ZIG_Y][2];
+	CString	sJudgeCode[7][10][ZIG_X*ZIG_Y][3]; // 0:Top 1: Btm , 2: Top Priority  
+	CString sNGCode[7][10][ZIG_X*ZIG_Y][3];
 	int     nInspectInfo[7][10][ZIG_X*ZIG_Y];    // ????? (0:Empty, 1:Good, 2:NG, 3:NoResult, 7:Request, 8:NG, 9:Init)
 	BYTE	byInspectDone[7][10][ZIG_X*ZIG_Y];	// 검사완료 (2bit 사용 ==> 0:T1, 1:Btm1)
 
@@ -255,6 +257,8 @@ typedef struct
 	int		nStdLogDay;	// Log 표준화 (작업일)
 
 	int		nSelectNo;
+
+
 
 } GLOVAL_DATA;
 
