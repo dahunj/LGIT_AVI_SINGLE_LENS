@@ -67,7 +67,11 @@ public:
 	void Set_PPUploadCompletedReport(CString sLotId, CString sMGZId, CString sRecipeId);
 
 	void Set_LotStartedReport(CString sLotId, CString sMGZId, CString sRecipe);
+	
 	void Set_TrayIDReport(int nType, CString sTrayID); //1: Load, 2:Unload 
+	void Set_TrayStartedReport(CString sLotID, CString sTrayID, CString sRecipeID);
+
+	void Set_ProductCompletedReport(CString sLotID, CString sTrayID, CString sRecipeID, CString sPocketNo, CString sResult, CString sReasonCode);
 };
 
 

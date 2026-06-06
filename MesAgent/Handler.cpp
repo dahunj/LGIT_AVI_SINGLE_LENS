@@ -147,8 +147,8 @@ LRESULT CHandler::OnServerReceive(WPARAM wLocalPort, LPARAM lClientIdx)
 		else if(strCmd == "TRAY")
 		{
 			if(strOp == "ID") Get_TrayIDReport(strA[0], strA[1]);
-		}
-		
+			if(strOp == "START") Get_TrayStartedReport(strA[0], strA[1], strA[2] );
+		}		
 	}
 
 	return 0;
@@ -232,6 +232,11 @@ void CHandler::Get_PPUploadCompletedReport(CString sLotID, CString sMGZId, CStri
 void CHandler::Get_TrayIDReport(CString sType, CString sTrayID)
 {
 	g_objHost.Set_S6F11_TrayIDReport(sType, sTrayID);
+}
+
+void CHandler::Get_TrayStartedReport(CString sLotID, CString sTrayID, CString sRecipeID)
+{
+	g_objHost.Set_S6F11_TrayStartedReport(sLotID, sTrayID, sRecipeID);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

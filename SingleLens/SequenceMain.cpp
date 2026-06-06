@@ -666,6 +666,8 @@ BOOL CSequenceMain::MZElevRun()
 				g_objCommon.Set_LoadCVRunCCW(); Sleep(5);
 				g_objCommon.Set_ElevCVRunCW();
 				gMes.sMGZID[eMZ::Load] = sBarcode; gMes.bMGZIDReported = FALSE;
+
+				gMes.nElevPos = eMZ::Load;
 				g_objMesAgent.Set_MGZIDReport(1, gMes.sMGZID[eMZ::Load]);
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 			}			
@@ -679,18 +681,19 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		break;
 	case 74: //  retry 
+		gMes.nElevPos = eMZ::Load;
 		g_objMesAgent.Set_MGZIDReport(1, gMes.sMGZID[eMZ::Load]);
 		m_nMZElevCase = 73; m_nMZElevLoop.Set_LoopTime(10000);
 		break;
 	case 75:
 		gMes.bPPConfirm = FALSE;		
-		g_objMesAgent.Set_PPSelectedReport(gMes.sHostLotID, gMes.sMGZID[eMZ::Load], gMes.sHostRecipe);
+		g_objMesAgent.Set_PPSelectedReport(gMes.sHostLotID[eMZ::Load], gMes.sMGZID[eMZ::Load], gMes.sHostRecipe[eMZ::Load]);
 		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 		break;
 	case 76:
 		if(gMes.bPPConfirm)
 		{
-			g_objMesAgent.Set_PPUploadCompletedReport(gMes.sHostLotID, gMes.sMGZID[eMZ::Load], gMes.sHostRecipe);
+			g_objMesAgent.Set_PPUploadCompletedReport(gMes.sHostLotID[eMZ::Load], gMes.sMGZID[eMZ::Load], gMes.sHostRecipe[eMZ::Load]);
 			m_nMZElevCase = 4; m_nMZElevLoop.Set_LoopTime(10000);
 		}
 		break;
@@ -746,15 +749,17 @@ BOOL CSequenceMain::MZElevRun()
 											
 				for(int i = 0; i < 10; i++)
 				{
+					gData.sLotIDElevLoad[i] = gMes.sHostLotID[eMZ::Load];
 					gData.sMZIDElevLoad[i] = gData.sMZID[eMZ::Load];
 					gData.nMZNoMZLoad[i] = nMZNo;
 					gData.sZigIDElevLoad[i] = gData.sZigID[eMZ::Load][i];
+					gData.sRecipeElevLoad[i] = gMes.sHostRecipe[eMZ::Load];
 				}				
 				g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Load, NULL);								
 				
 				Job_LotStart(nMZNo, eMZ::Load);
-				if(m_pEquipData->bUseMES) g_objMesAgent.Set_LotStartedReport(gMes.sHostLotID, gMes.sHostMGZID, gMes.sHostRecipe);
-				g_objInspector.Set_LotStart(gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load],"Model");
+				if(m_pEquipData->bUseMES) g_objMesAgent.Set_LotStartedReport(gMes.sHostLotID[eMZ::Load], gMes.sHostMGZID[eMZ::Load], gMes.sHostRecipe[eMZ::Load]);
+				g_objInspector.Set_LotStart(gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load],gMes.sHostRecipe[eMZ::Load]);
 
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Stopper2 In Done");
@@ -818,7 +823,10 @@ BOOL CSequenceMain::MZElevRun()
 				g_objCommon.Set_ElevCVStop(); Sleep(5);
 				g_objCommon.Set_LoadCVRunCCW(); Sleep(5);
 			
+				gMes.nElevPos = eMZ::Ready;
 				gMes.sMGZID[eMZ::Ready] = sBarcode; gMes.bMGZIDReported = FALSE;
+
+				gMes.nElevPos = eMZ::Ready;
 				g_objMesAgent.Set_MGZIDReport(1, gMes.sMGZID[eMZ::Ready]);
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 			}			
@@ -839,18 +847,19 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		break;
 	case 84: //  retry
+		gMes.nElevPos = eMZ::Ready;
 		g_objMesAgent.Set_MGZIDReport(1, gMes.sMGZID[eMZ::Ready]);
 		m_nMZElevCase = 83; m_nMZElevLoop.Set_LoopTime(10000);
 		break;
 	case 85:
 		gMes.bPPConfirm = FALSE;		
-		g_objMesAgent.Set_PPSelectedReport(gMes.sHostLotID, gMes.sMGZID[eMZ::Ready], gMes.sHostRecipe);
+		g_objMesAgent.Set_PPSelectedReport(gMes.sHostLotID[eMZ::Ready], gMes.sMGZID[eMZ::Ready], gMes.sHostRecipe[eMZ::Ready]);
 		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 		break;
 	case 86:
 		if(gMes.bPPConfirm)
 		{
-			g_objMesAgent.Set_PPUploadCompletedReport(gMes.sHostLotID, gMes.sMGZID[eMZ::Ready], gMes.sHostRecipe);
+			g_objMesAgent.Set_PPUploadCompletedReport(gMes.sHostLotID[eMZ::Ready], gMes.sMGZID[eMZ::Ready], gMes.sHostRecipe[eMZ::Ready]);
 			m_nMZElevCase = 12; m_nMZElevLoop.Set_LoopTime(10000);
 		}
 		break;
@@ -895,15 +904,17 @@ BOOL CSequenceMain::MZElevRun()
 								
 				for(int i = 0; i < 10; i++)
 				{
+					gData.sLotIDElevRdy[i] = gMes.sHostLotID[eMZ::Ready];
 					gData.sMZIDElevReady[i] = gData.sMZID[eMZ::Ready];
+					gData.sRecipeElevReady[i] = gMes.sHostRecipe[eMZ::Ready];
 					gData.nMZNoMZRdy[i] = nMZNo;
 					gData.sZigIDElevReady[i] = gData.sZigID[eMZ::Ready][i];
 				}				
 				g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Ready, NULL);
 
 				Job_LotStart(nMZNo, eMZ::Ready);
-				g_objInspector.Set_LotStart(gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready] - 1], nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready],"Model");
-				if(m_pEquipData->bUseMES) g_objMesAgent.Set_LotStartedReport(gMes.sHostLotID, gMes.sHostMGZID, gMes.sHostRecipe);
+				g_objInspector.Set_LotStart(gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready] - 1], nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready],gMes.sHostRecipe[eMZ::Ready]);
+				if(m_pEquipData->bUseMES) g_objMesAgent.Set_LotStartedReport(gMes.sHostLotID[eMZ::Ready], gMes.sHostMGZID[eMZ::Ready], gMes.sHostRecipe[eMZ::Ready]);
 
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Stopper2 In Done");
@@ -1036,7 +1047,10 @@ BOOL CSequenceMain::MZElevRun()
 
 			g_dlgWork.TransferMZInfo(eMZ::Load, -1, m_pEquipData->nVisionDir); // From Load To Out(-1)
 			//Info Processing
+			gData.sLotIDElevUnload.Empty();
 			gData.sMZIDElevUnload.Empty();
+			
+			for(int i = 0; i < 10; i++) gData.sRecipeElevUnload[i].Empty();
 			for(int i = 0; i < 10; i++) gData.sZigIDElevUnload[i].Empty();
 			memset( gData.InfoMZUnload, 0x00, sizeof(int)*10*ZIG_X*ZIG_Y);
 
@@ -1154,8 +1168,9 @@ BOOL CSequenceMain::MZElevRun()
 			if(nTo != -1)
 			{
 				g_dlgWork.TransferMZInfo(eMZ::Ready, eMZ::Load, m_pEquipData->nVisionDir);
-				gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1] = gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready]-1]; gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready]-1].Empty();
-				
+				gData.sLotIDElevLoad[gData.nTNoPick[eMZ::Load]-1] = gData.sLotIDElevRdy[gData.nTNoPick[eMZ::Ready]-1]; gData.sLotIDElevRdy[gData.nTNoPick[eMZ::Ready]-1].Empty();
+				gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1] = gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready]-1]; 	gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready]-1].Empty();
+				gData.sRecipeElevLoad[gData.nTNoPick[eMZ::Load]-1] = gData.sRecipeElevReady[gData.nTNoPick[eMZ::Ready]-1]; 	gData.sRecipeElevReady[gData.nTNoPick[eMZ::Ready]-1].Empty();
 				for(int i = 0; i < 10; i++)
 				{
 					gData.nMZNoMZLoad[i] = gData.nMZNoMZRdy[i]; gData.nMZNoMZRdy[i] = 0;
@@ -1300,8 +1315,11 @@ BOOL CSequenceMain::FeederRun()
 		{
 			gData.bFeederWorkWait = FALSE;
 			//Info Processing 		
-			gData.sMZIDFeeder = gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1]; gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1] = "";
-			gData.sZigIDFeeder = gData.sZigIDElevLoad[gData.nTNoPick[eMZ::Load] -1]; gData.sZigIDElevLoad[gData.nTNoPick[eMZ::Load] -1] = "";
+			gData.sLotIDFeeder = gData.sLotIDElevLoad[gData.nTNoPick[eMZ::Load]-1]; gData.sLotIDElevLoad[gData.nTNoPick[eMZ::Load]-1].Empty();
+			gData.sMZIDFeeder = gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1]; gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1].Empty();
+			gData.sZigIDFeeder = gData.sZigIDElevLoad[gData.nTNoPick[eMZ::Load] -1]; gData.sZigIDElevLoad[gData.nTNoPick[eMZ::Load] -1].Empty();
+			gData.sRecipeFeeder = gData.sRecipeElevLoad[gData.nTNoPick[eMZ::Load] -1]; gData.sRecipeElevLoad[gData.nTNoPick[eMZ::Load] -1].Empty();
+			
 			gData.nSlotNoFeeder = gData.nTNoPick[eMZ::Load]; 
 			
 			gData.nMZNoFeeder = gData.nMZNoMZLoad[gData.nTNoPick[eMZ::Load] -1];
@@ -1413,14 +1431,18 @@ BOOL CSequenceMain::FeederRun()
 		if(g_objCommon.Get_RailAlignOut())
 		{	
 			//Info Processing 
+			gData.sLotIDRail = gData.sLotIDFeeder; gData.sLotIDFeeder.Empty();
 			gData.sMZIDRail = gData.sMZIDFeeder; gData.sMZIDFeeder.Empty();
 			gData.sZigIDRail = gData.sZigIDFeeder; gData.sZigIDFeeder.Empty();
+			gData.sRecipeRail = gData.sRecipeFeeder; gData.sRecipeFeeder.Empty();
 			gData.nSlotNoRail = gData.nSlotNoFeeder; gData.nSlotNoFeeder = 0;
 
 			gData.nMZNoRail = gData.nMZNoFeeder; gData.nMZNoFeeder = 0;
 
 			memcpy( gData.InfoRail, gData.InfoFeeder,  sizeof(int)*ZIG_X*ZIG_Y);
 			memset( gData.InfoFeeder, 0x00, sizeof(int)*ZIG_X*ZIG_Y);	
+			
+			g_objMesAgent.Set_TrayStartedReport(gMes.sHostLotID[eMZ::Load], gMes.sHostTrayID, gMes.sHostRecipe[eMZ::Load]);
 
 			gData.nTNoPick[eMZ::Load]++;
 			if(gData.nTNoPick[eMZ::Load] > 10) gData.nTNoPick[eMZ::Load] = 1;
@@ -1463,8 +1485,10 @@ BOOL CSequenceMain::FeederRun()
 			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::FeederGrip])) break;
 				
 			//Info Processing
+			gData.sLotIDFeeder = gData.sLotIDRail; gData.sLotIDRail.Empty();
 			gData.sMZIDFeeder = gData.sMZIDRail; gData.sMZIDRail.Empty();
 			gData.sZigIDFeeder = gData.sZigIDRail; gData.sZigIDRail.Empty();
+			gData.sRecipeFeeder = gData.sRecipeRail; gData.sRecipeRail.Empty();
 			gData.nSlotNoFeeder = gData.nSlotNoRail; gData.nSlotNoRail = 0;
 
 			gData.nMZNoFeeder = gData.nMZNoRail; gData.nMZNoRail = 0;
@@ -1510,8 +1534,10 @@ BOOL CSequenceMain::FeederRun()
 			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::FeederUnGrip])) break;
 
 			//Info Processing
+			gData.sLotIDElevUnload = gData.sLotIDFeeder; gData.sLotIDFeeder.Empty();
 			gData.sMZIDElevUnload = gData.sMZIDFeeder; gData.sMZIDFeeder.Empty();
 			gData.sZigIDElevUnload[gData.nSlotNoFeeder - 1] = gData.sZigIDFeeder; gData.sZigIDFeeder.Empty();
+			gData.sRecipeElevUnload[gData.nSlotNoFeeder - 1] = gData.sRecipeFeeder; gData.sRecipeFeeder.Empty();
 						
 			gData.nMZNoMZUnload[gData.nSlotNoFeeder-1] = gData.nMZNoFeeder; gData.nMZNoFeeder = 0;
 
@@ -1635,9 +1661,11 @@ BOOL CSequenceMain::FeederRun()
 		{
 			gData.bFeederWorkWait = FALSE;	
 		
-			//Info Processing 		
-			gData.sMZIDFeeder = gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready]-1]; gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready]-1] = "";
-			gData.sZigIDFeeder = gData.sZigIDElevReady[gData.nTNoPick[eMZ::Ready] -1]; gData.sZigIDElevReady[gData.nTNoPick[eMZ::Ready] -1] = "";
+			//Info Processing
+			gData.sLotIDFeeder = gData.sLotIDElevRdy[gData.nTNoPick[eMZ::Ready]-1]; gData.sLotIDElevRdy[gData.nTNoPick[eMZ::Ready]-1].Empty();
+			gData.sMZIDFeeder = gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready]-1]; gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready]-1].Empty();
+			gData.sZigIDFeeder = gData.sZigIDElevReady[gData.nTNoPick[eMZ::Ready] -1]; gData.sZigIDElevReady[gData.nTNoPick[eMZ::Ready] -1].Empty();
+			gData.sRecipeFeeder = gData.sRecipeElevReady[gData.nTNoPick[eMZ::Ready] -1]; gData.sRecipeElevReady[gData.nTNoPick[eMZ::Ready] -1].Empty();
 			gData.nSlotNoFeeder = gData.nTNoPick[eMZ::Ready]; 
 			
 			gData.nMZNoFeeder = gData.nMZNoMZRdy[gData.nTNoPick[eMZ::Ready] -1]; gData.nMZNoMZRdy[gData.nTNoPick[eMZ::Ready] -1] = 0; 
@@ -1748,11 +1776,15 @@ BOOL CSequenceMain::FeederRun()
 		if(g_objCommon.Get_RailAlignOut())
 		{	
 			//Info Processing 
+			gData.sLotIDRail = gData.sLotIDFeeder; gData.sLotIDFeeder.Empty();
 			gData.sMZIDRail = gData.sMZIDFeeder; gData.sMZIDFeeder.Empty();
 			gData.sZigIDRail = gData.sZigIDFeeder; gData.sZigIDFeeder.Empty();
+			gData.sRecipeRail = gData.sRecipeFeeder; gData.sRecipeFeeder.Empty();
 			gData.nSlotNoRail = gData.nSlotNoFeeder; gData.nSlotNoFeeder = 0;
 
 			gData.nMZNoRail = gData.nMZNoFeeder; gData.nMZNoFeeder = 0;
+
+			g_objMesAgent.Set_TrayStartedReport(gMes.sHostLotID[eMZ::Ready], gMes.sHostTrayID, gMes.sHostRecipe[eMZ::Ready]);
 
 			memcpy( gData.InfoRail, gData.InfoFeeder,  sizeof(int)*ZIG_X*ZIG_Y);
 			memset( gData.InfoFeeder, 0x00, sizeof(int)*ZIG_X*ZIG_Y);	
@@ -1764,11 +1796,6 @@ BOOL CSequenceMain::FeederRun()
 			m_strLog.Format("Zig Picker load Start "); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}
 		break;
-
-
-
-
-
 	}
 	
 	// 3. (Error : 3700)
@@ -1831,8 +1858,10 @@ BOOL CSequenceMain::ZigPickerRun()
 		{
 			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TrayPickGrip])) break;
 			//Info Processing
+			gData.sLotIDTrayPick = gData.sLotIDRail; gData.sLotIDRail.Empty();
 			gData.sMZIDTrayPick = gData.sMZIDRail; gData.sMZIDRail = "";
 			gData.sZigIDTrayPick =  gData.sZigIDRail; gData.sZigIDRail = "";
+			gData.sRecipeTrayPick =  gData.sRecipeRail; gData.sRecipeRail = "";
 			gData.nSlotNoTrayPick = gData.nSlotNoRail; gData.nSlotNoRail = 0;
 
 			gData.nMZNoTrayPicker = gData.nMZNoRail; gData.nMZNoRail = 0;
@@ -1896,8 +1925,10 @@ BOOL CSequenceMain::ZigPickerRun()
 		{
 			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TrayPickUnGrip])) break;
 			//Info Processing 
+			gData.sLotIDMainIndex[eMainIndex::Load] = gData.sLotIDTrayPick; gData.sLotIDTrayPick.Empty();
 			gData.sMZIDMainIdex[eMainIndex::Load] = gData.sMZIDTrayPick; gData.sMZIDTrayPick = "";
 			gData.sZigIDMainIndex[eMainIndex::Load] =  gData.sZigIDTrayPick; gData.sZigIDTrayPick = "";
+			gData.sRecipeMainIndex[eMainIndex::Load] =  gData.sRecipeTrayPick; gData.sRecipeTrayPick = "";
 			gData.nSlotNoMainIndex[eMainIndex::Load] = gData.nSlotNoTrayPick; gData.nSlotNoTrayPick = 0;
 
 			gData.nMZNoMainIndex[eMainIndex::Load] = gData.nMZNoTrayPicker; gData.nMZNoTrayPicker = 0;
@@ -1962,8 +1993,10 @@ BOOL CSequenceMain::ZigPickerRun()
 		{
 			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TrayPickGrip])) break;
 			//Info Processing
+			gData.sLotIDTrayPick = gData.sLotIDMainIndex[eMainIndex::Unload]; gData.sLotIDMainIndex[eMainIndex::Unload].Empty();
 			gData.sMZIDTrayPick = gData.sMZIDMainIdex[eMainIndex::Unload]; gData.sMZIDMainIdex[eMainIndex::Unload] = "";
 			gData.sZigIDTrayPick = gData.sZigIDMainIndex[eMainIndex::Unload]; gData.sZigIDMainIndex[eMainIndex::Unload] = "";
+			gData.sRecipeTrayPick = gData.sRecipeMainIndex[eMainIndex::Unload]; gData.sRecipeMainIndex[eMainIndex::Unload] = "";
 			gData.nSlotNoTrayPick = gData.nSlotNoMainIndex[eMainIndex::Unload]; gData.nSlotNoMainIndex[eMainIndex::Unload] = 0;
 
 			gData.nMZNoTrayPicker = gData.nMZNoMainIndex[eMainIndex::Unload]; gData.nMZNoMainIndex[eMainIndex::Unload] = 0;
@@ -2021,8 +2054,10 @@ BOOL CSequenceMain::ZigPickerRun()
 		{
 			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TrayPickUnGrip])) break;
 			//Info Processing 
+			gData.sLotIDRail = gData.sLotIDTrayPick; gData.sLotIDTrayPick.Empty();
 			gData.sMZIDRail = gData.sMZIDTrayPick; gData.sMZIDTrayPick.Empty();
 			gData.sZigIDRail = gData.sZigIDTrayPick; gData.sZigIDTrayPick.Empty();
+			gData.sRecipeRail = gData.sRecipeTrayPick; gData.sRecipeTrayPick.Empty();
 			gData.nSlotNoRail = gData.nSlotNoTrayPick; gData.nSlotNoTrayPick = 0;
 
 			gData.nMZNoRail = gData.nMZNoTrayPicker; gData.nMZNoTrayPicker = 0;
@@ -2624,6 +2659,7 @@ BOOL CSequenceMain::MarkUnitRun()
 				break;
 			}
 			if(bInspectFail) break; //Not Complete
+			//g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gMes)
 			Write_LotJudge(gData.nMZNoMainIndex[eMainIndex::Mark], gData.nSlotNoMainIndex[eMainIndex::Mark],nLensNo, nTempInfo);
 			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 		}
@@ -3148,14 +3184,15 @@ BOOL CSequenceMain::Check_FeederEmpty()
 
 void CSequenceMain::Set_IndexEnd()
 {
-	gData.nSlotNoMainIndex[eMainIndex::Unload] = gData.nSlotNoMainIndex[eMainIndex::Mark];
-	gData.nSlotNoMainIndex[eMainIndex::Mark] = gData.nSlotNoMainIndex[eMainIndex::Btm];
-	gData.nSlotNoMainIndex[eMainIndex::Btm] = gData.nSlotNoMainIndex[eMainIndex::None];
-	gData.nSlotNoMainIndex[eMainIndex::None] = gData.nSlotNoMainIndex[eMainIndex::Top];
-	gData.nSlotNoMainIndex[eMainIndex::Top] = gData.nSlotNoMainIndex[eMainIndex::Clean];
-	gData.nSlotNoMainIndex[eMainIndex::Clean] = gData.nSlotNoMainIndex[eMainIndex::Load];
-	gData.nSlotNoMainIndex[eMainIndex::Load] = 0;
 	
+	gData.sLotIDMainIndex[eMainIndex::Unload] = gData.sLotIDMainIndex[eMainIndex::Mark];
+	gData.sLotIDMainIndex[eMainIndex::Mark] = gData.sLotIDMainIndex[eMainIndex::Btm];
+	gData.sLotIDMainIndex[eMainIndex::Btm] = gData.sLotIDMainIndex[eMainIndex::None];
+	gData.sLotIDMainIndex[eMainIndex::None] = gData.sLotIDMainIndex[eMainIndex::Top];
+	gData.sLotIDMainIndex[eMainIndex::Top] = gData.sLotIDMainIndex[eMainIndex::Clean];
+	gData.sLotIDMainIndex[eMainIndex::Clean] = gData.sLotIDMainIndex[eMainIndex::Load];
+	gData.sLotIDMainIndex[eMainIndex::Load] = "";
+
 	gData.sMZIDMainIdex[eMainIndex::Unload] = gData.sMZIDMainIdex[eMainIndex::Mark];
 	gData.sMZIDMainIdex[eMainIndex::Mark] = gData.sMZIDMainIdex[eMainIndex::Btm];
 	gData.sMZIDMainIdex[eMainIndex::Btm] = gData.sMZIDMainIdex[eMainIndex::None];
@@ -3163,14 +3200,6 @@ void CSequenceMain::Set_IndexEnd()
 	gData.sMZIDMainIdex[eMainIndex::Top] = gData.sMZIDMainIdex[eMainIndex::Clean];
 	gData.sMZIDMainIdex[eMainIndex::Clean] = gData.sMZIDMainIdex[eMainIndex::Load];
 	gData.sMZIDMainIdex[eMainIndex::Load] = "";
-
-	gData.sZigIDMainIndex[eMainIndex::Unload] = gData.sZigIDMainIndex[eMainIndex::Mark];
-	gData.sZigIDMainIndex[eMainIndex::Mark] = gData.sZigIDMainIndex[eMainIndex::Btm];
-	gData.sZigIDMainIndex[eMainIndex::Btm] = gData.sZigIDMainIndex[eMainIndex::None];
-	gData.sZigIDMainIndex[eMainIndex::None] = gData.sZigIDMainIndex[eMainIndex::Top];
-	gData.sZigIDMainIndex[eMainIndex::Top] = gData.sZigIDMainIndex[eMainIndex::Clean];
-	gData.sZigIDMainIndex[eMainIndex::Clean] = gData.sZigIDMainIndex[eMainIndex::Load];
-	gData.sZigIDMainIndex[eMainIndex::Load] = "";
 
 	gData.nMZNoMainIndex[eMainIndex::Unload] = gData.nMZNoMainIndex[eMainIndex::Mark]; 
 	gData.nMZNoMainIndex[eMainIndex::Mark] = gData.nMZNoMainIndex[eMainIndex::Btm]; 
@@ -3180,7 +3209,30 @@ void CSequenceMain::Set_IndexEnd()
 	gData.nMZNoMainIndex[eMainIndex::Clean] = gData.nMZNoMainIndex[eMainIndex::Load];
 	gData.nMZNoMainIndex[eMainIndex::Load] = 0;
 
+	gData.sZigIDMainIndex[eMainIndex::Unload] = gData.sZigIDMainIndex[eMainIndex::Mark];
+	gData.sZigIDMainIndex[eMainIndex::Mark] = gData.sZigIDMainIndex[eMainIndex::Btm];
+	gData.sZigIDMainIndex[eMainIndex::Btm] = gData.sZigIDMainIndex[eMainIndex::None];
+	gData.sZigIDMainIndex[eMainIndex::None] = gData.sZigIDMainIndex[eMainIndex::Top];
+	gData.sZigIDMainIndex[eMainIndex::Top] = gData.sZigIDMainIndex[eMainIndex::Clean];
+	gData.sZigIDMainIndex[eMainIndex::Clean] = gData.sZigIDMainIndex[eMainIndex::Load];
+	gData.sZigIDMainIndex[eMainIndex::Load] = "";
 
+	gData.sRecipeMainIndex[eMainIndex::Unload] = gData.sRecipeMainIndex[eMainIndex::Mark];
+	gData.sRecipeMainIndex[eMainIndex::Mark] = gData.sRecipeMainIndex[eMainIndex::Btm];
+	gData.sRecipeMainIndex[eMainIndex::Btm] = gData.sRecipeMainIndex[eMainIndex::None];
+	gData.sRecipeMainIndex[eMainIndex::None] = gData.sRecipeMainIndex[eMainIndex::Top];
+	gData.sRecipeMainIndex[eMainIndex::Top] = gData.sRecipeMainIndex[eMainIndex::Clean];
+	gData.sRecipeMainIndex[eMainIndex::Clean] = gData.sRecipeMainIndex[eMainIndex::Load];
+	gData.sRecipeMainIndex[eMainIndex::Load] = "";
+	
+	gData.nSlotNoMainIndex[eMainIndex::Unload] = gData.nSlotNoMainIndex[eMainIndex::Mark];
+	gData.nSlotNoMainIndex[eMainIndex::Mark] = gData.nSlotNoMainIndex[eMainIndex::Btm];
+	gData.nSlotNoMainIndex[eMainIndex::Btm] = gData.nSlotNoMainIndex[eMainIndex::None];
+	gData.nSlotNoMainIndex[eMainIndex::None] = gData.nSlotNoMainIndex[eMainIndex::Top];
+	gData.nSlotNoMainIndex[eMainIndex::Top] = gData.nSlotNoMainIndex[eMainIndex::Clean];
+	gData.nSlotNoMainIndex[eMainIndex::Clean] = gData.nSlotNoMainIndex[eMainIndex::Load];
+	gData.nSlotNoMainIndex[eMainIndex::Load] = 0;
+		
 	memmove(gData.InfoMainIndex[eMainIndex::Unload], gData.InfoMainIndex[eMainIndex::Mark], sizeof(int)*ZIG_X*ZIG_Y);
 	memmove(gData.InfoMainIndex[eMainIndex::Mark], gData.InfoMainIndex[eMainIndex::Btm], sizeof(int)*ZIG_X*ZIG_Y);
 	memmove(gData.InfoMainIndex[eMainIndex::Btm], gData.InfoMainIndex[eMainIndex::None], sizeof(int)*ZIG_X*ZIG_Y);

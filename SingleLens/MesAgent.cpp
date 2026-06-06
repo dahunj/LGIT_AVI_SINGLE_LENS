@@ -226,8 +226,8 @@ void CMesAgent::Get_ControlState(CString sFlag)
 
 void CMesAgent::Get_LotStart(CString sLotId, CString sMGZId)
 {
-	gMes.sHostLotID = sLotId;
-	gMes.sHostMGZID = sMGZId;
+	gMes.sHostLotID[gMes.nElevPos] = sLotId;
+	gMes.sHostMGZID[gMes.nElevPos] = sMGZId;
 }
 
 void CMesAgent::Get_LotIDFail(CString sLotId, CString sCode, CString sText)
@@ -241,10 +241,11 @@ void CMesAgent::Get_LotIDFail(CString sLotId, CString sCode, CString sText)
 
 void CMesAgent::Get_PPSelect(CString sLotId, CString sRecipe, CString sLensCount)
 {
-	gMes.sHostLotID = sLotId;
-	gMes.sHostRecipe = sRecipe;
-	gMes.nHostCount = atoi(sLensCount);
-	if (gMes.sHostLotID.GetLength() < 5 || gMes.sHostRecipe.GetLength() < 2) 
+	gMes.sHostLotID[gMes.nElevPos] = sLotId;
+	gMes.sHostRecipe[gMes.nElevPos] = sRecipe;
+	gMes.nHostCount[gMes.nElevPos] = atoi(sLensCount);
+
+	if (gMes.sHostLotID[gMes.nElevPos].GetLength() < 5 || gMes.sHostRecipe[gMes.nElevPos].GetLength() < 2) 
 	{
 		g_objCommon.Show_Error(9004); return;
 	}	
@@ -253,7 +254,7 @@ void CMesAgent::Get_PPSelect(CString sLotId, CString sRecipe, CString sLensCount
 
 void CMesAgent::Get_MGZCancel(CString sMGZId, CString sCode, CString sText)
 {
-	gMes.sHostMGZID = sMGZId;
+	gMes.sHostMGZID[gMes.nElevPos] = sMGZId;
 	gMes.sHostCancelCode = sCode;
 	gMes.sHostCancelText = sText;
 	g_objCommon.Show_Error(9030);
@@ -266,13 +267,13 @@ void CMesAgent::Get_MGZ_Confirm(CString sMGZId)
 
 void CMesAgent::Get_PPUpload_Confirm(CString sRecipeID)
 {
-	gMes.sHostRecipe = sRecipeID;
+	gMes.sHostRecipe[gMes.nElevPos] = sRecipeID;
 	gMes.bPPConfirm = TRUE;
 }
 
 void CMesAgent::Get_PPUpload_Fail(CString sRecipeID, CString sFailCode, CString sFailText)
 {
-	gMes.sHostRecipe = sRecipeID;
+	gMes.sHostRecipe[gMes.nElevPos] = sRecipeID;
 	gMes.bPPConfirm = FALSE;
 	gMes.sHostCancelCode = sFailCode;
 	gMes.sHostCancelText = sFailText;
@@ -381,5 +382,21 @@ void CMesAgent::Set_TrayIDReport(int nType, CString sTrayID)
 	CString strSend, strLogID;
 
 	strSend.Format("TRAY,ID,%d,%s", nType, sTrayID);
+	Send_Command(strSend);
+}
+
+void CMesAgent::Set_TrayStartedReport(CString sLotID, CString sTrayID, CString sRecipeID)
+{
+	CString strSend, strLogID;
+
+	strSend.Format("TRAY,START,%s,%s,%s", sLotID, sTrayID,sRecipeID);
+	Send_Command(strSend);
+}
+
+void CMesAgent::Set_ProductCompletedReport(CString sLotID, CString sTrayID, CString sRecipeID, CString sPocketNo, CString sResult, CString sReasonCode)
+{
+	CString strSend, strLogID;
+
+	strSend.Format("PRODUCT,COMPLETED,%s,%s,%s", sLotID, sTrayID,sRecipeID);
 	Send_Command(strSend);
 }

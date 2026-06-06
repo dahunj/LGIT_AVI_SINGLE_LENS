@@ -159,29 +159,46 @@ typedef struct
 	BOOL	ZigMap[3][10];
 	int		LensMap[3][10][ZIG_X][ZIG_Y];	
 		
+	//Coating Zig 10장 
+	CString	sLotIDElevLoad[10];
 	CString	sMZIDElevLoad[10];
 	CString	sZigIDElevLoad[10];
+	CString	sRecipeElevLoad[10];
 
+	CString	sLotIDElevRdy[10];
 	CString	sMZIDElevReady[10];
 	CString	sZigIDElevReady[10];
-
+	CString	sRecipeElevReady[10];
+	
+	CString	sLotIDElevUnload;
 	CString	sMZIDElevUnload;
 	CString	sZigIDElevUnload[10];
-	
+	CString sRecipeElevUnload[10];
+
+
+	CString	sLotIDFeeder;
 	CString	sMZIDFeeder;
 	CString	sZigIDFeeder;
+	CString sRecipeFeeder;
 	int		nSlotNoFeeder;	
 
+	CString sLotIDRail;
 	CString	sMZIDRail;
 	CString	sZigIDRail;
+	CString	sRecipeRail;
 	int		nSlotNoRail;	
 		
+	CString	sLotIDTrayPick;
 	CString	sMZIDTrayPick;
 	CString	sZigIDTrayPick;
+	CString	sRecipeTrayPick;
 	int		nSlotNoTrayPick;
 	
+	//Main Index Pocket 6개 + Unload 1개 
+	CString	sLotIDMainIndex[7];
 	CString	sMZIDMainIdex[7];
 	CString	sZigIDMainIndex[7];
+	CString sRecipeMainIndex[7];
 	int		nSlotNoMainIndex[7];
 
 	BOOL	bDryRunMode;
@@ -312,12 +329,13 @@ typedef struct {
 	DWORD	dwLotStartTime;			// Lot Start time
 
 	// Host 전공정 Data
-	CString		sHostLotID;			//Host 수신 Lot ID
-	CString		sHostRecipe;		//Host 수신 Recipe ID
-	CString		sHostMGZID;			//Host 수신 Load 부 ID
+	int			nElevPos;			
+
+	CString		sHostLotID[2];			//Host 수신 Lot ID
+	CString		sHostRecipe[2];		//Host 수신 Recipe ID
+	CString		sHostMGZID[2];			//Host 수신 Load 부 ID
 	CString		sHostUldMGZID;		//Host 수신 Load 부 ID
-	CString		sHostModel;			//Host 수신 Recipe ID
-	int			nHostCount;			//Host 수신 CM 총갯수
+	int			nHostCount[2];			//Host 수신 CM 총갯수
 	CString		sHostTrayID;
 
 	CString		sHostFailLotId;

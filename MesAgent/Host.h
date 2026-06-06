@@ -91,7 +91,7 @@ public:
 	void Set_S6F11_PPUploadCompleted(CString sLotId, CString sMGZId, CString sRecipeId);
 
 	void Set_S6F11_TrayIDReport(CString sType, CString sTrayID);
-
+	void Set_S6F11_TrayStartedReport(CString sLotID, CString sTrayID, CString sRecipeID);
 
 	//////////
 	void Set_S2F50_PPSelect();
