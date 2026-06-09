@@ -35,9 +35,7 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STC_EQUIP_NAME, m_stcEquipName);
 	DDX_Control(pDX, IDC_STC_EQUIP_MODEL, m_stcEquipModel);
 	DDX_Control(pDX, IDC_CBO_MODEL_CHANGE, m_cboModelChange);
-
-	DDX_Control(pDX, IDC_CBO_LOT_BARCODE_PORT, m_cboLotBarcodePort);
-	
+			
 	DDX_Control(pDX, IDC_STC_MOTION_CHECK, m_stcMotionCheck);
 	DDX_Control(pDX, IDC_LBL_DOOR_LOCK, m_lblDoorLock);	
 	DDX_Control(pDX, IDC_LBL_DOOR_LOCK2, m_lblDoorLock2);
@@ -113,9 +111,6 @@ void CSetupEquipDlg::Initial_Controls()
 	m_stcEquipName.Init_Ctrl("πŸ≈¡", 11, TRUE, RGB(0x00, 0x00, 0x80), RGB(0xE0, 0xFF, 0xE0));
 	m_stcEquipModel.Init_Ctrl("πŸ≈¡", 11, TRUE, RGB(0x00, 0x00, 0x80), RGB(0xE0, 0xFF, 0xE0));
 	m_cboModelChange.Init_Ctrl("πŸ≈¡", 11, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xFF, 0xE0, 0x00));
-	
-	for (int i = 0; i < 4; i++) { strText.Format("COM%d", i + 1); m_cboLotBarcodePort.AddString(strText); }
-	m_cboLotBarcodePort.Init_Ctrl("πŸ≈¡", 12, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xF0, 0xE0, 0x00));
 	
 	m_stcMotionCheck.Init_Ctrl("πŸ≈¡", 11, TRUE, RGB(0x00, 0x00, 0x80), RGB(0xF0, 0xE0, 0x00));
 	m_lblDoorLock.Init_Ctrl("πŸ≈¡", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60));
@@ -397,7 +392,6 @@ void CSetupEquipDlg::Save_EquipData()
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetMainWnd();
 	pMainDlg->Display_EquipName();
 
-	nData = m_cboLotBarcodePort.GetCurSel(); INI.Set_Integer("EQUIPMENT", "LOT_BARCODE", nData + 1);
 	if(m_rdoDoorLock[0].GetCheck())
 	{
 		pEquipData->bUseDoorLock = FALSE;
@@ -443,8 +437,7 @@ void CSetupEquipDlg::Save_EquipData()
 	pEquipData->bUseTopVision = m_chkTopVision.GetCheck();INI.Set_Bool("OPTION", "TOP_VISION", pEquipData->bUseTopVision);	 
 	pEquipData->bUseBtmVision = m_chkBtmVision.GetCheck();INI.Set_Bool("OPTION", "BTM_VISION", pEquipData->bUseBtmVision);
 	pEquipData->bUseMark = m_chkMarkUse.GetCheck(); INI.Set_Bool("OPTION", "MARK_USE", pEquipData->bUseMark);
-
-
+	
 	m_stcDelayAdd[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "FEEDER_CLOSE", nData);
 	m_stcDelayAdd[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "FEEDER_OPEN", nData);
 	m_stcDelayAdd[2].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "TRAY_PICKER_CLOSE", nData);
@@ -492,7 +485,7 @@ void CSetupEquipDlg::Save_ModelEquipData(CString sPath)
 
 	m_stcEquipName.GetWindowText(strData); INI.Set_String("EQUIPMENT", "NAME", strData);
 	m_stcEquipModel.GetWindowText(strData); INI.Set_String("EQUIPMENT", "MODEL", strData);
-	nData = m_cboLotBarcodePort.GetCurSel(); INI.Set_Integer("EQUIPMENT", "LOT_BARCODE", nData + 1);
+
 	INI.Set_Bool("EQUIPMENT", "DOOR_LOCK", m_rdoDoorLock[1].GetCheck());
 	
 	m_stcZigData[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("COAT_ZIG", "ARRAY_X", nData);pEquipData->nZigArrayX = nData;

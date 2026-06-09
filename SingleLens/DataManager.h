@@ -30,6 +30,8 @@ typedef struct tag_EQUIP_DATA {
 	BOOL	bUseDoorLock;
 	
 	BOOL	bUseMES;	
+	BOOL	bUseBarcodeMGZ;
+	BOOL	bUseBarcodeCtZig;
 
 	double	dIndexPitch;
 
@@ -67,6 +69,7 @@ typedef struct tag_EQUIP_DATA {
 	double	dBtmPitchY;
 
 	int		nVisionDir;
+
 
 
 } EQUIP_DATA;

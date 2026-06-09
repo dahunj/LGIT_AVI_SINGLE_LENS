@@ -33,6 +33,8 @@ void CDataManager::Reset_EquipData()
 
 
 	m_EquipData.bUseMES = FALSE;
+	m_EquipData.bUseBarcodeMGZ = FALSE;
+	m_EquipData.bUseBarcodeCtZig = FALSE;
 	
 	m_EquipData.dIndexPitch = 0.0;
 
@@ -107,6 +109,8 @@ BOOL CDataManager::Read_ModelEquipData(CString strPath)
 	gAlm.dMotionChkPos		= INI.Get_Double("EQUIPMENT","MOTION_CHECK", 0.0);
 
 	m_EquipData.bUseMES = INI.Get_Bool("OPTION", "MES_USE", FALSE);
+	m_EquipData.bUseBarcodeMGZ = INI.Get_Bool("OPTION", "BARCODE_MGZ_USE", FALSE);
+	m_EquipData.bUseBarcodeCtZig = INI.Get_Bool("OPTION", "BARCODE_ZIG_USE", FALSE);
 
 
 	for (int i = 0; i < 3; i++) { strKey.Format("%d", i); m_EquipData.nVacOffDelay[i] = INI.Get_Integer("VAC_OFF_DELAY", strKey, 30); }
@@ -152,12 +156,14 @@ BOOL CDataManager::Read_ModelEquipData(CString strPath)
 	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) { strKey.Format("%d%d", i, j); m_EquipData.bTower[i][j] = INI.Get_Bool("TOWER", strKey, FALSE); }
 	for (int i = 0; i < 5; i++) for (int j = 0; j < 6; j++) { strKey.Format("%d%d", i, j); m_EquipData.bBuzzer[i][j] = INI.Get_Bool("BUZZER", strKey, FALSE); }
 
-	CString strIndex;
-	for(int i = 0; i < 6; i++)
-	{
-		strIndex.Format("%d", i);
-		m_EquipData.nDelayAdd[i] = INI.Get_Integer("DELAY_ADD", strIndex, 0);
-	}
+
+	m_EquipData.nDelayAdd[0] = INI.Get_Integer("DELAY_ADD", "FEEDER_CLOSE", 100);
+	m_EquipData.nDelayAdd[1] = INI.Get_Integer("DELAY_ADD", "FEEDER_OPEN", 100);
+	m_EquipData.nDelayAdd[2] = INI.Get_Integer("DELAY_ADD", "TRAY_PICKER_CLOSE", 100);
+	m_EquipData.nDelayAdd[3] = INI.Get_Integer("DELAY_ADD", "TRAY_PICKER_OPEN", 100);
+	m_EquipData.nDelayAdd[4] = INI.Get_Integer("DELAY_ADD", "INDEX_ALIGN_IN", 100);
+	m_EquipData.nDelayAdd[5] = INI.Get_Integer("DELAY_ADD", "INDEX_ALIGN_OUT", 100);
+	
 
 	m_EquipData.sPasswordOp = INI.Get_String("HIDDEN", "PASSWORD_OP", "");
 	m_EquipData.sPasswordEngr = INI.Get_String("HIDDEN", "PASSWORD_ENGR", "");

@@ -373,7 +373,7 @@ void CMesAgent::Set_LotStartedReport(CString sLotId, CString sMGZId, CString sRe
 {
 	CString strSend, strLogID;
 	
-	strSend.Format("LOT,START,%s,%s,%d,%s,%s", strLogID, sMGZId, sRecipe);
+	strSend.Format("LOT,START,%s,%s,%s", strLogID, sMGZId, sRecipe);
 	Send_Command(strSend);
 }
 

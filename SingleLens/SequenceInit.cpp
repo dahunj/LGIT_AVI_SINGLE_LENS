@@ -184,6 +184,10 @@ BOOL CSequenceInit::Initial_MainInit()
 	case 2:		
 		if (!m_pDX00->iElvMZExist1 && !m_pDX00->iElvMZExist2) 
 		{
+			g_objCommon.Set_ElevLift1Out();Sleep(5);
+			g_objCommon.Set_ElevLift2Out();Sleep(5);
+			g_objCommon.Set_ElevLift1Down();Sleep(5);
+			g_objCommon.Set_ElevLift2Down();Sleep(5);
 			m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
 		}
 		break;

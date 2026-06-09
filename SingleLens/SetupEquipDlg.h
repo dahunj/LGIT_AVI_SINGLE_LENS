@@ -20,9 +20,7 @@ public:
 	CStaticCS	m_stcEquipName;
 	CStaticCS	m_stcEquipModel;
 	CComboCS    m_cboModelChange;
-	
-	CComboCS	m_cboLotBarcodePort;
-
+		
 	CStaticCS	m_stcMotionCheck;
 	CLabelCS	m_lblDoorLock;
 	CRadioCS	m_rdoDoorLock[2];
