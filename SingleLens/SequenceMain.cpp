@@ -298,6 +298,24 @@ void CSequenceMain::Job_LotEnd(int nMZNo)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+UINT CSequenceMain::Thread_UnloadCV(LPVOID lpVoid)
+{
+	g_objCommon.Set_UnloadCVRunCW();
+
+	DWORD dwTick = GetTickCount();
+	while(TRUE)
+	{
+		theApp.DoEvents();
+		if(GetTickCount() - dwTick > 5000)
+		{
+			g_objCommon.Set_UnloadCVStop();
+			break;
+		}
+	}
+	g_objSequenceMain.m_pThreadUnloadCV = NULL;
+	return 0;
+}
+
 
 
 UINT CSequenceMain::Thread_Beep(LPVOID lpVoid)
@@ -331,6 +349,8 @@ BOOL CSequenceMain::LotEnd_Run()
 	
 	Set_ClearRunData(FALSE);
 	Reset_MainRunCase();
+
+	m_pThreadUnloadCV = AfxBeginThread(Thread_UnloadCV, NULL);
 
 	g_objMesAgent.Set_EquipState(eEquipState::IDLE);	
 
@@ -1442,7 +1462,7 @@ BOOL CSequenceMain::FeederRun()
 			memcpy( gData.InfoRail, gData.InfoFeeder,  sizeof(int)*ZIG_X*ZIG_Y);
 			memset( gData.InfoFeeder, 0x00, sizeof(int)*ZIG_X*ZIG_Y);	
 			
-			g_objMesAgent.Set_TrayStartedReport(gMes.sHostLotID[eMZ::Load], gMes.sHostTrayID, gMes.sHostRecipe[eMZ::Load]);
+			if(m_pEquipData->bUseMES) g_objMesAgent.Set_TrayStartedReport(gMes.sHostLotID[eMZ::Load], gMes.sHostTrayID, gMes.sHostRecipe[eMZ::Load]);
 
 			gData.nTNoPick[eMZ::Load]++;
 			if(gData.nTNoPick[eMZ::Load] > 10) gData.nTNoPick[eMZ::Load] = 1;
@@ -1784,7 +1804,7 @@ BOOL CSequenceMain::FeederRun()
 
 			gData.nMZNoRail = gData.nMZNoFeeder; gData.nMZNoFeeder = 0;
 
-			g_objMesAgent.Set_TrayStartedReport(gMes.sHostLotID[eMZ::Ready], gMes.sHostTrayID, gMes.sHostRecipe[eMZ::Ready]);
+			if(m_pEquipData->bUseMES) g_objMesAgent.Set_TrayStartedReport(gMes.sHostLotID[eMZ::Ready], gMes.sHostTrayID, gMes.sHostRecipe[eMZ::Ready]);
 
 			memcpy( gData.InfoRail, gData.InfoFeeder,  sizeof(int)*ZIG_X*ZIG_Y);
 			memset( gData.InfoFeeder, 0x00, sizeof(int)*ZIG_X*ZIG_Y);	
@@ -2503,8 +2523,7 @@ BOOL CSequenceMain::BtmInspectorRun()
 
 			//gData.InfoMainIndex[eMainIndex::Btm][nBtmXPos-1][nBtmYPos-1] = eLensState::BtmDone;	//Scan Done
 			m_nBtmInspectCase = 10;//eBtmBr::VisionWait; 
-			m_nBtmInspectLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);		
-
+			m_nBtmInspectLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		}
 		break;
 	case 21:	// Top1 Z Focus Move
@@ -2659,7 +2678,7 @@ BOOL CSequenceMain::MarkUnitRun()
 				break;
 			}
 			if(bInspectFail) break; //Not Complete
-			g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], nLensNo, 
+			if(m_pEquipData->bUseMES) g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], nLensNo, 
 				gData.sJudgeCode[gData.nMZNoMainIndex[eMainIndex::Mark]][gData.nSlotNoMainIndex[eMainIndex::Mark]][nLensNo][eVision::MARKING], gData.sNGCode[gData.nMZNoMainIndex[eMainIndex::Mark]][gData.nSlotNoMainIndex[eMainIndex::Mark]][nLensNo][eVision::MARKING] );
 			Write_LotJudge(gData.nMZNoMainIndex[eMainIndex::Mark], gData.nSlotNoMainIndex[eMainIndex::Mark],nLensNo, nTempInfo);
 			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);

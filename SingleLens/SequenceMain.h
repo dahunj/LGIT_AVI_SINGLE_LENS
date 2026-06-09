@@ -39,6 +39,9 @@ protected:
 	CWinThread	*m_pThreadBeep;
 	static UINT	Thread_Beep(LPVOID lpVoid);
 
+	CWinThread	*m_pThreadUnloadCV;
+	static UINT	Thread_UnloadCV(LPVOID lpVoid);
+
 	BOOL		m_bThreadMainRun;
 	CWinThread	*m_pThreadMainRun;
 	static UINT	Thread_MainRun(LPVOID lpVoid);
