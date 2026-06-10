@@ -61,6 +61,10 @@ public:
 	CCheckCS	m_chkBtmVision;
 	CCheckCS	m_chkMarkUse;
 
+	CCheckCS	m_chkUseMES;
+	CCheckCS	m_chkUseBarcodeMGZ;
+	CCheckCS	m_chkUseBarcodeCtZig;
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 

@@ -75,6 +75,10 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHK_TOP_VISION, m_chkTopVision);
 	DDX_Control(pDX, IDC_CHK_BTM_VISION, m_chkBtmVision);
 	DDX_Control(pDX, IDC_CHK_MARK_USE, m_chkMarkUse);
+
+	DDX_Control(pDX, IDC_CHK_USE_MES, m_chkUseMES);
+	DDX_Control(pDX, IDC_CHK_USE_BARCODE_MGZ, m_chkUseBarcodeMGZ);
+	DDX_Control(pDX, IDC_CHK_USE_BARCODE_CTZIG, m_chkUseBarcodeCtZig);
 }
 
 BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
@@ -146,11 +150,14 @@ void CSetupEquipDlg::Initial_Controls()
 
 	for (int i = 0; i < 8; i++) m_stcTriggerTop[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xFF, 0xE0));
 	for (int i = 0; i < 8; i++) m_stcTriggerBtm[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xFF, 0xE0));
-
-
+	
 	m_chkTopVision.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
 	m_chkBtmVision.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
 	m_chkMarkUse.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
+
+	m_chkUseMES.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
+	m_chkUseBarcodeMGZ.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
+	m_chkUseBarcodeCtZig.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
 }
 
 
@@ -363,6 +370,12 @@ void CSetupEquipDlg::Display_EquipData()
 	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) m_chkTower[i][j].SetCheck(pEquipData->bTower[i][j]);
 	for (int i = 0; i < 5; i++) for (int j = 0; j < 6; j++) m_chkBuzzer[i][j].SetCheck(pEquipData->bBuzzer[i][j]);
 		
+	
+	m_chkUseMES.SetCheck(pEquipData->bUseMES);
+	m_chkUseBarcodeMGZ.SetCheck(pEquipData->bUseBarcodeMGZ);
+	m_chkUseBarcodeCtZig.SetCheck(pEquipData->bUseBarcodeCtZig);
+		
+
 	for (int i = 0; i < 6; i++) 
 	{
 		strData.Format("%d", pEquipData->nDelayAdd[i]);
@@ -437,6 +450,10 @@ void CSetupEquipDlg::Save_EquipData()
 	pEquipData->bUseTopVision = m_chkTopVision.GetCheck();INI.Set_Bool("OPTION", "TOP_VISION", pEquipData->bUseTopVision);	 
 	pEquipData->bUseBtmVision = m_chkBtmVision.GetCheck();INI.Set_Bool("OPTION", "BTM_VISION", pEquipData->bUseBtmVision);
 	pEquipData->bUseMark = m_chkMarkUse.GetCheck(); INI.Set_Bool("OPTION", "MARK_USE", pEquipData->bUseMark);
+
+	pEquipData->bUseMES = m_chkUseMES.GetCheck();INI.Set_Bool("OPTION", "USE_MES", pEquipData->bUseMES);	 
+	pEquipData->bUseBarcodeMGZ = m_chkUseBarcodeMGZ.GetCheck();INI.Set_Bool("OPTION", "BARCODE_MGZ_USE", pEquipData->bUseBarcodeMGZ);
+	pEquipData->bUseBarcodeCtZig = m_chkUseBarcodeCtZig.GetCheck(); INI.Set_Bool("OPTION", "BARCODE_ZIG_USE", pEquipData->bUseBarcodeCtZig);
 	
 	m_stcDelayAdd[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "FEEDER_CLOSE", nData);
 	m_stcDelayAdd[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "FEEDER_OPEN", nData);
@@ -517,6 +534,10 @@ void CSetupEquipDlg::Save_ModelEquipData(CString sPath)
 	pEquipData->bUseTopVision = m_chkTopVision.GetCheck();INI.Set_Bool("OPTION", "TOP_VISION", pEquipData->bUseTopVision);	 
 	pEquipData->bUseBtmVision = m_chkBtmVision.GetCheck();INI.Set_Bool("OPTION", "BTM_VISION", pEquipData->bUseBtmVision);
 	pEquipData->bUseMark = m_chkMarkUse.GetCheck(); INI.Set_Bool("OPTION", "MARK_USE", pEquipData->bUseMark);
+
+	pEquipData->bUseMES = m_chkUseMES.GetCheck();INI.Set_Bool("OPTION", "USE_MES", pEquipData->bUseMES);	 
+	pEquipData->bUseBarcodeMGZ = m_chkUseBarcodeMGZ.GetCheck();INI.Set_Bool("OPTION", "BARCODE_MGZ_USE", pEquipData->bUseBarcodeMGZ);
+	pEquipData->bUseBarcodeCtZig = m_chkUseBarcodeCtZig.GetCheck(); INI.Set_Bool("OPTION", "BARCODE_ZIG_USE", pEquipData->bUseBarcodeCtZig);
 	
 	m_stcDelayAdd[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "FEEDER_CLOSE", nData);
 	m_stcDelayAdd[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "FEEDER_OPEN", nData);

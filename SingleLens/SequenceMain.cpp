@@ -690,7 +690,7 @@ BOOL CSequenceMain::MZElevRun()
 		}			 
 		break;
 	case 73:		
-		if(gMes.bMGZIDReported || gData.bUseBarcode)
+		if(gMes.bMGZIDReported || m_pEquipData->bUseBarcodeMGZ)
 		{
 			g_objCommon.Set_LoadCVStop(); Sleep(5);
 			g_objCommon.Set_LoadCVRunCCW(); Sleep(5);
@@ -860,7 +860,7 @@ BOOL CSequenceMain::MZElevRun()
 		}			 
 		break;	
 	case 83:
-		if(gMes.bMGZIDReported || gData.bUseBarcode)
+		if(gMes.bMGZIDReported || m_pEquipData->bUseBarcodeMGZ)
 		{
 			g_objCommon.Set_ElevCVStop(); Sleep(5);
 			g_objCommon.Set_LoadCVRunCCW(); Sleep(5);
@@ -879,7 +879,7 @@ BOOL CSequenceMain::MZElevRun()
 		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 		break;
 	case 86:
-		if(gMes.bPPConfirm || gData.bUseBarcode)
+		if(gMes.bPPConfirm || m_pEquipData->bUseBarcodeMGZ)
 		{
 			g_objMesAgent.Set_PPUploadCompletedReport(gMes.sHostLotID[eMZ::Ready], gMes.sMGZID[eMZ::Ready], gMes.sHostRecipe[eMZ::Ready]);
 			m_nMZElevCase = 12; m_nMZElevLoop.Set_LoopTime(10000);
@@ -1435,8 +1435,9 @@ BOOL CSequenceMain::FeederRun()
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
 			m_nFeederCase = 16; m_nFeederLoop.Set_LoopTime(5000);
 		}
-		else
+		else if(m_pEquipData->bUseBarcodeCtZig)
 		{
+			gMes.bTrayIDConfirm = FALSE; //Load : 1
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
 			m_nFeederCase = 16; m_nFeederLoop.Set_LoopTime(5000);
 		}
@@ -1786,7 +1787,7 @@ BOOL CSequenceMain::FeederRun()
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
 			m_nFeederCase = 66; m_nFeederLoop.Set_LoopTime(5000);
 		}
-		else
+		else if(m_pEquipData->bUseBarcodeCtZig)
 		{
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
 			m_nFeederCase = 66; m_nFeederLoop.Set_LoopTime(5000);
