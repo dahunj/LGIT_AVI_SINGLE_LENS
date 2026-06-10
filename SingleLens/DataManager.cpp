@@ -130,6 +130,7 @@ BOOL CDataManager::Read_ModelEquipData(CString strPath)
 	m_EquipData.dZigPitchY = INI.Get_Double("COAT_ZIG", "PITCH_Y", 0.00);
 
 	m_EquipData.dElevPitchZ = INI.Get_Double("ELEVATOR", "PITCH_Z", 0.00);
+	m_EquipData.nCleanRepeat = INI.Get_Integer("CLEAN", "REPEAT", 0);
 	
 	m_EquipData.dTopStartZ	 = INI.Get_Double("TRIGGER",  "TOP_START_Z", 0.00);
 	m_EquipData.nTopCount    = INI.Get_Integer("TRIGGER", "TOP_COUNT",	 0);

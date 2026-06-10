@@ -8,6 +8,8 @@ typedef struct tag_EQUIP_DATA {
 	
 	double	dElevPitchZ;
 	double	dElevPitchZReady;
+
+	int		nCleanRepeat;
 	
 	BOOL	bUseCleaner;
 	BOOL	bUseTopVision;

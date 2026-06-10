@@ -71,6 +71,7 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_STC_TRIGGER_BTM_0 + i, m_stcTriggerBtm[i]);
 
 	DDX_Control(pDX, IDC_STC_ELV_DATA_0, m_stcElvData[0]);
+	DDX_Control(pDX, IDC_STC_CLEANER_DATA_0, m_stcCleanerData);
 	
 	DDX_Control(pDX, IDC_CHK_TOP_VISION, m_chkTopVision);
 	DDX_Control(pDX, IDC_CHK_BTM_VISION, m_chkBtmVision);
@@ -97,6 +98,7 @@ BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
 	ON_STN_CLICKED(IDC_STC_EQUIP_MODEL, &CSetupEquipDlg::OnStnClickedStcEquipModel)
 	ON_CBN_SELCHANGE(IDC_CBO_MODEL_CHANGE, &CSetupEquipDlg::OnCbnSelchangeCboModelChange)
 	ON_CBN_DROPDOWN(IDC_CBO_MODEL_CHANGE, &CSetupEquipDlg::OnCbnDropdownCboModelChange)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_CLEANER_DATA_0, IDC_STC_CLEANER_DATA_0, OnStnClickedStcCleanerData0)	
 END_MESSAGE_MAP()
 
 // CSetupEquipDlg ¸Þ½ÃÁö Ã³¸®±âÀÔ´Ï´Ù.
@@ -150,6 +152,9 @@ void CSetupEquipDlg::Initial_Controls()
 
 	for (int i = 0; i < 8; i++) m_stcTriggerTop[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xFF, 0xE0));
 	for (int i = 0; i < 8; i++) m_stcTriggerBtm[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xFF, 0xE0));
+
+	m_stcElvData[0].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
+	m_stcCleanerData.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
 	
 	m_chkTopVision.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
 	m_chkBtmVision.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
@@ -362,6 +367,7 @@ void CSetupEquipDlg::Display_EquipData()
 	strData.Format("%0.2lf",	pEquipData->dBtmPitchY);	m_stcTriggerBtm[7].SetWindowText(strData);
 	
 	strData.Format("%0.2lf", pEquipData->dElevPitchZ); m_stcElvData[0].SetWindowText(strData);
+	strData.Format("%02d", pEquipData->nCleanRepeat); m_stcCleanerData.SetWindowText(strData);
 	
 	m_chkTopVision.SetCheck(pEquipData->bUseTopVision);
 	m_chkBtmVision.SetCheck(pEquipData->bUseBtmVision);
@@ -375,7 +381,7 @@ void CSetupEquipDlg::Display_EquipData()
 	m_chkUseBarcodeMGZ.SetCheck(pEquipData->bUseBarcodeMGZ);
 	m_chkUseBarcodeCtZig.SetCheck(pEquipData->bUseBarcodeCtZig);
 		
-
+	
 	for (int i = 0; i < 6; i++) 
 	{
 		strData.Format("%d", pEquipData->nDelayAdd[i]);
@@ -385,7 +391,8 @@ void CSetupEquipDlg::Display_EquipData()
 	m_chkResultTestUse.SetCheck(pEquipData->bResultTestUse);
 	strData.Format("%d", pEquipData->nResultTestNg); m_edtResultTest.SetWindowText(strData);
 
-
+	m_stcPasswordOp.SetWindowText(pEquipData->sPasswordOp);
+	m_edtPasswordEngr.SetWindowText(pEquipData->sPasswordEngr);
 }
 
 void CSetupEquipDlg::Save_EquipData()
@@ -443,15 +450,16 @@ void CSetupEquipDlg::Save_EquipData()
 	m_stcTriggerBtm[5].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_START_Y",	 dData, "%0.2lf");pEquipData->dBtmStartY = dData;
 	m_stcTriggerBtm[6].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_PITCH_X",  dData, "%0.2lf");pEquipData->dBtmPitchX = dData;
 	m_stcTriggerBtm[7].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_PITCH_Y",	 dData, "%0.2lf");pEquipData->dBtmPitchY = dData;
-
-
+	
 	m_stcElvData[0].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("ELEVATOR", "PITCH_Z", dData, "%0.2lf"); pEquipData->dElevPitchZ = dData;
+	
+	m_stcCleanerData.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("CLEAN", "REPEAT", nData); pEquipData->nCleanRepeat = nData;
 	
 	pEquipData->bUseTopVision = m_chkTopVision.GetCheck();INI.Set_Bool("OPTION", "TOP_VISION", pEquipData->bUseTopVision);	 
 	pEquipData->bUseBtmVision = m_chkBtmVision.GetCheck();INI.Set_Bool("OPTION", "BTM_VISION", pEquipData->bUseBtmVision);
 	pEquipData->bUseMark = m_chkMarkUse.GetCheck(); INI.Set_Bool("OPTION", "MARK_USE", pEquipData->bUseMark);
 
-	pEquipData->bUseMES = m_chkUseMES.GetCheck();INI.Set_Bool("OPTION", "USE_MES", pEquipData->bUseMES);	 
+	pEquipData->bUseMES = m_chkUseMES.GetCheck();INI.Set_Bool("OPTION", "MES_USE", pEquipData->bUseMES);	 
 	pEquipData->bUseBarcodeMGZ = m_chkUseBarcodeMGZ.GetCheck();INI.Set_Bool("OPTION", "BARCODE_MGZ_USE", pEquipData->bUseBarcodeMGZ);
 	pEquipData->bUseBarcodeCtZig = m_chkUseBarcodeCtZig.GetCheck(); INI.Set_Bool("OPTION", "BARCODE_ZIG_USE", pEquipData->bUseBarcodeCtZig);
 	
@@ -527,15 +535,16 @@ void CSetupEquipDlg::Save_ModelEquipData(CString sPath)
 	m_stcTriggerBtm[5].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_START_Y",	 dData, "%0.2lf");pEquipData->dBtmStartY = dData;
 	m_stcTriggerBtm[6].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_PITCH_X",  dData, "%0.2lf");pEquipData->dBtmPitchX = dData;
 	m_stcTriggerBtm[7].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_PITCH_Y",	 dData, "%0.2lf");pEquipData->dBtmPitchY = dData;
-
-
+	
 	m_stcElvData[0].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("ELEVATOR", "PITCH_Z", dData, "%0.2lf"); pEquipData->dElevPitchZ = dData;
+	m_stcCleanerData.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("CLEAN", "REPEAT", nData); pEquipData->nCleanRepeat = nData;
+	
 
 	pEquipData->bUseTopVision = m_chkTopVision.GetCheck();INI.Set_Bool("OPTION", "TOP_VISION", pEquipData->bUseTopVision);	 
 	pEquipData->bUseBtmVision = m_chkBtmVision.GetCheck();INI.Set_Bool("OPTION", "BTM_VISION", pEquipData->bUseBtmVision);
 	pEquipData->bUseMark = m_chkMarkUse.GetCheck(); INI.Set_Bool("OPTION", "MARK_USE", pEquipData->bUseMark);
 
-	pEquipData->bUseMES = m_chkUseMES.GetCheck();INI.Set_Bool("OPTION", "USE_MES", pEquipData->bUseMES);	 
+	pEquipData->bUseMES = m_chkUseMES.GetCheck();INI.Set_Bool("OPTION", "MES_USE", pEquipData->bUseMES);	 
 	pEquipData->bUseBarcodeMGZ = m_chkUseBarcodeMGZ.GetCheck();INI.Set_Bool("OPTION", "BARCODE_MGZ_USE", pEquipData->bUseBarcodeMGZ);
 	pEquipData->bUseBarcodeCtZig = m_chkUseBarcodeCtZig.GetCheck(); INI.Set_Bool("OPTION", "BARCODE_ZIG_USE", pEquipData->bUseBarcodeCtZig);
 	
@@ -725,4 +734,16 @@ void CSetupEquipDlg::OnCbnSelchangeCboModelChange()
 void CSetupEquipDlg::OnCbnDropdownCboModelChange()
 {
 	InitModelComboBox();
+}
+
+
+void CSetupEquipDlg::OnStnClickedStcCleanerData0(UINT nID)
+{
+	int ID = nID - IDC_STC_CLEANER_DATA_0;
+
+	CString strOld, strNew;
+	m_stcCleanerData.GetWindowText(strOld);
+	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
+
+	m_stcCleanerData.SetWindowText(strNew);
 }

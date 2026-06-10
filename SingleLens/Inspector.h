@@ -47,16 +47,14 @@ private:
 	
 	void Get_AMoveRequest(int nVPc, CString sGbn, CString sZ1);
 	void Get_PositionRequest(int nVPc, CString sGbn);
-	void Get_ReloadRequest(int nVPc, CString sPc);
+	void Get_ReloadRequest(int nVPc, CString sLotID, CString sGbn);
 	void Get_TriggerRequest(int nVPc, CString sGbn, CString sMZNo, CString sCtZigID, CString sZigNo, CString sLensNo);
 
 	void Get_ErrorRequest(int nVPc, CString sErrNo, CString sErrMsg);
 
 	void Send_Command(int nVPc, CString sCommand);
 	void Exception_Log(int nVPc, CString sFunc, CString sGbn, int nLotNo, int nTrayNo, int nCmNo, int nCase);	// Recevie Exception Log
-
-
-
+	
 	
 public:
 	double m_dTopZ;
@@ -73,8 +71,6 @@ public:
 	void Set_StatusRequest();
 	void Set_StatusReply(int nStatus);
 	void Set_StatusUpdate(int nStatus);
-
-
 	
 	void Set_LotStart(CString sMZID, int nMZNo, int nTrayCount, int nLensCount, CString sModel);
 	void Set_LotEnd(CString sMZID, int nMZNo);

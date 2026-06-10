@@ -37,7 +37,8 @@ public:
 	CStaticCS	m_stcTriggerTop[8];
 	CStaticCS	m_stcTriggerBtm[8];
 
-	CStaticCS	m_stcElvData[1];	
+	CStaticCS	m_stcElvData[1];
+	CStaticCS	m_stcCleanerData;
 
 	CGroupCS	m_grpTower;
 	CLabelCS	m_lblTower[10];
@@ -73,9 +74,20 @@ protected:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 	afx_msg void OnStnClickedStcEquipName();
-	
 	afx_msg void OnStnClickedStcMotionCheck();
+	afx_msg void OnStnClickedStcDoorlockTime();
+	afx_msg void OnStcZigDataClick(UINT nID);
+	afx_msg void OnStcTriggerTopClick(UINT nID);
+	afx_msg void OnStcTriggerBtmClick(UINT nID);
+	afx_msg void OnStcElvDataClick(UINT nID);
+	afx_msg void OnBnClickedBtnModelAdd();
+	afx_msg void OnStnClickedStcEquipModel();
+	afx_msg void OnCbnSelchangeCboModelChange();
+	afx_msg void OnCbnDropdownCboModelChange();
+	afx_msg void OnStnClickedStcCleanerData0(UINT nID);	
 	afx_msg void OnStcDelayAddClick(UINT nID);
+
+
 	afx_msg void OnStnClickedStcShowHidden();
 	afx_msg void OnStnClickedStcPasswordMt();
 
@@ -91,15 +103,7 @@ public:
 	void Save_ModelEquipData(CString sPath);
 	void Cancel_EquipData();
 
-	afx_msg void OnStnClickedStcDoorlockTime();
-	afx_msg void OnStcZigDataClick(UINT nID);
-	afx_msg void OnStcTriggerTopClick(UINT nID);
-	afx_msg void OnStcTriggerBtmClick(UINT nID);
-	afx_msg void OnStcElvDataClick(UINT nID);
-	afx_msg void OnBnClickedBtnModelAdd();
-	afx_msg void OnStnClickedStcEquipModel();
-	afx_msg void OnCbnSelchangeCboModelChange();
-	afx_msg void OnCbnDropdownCboModelChange();
+	
 };
 
 ///////////////////////////////////////////////////////////////////////////////

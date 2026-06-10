@@ -82,22 +82,27 @@ void CInspector::Receive_Command(int nVPc, CString sCommand)
 	} else if (strCmd == "LOT") {
 		if (strOp == "READY") Get_LotReady(nVPc, strA[0], strA[1]);
 
-	} else if (strCmd == "SCAN") {
+	}
+	else if (strCmd == "SCAN")
+	{
 		if (strOp == "COMPLETE") Get_ScanComplete(nVPc, strA[0], strA[1], strA[2], strA[3], strA[4]);
-
-	} else if (strCmd == "INSPECT") {
+		if (strOp == "RELOAD") Get_ReloadRequest(nVPc, strA[0], strA[1]);
+	}
+	else if (strCmd == "INSPECT") 
+	{
 		if (strOp == "COMPLETE") Get_InspectComplete(nVPc, strA[0], strA[1], strA[2], strA[3], strA[4], strA[5], strA[6]);
 
-	} else if (strCmd == "AMOVE") {
+	}
+	else if (strCmd == "AMOVE")
+	{
 		if (strOp == "REQUEST") Get_AMoveRequest(nVPc, strA[0], strA[1]);
 
-	} else if (strCmd == "POSITION") {
+	} 
+	else if (strCmd == "POSITION")
+	{
 		if (strOp == "REQUEST") Get_PositionRequest(nVPc, strA[0]);
 	
-	} else if (strCmd == "RELOAD") {
-		if (strOp == "REQUEST") Get_ReloadRequest(nVPc, strA[0]);
-
-	} 
+	}
 	else if (strCmd == "ERROR")
 	{
 		if (strOp == "REQUEST") Get_ErrorRequest(nVPc, strA[0], strA[1]);
@@ -306,14 +311,20 @@ void CInspector::Get_TriggerRequest(int nVPc, CString sGbn, CString sMZNo, CStri
 	}
 }
 
-void CInspector::Get_ReloadRequest(int nVPc, CString sPc)
+void CInspector::Get_ReloadRequest(int nVPc, CString sLotID, CString sGbn)
 {
-	// bScanDone[4][5] --> [4]=>0:B1,1:B2,2:T1,3:T2 / [5]=>0:C1,1:C2,2:C3,3:C4,4:C5
-	CString strVPC;
-	strVPC.Format("PC%d", nVPc);
-	if (sPc != strVPC) return;
-		
-	Set_ReloadComplete(1, sPc);
+	if(sGbn == "TC")
+	{
+		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_TOP_INSPECT);
+		if(nCase >= 5 && nCase < 10) g_objSequenceMain.Set_MainRunCase(AUTO_TOP_INSPECT, 3);
+	}
+
+	if(sGbn == "BC")
+	{
+		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_BTM_INSPECT);
+		if(nCase >= 5 && nCase < 10) g_objSequenceMain.Set_MainRunCase(AUTO_BTM_INSPECT, 3);
+	}
+
 }
 
 void CInspector::Get_ErrorRequest(int nVPc, CString sErrNo, CString sErrMsg)

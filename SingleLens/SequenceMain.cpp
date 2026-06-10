@@ -2132,6 +2132,8 @@ BOOL CSequenceMain::ZigPickerRun()
 // 5. (Error : 4300)
 BOOL CSequenceMain::LensCleanerRun()
 {
+	static int nRepeat = 0;
+
 	if(gData.bCycleStop)
 	{
 		gData.bIndexDone[eMainIndex::Clean] = TRUE;
@@ -2141,6 +2143,7 @@ BOOL CSequenceMain::LensCleanerRun()
 	switch(m_nLensCleanerCase)
 	{
 	case 0:
+		nRepeat = 0;
 		m_nLensCleanerLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 		return TRUE;
 	case 1:
@@ -2186,11 +2189,24 @@ BOOL CSequenceMain::LensCleanerRun()
 		}
 	case 6:
 		if(g_objCommon.Get_CleanerBackwardDone())
-		{
-			gData.bIndexDone[eMainIndex::Clean] = TRUE;
-			m_nLensCleanerCase = 0; m_nLensCleanerLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);	
+		{			
+			m_nLensCleanerCase++; m_nLensCleanerLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);	
 			m_strLog.Format("Lens Cleanner Done"); m_nLensCleanerLoop.Takt_Save(5, m_nLensCleanerCase, m_strLog);
 		}
+		break;
+	case 7:
+		if(nRepeat >= m_pEquipData->nCleanRepeat)
+		{
+			nRepeat = 0;
+			gData.bIndexDone[eMainIndex::Clean] = TRUE;
+			m_nLensCleanerCase = 0; m_nLensCleanerLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);	
+		}
+		else
+		{
+			nRepeat++;
+			m_nLensCleanerCase = 2; m_nLensCleanerLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
+		}
+
 		break;
 	}
 
@@ -2245,19 +2261,7 @@ BOOL CSequenceMain::TopInspectorRun()
 			nTopXPos = 1; nTopYPos = 1;
 			m_nTopInspectCase++; m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 			m_strLog.Format("Top Vision Use"); m_nTopInspectLoop.Takt_Save(6, m_nTopInspectCase, m_strLog);
-
-			/*if(m_pEquipData->bUseTopVision)
-			{
-				Init_TopZig();
-				nTopXPos = 1; nTopYPos = 1;
-				m_nTopInspectCase++; m_nTopInspectLoop.Set_LoopTime(gData.nLTime[LoopTime::Motion]);
-				m_strLog.Format("Top Vision Use"); m_nTopInspectLoop.Takt_Save(6, m_nTopInspectCase, m_strLog);
-			}
-			else
-			{
-				m_nTopInspectCase = 15; m_nTopInspectLoop.Set_LoopTime(gData.nLTime[LoopTime::Motion]);
-				m_strLog.Format("Top Vision Skip"); m_nTopInspectLoop.Takt_Save(6, m_nTopInspectCase, m_strLog);
-			}*/
+						
 		}
 		break;
 	case 3:
@@ -2350,10 +2354,11 @@ BOOL CSequenceMain::TopInspectorRun()
 			//gData.InfoMainIndex[eMainIndex::Top][nTopXPos-1][nTopYPos-1] = eLensState::TopDone;	//Scan Done
 			//m_nTopInspectCase = eTopBr::VisionWait;//
 			m_nTopInspectCase = 10;
-			m_nTopInspectLoop.Set_LoopTime(900000000);		
+			m_nTopInspectLoop.Set_LoopTime(30000);		
 			
 		}
 		break;
+
 
 	case 21:	// Top1 Z Focus Move
 		if (g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Z)) 
