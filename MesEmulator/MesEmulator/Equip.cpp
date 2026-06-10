@@ -288,7 +288,7 @@ void CEquip::Set_S2F49_MGZ_CANCEL()
 void CEquip::Set_S2F49_PP_SELECT(CString sMGZID, CString sOperID)
 {
 	gData.sEquipId = "AVI-TEST";
-	CString strSend = "<?xml version=\"2.0\" encoding=\"utf-16\"?>" + CRLF;
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
 	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F49\" NAME=\"Enhanced Remote Command\">" + CRLF;
 	strSend += "  <ELEMENT>" + CRLF;
@@ -338,7 +338,7 @@ void CEquip::Set_S2F49_PP_SELECT(CString sMGZID, CString sOperID)
 void CEquip::Set_S2F49_MGZ_CONFIRM()
 {
 	gData.sEquipId = "AVI-TEST";
-	CString strSend = "<?xml version=\"2.0\" encoding=\"utf-16\"?>" + CRLF;
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
 	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F49\" NAME=\"Enhanced Remote Command\">" + CRLF;
 	strSend += "  <ELEMENT>" + CRLF;
@@ -376,7 +376,7 @@ void CEquip::Set_S2F49_MGZ_CONFIRM()
 void CEquip::Set_S2F49_PP_UPLOAD_CONFIRM()
 {
 	gData.sEquipId = "AVI-TEST";
-	CString strSend = "<?xml version=\"2.0\" encoding=\"utf-16\"?>" + CRLF;
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
 	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F49\" NAME=\"Enhanced Remote Command\">" + CRLF;
 	strSend += "  <ELEMENT>" + CRLF;
@@ -384,7 +384,7 @@ void CEquip::Set_S2F49_PP_UPLOAD_CONFIRM()
 	strSend += "  </ELEMENT>" + CRLF;
 	strSend += "  <ITEM>" + CRLF;
 	strSend += "    <RCMDCP>" + CRLF;
-	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"PP_UPLOAD_COMFIRM\" />" + CRLF;
+	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"PP_UPLOAD_CONFIRM\" />" + CRLF;
 	strSend += "      <CPLIST COUNT=\"5\">" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\" />" + CRLF;
@@ -468,7 +468,7 @@ void CEquip::Set_S2F49_PP_UPLOAD_FAIL()
 void CEquip::Set_S2F49_LOT_START()
 {
 	gData.sEquipId = "AVI-TEST";
-	CString strSend = "<?xml version=\"2.0\" encoding=\"utf-16\"?>" + CRLF;
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
 	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F49\" NAME=\"Enhanced Remote Command\">" + CRLF;
 	strSend += "  <ELEMENT>" + CRLF;
@@ -509,7 +509,7 @@ void CEquip::Set_S2F49_LOT_START()
 void CEquip::Set_S2F49_TRAY_ID_CONFIRM()
 {
 	gData.sEquipId = "AVI-TEST";
-	CString strSend = "<?xml version=\"2.0\" encoding=\"utf-16\"?>" + CRLF;
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
 	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F49\" NAME=\"Enhanced Remote Command\">" + CRLF;
 	strSend += "  <ELEMENT>" + CRLF;
@@ -526,29 +526,30 @@ void CEquip::Set_S2F49_TRAY_ID_CONFIRM()
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TRAYID\" />" + CRLF;
 	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"" + gData.sHostTrayID +"\" />" + CRLF;
-	strSend += "        </CP>" + CRLF;      	  
+	strSend += "        </CP>" + CRLF;  
+	strSend += "      </CPLIST>" + CRLF; 
 	strSend += "      <MAPINFO>" + CRLF;
 	strSend += "        <PRODUCTLIST COUNT=\"5\">" +CRLF;
-	strSend += "			<PRODUCTINFO>" +CRLF;
-	strSend += "				<POCKETNO VALUE=\"1\" />" +CRLF;
-	strSend += "				<RESULT VALUE=\"OK\" />" +CRLF;
-	strSend += "			</PRODUCTINFO>" +CRLF;
-	strSend += "			<PRODUCTINFO>" +CRLF;
-	strSend += "				<POCKETNO VALUE=\"2\" />" +CRLF;
-	strSend += "				<RESULT VALUE=\"OK\" />" +CRLF;
-	strSend += "			</PRODUCTINFO>" +CRLF;
-	strSend += "			<PRODUCTINFO>" +CRLF;
-	strSend += "				<POCKETNO VALUE=\"3\" />" +CRLF;
-	strSend += "				<RESULT VALUE=\"OK\" />" +CRLF;
-	strSend += "			</PRODUCTINFO>" +CRLF;
-	strSend += "			<PRODUCTINFO>" +CRLF;
-	strSend += "				<POCKETNO VALUE=\"4\" />" +CRLF;
-	strSend += "				<RESULT VALUE=\"OK\" />" +CRLF;
-	strSend += "			</PRODUCTINFO>" +CRLF;
-	strSend += "			<PRODUCTINFO>" +CRLF;
-	strSend += "				<POCKETNO VALUE=\"5\" />" +CRLF;
-	strSend += "				<RESULT VALUE=\"OK\" />" +CRLF;
-	strSend += "			</PRODUCTINFO>" +CRLF;
+	strSend += "		  <PRODUCTINFO>" +CRLF;
+	strSend += "			<POCKETNO VALUE=\"1\" />" +CRLF;
+	strSend += "			<RESULT VALUE=\"OK\" />" +CRLF;
+	strSend += "		  </PRODUCTINFO>" +CRLF;
+	strSend += "		  <PRODUCTINFO>" +CRLF;
+	strSend += "		    <POCKETNO VALUE=\"2\" />" +CRLF;
+	strSend += "			<RESULT VALUE=\"OK\" />" +CRLF;
+	strSend += "		  </PRODUCTINFO>" +CRLF;
+	strSend += "		  <PRODUCTINFO>" +CRLF;
+	strSend += "			<POCKETNO VALUE=\"3\" />" +CRLF;
+	strSend += "			<RESULT VALUE=\"OK\" />" +CRLF;
+	strSend += "		  </PRODUCTINFO>" +CRLF;
+	strSend += "		  <PRODUCTINFO>" +CRLF;
+	strSend += "			<POCKETNO VALUE=\"4\" />" +CRLF;
+	strSend += "			<RESULT VALUE=\"OK\" />" +CRLF;
+	strSend += "		  </PRODUCTINFO>" +CRLF;
+	strSend += "		  <PRODUCTINFO>" +CRLF;
+	strSend += "			<POCKETNO VALUE=\"5\" />" +CRLF;
+	strSend += "			<RESULT VALUE=\"OK\" />" +CRLF;
+	strSend += "		  </PRODUCTINFO>" +CRLF;
 	strSend += "        </PRODUCTLIST>" +CRLF;
 	strSend += "      </MAPINFO>" + CRLF;
 	strSend += "    </RCMDCP>" + CRLF;
@@ -602,7 +603,7 @@ void CEquip::Set_S7F25()
 {
 	gData.sEquipId = "AVI-TEST";
 
-	CString strSend = "<?xml version=\"2.0\" encoding=\"utf-16\"?>" + CRLF;
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
 	strSend += "<EIF VERSION=\"2.0\" ID=\"S7F25\" NAME=\"Formatted Process Program Request\">" + CRLF;
 	strSend += "  <ELEMENT>" + CRLF;

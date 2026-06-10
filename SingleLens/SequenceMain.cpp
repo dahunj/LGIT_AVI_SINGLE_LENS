@@ -1430,6 +1430,7 @@ BOOL CSequenceMain::FeederRun()
 	case 74:
 		if(m_pEquipData->bUseMES)
 		{			
+
 			gMes.bTrayIDConfirm = FALSE; //Load : 1
 			if(m_pEquipData->bUseMES) g_objMesAgent.Set_TrayIDReport(1, sBarcode); 
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);

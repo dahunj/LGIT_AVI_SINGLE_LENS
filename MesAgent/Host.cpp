@@ -427,7 +427,7 @@ void CHost::Get_S2F3_Link()
 {
 	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
-	strSend += "<EIF VERSION=\"1.4\" ID=\"S2F4\" NAME=\"Link Test Response\">" + CRLF;
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F4\" NAME=\"Link Test Response\">" + CRLF;
 	strSend += "  <ELEMENT>" + CRLF;
 	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
 	strSend += "  </ELEMENT>" + CRLF;
@@ -555,11 +555,16 @@ void CHost::Set_S7F26()
 	strSend += "    <MDLN VALUE=\"0\"/>" + CRLF;
 	strSend += "    <SOFTREV VALUE=\"" + gData.sVersion + "\" />" + CRLF;
 	strSend += "    <LOTID VALUE=\"" + gMes.sHostLotId + "\" />" + CRLF;
-	strSend += "    <PCLIST COUNT=\"152\">" + CRLF;
-	strSend += "    <LIST>" + CRLF;
-	strSend += "      <CCODE VALUE=\"" + sBodyName + "\" />" + CRLF;
-	strSend += "      <PPARM VALUE=\"" + sBodyData + "\" />" + CRLF;
-	strSend += "    </LIST>" + CRLF;
+	strSend += "    <PCLIST COUNT=\"1\">" + CRLF;
+	strSend += "      <LIST>" + CRLF;
+	strSend += "        <CCODE VALUE=\"" + sBodyName + "\" />" + CRLF;
+	strSend += "        <PPARM VALUE=\"" + sBodyData + "\" />" + CRLF;
+	strSend += "      </LIST>" + CRLF;
+	strSend += "    </PCLIST>" + CRLF;
+	strSend += "  </ITEM>" + CRLF;
+	strSend += "</EIF>";
+
+	Send_Command(strSend, TRUE, "S7F26");
 }
 
 void CHost::Set_S1F1_Ready()
