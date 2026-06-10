@@ -99,6 +99,9 @@ BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
 	ON_CBN_SELCHANGE(IDC_CBO_MODEL_CHANGE, &CSetupEquipDlg::OnCbnSelchangeCboModelChange)
 	ON_CBN_DROPDOWN(IDC_CBO_MODEL_CHANGE, &CSetupEquipDlg::OnCbnDropdownCboModelChange)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_CLEANER_DATA_0, IDC_STC_CLEANER_DATA_0, OnStnClickedStcCleanerData0)	
+	ON_BN_CLICKED(IDC_CHK_USE_BARCODE_MGZ, &CSetupEquipDlg::OnBnClickedChkUseBarcodeMgz)
+	ON_BN_CLICKED(IDC_CHK_USE_BARCODE_CTZIG, &CSetupEquipDlg::OnBnClickedChkUseBarcodeCtzig)
+	ON_BN_CLICKED(IDC_CHK_USE_MES, &CSetupEquipDlg::OnBnClickedChkUseMes)
 END_MESSAGE_MAP()
 
 // CSetupEquipDlg 메시지 처리기입니다.
@@ -746,4 +749,23 @@ void CSetupEquipDlg::OnStnClickedStcCleanerData0(UINT nID)
 	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
 
 	m_stcCleanerData.SetWindowText(strNew);
+}
+
+
+void CSetupEquipDlg::OnBnClickedChkUseBarcodeMgz()
+{
+	m_chkUseMES.SetCheck(FALSE);
+}
+
+
+void CSetupEquipDlg::OnBnClickedChkUseBarcodeCtzig()
+{
+	m_chkUseMES.SetCheck(FALSE);
+}
+
+
+void CSetupEquipDlg::OnBnClickedChkUseMes()
+{
+	m_chkUseBarcodeCtZig.SetCheck(FALSE);
+	m_chkUseBarcodeMGZ.SetCheck(FALSE);
 }

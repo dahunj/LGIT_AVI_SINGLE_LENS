@@ -104,6 +104,9 @@ public:
 	void Cancel_EquipData();
 
 	
+	afx_msg void OnBnClickedChkUseBarcodeMgz();
+	afx_msg void OnBnClickedChkUseBarcodeCtzig();
+	afx_msg void OnBnClickedChkUseMes();
 };
 
 ///////////////////////////////////////////////////////////////////////////////

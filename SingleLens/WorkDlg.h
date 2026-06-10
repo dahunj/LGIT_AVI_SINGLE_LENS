@@ -77,6 +77,9 @@ public:
 
 	CStaticCS		m_stcTrayNo[7];
 	CLedCS			m_ledMZDetect[11];
+
+	CStaticCS		m_stcBarcodeMGZ;
+	CStaticCS		m_stcBarcodeCtZig;
 	
 	CStaticCS		m_stcHidden;
 	CCheckCS		m_chkNoTrayMode;

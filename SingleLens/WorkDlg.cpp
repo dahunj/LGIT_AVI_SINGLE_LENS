@@ -9,6 +9,7 @@
 #include "Common.h"
 #include "Inspector.h"
 #include "MesAgent.h"
+#include "BarcodeLot_Cognex.h"
 
 #include "SequenceInit.h"
 #include "SequenceMain.h"
@@ -67,6 +68,9 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_GRD_BTM_VISION, m_grdBtmVision);
 	DDX_Control(pDX, IDC_GRD_MARKING, m_grdMarking);
 	
+	DDX_Control(pDX, IDC_STC_BARCODE_MGZ, m_stcBarcodeMGZ);	
+	DDX_Control(pDX, IDC_STC_BARCODE_CTZIG, m_stcBarcodeCtZig);
+
 
 	for (int i = 0; i < 7; i++) DDX_Control(pDX, IDC_STC_TRAY_NO_0 + i, m_stcTrayNo[i]);
 
@@ -159,7 +163,8 @@ void CWorkDlg::Initial_Controls()
 	Initial_Grid(&m_grdMarking, gData.nLensCntY, gData.nLensCntX);
 		
 	for (int i = 0; i < 7; i++) m_stcTrayNo[i].Init_Ctrl("¹ÙÅÁ", 12, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));
-
+	m_stcBarcodeMGZ.Init_Ctrl("¹ÙÅÁ", 12, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));
+	m_stcBarcodeCtZig.Init_Ctrl("¹ÙÅÁ", 12, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));
 	// ºñÆ®¸Ê ·Îµå
 	m_bmpBg.LoadBitmap(IDB_EQUIP_WORK);
 
@@ -973,6 +978,9 @@ void CWorkDlg::Display_Status()
 	m_ledMZDetect[10].Set_On(pDX01->iUldCvMZExist4);
 
 	for (int i = 0; i < 7; i++) { strText.Format("%02d", gData.nSlotNoMainIndex[i]); m_stcTrayNo[i].Set_Text(strText); }
+
+	m_stcBarcodeMGZ.SetWindowText(g_objBarcodeLot_Cognex.Get_BarcodeLot(eBarcode::MZ));
+	m_stcBarcodeCtZig.SetWindowText(g_objBarcodeLot_Cognex.Get_BarcodeLot(eBarcode::CtZig));
 	
 // 	if (g_objMesAgent.Is_Connected()) { m_stcMesConnect.Set_Text("Connected"); m_stcMesConnect.Set_Color(RGB(0x00, 0x00, 0x00), RGB(0x00, 0xFF, 0x00)); }
 // 	else { m_stcMesConnect.Set_Text("Disconnected"); m_stcMesConnect.Set_Color(RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00)); }
