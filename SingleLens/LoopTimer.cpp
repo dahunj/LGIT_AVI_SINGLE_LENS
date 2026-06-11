@@ -31,7 +31,7 @@ BOOL CLoopTimer::Over_LoopTime()
 	return FALSE;	// No Timeout Error
 #endif
 
-//	if(gData.bDemoMode) return FALSE;
+//	if(gData.bAgingMode) return FALSE;
 //
 //#ifndef AJIN_BOARD_USE
 //	return FALSE;	// No Timeout Error

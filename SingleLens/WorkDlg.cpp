@@ -234,7 +234,7 @@ BOOL CWorkDlg::OnInitDialog()
 
 	m_chkNoTrayMode.ShowWindow(SW_HIDE);
 
-	if(gData.bDemoMode)
+	if(gData.bAgingMode)
 	{
 		
 	}
@@ -1711,7 +1711,7 @@ void CWorkDlg::OnStnClickedStcHidden()
 
 void CWorkDlg::OnBnClickedChkNoTray()
 {
-	gData.bDemoMode = m_chkNoTrayMode.GetCheck();
+	gData.bAgingMode = m_chkNoTrayMode.GetCheck();
 
 
 	InsertMGZTestInfo();

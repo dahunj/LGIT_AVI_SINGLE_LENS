@@ -248,7 +248,7 @@ typedef struct
 	BOOL	bUldMZWait;
 
 	BOOL	bNoTrayMode;
-	BOOL	bDemoMode;
+	BOOL	bAgingMode;
 
 	CString sStdMotionFile;
 	CString sEfficiencyFile;

@@ -50,7 +50,7 @@ BOOL CAJinAXL::Initialize()
 	if (dwReturn != AXT_RT_SUCCESS) return FALSE;
 	if (lDIOCount < DIO_MODULE_COUNT) return FALSE;
 
-	if(gData.bDemoMode)
+	if(gData.bAgingMode)
 	{
 
 	}
@@ -163,7 +163,7 @@ void CAJinAXL::Read_Input()
 #ifdef AJIN_BOARD_USE	
 
 	BOOL nTemp[64];
-	if(gData.bDemoMode)
+	if(gData.bAgingMode)
 	{
 		 nTemp[0] = m_DX00.iLdCVMZExist1R;
 		 nTemp[1] = m_DX00.iLdCVMZExist2;
@@ -186,7 +186,7 @@ void CAJinAXL::Read_Input()
 	AxdiReadInportDword( 3, 0, &m_DX03.nValue);
 
 
-	if(gData.bDemoMode)
+	if(gData.bAgingMode)
 	{
 		m_DX00.iLdCVMZExist1R = nTemp[0];
 		m_DX00.iLdCVMZExist2 = nTemp[1]; 

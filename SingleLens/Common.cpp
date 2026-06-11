@@ -707,7 +707,7 @@ void CCommon::Set_ElevLift2Down()
 
 BOOL CCommon::Get_ElevLift2In()
 {
-	if(gData.bDemoMode) return TRUE;
+	if(gData.bAgingMode) return TRUE;
 
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
@@ -732,7 +732,7 @@ BOOL CCommon::Get_ElevLift2Out()
 
 BOOL CCommon::Get_ElevLift2Up()
 {
-	if(gData.bDemoMode) return TRUE;
+	if(gData.bAgingMode) return TRUE;
 
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
