@@ -334,6 +334,13 @@ BOOL CSequenceMain::LotEnd_Run()
 	if (g_dlgWork.SearchMZCVInfo() >= 0) return FALSE;
 	if (g_dlgWork.SearchMZElevInfo(0) < 0 && g_dlgWork.SearchMZElevInfo(1) < 0 ) return FALSE;
 
+	if(gData.bDemoMode)
+	{
+		g_dlgWork.InsertMGZTestInfo();
+		return FALSE;
+	}
+
+
 	if (gData.bCycleStop) g_dlgWork.PostMessage(UM_RESET_CYCLE_STOP, NULL, NULL);
 
 	gData.bFirstLotStart = FALSE;
@@ -349,6 +356,10 @@ BOOL CSequenceMain::LotEnd_Run()
 	
 	Set_ClearRunData(FALSE);
 	Reset_MainRunCase();
+
+
+	
+
 
 	m_pThreadUnloadCV = AfxBeginThread(Thread_UnloadCV, NULL);
 
@@ -417,7 +428,7 @@ void CSequenceMain::Beep_Post(int nState, int nTime)
 BOOL CSequenceMain::LoadConveyorRun()
 {
 	static int nDetectCnt[6] = {0, 0, 0, 0, 0, 0}; 
-	static DWORD dwTick;
+	static DWORD dwTick = 0;
 
 	if(gData.bLdMZWait )
 	{
@@ -430,8 +441,16 @@ BOOL CSequenceMain::LoadConveyorRun()
 		return TRUE;
 	}
 
-	if(gData.bDemoMode)
+	if(gData.bDemoMode)	
 	{
+		if(( g_dlgWork.SearchMZElevInfo(0) > 0 || g_dlgWork.SearchMZElevInfo(1) > 0 ) 
+			&& g_dlgWork.SearchMZCVInfo() > 0 
+			&& GetTickCount() - dwTick > 5000 )
+		{
+			dwTick = GetTickCount();
+			m_pDX00->iLdCVMZExist5 = TRUE;			
+		}
+
 		if(m_pDX00->iLdCVMZExist5)
 		{
 			m_pDX00->iLdCVMZExist1R = TRUE; m_pDX00->iLdCVMZExist5 = FALSE;

@@ -111,8 +111,7 @@ protected:
 	
 	afx_msg void OnBnClickedRdoWorkStart();
 	afx_msg void OnBnClickedRdoWorkStop();
-
-
+	
 	afx_msg void OnBnClickedChkCycleStop();
 
 	afx_msg LRESULT OnUpdateModel(WPARAM wParam, LPARAM lParam);
@@ -189,6 +188,8 @@ public:
 	void MachineStopLog(CString sType, CString sMsg="");
 	void Change_Model();
 
+	void InsertMGZTestInfo();
+
 	afx_msg void OnBnClickedBtnSimul1();	
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();
@@ -203,6 +204,9 @@ public:
 	afx_msg void OnBnClickedBtnMesDisconnect();
 	afx_msg void OnBnClickedBtnMesAbort();
 	afx_msg void OnBnClickedBtnIdleReport();
+
+
+	
 };
 
 
