@@ -249,11 +249,16 @@ void CManualCleanDlg::OnBtnTopInspectZClick(UINT nID)
 	if(nIndex == eTopInspect_Z::Ready)
 	{
 		g_objCommon.Move_Position(AX_TOP_INSPECTOR_Z, eTopInspect_Z::Ready);
+
+		g_objCommon.Move_Position(AX_BTM_INSPECTOR_Z, eBtmInspect_Z::Ready);
 	}
 	if(nIndex == eTopInspect_Z::ScanStart)
 	{
 		double dStart = pEquipData->dTopStartZ;
-		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, dStart - (pEquipData->dTopPeriod/4));		
+		g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, dStart - (pEquipData->dTopPeriod/10));	
+
+		dStart = pEquipData->dBtmStartZ;
+		g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_Z, dStart - (pEquipData->dBtmPeriod/10));	
 	}
 	if(nIndex == eTopInspect_Z::ScanEnd)
 	{
@@ -294,6 +299,7 @@ BOOL CManualCleanDlg::TopScan_Run()
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	MOVE_DATA *pMoveData = g_objDataManager.Get_pMoveData();
 	static double dTopZ = 0.0;	
+	static double dBtmZ = 0.0;	
 
 	switch (m_nScanCase) {
 	case 0:		// Start 시 1로 진행
@@ -306,22 +312,33 @@ BOOL CManualCleanDlg::TopScan_Run()
 		}
 		break;
 	case 2:		// Scan Move
-		if (g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Z)) 
-		{
-			m_nScanCase = 3;
+		if (g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Z) && g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Z)) 
+		{			
 			double dPeriod = pEquipData->dTopPeriod;	// 33mm
 			double dTrigS = pEquipData->dTopStartZ;				// Trigger Start
-			double dTrigE = dTrigS + dPeriod * pEquipData->nTopCount;	// Trigger End
-			dTopZ = dTrigE + (dPeriod/4);								// Motion End (가감속)
+			double dTrigE = dTrigS + dPeriod * (pEquipData->nTopCount-1);	// Trigger End
+			dTopZ = dTrigE + (dPeriod/10);								// Motion End (가감속)
 			double dVelocity = pEquipData->dTopVelocity;
+
+
+			double dPeriod_Btm = pEquipData->dBtmPeriod;	// 33mm
+			double dTrigS_Btm = pEquipData->dBtmStartZ;				// Trigger Start
+			double dTrigE_Btm = dTrigS_Btm + dPeriod_Btm * (pEquipData->nBtmCount-1);	// Trigger End
+			dBtmZ = dTrigE_Btm + (dPeriod/10);								// Motion End (가감속)
+			double dVelocity_Btm = pEquipData->dBtmVelocity;
+			
 			g_objAJinAXL.Start_Scan(eVision::TC, AX_TOP_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
+			g_objAJinAXL.Start_Scan(eVision::BC, AX_BTM_INSPECTOR_Z, dBtmZ, dTrigS_Btm, dTrigE_Btm, dPeriod_Btm, dPeriod_Btm/2, dVelocity_Btm);
+
+			m_nScanCase = 3;
 			
 		}
 		break;
 	case 3:		// Scan End
-		if (g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_Z, dTopZ)) 
+		if (g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_Z, dTopZ) && g_objAJinAXL.Is_MoveDone(AX_BTM_INSPECTOR_Z, dBtmZ)) 
 		{
 			g_objAJinAXL.Stop_Scan(AX_TOP_INSPECTOR_Z);
+			g_objAJinAXL.Stop_Scan(AX_BTM_INSPECTOR_Z);
 			m_nScanCase = 0;			
 			return FALSE;
 		}
