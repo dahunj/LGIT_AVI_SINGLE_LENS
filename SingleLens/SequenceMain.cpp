@@ -977,9 +977,10 @@ BOOL CSequenceMain::MZElevRun()
 		m_nMZElevCase = 20;	m_nMZElevLoop.Set_LoopTime(5000);	
 		break;
 	case 17:
-		g_objInspector.Set_LotStart(gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready] - 1], nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready],"Model");
+		g_objInspector.Set_LotStart(gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready] - 1], nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready],gMes.sHostRecipe[eMZ::Ready]);
 		m_nMZElevCase = 16;	m_nMZElevLoop.Set_LoopTime(5000);	
 		break;
+
 
 	case 20: // working 
 		//If additional M/Z added from operator with UI, case can be changed 
@@ -1308,9 +1309,8 @@ BOOL CSequenceMain::FeederRun()
 			if( nExist == gData.nTNoPick[eMZ::Load])
 			{				
 
-#ifndef AJIN_BOARD_USE
-	m_pDX01->iFeederZigExist  = TRUE;
-#endif
+				if(gData.bAgingMode) m_pDX01->iFeederZigExist  = TRUE;
+
 				if(!m_pDX01->iFeederZigExist) break;
 				g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad);
 				m_nFeederCase = 10; m_nFeederLoop.Set_LoopTime(5000);
@@ -1402,9 +1402,8 @@ BOOL CSequenceMain::FeederRun()
 		}
 		break;
 	case 15:
-#ifndef AJIN_BOARD_USE
-		m_pDX01->iRailZigExist  = TRUE;
-#endif
+		if(gData.bAgingMode) m_pDX01->iRailZigExist  = TRUE;
+
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready) && m_pDX01->iRailZigExist)
 		{
 			g_objCommon.Set_RailAlignIn();
@@ -1750,20 +1749,19 @@ BOOL CSequenceMain::FeederRun()
 		if(m_pDX01->iFeederGripOpen && !m_pDX01->iFeederGripClose)
 		{
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready);
-			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
+			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(35000);
 			m_strLog.Format("Feeder Y Move (Ready)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}
 		break;
 	case 65:
-#ifndef AJIN_BOARD_USE
-		m_pDX01->iRailZigExist  = TRUE;
-#endif
+		if(gData.bAgingMode) m_pDX01->iRailZigExist  = TRUE;
+
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready) && m_pDX01->iRailZigExist)
 		{
 			g_objCommon.Set_RailAlignIn();
 			if(m_pEquipData->bUseMES || m_pEquipData->bUseBarcodeCtZig)
 			{
-				m_nFeederCase = 81; m_nFeederLoop.Set_LoopTime(5000);
+				m_nFeederCase = 81; m_nFeederLoop.Set_LoopTime(35000);
 			}
 			else
 			{
@@ -2295,6 +2293,8 @@ BOOL CSequenceMain::TopInspectorRun()
 	case 3:
 		if(Select_TopScanPos(nTopXPos, nTopYPos, m_pEquipData->nVisionDir))
 		{
+			
+
 			if(m_pEquipData->nVisionDir == eVDir::fixY)
 			{
 				nLensNo = (gData.nLensCntX * (nTopYPos-1)) + nTopXPos;	
@@ -2359,6 +2359,7 @@ BOOL CSequenceMain::TopInspectorRun()
 	case eTopBr::Trigger:		// Move Frist
 		if (g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Z)) 
 		{			
+			if(gData.bReload[eVision::TC]) gData.bReload[eVision::TC] = FALSE;
 			m_nTopInspectCase++;m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 		}
 		break;
@@ -2491,6 +2492,8 @@ BOOL CSequenceMain::BtmInspectorRun()
 	case 3:
 		if(Select_BtmScanPos(nBtmXPos, nBtmYPos, m_pEquipData->nVisionDir))
 		{
+			
+
 			int nIdx = (nBtmYPos - 1) * gData.nLensCntX + nBtmXPos;
 			dBtmUnitY = m_pEquipData->dBtmStartY - (m_pEquipData->dZigPitchY * (nBtmYPos - 1));
 			dBtmUnitX = m_pEquipData->dBtmStartX + (m_pEquipData->dZigPitchX * (nBtmXPos - 1));
@@ -2550,6 +2553,7 @@ BOOL CSequenceMain::BtmInspectorRun()
 	case eBtmBr::Trigger:		// Move Frist
 		if (g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Z)) 
 		{			
+			if(gData.bReload[eVision::BC]) gData.bReload[eVision::BC] = FALSE;
 			m_nBtmInspectCase++;m_nBtmInspectLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		}
 		break;
@@ -2712,28 +2716,7 @@ BOOL CSequenceMain::MarkUnitRun()
 		}		
 		break;
 	case 5:		
-#ifndef AJIN_BOARD_USE
-		bInspectFail = FALSE;
-		nTempInfo = 0;
-		if(!Check_InspectDone(gData.sZigIDMainIndex[eMainIndex::Mark], gData.nMZNoMainIndex[eMainIndex::Mark], gData.nSlotNoMainIndex[eMainIndex::Mark], nLensNo, nTempInfo, dwTick)) 
-		{
-			bInspectFail = TRUE;
-			break;
-		}
-		if(bInspectFail) break; //Not Complete
-		if(m_pEquipData->bUseMES) g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], nLensNo, 
-			gData.sJudgeCode[gData.nMZNoMainIndex[eMainIndex::Mark]][gData.nSlotNoMainIndex[eMainIndex::Mark]][nLensNo][eVision::MARKING], gData.sNGCode[gData.nMZNoMainIndex[eMainIndex::Mark]][gData.nSlotNoMainIndex[eMainIndex::Mark]][nLensNo][eVision::MARKING] );
-		Write_LotJudge(gData.nMZNoMainIndex[eMainIndex::Mark], gData.nSlotNoMainIndex[eMainIndex::Mark],nLensNo, nTempInfo);
-		m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
-#else 
-		if (!m_pEquipData->bUseMark)
-		{
-			g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::Ready);
-
-
-			m_nMarkUnitCase = 15; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
-		} 
-		else
+		if(gData.bAgingMode)
 		{
 			bInspectFail = FALSE;
 			nTempInfo = 0;
@@ -2748,8 +2731,31 @@ BOOL CSequenceMain::MarkUnitRun()
 			Write_LotJudge(gData.nMZNoMainIndex[eMainIndex::Mark], gData.nSlotNoMainIndex[eMainIndex::Mark],nLensNo, nTempInfo);
 			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 		}
-#endif
-			
+		else
+		{
+			if (!m_pEquipData->bUseMark)
+			{
+				g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::Ready);
+
+
+				m_nMarkUnitCase = 15; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
+			} 
+			else
+			{
+				bInspectFail = FALSE;
+				nTempInfo = 0;
+				if(!Check_InspectDone(gData.sZigIDMainIndex[eMainIndex::Mark], gData.nMZNoMainIndex[eMainIndex::Mark], gData.nSlotNoMainIndex[eMainIndex::Mark], nLensNo, nTempInfo, dwTick)) 
+				{
+					bInspectFail = TRUE;
+					break;
+				}
+				if(bInspectFail) break; //Not Complete
+				if(m_pEquipData->bUseMES) g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], nLensNo, 
+					gData.sJudgeCode[gData.nMZNoMainIndex[eMainIndex::Mark]][gData.nSlotNoMainIndex[eMainIndex::Mark]][nLensNo][eVision::MARKING], gData.sNGCode[gData.nMZNoMainIndex[eMainIndex::Mark]][gData.nSlotNoMainIndex[eMainIndex::Mark]][nLensNo][eVision::MARKING] );
+				Write_LotJudge(gData.nMZNoMainIndex[eMainIndex::Mark], gData.nSlotNoMainIndex[eMainIndex::Mark],nLensNo, nTempInfo);
+				m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
+			}
+		}
 		break;
 	case 6:
 		if(nTempInfo == 2)

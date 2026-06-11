@@ -110,7 +110,7 @@ BOOL CBarcodeLot_Cognex::Initialize()
 {
 #ifndef AJIN_BOARD_USE
 	m_bConnected = TRUE;
-	for (int i = 0; i < 4; i++) m_nCarSeq[i] = 1;
+	
 #endif
 
 	if (m_bConnected) return TRUE;

@@ -326,15 +326,15 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 			if (gData.bCycleStop && !m_bCycleStopRun) m_bCycleStopRun = TRUE;
 
 		
-			g_objMesAgent.Set_EquipState(eEquipState::RUN);	//Run
+			if(pEquipData->bUseMES)g_objMesAgent.Set_EquipState(eEquipState::RUN);	//Run
 
 			g_objCommon.Locking_MainDoor(TRUE);
 			pMainDlg->Enable_ModeButton(FALSE);
 			pMainDlg->Set_CurrentState(STATE_RUN);
 						
 			//If it was running before Stop, then run again 
-			if (m_bLoadCVRun ) g_objCommon.Set_LoadCVRunCW(); Sleep(5); 
-			if (m_bUnloadCVRun) g_objCommon.Set_UnloadCVRunCW(); Sleep(5);
+			if (m_bLoadCVRun ) g_objCommon.Set_LoadCVRunCW(); 
+			if (m_bUnloadCVRun) g_objCommon.Set_UnloadCVRunCW();
 			m_bLoadCVRun = FALSE;
 			m_bUnloadCVRun = FALSE;
 
@@ -355,11 +355,11 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 			m_bLoadCVRun = m_pDY00->oLoadCVRun;
 			m_bUnloadCVRun = m_pDY01->oUldCvRun;
 
-			g_objCommon.Set_LoadCVStop();Sleep(5);
-			g_objCommon.Set_ElevCVStop();Sleep(5);
+			g_objCommon.Set_LoadCVStop();
+			g_objCommon.Set_ElevCVStop();
 			g_objSequenceMain.End_MainRunThread();
 
-			g_objMesAgent.Set_EquipState(eEquipState::DOWN);	//Down
+			if(pEquipData->bUseMES) g_objMesAgent.Set_EquipState(eEquipState::DOWN);	//Down
 			
 			int nState = theApp.Get_MainState();
 			if (nState != STATE_ALARM && nState != STATE_ERROR) pMainDlg->Set_CurrentState(STATE_STOP);

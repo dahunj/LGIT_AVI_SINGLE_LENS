@@ -80,7 +80,7 @@ public:
 	void Set_MoveComplete(int nVPc, CString sGbn);
 
 	void Set_PositionReply(int nVPc, CString sGbn, double dZ1);
-	void Set_ReloadComplete(int nVPc, CString sPc);
+	void Set_ReloadComplete(int nVPc, CString sGbn);
 	
 	void Set_InitialRequest(int nVPc);
 	void Set_TimeUpdate(int nVPc);

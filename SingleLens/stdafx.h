@@ -86,10 +86,8 @@
 #endif
 
 #define MAIN_VERSION	_T("V 0.0.0.17b")
-//
-//#define AJIN_BOARD_USE
-//#define LOT_BARCODE_USE
 
+#define AJIN_BOARD_USE
 
 #define SIM_WAITTIMES	 1		//
 #define SIM_WAITTIMEM	 1		//
@@ -208,6 +206,7 @@ typedef struct
 	int		nScanReqBtm;
 	
 	BOOL    bScanDone[2];            // 0:Top 1: Btm
+	BOOL	bReload[2];
 
 	char	cJudgeCode[7][10][ZIG_X*ZIG_Y][2];
 	CString	sJudgeCode[7][10][ZIG_X*ZIG_Y][3]; // 0:Top 1: Btm , 2: Top Priority  

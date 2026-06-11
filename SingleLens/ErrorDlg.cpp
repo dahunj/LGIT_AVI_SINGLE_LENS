@@ -160,6 +160,7 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 
 		if (m_nErrNo == 3408 ||
 			m_nErrNo == 4605 || m_nErrNo == 4905 // vision 
+			|| m_nErrNo == 3416
 			|| m_nErrNo == 3472  || m_nErrNo == 3482 || m_nErrNo == 3474 //barcode 
 			|| m_nErrNo == 3473 || m_nErrNo == 3483 
 			|| m_nErrNo == 3476 || m_nErrNo == 3486 //MES
@@ -290,7 +291,9 @@ void CErrorDlg::OnBnClickedBtnErrRetry()
 	case 4905:
 		g_objSequenceMain.Set_MainRunCase(AUTO_BTM_INSPECT, 3);
 		break;
-
+	case 3416:
+		g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 17);
+		break;
 	case 3472:
 		g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 3);
 		break;

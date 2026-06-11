@@ -985,6 +985,7 @@ void CCommon::Set_TrayPickSlaveIn()
 
 BOOL CCommon::Get_TrayPickMasterIn()
 {
+	if(gData.bAgingMode) return TRUE;
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
 	if(pDX01->iZigPickerMasterIn && !pDX01->iZigPickerMasterOut)
 	{
@@ -995,6 +996,7 @@ BOOL CCommon::Get_TrayPickMasterIn()
 
 BOOL CCommon::Get_TrayPickSlaveIn()
 {
+	if(gData.bAgingMode) return TRUE;
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
 	if(pDX01->iZigPickerSlaveIn && !pDX01->iZigPickerSlaveOut)
 	{
@@ -1005,6 +1007,7 @@ BOOL CCommon::Get_TrayPickSlaveIn()
 
 BOOL CCommon::Get_TrayPickMasterSlaveIn()
 {
+	if(gData.bAgingMode) return TRUE;
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
 	if(pDX01->iZigPickerMasterIn && !pDX01->iZigPickerMasterOut
 		&& pDX01->iZigPickerSlaveIn && !pDX01->iZigPickerSlaveOut)
@@ -1029,6 +1032,7 @@ void CCommon::Set_TrayPickSlaveOut()
 
 BOOL CCommon::Get_TrayPickMasterOut()
 {
+	if(gData.bAgingMode) return TRUE;
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
 	if(!pDX01->iZigPickerMasterIn && pDX01->iZigPickerMasterOut)
 	{
@@ -1038,6 +1042,7 @@ BOOL CCommon::Get_TrayPickMasterOut()
 }
 BOOL CCommon::Get_TrayPickSlaveOut()
 {
+	if(gData.bAgingMode) return TRUE;
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
 	if(!pDX01->iZigPickerSlaveIn && pDX01->iZigPickerSlaveOut)
 	{
@@ -1047,6 +1052,7 @@ BOOL CCommon::Get_TrayPickSlaveOut()
 }
 BOOL CCommon::Get_TrayPickMasterSlaveOut()
 {
+	if(gData.bAgingMode) return TRUE;
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
 	if(!pDX01->iZigPickerMasterIn && pDX01->iZigPickerMasterOut
 		&& !pDX01->iZigPickerSlaveIn && pDX01->iZigPickerSlaveOut)
@@ -1065,6 +1071,8 @@ void CCommon::Set_FeederClose()
 
 void CCommon::Set_FeederOpen()
 {
+
+
 	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
 	pDY01->oFeederGripOpen = TRUE; pDY01->oFeederGripClose = FALSE;
 	g_objAJinAXL.Write_Output(1);
@@ -1072,6 +1080,8 @@ void CCommon::Set_FeederOpen()
 
 BOOL CCommon::Get_FeederClose()
 {
+	if(gData.bAgingMode) return TRUE;
+
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
 	if(!pDX01->iFeederGripOpen && pDX01->iFeederGripClose)
 	{
@@ -1082,6 +1092,8 @@ BOOL CCommon::Get_FeederClose()
 
 BOOL CCommon::Get_FeederOpen()
 {
+	if(gData.bAgingMode) return TRUE;
+
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
 	if(pDX01->iFeederGripOpen && !pDX01->iFeederGripClose)
 	{
@@ -1110,6 +1122,7 @@ void CCommon::Set_RailAlignOut()
 
 BOOL CCommon::Get_RailAlignIn()
 {
+	if(gData.bAgingMode) return TRUE;
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
 	if(pDX01->iRailZigAlignIn && !pDX01->iRailZigAlignOut)
 	{
@@ -1120,6 +1133,7 @@ BOOL CCommon::Get_RailAlignIn()
 
 BOOL CCommon::Get_RailAlignOut()
 {
+	if(gData.bAgingMode) return TRUE;
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
 	if(!pDX01->iRailZigAlignIn && pDX01->iRailZigAlignOut)
 	{

@@ -148,7 +148,7 @@ void CInspector::Get_LotReady(int nVPc, CString sMZID, CString sMZNo)
 	int nMNo = atoi(sMZNo) - 1;
 	if (nMNo < 0 || nMNo > 7) return;
 
-	if (sMZID != gData.sMZID[eMZ::Load]) return;
+	//if (sMZID != gData.sMZID[eMZ::Load]) return;
 	if (nVPc == VISION_PC1) m_bLotReady1 = TRUE;
 	Set_LotReadyDone(sMZID, nMNo);
 
@@ -313,16 +313,37 @@ void CInspector::Get_TriggerRequest(int nVPc, CString sGbn, CString sMZNo, CStri
 
 void CInspector::Get_ReloadRequest(int nVPc, CString sLotID, CString sGbn)
 {
-	if(sGbn == "TC")
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+
+	if(sGbn == "TC" && pEquipData->bUseTopVision && !gData.bScanDone[eVision::TC] && !gData.bReload[eVision::TC])
 	{
 		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_TOP_INSPECT);
-		if(nCase >= 5 && nCase < 10) g_objSequenceMain.Set_MainRunCase(AUTO_TOP_INSPECT, 3);
+		if(nCase >= 5 && nCase < 10)
+		{
+			Set_ReloadComplete(VISION_PC1, "TC");
+			g_objSequenceMain.Set_MainRunCase(AUTO_TOP_INSPECT, 3);
+			gData.bReload[eVision::TC] = TRUE;
+		}
+		else
+		{
+			g_objLogFile.Save_InspectorLog("[Reload Fail]- TC");
+		}
 	}
 
-	if(sGbn == "BC")
+	if(sGbn == "BC" && pEquipData->bUseTopVision && !gData.bScanDone[eVision::BC] && !gData.bReload[eVision::BC])
 	{
 		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_BTM_INSPECT);
-		if(nCase >= 5 && nCase < 10) g_objSequenceMain.Set_MainRunCase(AUTO_BTM_INSPECT, 3);
+		if(nCase >= 5 && nCase < 10)
+		{
+			Set_ReloadComplete(VISION_PC1, "BC");
+			g_objSequenceMain.Set_MainRunCase(AUTO_BTM_INSPECT, 3);
+			gData.bReload[eVision::BC] = TRUE;
+		}
+		else
+		{
+			g_objLogFile.Save_InspectorLog("[Reload Fail]- BC");
+		}
 	}
 
 }
@@ -431,10 +452,10 @@ void CInspector::Set_PositionReply(int nVPc, CString sGbn, double dZ1)
 	Send_Command(VISION_PC1, strSendCmd);
 }
 
-void CInspector::Set_ReloadComplete(int nVPc, CString sPc)
+void CInspector::Set_ReloadComplete(int nVPc, CString sGbn)
 {
 	CString	strSendCmd;
-	strSendCmd.Format("RELOAD,COMPLETE");
+	strSendCmd.Format("RELOAD,COMPLETE,%s",sGbn);
 	Send_Command(VISION_PC1, strSendCmd);
 }
 
