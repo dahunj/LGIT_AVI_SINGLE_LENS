@@ -1296,7 +1296,7 @@ BOOL CSequenceMain::FeederRun()
 	case 4:
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad))
 		{
-			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
+			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(65000);
 			m_strLog.Format("Feeder Y Move (Zig Exist) "); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		}
 		
