@@ -120,10 +120,10 @@
     <None Include="res\Arw4_Up.bmp" />
     <None Include="res\Cancel.ico" />
     <None Include="res\Close.ico" />
-    <None Include="res\SingleLens.ico" />
-    <None Include="res\SingleLens.rc2" />
     <None Include="res\EquipDoor.bmp" />
     <None Include="res\EquipError.bmp" />
+    <None Include="res\SingleLens.ico" />
+    <None Include="res\SingleLens.rc2" />
     <None Include="res\EquipWork.bmp" />
     <None Include="res\Initial.ico" />
     <None Include="res\InOut.ico" />

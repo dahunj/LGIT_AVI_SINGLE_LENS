@@ -1346,7 +1346,7 @@ BOOL CSequenceMain::FeederRun()
 		}
 		break;
 	case 11:
-		if(m_pDX01->iFeederGripClose && !m_pDX01->iFeederGripOpen)
+		if(!m_pDX01->iFeederGripClose && !m_pDX01->iFeederGripOpen)
 		{
 			
 //#ifndef AJIN_BOARD_USE
