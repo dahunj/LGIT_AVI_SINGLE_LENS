@@ -85,7 +85,7 @@
 	#pragma comment(lib, "CSGridR.lib")
 #endif
 
-#define MAIN_VERSION	_T("V 0.0.0.18b")
+#define MAIN_VERSION	_T("V 0.0.0.19b")
 
 //#define AJIN_BOARD_USE
 
