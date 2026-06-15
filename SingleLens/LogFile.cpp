@@ -22,7 +22,7 @@ CCriticalSection g_csECMLog;
 CCriticalSection g_csLoadCellLog;
 CCriticalSection g_csMachineStopLog;
 CCriticalSection g_csMesAgentLog;
-CCriticalSection g_csCmTrackingLog;
+CCriticalSection g_csTrackingLog;
 CCriticalSection g_csBarcodeLog;
 CCriticalSection g_csMCCLog;
 CCriticalSection g_csStdMotionLog;
@@ -513,41 +513,93 @@ void CLogFile::Save_MesAgentLog(CString sLog)
 	g_csMesAgentLog.Unlock();
 }
 
-void CLogFile::Save_CmTrackingLog(CString strOut, int nTrayCount, int nPosX, int nPosY, int nPortNo, int nTrayNo, int nCmNo)
+void CLogFile::Save_TrackingLog(int nInfo, CString sBarcode, int nMZNo, int nZigNo, int nLensNo)
 {
-	
-}
+	g_csTrackingLog.Lock();
 
-void CLogFile::Save_ECMTracking(CString sLog, int nTrayCount, int nPosX, int nPosY, int nPortNo, int nTrayNo, int nCmNo)
-{
 	SYSTEMTIME time;
 	GetLocalTime(&time);
 
-	CString strPath, strFile, strTitle;
-	strPath = "D:\\EVMS\\TP\\Log";
+	CString strPath, strPath2, strFile, strFile2, strTitle, strSave;
+	strPath.Format("%s\\LOG\\Tracking\\%04d-%02d-%02d", gsCurrentDir, time.wYear, time.wMonth, time.wDay);
 	Create_Folder(strPath);
 
-	if (gLot.sLotID[nPortNo-1] == "") gLot.sLotID[nPortNo-1] = "LOT_ID";
-	strFile.Format("%s\\%s_%04d%02d%02d%02d_Tracking.csv", strPath, gLot.sLotID[nPortNo-1], time.wYear, time.wMonth, time.wDay, time.wHour);
+
+	strPath2 = "D:\\EVMS\\TP\\Log";
+	Create_Folder(strPath2);
+
+	strFile2.Format("%s\\%s_%04d%02d%02d%02d_Tracking.csv", strPath2, sBarcode, time.wYear, time.wMonth, time.wDay, time.wHour);
 
 
-	strTitle.Format("Time,Barcode,Judge,Port No,Tray No,CM No,Load Stage,Load Picker,Index Rotational Pos(Load),Index Pocket No(Load),NG Picker,NG Stage,Good Picker,Index Good No,Index Good Jig,Transfer Picker,NG Tray,NG Y,NG X,Ship Tray,Ship Y,Ship X\r\n");
+	/*if (gLot.sLotID == "") gLot.sLotID = "LOT_ID";
+	strFile.Format("%s\\%s_AVITracking.csv", strPath, gLot.sLotID);*/
 
 	CFile file;
 	if (!file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) return;
+
+	strTitle.Format("Time,Tray Barcode,Judge,MZG No,Tray No,Lens No,Index Pocket No\r\n");
 
 	try {
 		file.SeekToEnd();
 
 		if (file.GetLength() < 1) file.Write(strTitle, strTitle.GetLength());
 
-		file.Write(sLog, sLog.GetLength());
+		if (nInfo == 1 || nInfo == 9) 
+		{
+			strSave.Format("%04d-%02d-%02d %02d:%02d:%02d.%03d,%s,G,%d,%d,%d,%d\r\n",
+				time.wYear, time.wMonth, time.wDay,time.wHour, time.wMinute, time.wSecond, time.wMilliseconds,
+				sBarcode, nMZNo, nZigNo, nLensNo, gData.nIndexPos); 
+		}
+		else
+		{
+			strSave.Format("%04d-%02d-%02d %02d:%02d:%02d.%03d,%s,N,%d,%d,%d,%d\r\n",
+				time.wYear, time.wMonth, time.wDay,time.wHour, time.wMinute, time.wSecond, time.wMilliseconds,
+				sBarcode, nMZNo, nZigNo, nLensNo, gData.nIndexPos); 
+		}
+		file.Write(strSave, strSave.GetLength());
 		file.Close();
 
 	} catch (CFileException *pEx) {
 		pEx->Delete();
 	}
+
+
+	CFile file2;
+	if (!file2.Open(strFile2, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) return;
+
+	strTitle.Format("Time,Tray Barcode,Judge,MZG No,Tray No,Lens No,Index Pocket No\r\n");
+
+	try {
+		file2.SeekToEnd();
+
+		if (file2.GetLength() < 1) file2.Write(strTitle, strTitle.GetLength());
+
+		if (nInfo == 1 || nInfo == 9) 
+		{
+			strSave.Format("%04d-%02d-%02d %02d:%02d:%02d.%03d,%s,G,%d,%d,%d,%d\r\n",
+				time.wYear, time.wMonth, time.wDay,time.wHour, time.wMinute, time.wSecond, time.wMilliseconds,
+				sBarcode, nMZNo, nZigNo, nLensNo, gData.nIndexPos); 
+		}
+		else
+		{
+			strSave.Format("%04d-%02d-%02d %02d:%02d:%02d.%03d,%s,N,%d,%d,%d,%d\r\n",
+				time.wYear, time.wMonth, time.wDay,time.wHour, time.wMinute, time.wSecond, time.wMilliseconds,
+				sBarcode, nMZNo, nZigNo, nLensNo, gData.nIndexPos); 
+		}
+		file2.Write(strSave, strSave.GetLength());
+		file2.Close();
+
+	} catch (CFileException *pEx) {
+		pEx->Delete();
+	}
+
+	//Save_ECMTracking(strSave, nTrayCount, nPosX, nPosY, nTrayNo, nCmNo);
+
+
+	g_csTrackingLog.Unlock();
 }
+
+
 
 void CLogFile::Save_Interlock(int nType)
 {

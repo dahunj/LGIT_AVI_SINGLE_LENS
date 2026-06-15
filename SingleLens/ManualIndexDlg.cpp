@@ -122,8 +122,7 @@ void CManualIndexDlg::Display_Status()
 	double dAngle = 0.0;
 	double dPos = g_objAJinAXL.Get_Position(AX_MAIN_INDEX_R);
 	
-	//dAngle = (dPos/7200.0);
-	//if(dAngle > 360) dAngle = fmod(dAngle, 360.0);
+
 	strPos.Format("%0.3lf", dPos);
 	m_stcAxisPos[0].SetWindowText(strPos);
 	

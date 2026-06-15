@@ -431,23 +431,10 @@ void CCommon::Get_CPUInfo(CString& strCPU)
 //////////////////////
 void CCommon::Get_MainIndexPos(int nPos)
 {
-	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
-
-
-	int	nIndexPos = 0;
-	if      (!pDX02->iIndexPosBit0 &&  !pDX02->iIndexPosBit1 && !pDX02->iIndexPosBit2) nIndexPos = 1;
-	else if ( pDX02->iIndexPosBit0 &&  !pDX02->iIndexPosBit1 && !pDX02->iIndexPosBit2) nIndexPos = 2;
-	else if (!pDX02->iIndexPosBit0 &&   pDX02->iIndexPosBit1 && !pDX02->iIndexPosBit2) nIndexPos = 3;
-	else if ( pDX02->iIndexPosBit0 &&   pDX02->iIndexPosBit1 && !pDX02->iIndexPosBit2) nIndexPos = 4;
-	else if (!pDX02->iIndexPosBit0 &&  !pDX02->iIndexPosBit1 &&  pDX02->iIndexPosBit2) nIndexPos = 5;
-	else if ( pDX02->iIndexPosBit0 &&  !pDX02->iIndexPosBit1 &&  pDX02->iIndexPosBit2) nIndexPos = 6;
-	else if (!pDX02->iIndexPosBit0 &&   pDX02->iIndexPosBit1 &&  pDX02->iIndexPosBit2) nIndexPos = 7;
-	else if ( pDX02->iIndexPosBit0 &&   pDX02->iIndexPosBit1 &&  pDX02->iIndexPosBit2) nIndexPos = 8;
 	
-	gData.nIndexPos = nIndexPos;
 
-	gData.nIndexPos = gData.nIndexPos - 1;
-	if(gData.nIndexPos == 0) gData.nIndexPos= 8;
+
+	
 
 
 	

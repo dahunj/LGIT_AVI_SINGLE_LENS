@@ -28,8 +28,7 @@ public:
 	
 	void Save_MachineStopLog(CString sLog);
 	void Save_MesAgentLog(CString sLog);
-	void Save_CmTrackingLog(CString strOut, int nTrayCount, int nPosX, int nPosY, int nPortNo, int nTrayNo, int nCmNo);
-	void Save_ECMTracking(CString sLog, int nTrayCount, int nPosX, int nPosY, int nPortNo, int nTrayNo, int nCmNo);
+	void Save_TrackingLog(int nInfo, CString sBarcode, int nMZNo, int nZigNo, int nLensNo);
 	void Save_Interlock(int nType);	
 	void Save_PCLog(int nMZNo, CString sLog);
 	
