@@ -1649,10 +1649,68 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo, int nDir)
 			memset(gData.LensMap[eMZ::Ready][i], 0x00, sizeof(int)*ZIG_X*ZIG_Y);
 		}		
 	}
-
-	
-
 }
+
+void CWorkDlg::Init_TempLensMap(int nPos)
+{
+	int nCnt = 0;
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	
+	for(int i = 0; i < 10; i++)
+	{
+		gData.nTNoPick[nPos] = 1;
+		gData.ZigMap[nPos][i] = FALSE;
+
+		if(pEquipData->nVisionDir == eVDir::fixY)
+		{
+			int j = 0, k = 0;
+			gData.ZigMap[nPos][i] = TRUE; // Zig 존재함 
+
+			gData.InfoMZLoad[i][k][j] = (int)eLensState::Init;
+			gData.LensMap[nPos][i][k][j] = eLensState::Init;
+		}
+		else if(pEquipData->nVisionDir == eVDir::fixX)
+		{
+			int j = 0, k = 0;
+			gData.ZigMap[nPos][i] = TRUE; // Zig 존재함 
+
+			gData.InfoMZLoad[i][k][j] = (int)eLensState::Init;
+			gData.LensMap[nPos][i][k][j] = eLensState::Init;
+		}	
+	}
+}
+
+void CWorkDlg::init_LensMap()
+{
+	int nCnt = 0;
+
+	int nXPos = 0, nYPos = 0;
+	int nLNo = 0;
+
+	//vision direction fixY
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	
+	for (int i = 0; i < 141; i++)
+	{
+		nLNo = atoi(gMes.sPocketNo[i]);
+		if(pEquipData->nVisionDir == eVDir::fixY)
+		{
+			nYPos = ((nLNo-1) / gData.nLensCntX);
+			nXPos = (nLNo-1) % gData.nLensCntX;
+		}
+		else
+		{
+			nXPos = ((nLNo-1) / gData.nLensCntY);
+			nYPos = (nLNo-1) % gData.nLensCntY;
+		}	
+
+		if(gMes.sResult[i] == "OK") gData.InfoFeeder[nXPos][nYPos] = eLensState::Init;
+
+	}
+}
+
+
 
 int CWorkDlg::SearchZigInfo(int nMZNo)
 {

@@ -177,6 +177,9 @@ public:
 	int		SearchMZElevInfo(int nNo);
 	int		SearchMZCVInfo();
 	void	TransferMZInfo(int nFrom, int nTo, int nDir);
+
+	void	Init_TempLensMap(int nPos);
+	void	init_LensMap();
 		
 	int 	SearchZigInfo(int nMZNo);
 	int		SearchLensCntInfo(int nMZNo);

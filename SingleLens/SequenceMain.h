@@ -33,7 +33,7 @@ private:
 	MOVE_DATA	*m_pMoveData;
 
 	CString		m_strLog;	// Log String
-
+	CString		m_strBarcode;
 
 protected:
 	CWinThread	*m_pThreadBeep;
