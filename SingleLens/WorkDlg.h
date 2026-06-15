@@ -83,6 +83,7 @@ public:
 	
 	CStaticCS		m_stcHidden;
 	CCheckCS		m_chkNoTrayMode;
+	CCheckCS		m_chkSimulMode;
 
 	CLabelCS		m_lblOperId;
 	CStaticCS		m_stcOperId;
@@ -207,6 +208,7 @@ public:
 
 
 	
+	afx_msg void OnBnClickedChkSimul();
 };
 
 

@@ -55,6 +55,7 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LED_INIT_COMPLETE, m_ledInitComplete);
 	DDX_Control(pDX, IDC_CHK_CYCLE_STOP, m_chkCycleStop);
 	DDX_Control(pDX, IDC_CHK_NO_TRAY, m_chkNoTrayMode);	
+	DDX_Control(pDX, IDC_CHK_SIMUL, m_chkSimulMode);	
 
 	for (int i = 0; i < AUTO_COUNT; i++) DDX_Control(pDX, IDC_STC_WORK_CASE_0 + i, m_stcWorkCase[i]);	
 	for (int i = 0; i < 7; i++) DDX_Control(pDX, IDC_LED_INDEX_DONE_0 + i, m_ledIndexDone[i]);
@@ -139,6 +140,7 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_MES_DISCONNECT, &CWorkDlg::OnBnClickedBtnMesDisconnect)
 	ON_BN_CLICKED(IDC_BTN_MES_ABORT, &CWorkDlg::OnBnClickedBtnMesAbort)
 	ON_BN_CLICKED(IDC_BTN_IDLE_REPORT, &CWorkDlg::OnBnClickedBtnIdleReport)
+	ON_BN_CLICKED(IDC_CHK_SIMUL, &CWorkDlg::OnBnClickedChkSimul)
 END_MESSAGE_MAP()
 
 // CWorkDlg 메시지 처리기입니다.
@@ -233,12 +235,9 @@ BOOL CWorkDlg::OnInitDialog()
 	m_rdoWorkStop.Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
 
 	m_chkNoTrayMode.ShowWindow(SW_HIDE);
+	m_chkSimulMode.ShowWindow(SW_HIDE);
 
-	if(gData.bAgingMode)
-	{
-		
-	}
-
+	
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
 }
@@ -739,7 +738,7 @@ BOOL CWorkDlg::Work_Start()
 	if (g_objSequenceMain.Get_IsAutoRun()) return TRUE;	// If Auto Runnning, Skip 
 
 	//Input Info Exist Check  
-	if( SearchMZCVInfo() < 0 )
+	if( SearchMZCVInfo() < 0 && !pEquipData->bUseMES )
 	{
 		g_objCommon.Show_MsgBox(1, "Please Input MZ-ID."); return FALSE;
 	}
@@ -756,8 +755,8 @@ BOOL CWorkDlg::Work_Start()
 		}
 	}
 
-	if(nZigFlag < 0) {g_objCommon.Show_MsgBox(1, "Please Input Coating Zig ID."); return FALSE;}
-	if(nLensFlag < 0) {g_objCommon.Show_MsgBox(1, "Please Input Lens Cnt."); return FALSE;}
+	if(nZigFlag < 0 && !pEquipData->bUseMES) {g_objCommon.Show_MsgBox(1, "Please Input Coating Zig ID."); return FALSE;}
+	if(nLensFlag < 0 && !pEquipData->bUseMES) {g_objCommon.Show_MsgBox(1, "Please Input Lens Cnt."); return FALSE;}
 
 
 
@@ -778,7 +777,7 @@ BOOL CWorkDlg::Work_Start()
 		m_stcZigID[i].GetWindowText(strTemp);		// Lot ID
 		if(strTemp == "") continue;
 
-		if (strTemp.GetLength() < 2) { g_objCommon.Show_MsgBox(1, "Please Input Zig-ID."); return FALSE; }
+		if (strTemp.GetLength() < 2 && !pEquipData->bUseMES) { g_objCommon.Show_MsgBox(1, "Please Input Zig-ID."); return FALSE; }
 				
 		gData.sZigID[nShare][nRemainder] = strTemp;
 		
@@ -1696,28 +1695,6 @@ int CWorkDlg::CheckZigExistInMZ(int nMZNo, int nSlot)
 }
 
 
-void CWorkDlg::OnStnClickedStcHidden()
-{
-	if(m_chkNoTrayMode.IsWindowVisible())
-	{
-		m_chkNoTrayMode.ShowWindow(SW_HIDE);		
-	}
-	else
-	{
-		m_chkNoTrayMode.ShowWindow(SW_SHOW);		
-	}	
-}
-
-
-void CWorkDlg::OnBnClickedChkNoTray()
-{
-	gData.bAgingMode = m_chkNoTrayMode.GetCheck();
-
-
-	InsertMGZTestInfo();
-
-}
-
 
 void CWorkDlg::OnBnClickedBtnLight()
 {
@@ -1935,4 +1912,40 @@ void CWorkDlg::InsertMGZTestInfo()
 	m_stcLensCnt[47].SetWindowText("14");
 	m_stcLensCnt[48].SetWindowText("14");
 	m_stcLensCnt[49].SetWindowText("14");
+}
+
+
+void CWorkDlg::OnStnClickedStcHidden()
+{
+	if(m_chkNoTrayMode.IsWindowVisible())
+	{
+		m_chkNoTrayMode.ShowWindow(SW_HIDE);		
+	}
+	else
+	{
+		m_chkNoTrayMode.ShowWindow(SW_SHOW);		
+	}	
+
+	if(m_chkSimulMode.IsWindowVisible())
+	{
+		m_chkSimulMode.ShowWindow(SW_HIDE);		
+	}
+	else
+	{
+		m_chkSimulMode.ShowWindow(SW_SHOW);		
+	}	
+}
+
+
+void CWorkDlg::OnBnClickedChkNoTray()
+{
+	gData.bAgingMode = m_chkNoTrayMode.GetCheck();
+	InsertMGZTestInfo();
+}
+
+
+
+void CWorkDlg::OnBnClickedChkSimul()
+{
+	gData.bSimulMode = m_chkSimulMode.GetCheck();
 }

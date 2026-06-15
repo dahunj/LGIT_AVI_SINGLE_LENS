@@ -412,6 +412,9 @@ void CSetupEquipDlg::Save_EquipData()
 	
 	m_stcEquipName.GetWindowText(strData); INI.Set_String("EQUIPMENT", "NAME", strData);
 	m_stcEquipModel.GetWindowText(strModel); INI.Set_String("EQUIPMENT", "MODEL", strModel);
+	pEquipData->sModelName = strModel;
+
+
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetMainWnd();
 	pMainDlg->Display_EquipName();
 
@@ -513,6 +516,7 @@ void CSetupEquipDlg::Save_ModelEquipData(CString sPath)
 
 	m_stcEquipName.GetWindowText(strData); INI.Set_String("EQUIPMENT", "NAME", strData);
 	m_stcEquipModel.GetWindowText(strData); INI.Set_String("EQUIPMENT", "MODEL", strData);
+	pEquipData->sModelName = strData;
 
 	INI.Set_Bool("EQUIPMENT", "DOOR_LOCK", m_rdoDoorLock[1].GetCheck());
 	

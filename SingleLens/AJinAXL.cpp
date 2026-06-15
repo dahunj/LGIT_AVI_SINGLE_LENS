@@ -52,7 +52,7 @@ BOOL CAJinAXL::Initialize()
 
 	if(gData.bAgingMode)
 	{
-
+		//pass
 	}
 	else
 	{

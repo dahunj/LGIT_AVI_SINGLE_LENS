@@ -223,7 +223,7 @@ void CSequenceMain::Set_ClearRunData(BOOL bInit)
 	
 	gData.bCycleStop = FALSE;
 
-	if(gData.bAgingMode)
+	if(gData.bAgingMode || gData.bSimulMode)
 	{
 		m_pDX00->iElvMZExist1 = FALSE;
 		m_pDX00->iElvMZExist2 = FALSE;
@@ -245,9 +245,6 @@ void CSequenceMain::Job_LotStart(int nMZNo, int nPos)
 	gLot.sStartTime[nMNo].Format("%04d%02d%02d_%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
 	gLot.dwLotStart[nMNo] = GetTickCount();
 	
-	gLot.nTrayCount[nMNo] = gData.nCtZigTotalCnt[nMNo];
-	gLot.nLensCount[nMNo] = gData.nLensTotalCnt[nPos];
-
 	g_objLogFile.Save_EfficiencyLog(0, "Start", 903, "Lot Start");	//Lot Start 
 }
 
@@ -456,6 +453,21 @@ BOOL CSequenceMain::LoadConveyorRun()
 			m_pDX00->iLdCVMZExist1R = TRUE; m_pDX00->iLdCVMZExist5 = FALSE;
 		}
 	}
+
+	if(gData.bSimulMode)
+	{
+		if( GetTickCount() - dwTick > 5000 )
+		{
+			dwTick = GetTickCount();
+			m_pDX00->iLdCVMZExist5 = TRUE;			
+		}
+
+		if(m_pDX00->iLdCVMZExist5)
+		{
+			m_pDX00->iLdCVMZExist1R = TRUE; m_pDX00->iLdCVMZExist5 = FALSE;
+		}
+	}
+
 	if(m_nLoadConveyorCase == eLoadCVBr::Check && 
 		(m_pDX00->iLdCVMZExist1R || m_pDX00->iLdCVMZExist2 || m_pDX00->iLdCVMZExist3 || m_pDX00->iLdCVMZExist4 || m_pDX00->iLdCVMZExist5)
 		&& g_dlgWork.SearchMZCVInfo() > 0)
@@ -660,7 +672,7 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		return TRUE;
 	case ElvBranch::LoadMZ:	
-		if(gData.bAgingMode)
+		if(gData.bAgingMode || gData.bSimulMode)
 		{
 			if(m_pDX00->iLdCVMZExist1R)
 			{
@@ -745,7 +757,7 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		break;
 	case 4:
-		if(gData.bAgingMode)
+		if(gData.bAgingMode || gData.bSimulMode)
 		{
 			if(m_pDX00->iElvMZExist1)
 			{
@@ -784,16 +796,9 @@ BOOL CSequenceMain::MZElevRun()
 	case 7:
 		if(g_objCommon.Get_ElevLift2In() && g_objCommon.Get_ElevLift2Up())
 		{
-			//Info Processing 
-			//Check MZ ID if Exist Move Infomation to Loading MZ UI
-			int nFrom = g_dlgWork.SearchMZCVInfo();
-			int nTo = g_dlgWork.SearchMZElevInfo(eMZ::Load);
-
-			if(nTo != -1)
+			if(m_pEquipData->bUseMES)
 			{
 				nMZNo++; if(nMZNo > 3) nMZNo =1;
-				g_dlgWork.TransferMZInfo(nFrom, eMZ::Load, m_pEquipData->nVisionDir);
-											
 				for(int i = 0; i < 10; i++)
 				{
 					gData.sLotIDElevLoad[i] = gMes.sHostLotID[eMZ::Load];
@@ -801,16 +806,49 @@ BOOL CSequenceMain::MZElevRun()
 					gData.nMZNoMZLoad[i] = nMZNo;
 					gData.sZigIDElevLoad[i] = gData.sZigID[eMZ::Load][i];
 					gData.sRecipeElevLoad[i] = gMes.sHostRecipe[eMZ::Load];
-				}				
-				g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Load, NULL);								
-				
-				Job_LotStart(nMZNo, eMZ::Load);
-				if(m_pEquipData->bUseMES) g_objMesAgent.Set_LotStartedReport(gMes.sHostLotID[eMZ::Load], gMes.sHostMGZID[eMZ::Load], gMes.sHostRecipe[eMZ::Load]);
-				g_objInspector.Set_LotStart(gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load],gMes.sHostRecipe[eMZ::Load]);
+				}	
+			}
+			else
+			{
+				//Info Processing 
+				//Check MZ ID if Exist Move Infomation to Loading MZ UI
+				int nFrom = g_dlgWork.SearchMZCVInfo();
+				int nTo = g_dlgWork.SearchMZElevInfo(eMZ::Load);
 
-				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
-				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Stopper2 In Done");
-			}			
+				if(nTo != -1)
+				{
+					nMZNo++; if(nMZNo > 3) nMZNo =1;
+					g_dlgWork.TransferMZInfo(nFrom, eMZ::Load, m_pEquipData->nVisionDir);
+
+					for(int i = 0; i < 10; i++)
+					{
+						gData.sLotIDElevLoad[i] = gMes.sHostLotID[eMZ::Load];
+						gData.sMZIDElevLoad[i] = gData.sMZID[eMZ::Load];
+						gData.nMZNoMZLoad[i] = nMZNo;
+						gData.sZigIDElevLoad[i] = gData.sZigID[eMZ::Load][i];
+						gData.sRecipeElevLoad[i] = gMes.sHostRecipe[eMZ::Load];
+					}				
+					g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Load, NULL);	
+				}
+			}
+			Job_LotStart(nMZNo, eMZ::Load);
+			if(m_pEquipData->bUseMES) 
+			{
+				gData.nCtZigTotalCnt[eMZ::Load] = 0;
+				gData.nLensTotalCnt[eMZ::Load] = 0;
+				g_objMesAgent.Set_LotStartedReport(gMes.sHostLotID[eMZ::Load], gMes.sHostMGZID[eMZ::Load], gMes.sHostRecipe[eMZ::Load]);
+				g_objInspector.Set_LotStart(gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load], gMes.sHostRecipe[eMZ::Load]);
+			}
+			else
+			{
+				gLot.nTrayCount[nMZNo-1] = gData.nCtZigTotalCnt[nMZNo-1];
+				gLot.nLensCount[nMZNo-1] = gData.nLensTotalCnt[eMZ::Load];
+				g_objInspector.Set_LotStart(gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load], m_pEquipData->sModelName);
+			}
+
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Stopper2 In Done");
+					
 		}
 		break;
 	case 8:
@@ -826,7 +864,7 @@ BOOL CSequenceMain::MZElevRun()
 	
 
 	case ElvBranch::RdyMZ:
-		if(gData.bAgingMode)
+		if(gData.bAgingMode || gData.bSimulMode)
 		{
 			if(m_pDX00->iLdCVMZExist1R)
 			{
@@ -941,16 +979,9 @@ BOOL CSequenceMain::MZElevRun()
 	case 15:
 		if(g_objCommon.Get_ElevLift1In() && g_objCommon.Get_ElevLift1Up())
 		{			
-			//Info Processing 
-			//Check MZ ID if Exist Move Infomation to Loading MZ UI
-			int nFrom = g_dlgWork.SearchMZCVInfo();
-			int nTo = g_dlgWork.SearchMZElevInfo(eMZ::Ready);
-
-			if(nTo != -1)
+			if(m_pEquipData->bUseMES)
 			{
 				nMZNo++;if(nMZNo > 3) nMZNo =1;
-				g_dlgWork.TransferMZInfo(nFrom, eMZ::Ready, m_pEquipData->nVisionDir);
-								
 				for(int i = 0; i < 10; i++)
 				{
 					gData.sLotIDElevRdy[i] = gMes.sHostLotID[eMZ::Ready];
@@ -958,16 +989,51 @@ BOOL CSequenceMain::MZElevRun()
 					gData.sRecipeElevReady[i] = gMes.sHostRecipe[eMZ::Ready];
 					gData.nMZNoMZRdy[i] = nMZNo;
 					gData.sZigIDElevReady[i] = gData.sZigID[eMZ::Ready][i];
-				}				
-				g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Ready, NULL);
-
-				Job_LotStart(nMZNo, eMZ::Ready);
-				g_objInspector.Set_LotStart(gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready] - 1], nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready],gMes.sHostRecipe[eMZ::Ready]);
-				if(m_pEquipData->bUseMES) g_objMesAgent.Set_LotStartedReport(gMes.sHostLotID[eMZ::Ready], gMes.sHostMGZID[eMZ::Ready], gMes.sHostRecipe[eMZ::Ready]);
-
-				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
-				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Stopper2 In Done");
+				}			
 			}
+			else
+			{
+				//Info Processing 
+				//Check MZ ID if Exist Move Infomation to Loading MZ UI
+				int nFrom = g_dlgWork.SearchMZCVInfo();
+				int nTo = g_dlgWork.SearchMZElevInfo(eMZ::Ready);
+
+				if(nTo != -1)
+				{
+					nMZNo++;if(nMZNo > 3) nMZNo =1;
+					g_dlgWork.TransferMZInfo(nFrom, eMZ::Ready, m_pEquipData->nVisionDir);
+
+					for(int i = 0; i < 10; i++)
+					{
+						gData.sLotIDElevRdy[i] = gData.sMZID[eMZ::Ready];
+						gData.sMZIDElevReady[i] = gData.sMZID[eMZ::Ready];
+						gData.sRecipeElevReady[i] = gMes.sHostRecipe[eMZ::Ready];
+						gData.nMZNoMZRdy[i] = nMZNo;
+						gData.sZigIDElevReady[i] = gData.sZigID[eMZ::Ready][i];
+					}				
+					g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Ready, NULL);
+				}
+			}
+
+			Job_LotStart(nMZNo, eMZ::Ready);
+
+			if(m_pEquipData->bUseMES) 
+			{					
+				gData.nCtZigTotalCnt[eMZ::Ready] = 0;
+				gData.nLensTotalCnt[eMZ::Ready] = 0;
+				g_objMesAgent.Set_LotStartedReport(gMes.sHostLotID[eMZ::Ready], gMes.sHostMGZID[eMZ::Ready], gMes.sHostRecipe[eMZ::Ready]);
+				g_objInspector.Set_LotStart(gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready] - 1], nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready],gMes.sHostRecipe[eMZ::Ready]);
+			}
+			else
+			{
+				gLot.nTrayCount[nMZNo-1] = gData.nCtZigTotalCnt[nMZNo-1];
+				gLot.nLensCount[nMZNo-1] = gData.nLensTotalCnt[eMZ::Ready];
+				g_objInspector.Set_LotStart(gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready] - 1], nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready], m_pEquipData->sModelName);
+			}			
+
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Stopper2 In Done");
+
 		}
 		break;
 	case 16:
@@ -994,7 +1060,7 @@ BOOL CSequenceMain::MZElevRun()
 		}			
 		break;
 	case 32:		
-		if(gData.bAgingMode)
+		if(gData.bAgingMode || gData.bSimulMode)
 		{
 			m_pDX01->iUldCvMZExist1L = FALSE;
 			m_pDX01->iUldCvMZExist2 = FALSE;
@@ -1054,7 +1120,7 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		return TRUE;				
 	case 34:
-		if(gData.bAgingMode)
+		if(gData.bAgingMode || gData.bSimulMode)
 		{
 			if(m_pDX00->iElvMZExist2 )
 			{
@@ -1114,7 +1180,7 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		break;
 	case 39:
-		if(gData.bAgingMode)
+		if(gData.bAgingMode || gData.bSimulMode)
 		{
 			if(m_pDX00->iElvMZExist2)
 			{
@@ -1176,7 +1242,7 @@ BOOL CSequenceMain::MZElevRun()
 		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(25000);
 		break;
 	case 57:
-		if(gData.bAgingMode)
+		if(gData.bAgingMode || gData.bSimulMode)
 		{
 			if(m_pDX00->iElvMZExist1)
 			{
@@ -1309,7 +1375,7 @@ BOOL CSequenceMain::FeederRun()
 			if( nExist == gData.nTNoPick[eMZ::Load])
 			{				
 
-				if(gData.bAgingMode) m_pDX01->iFeederZigExist  = TRUE;
+				if(gData.bAgingMode || gData.bSimulMode) m_pDX01->iFeederZigExist  = TRUE;
 
 				if(!m_pDX01->iFeederZigExist) break;
 				g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad);
@@ -1402,7 +1468,7 @@ BOOL CSequenceMain::FeederRun()
 		}
 		break;
 	case 15:
-		if(gData.bAgingMode) m_pDX01->iRailZigExist  = TRUE;
+		if(gData.bAgingMode || gData.bSimulMode) m_pDX01->iRailZigExist  = TRUE;
 
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready) && m_pDX01->iRailZigExist)
 		{
@@ -1755,7 +1821,7 @@ BOOL CSequenceMain::FeederRun()
 		}
 		break;
 	case 65:
-		if(gData.bAgingMode) m_pDX01->iRailZigExist  = TRUE;
+		if(gData.bAgingMode || gData.bSimulMode) m_pDX01->iRailZigExist  = TRUE;
 
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready) && m_pDX01->iRailZigExist)
 		{
@@ -1880,7 +1946,7 @@ BOOL CSequenceMain::ZigPickerRun()
 		return TRUE;
 	case (int) eTrayPickerBr::Load:
 			if(g_objCommon.Check_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Ready) 
-				&& (!m_pDX01->iZigPickerExist || gData.bAgingMode))
+				&& (!m_pDX01->iZigPickerExist || gData.bAgingMode || gData.bSimulMode))
 			{
 				g_objCommon.Move_Position(AX_ZIG_PICKER_Y, eZigPicker_Y::Load);
 				m_nZigPickerCase++; m_nZigPickerLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
@@ -1946,7 +2012,7 @@ BOOL CSequenceMain::ZigPickerRun()
 		return TRUE;
 	case 11:
 		if(g_objCommon.Check_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Ready) 
-			&& (!m_pDX01->iRailZigExist || gData.bAgingMode))
+			&& (!m_pDX01->iRailZigExist || gData.bAgingMode || gData.bSimulMode))
 		{				
 			g_objCommon.Move_Position(AX_ZIG_PICKER_Y, eZigPicker_Y::Index);
 			g_objCommon.Set_IndexLoadAlignOut();
@@ -2006,7 +2072,7 @@ BOOL CSequenceMain::ZigPickerRun()
 		}
 		break;
 	case 16:
-		if(g_objCommon.Check_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Ready) && (!m_pDX01->iZigPickerExist || gData.bAgingMode))
+		if(g_objCommon.Check_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Ready) && (!m_pDX01->iZigPickerExist || gData.bAgingMode || gData.bSimulMode))
 		{
 			//Load Done		
 			gData.bIndexDone[eMainIndex::Load] = TRUE;
@@ -2019,7 +2085,7 @@ BOOL CSequenceMain::ZigPickerRun()
 		m_nZigPickerCase++; m_nZigPickerLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 		return TRUE;
 	case 21:
-		if(g_objCommon.Check_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Ready) && (!m_pDX01->iZigPickerExist || gData.bAgingMode))
+		if(g_objCommon.Check_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Ready) && (!m_pDX01->iZigPickerExist || gData.bAgingMode || gData.bSimulMode))
 		{
 			g_objCommon.Move_Position(AX_ZIG_PICKER_Y, eZigPicker_Y::Index);
 			g_objCommon.Set_IndexLoadAlignOut();
@@ -2074,7 +2140,7 @@ BOOL CSequenceMain::ZigPickerRun()
 		}
 		break;
 	case 26:
-		if(g_objCommon.Check_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Ready) && (m_pDX01->iZigPickerExist || gData.bAgingMode))
+		if(g_objCommon.Check_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Ready) && (m_pDX01->iZigPickerExist || gData.bAgingMode || gData.bSimulMode))
 		{
 			gData.bIndexDone[eMainIndex::Unload] = TRUE; // Index Unload Done 	
 
@@ -2135,7 +2201,7 @@ BOOL CSequenceMain::ZigPickerRun()
 		}
 		break;
 	case 31:		
-		if(g_objCommon.Check_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Ready) && (!m_pDX01->iZigPickerExist || gData.bAgingMode))
+		if(g_objCommon.Check_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Ready) && (!m_pDX01->iZigPickerExist || gData.bAgingMode || gData.bSimulMode))
 		{			
 			m_nFeederCase = (int) eFeederBr::Unload;
 					
@@ -2713,25 +2779,7 @@ BOOL CSequenceMain::MarkUnitRun()
 		}		
 		break;
 	case 5:		
-		if(gData.bAgingMode)
-		{
-			bInspectFail = FALSE;
-			nTempInfo = 0;
-			if(!Check_InspectDone(gData.sZigIDMainIndex[eMainIndex::Mark], gData.nMZNoMainIndex[eMainIndex::Mark], gData.nSlotNoMainIndex[eMainIndex::Mark], nLensNo, nTempInfo, dwTick)) 
-			{
-				bInspectFail = TRUE;
-				break;
-			}
-			if(bInspectFail) break; //Not Complete
-			if(m_pEquipData->bUseMES) g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], nLensNo, 
-				gData.sJudgeCode[gData.nMZNoMainIndex[eMainIndex::Mark]][gData.nSlotNoMainIndex[eMainIndex::Mark]][nLensNo][eVision::MARKING], gData.sNGCode[gData.nMZNoMainIndex[eMainIndex::Mark]][gData.nSlotNoMainIndex[eMainIndex::Mark]][nLensNo][eVision::MARKING] );
-			
-			g_objLogFile.Save_TrackingLog(nTempInfo, gData.sZigIDMainIndex[eMainIndex::Mark], gData.nMZNoMainIndex[eMainIndex::Mark], gData.nSlotNoMainIndex[eMainIndex::Mark], nLensNo);
-			Write_LotJudge(gData.nMZNoMainIndex[eMainIndex::Mark], gData.nSlotNoMainIndex[eMainIndex::Mark],nLensNo, nTempInfo);
-			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
-		}
-		else
-		{
+	
 			/*if (!m_pEquipData->bUseMark)
 			{
 				g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::Ready);
@@ -2752,10 +2800,12 @@ BOOL CSequenceMain::MarkUnitRun()
 				if(bInspectFail) break; //Not Complete
 				if(m_pEquipData->bUseMES) g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], nLensNo, 
 					gData.sJudgeCode[gData.nMZNoMainIndex[eMainIndex::Mark]][gData.nSlotNoMainIndex[eMainIndex::Mark]][nLensNo][eVision::MARKING], gData.sNGCode[gData.nMZNoMainIndex[eMainIndex::Mark]][gData.nSlotNoMainIndex[eMainIndex::Mark]][nLensNo][eVision::MARKING] );
+				
+				g_objLogFile.Save_TrackingLog(nTempInfo, gData.sZigIDMainIndex[eMainIndex::Mark], gData.nMZNoMainIndex[eMainIndex::Mark], gData.nSlotNoMainIndex[eMainIndex::Mark], nLensNo);
 				Write_LotJudge(gData.nMZNoMainIndex[eMainIndex::Mark], gData.nSlotNoMainIndex[eMainIndex::Mark],nLensNo, nTempInfo);
 				m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 			//}
-		}
+		
 		break;
 	case 6:
 		if(nTempInfo == 2 && m_pEquipData->bUseMark)
@@ -2980,7 +3030,7 @@ BOOL CSequenceMain::UnloadConveyorRun()
 		m_nUnloadConveyorLoop.Set_LoopTime(gData.nLTime[eLT::CV]);
 		return TRUE;
 	case eUnloadCVBr::start:
-		if(gData.bAgingMode) m_pDX01->iUldCvMZExist4 = FALSE;
+		if(gData.bAgingMode || gData.bSimulMode) m_pDX01->iUldCvMZExist4 = FALSE;
 		
 		if(m_pDX01->iUldCvMZExist1L)
 		{
@@ -3051,7 +3101,7 @@ BOOL CSequenceMain::UnloadConveyorRun()
 		}				
 		break;
 	case 4:
-		if(gData.bAgingMode)
+		if(gData.bAgingMode || gData.bSimulMode)
 		{
 			if(m_pDX01->iUldCvMZExist1L)
 			{
@@ -3079,7 +3129,7 @@ BOOL CSequenceMain::UnloadConveyorRun()
 		m_nMZElevCase = ElvBranch::Start; // Slide over Check 
 		m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(gData.nLTime[eLT::CV]);	
 	case 6:
-		if(gData.bAgingMode)
+		if(gData.bAgingMode || gData.bSimulMode)
 		{
 			if(m_pDX01->iUldCvMZExist4)
 			{

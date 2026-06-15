@@ -110,7 +110,7 @@ typedef struct
 	CString	sOperID;		// Operator
 	
 	CString	sMZID[7];
-	CString	sZigID[7][10];
+	CString	sZigID[7][10];	
 
 	int		nMZNo[7]; // From UI MZ Input 
 	int		nMZCnt;
@@ -199,8 +199,7 @@ typedef struct
 	CString sRecipeMainIndex[7];
 	int		nSlotNoMainIndex[7];
 
-	BOOL	bDryRunMode;
-	int		nSpeedOption; // 여러개의 속도 옵션 가지게 바꾸고 싶다. 
+	
 
 	int		nScanReqTop;
 	int		nScanReqBtm;
@@ -245,9 +244,11 @@ typedef struct
 	
 	BOOL	bLdMZWait;
 	BOOL	bUldMZWait;
-
-	BOOL	bNoTrayMode;
+		
 	BOOL	bAgingMode;
+	BOOL	bSimulMode;
+	int		nSpeedOption; // 여러개의 속도 옵션 가지게 바꾸고 싶다. 
+
 
 	CString sStdMotionFile;
 	CString sEfficiencyFile;
@@ -322,7 +323,6 @@ typedef struct {
 	BOOL		bMGZIDReported;
 	BOOL		bPPConfirm;
 	BOOL		bTrayIDConfirm;
-
 	
 	CString		sLotID[2];
 	CString		sMGZID[2]; // 0: Load, 1: Ready 
