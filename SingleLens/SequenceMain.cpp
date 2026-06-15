@@ -563,7 +563,7 @@ BOOL CSequenceMain::MZElevRun()
 	
 	CString sBarcode;
 
-	if(gData.bFeederWorkWait ) return TRUE;	
+	if(gData.bFeederWorkWait) return TRUE;	
 
 	//Suppose MZ on Right of Elev
 	switch(m_nMZElevCase)
@@ -1447,8 +1447,7 @@ BOOL CSequenceMain::FeederRun()
 		break;
 	case 74:
 		if(m_pEquipData->bUseMES)
-		{			
-
+		{
 			gMes.bTrayIDConfirm = FALSE; //Load : 1
 			if(m_pEquipData->bUseMES) g_objMesAgent.Set_TrayIDReport(1, sBarcode); 
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);

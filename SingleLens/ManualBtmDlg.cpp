@@ -303,6 +303,10 @@ void CManualBtmDlg::OnBtnMarkUnitZClick(UINT nID)
 	{
 		g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::Ready);
 	}
+	if(nIndex == eMark_Z::MarkStart)
+	{
+		g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::MarkStart);
+	}
 	if(nIndex == eMark_Z::MarkDown)
 	{
 		g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::MarkDown);

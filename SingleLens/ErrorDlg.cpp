@@ -150,12 +150,7 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		CString strErrPick = "";		
 			
 		if (m_nErrNo > 10 && m_nErrNo < 20) g_objSequenceInit.Set_InitComplete(FALSE);	// 3,4,5,6
-
-
-		int nZoneNo = (m_nErrNo - 3000) / 100;
-		if (nZoneNo >= 0 && nZoneNo <= 30) g_objLogFile.Save_EfficiencyLog(nZoneNo, "Down", m_nErrNo, m_strErrMsg);
-
-
+		
 		m_strErrMsg = strErrMsg + strErrPick + strMes + m_strErrSubMsg;
 
 		if (m_nErrNo == 3408 ||
@@ -199,8 +194,44 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 
 		pMainDlg->Set_LotErrorLog("ERROR", m_nErrCode, m_strErrMsg);
 
+		//////////////////////////
+		int *pCase = g_objSequenceMain.Get_pMainRunCase();
+		strLog.Format("[Error Mode] ErrorNo:%s SeqNo:%d-%d-%d-%d-%d  %d-%d-%d-%d-%d", strErrNo,
+			*(pCase+ 0), *(pCase+ 1), *(pCase+2),  *(pCase+ 3),  *(pCase+ 4),
+			*(pCase+ 5), *(pCase+ 6), *(pCase+7),  *(pCase+ 8),  *(pCase+ 9));
+		g_objLogFile.Save_HandlerLog(strLog);
+
+
+		//////////////////////////
+		int nZoneNo = 0;
+
+		if		(m_nErrNo > 3100 && m_nErrNo < 3400) nZoneNo =  1;	//  1.Load Conveyor
+		else if (m_nErrNo > 3400 && m_nErrNo < 3700) nZoneNo =  2;	//  2.MZ Elevator 
+		else if (m_nErrNo > 3700 && m_nErrNo < 4000) nZoneNo =  3;	//  3.Feeder
+		else if (m_nErrNo > 4000 && m_nErrNo < 4300) nZoneNo =  4;	//  4.Zig Picker 
+		else if (m_nErrNo > 4300 && m_nErrNo < 4600) nZoneNo =  5;	//  5.Lens Cleaner 
+		else if (m_nErrNo > 4600 && m_nErrNo < 4900) nZoneNo =  6;	//  6.Top Inspector 
+		else if (m_nErrNo > 4900 && m_nErrNo < 5200) nZoneNo =  7;	//  7.Btm Inspector 
+		else if (m_nErrNo > 5200 && m_nErrNo < 5500) nZoneNo =  8;	//  8.Mark Unit 
+		else if (m_nErrNo > 5500 && m_nErrNo < 5800) nZoneNo =  9;	//  9.Main Index 
+		else if (m_nErrNo > 5800 && m_nErrNo < 6100) nZoneNo = 10;	// 10.Unload Conveyor 		
+		else										 nZoneNo = 0;
+		if (nZoneNo > 0 && nZoneNo < 21) g_objLogFile.Save_EfficiencyLog(nZoneNo, "Down", m_nErrNo, m_strErrMsg);
+
+		///////////
+
 		m_nBackColorLoop = 0;
-		
+		if		(m_nErrNo > 3100 && m_nErrNo < 3400) m_nErrorPos =  1;	//  1.Load Conveyor
+		else if (m_nErrNo > 3400 && m_nErrNo < 3700) m_nErrorPos =  2;	//  2.MZ Elevator 
+		else if (m_nErrNo > 3700 && m_nErrNo < 4000) m_nErrorPos =  3;	//  3.Feeder
+		else if (m_nErrNo > 4000 && m_nErrNo < 4300) m_nErrorPos =  4;	//  4.Zig Picker 
+		else if (m_nErrNo > 4300 && m_nErrNo < 4600) m_nErrorPos =  5;	//  5.Lens Cleaner 
+		else if (m_nErrNo > 4600 && m_nErrNo < 4900) m_nErrorPos =  6;	//  6.Top Inspector 
+		else if (m_nErrNo > 4900 && m_nErrNo < 5200) m_nErrorPos =  7;	//  7.Btm Inspector 
+		else if (m_nErrNo > 5200 && m_nErrNo < 5500) m_nErrorPos =  8;	//  8.Mark Unit 
+		else if (m_nErrNo > 5500 && m_nErrNo < 5800) m_nErrorPos =  9;	//  9.Main Index 
+		else if (m_nErrNo > 5800 && m_nErrNo < 6100) m_nErrorPos = 10;	// 10.Unload Conveyor 		
+		else										 m_nErrorPos = 0;
 		m_stcErrPos[m_nErrorPos].Set_Color(RGB(0xFF, 0xFF, 0xFF), RGB(0xFF, 0x00, 0x00));
 
 		SetTimer(0, 100, NULL);
