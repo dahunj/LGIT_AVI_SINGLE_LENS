@@ -348,6 +348,7 @@ typedef struct {
 	CString		sHostCancelCode;
 	CString		sHostCancelText;
 
+	int			nPocketCnt;
 	CString		sPocketNo[141];
 	CString		sResult[141];
 	

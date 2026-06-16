@@ -1691,7 +1691,7 @@ void CWorkDlg::init_LensMap()
 	//vision direction fixY
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	
-	for (int i = 0; i < 141; i++)
+	for (int i = 0; i < gMes.nPocketCnt; i++)
 	{
 		nLNo = atoi(gMes.sPocketNo[i]);
 		if(pEquipData->nVisionDir == eVDir::fixY)

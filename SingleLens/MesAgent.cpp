@@ -282,17 +282,18 @@ void CMesAgent::Get_PPUpload_Fail(CString sRecipeID, CString sFailCode, CString 
 
 void CMesAgent::Get_TrayID_Confirm(CString sStrings)
 {
-	CString strTemp[3];
+	CString strTemp[4];
 	char chSep = ',';
 	AfxExtractSubString(strTemp[0], sStrings, 2, chSep);
-	gMes.sHostTrayID = strTemp[0];
-
-	for (int i = 0; i < 141; i++)
+	AfxExtractSubString(strTemp[1], sStrings, 3, chSep);
+	gMes.sHostTrayID = strTemp[1];
+	gMes.nPocketCnt = atoi(strTemp[1]);
+	for (int i = 0; i < gMes.nPocketCnt; i++)
 	{
-		AfxExtractSubString(strTemp[1], sStrings, i*2 + 3, chSep);
 		AfxExtractSubString(strTemp[2], sStrings, i*2 + 4, chSep);
-		gMes.sPocketNo[i] = strTemp[1];
-		gMes.sResult[i] = strTemp[2];
+		AfxExtractSubString(strTemp[3], sStrings, i*2 + 5, chSep);
+		gMes.sPocketNo[i] = strTemp[2];
+		gMes.sResult[i] = strTemp[3];
 	}
 	gMes.bTrayIDConfirm = TRUE;
 

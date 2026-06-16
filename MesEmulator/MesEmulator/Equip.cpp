@@ -509,6 +509,9 @@ void CEquip::Set_S2F49_LOT_START()
 void CEquip::Set_S2F49_TRAY_ID_CONFIRM()
 {
 	gData.sEquipId = "AVI-TEST";
+
+	int		nTemp = 0;
+	CString strTemp;
 	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
 	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F49\" NAME=\"Enhanced Remote Command\">" + CRLF;
@@ -518,7 +521,7 @@ void CEquip::Set_S2F49_TRAY_ID_CONFIRM()
 	strSend += "  <ITEM>" + CRLF;
 	strSend += "    <RCMDCP>" + CRLF;
 	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"TRAY_ID_CONFIRM\" />" + CRLF;
-	strSend += "      <CPLIST COUNT=\"5\">" + CRLF;
+	strSend += "      <CPLIST COUNT=\"2\">" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\" />" + CRLF;
 	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"20251215000000\" />" + CRLF;
@@ -529,27 +532,19 @@ void CEquip::Set_S2F49_TRAY_ID_CONFIRM()
 	strSend += "        </CP>" + CRLF;  
 	strSend += "      </CPLIST>" + CRLF; 
 	strSend += "      <MAPINFO>" + CRLF;
-	strSend += "        <PRODUCTLIST COUNT=\"5\">" +CRLF;
-	strSend += "		  <PRODUCTINFO>" +CRLF;
-	strSend += "			<POCKETNO VALUE=\"1\" />" +CRLF;
-	strSend += "			<RESULT VALUE=\"OK\" />" +CRLF;
-	strSend += "		  </PRODUCTINFO>" +CRLF;
-	strSend += "		  <PRODUCTINFO>" +CRLF;
-	strSend += "		    <POCKETNO VALUE=\"2\" />" +CRLF;
-	strSend += "			<RESULT VALUE=\"OK\" />" +CRLF;
-	strSend += "		  </PRODUCTINFO>" +CRLF;
-	strSend += "		  <PRODUCTINFO>" +CRLF;
-	strSend += "			<POCKETNO VALUE=\"3\" />" +CRLF;
-	strSend += "			<RESULT VALUE=\"OK\" />" +CRLF;
-	strSend += "		  </PRODUCTINFO>" +CRLF;
-	strSend += "		  <PRODUCTINFO>" +CRLF;
-	strSend += "			<POCKETNO VALUE=\"4\" />" +CRLF;
-	strSend += "			<RESULT VALUE=\"OK\" />" +CRLF;
-	strSend += "		  </PRODUCTINFO>" +CRLF;
-	strSend += "		  <PRODUCTINFO>" +CRLF;
-	strSend += "			<POCKETNO VALUE=\"5\" />" +CRLF;
-	strSend += "			<RESULT VALUE=\"OK\" />" +CRLF;
-	strSend += "		  </PRODUCTINFO>" +CRLF;
+	strSend += "        <PRODUCTLIST COUNT=\"141\">" +CRLF;
+	
+
+	for(int i = 0;  i < 141; i++)
+	{
+		strTemp.Format("%d",++nTemp);
+
+		strSend += "		  <PRODUCTINFO>" +CRLF;
+		strSend += "			<POCKETNO VALUE=\""+ strTemp + "\" />" +CRLF;
+		strSend += "			<RESULT VALUE=\"OK\" />" +CRLF;
+		strSend += "		  </PRODUCTINFO>" +CRLF;
+	}
+
 	strSend += "        </PRODUCTLIST>" +CRLF;
 	strSend += "      </MAPINFO>" + CRLF;
 	strSend += "    </RCMDCP>" + CRLF;

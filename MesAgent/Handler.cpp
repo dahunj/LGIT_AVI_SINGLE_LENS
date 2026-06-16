@@ -297,9 +297,9 @@ void CHandler::Set_Lot_ID_Fail()
 void CHandler::Set_TrayID_Confirm()
 {
 	CString strSend, strTemp;
-	strSend.Format("TRAY,CONFIRM,%s", gMes.sHostTrayID);
+	strSend.Format("TRAY,CONFIRM,%s,%d", gMes.sHostTrayID, gMes.nPocketCnt);
 
-	for (int i = 0; i < 141; i++)
+	for (int i = 0; i < gMes.nPocketCnt; i++)
 	{
 		strTemp.Format(",%s,%s", gMes.sPocketNo[i], gMes.sResult[i]);
 		strSend += strTemp;
