@@ -338,8 +338,8 @@ BOOL CHost::Extract_Xml(CString sXmlData)
 
 			 for (int i = 0; i < gMes.nPocketCnt; i++) 
 			 {
-				 gMes.sPocketNo[i] = nodeP[i]->GetChild("POCKETNO")->GetAttribute("VALUE");
-				 gMes.sResult[i] = nodeP[i]->GetChild("RESULT")->GetAttribute("VALUE");	
+				 gMes.sPocketNo[i] = nodeP[i]->GetChild("POCKETID")->GetAttribute("VALUE");
+				 gMes.sResult[i] = nodeP[i]->GetChild("STATUS")->GetAttribute("VALUE");	
 			 }
 		 }	
 
