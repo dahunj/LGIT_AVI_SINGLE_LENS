@@ -540,8 +540,8 @@ void CEquip::Set_S2F49_TRAY_ID_CONFIRM()
 		strTemp.Format("%d",++nTemp);
 
 		strSend += "		  <PRODUCTINFO>" +CRLF;
-		strSend += "			<POCKETNO VALUE=\""+ strTemp + "\" />" +CRLF;
-		strSend += "			<RESULT VALUE=\"OK\" />" +CRLF;
+		strSend += "			<POCKETID VALUE=\""+ strTemp + "\" />" +CRLF;
+		strSend += "			<STATUS VALUE=\"OK\" />" +CRLF;
 		strSend += "		  </PRODUCTINFO>" +CRLF;
 	}
 
