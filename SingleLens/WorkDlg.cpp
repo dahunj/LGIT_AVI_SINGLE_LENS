@@ -1681,22 +1681,34 @@ void CWorkDlg::Init_TempLensMap(int nPos)
 
 		if(pEquipData->nVisionDir == eVDir::fixY)
 		{
-			int j = 0, k = 0;
-			gData.ZigMap[nPos][i] = TRUE; // Zig 존재함 
-
-			gData.InfoMZLoad[i][k][j] = (int)eLensState::Init;
-			gData.LensMap[nPos][i][k][j] = eLensState::Init;
+			Set_TempSlot(eMZ::Load, i+1, TRUE);			
 		}
 		else if(pEquipData->nVisionDir == eVDir::fixX)
 		{
-			int j = 0, k = 0;
-			gData.ZigMap[nPos][i] = TRUE; // Zig 존재함 
-
-			gData.InfoMZLoad[i][k][j] = (int)eLensState::Init;
-			gData.LensMap[nPos][i][k][j] = eLensState::Init;
+			Set_TempSlot(eMZ::Load, i+1, TRUE);			
 		}	
 	}
 }
+
+void CWorkDlg::Set_TempSlot(int nPos, int nSlot, BOOL bExist)
+{
+	if(bExist)
+	{
+		gData.ZigMap[nPos][nSlot-1] = TRUE; // Zig 존재함 
+		gData.InfoMZLoad[nSlot-1][0][0] = (int)eLensState::Init;
+		gData.LensMap[nPos][nSlot-1][0][0] = eLensState::Init;
+	}
+	else
+	{
+		gData.ZigMap[nPos][nSlot-1] = FALSE; // Zig 존재함 
+		gData.InfoMZLoad[nSlot-1][0][0] = (int)eLensState::None;
+		gData.LensMap[nPos][nSlot-1][0][0] = eLensState::None;
+	}
+
+	PostMessage(UM_UPDATE_MZ_INFO, eMZ::Load, NULL);
+}
+
+
 
 void CWorkDlg::init_LensMap()
 {

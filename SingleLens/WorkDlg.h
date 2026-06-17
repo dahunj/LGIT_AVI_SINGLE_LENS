@@ -179,6 +179,9 @@ public:
 	void	TransferMZInfo(int nFrom, int nTo, int nDir);
 
 	void	Init_TempLensMap(int nPos);
+	void	Set_TempSlot(int nPos, int nSlot, BOOL bExist);
+
+
 	void	init_LensMap();
 		
 	int 	SearchZigInfo(int nMZNo);

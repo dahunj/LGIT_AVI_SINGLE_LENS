@@ -1372,7 +1372,8 @@ BOOL CSequenceMain::FeederRun()
 	case 5:
 		if(gData.bAgingMode || gData.bSimulMode)
 		{
-			m_pDX01->iFeederZigExist = TRUE;
+			if(gData.nTNoPick[eMZ::Load] == 3 || gData.nTNoPick[eMZ::Load] == 6 ) m_pDX01->iFeederZigExist = TRUE;
+			else m_pDX01->iFeederZigExist = FALSE;
 		}
 
 		if(m_pDX01->iFeederZigExist)
@@ -1398,8 +1399,7 @@ BOOL CSequenceMain::FeederRun()
 						m_nFeederCase = 10; m_nFeederLoop.Set_LoopTime(5000);
 						m_strLog.Format("Feeder Y Move (Grip Zig)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 					}
-				}
-				
+				}				
 			}
 		}
 		else
@@ -1409,7 +1409,9 @@ BOOL CSequenceMain::FeederRun()
 
 			if(nMZDetectCnt[1] > 5)
 			{
-				nMZDetectCnt[0] = 0; nMZDetectCnt[1] = 0;
+				nMZDetectCnt[0] = 0; nMZDetectCnt[1] = 0;				
+				g_dlgWork.Set_TempSlot(eMZ::Load, gData.nTNoPick[eMZ::Load], FALSE);			
+				
 				m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 			}
 		}
@@ -1775,37 +1777,89 @@ BOOL CSequenceMain::FeederRun()
 		}		
 		break;
 	case 55:
-		//if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::CheckExist))
+	/*	if(gData.bAgingMode || gData.bSimulMode)
 		{
-			int nExist = -1;
-			nExist = g_dlgWork.CheckZigExistInMZ(eMZ::Ready, gData.nTNoPick[eMZ::Ready]);
+			m_pDX01->iFeederZigExist = TRUE;
+		}*/
 
-			if( nExist == gData.nTNoPick[eMZ::Ready])
-			{				
-				g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZReady);
-				m_nFeederCase = 60; m_nFeederLoop.Set_LoopTime(5000);
-				m_strLog.Format("Feeder Y Move (Grip Zig)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
-			}
-			else
+		if(m_pDX01->iFeederZigExist)
+		{
+			nMZDetectCnt[0]++;
+			nMZDetectCnt[1] = 0;
+
+			if(nMZDetectCnt[0] > 5)
 			{
-				//Z Pitch Move 
-				//g_objAJinAXL.Move_Relative(AX_MZ_ELEVATOR_Z, -m_pEquipData->dMZPitchRightZ*(1.0)); 
+				nMZDetectCnt[0] = 0; nMZDetectCnt[1] = 0;
 
-				if(gData.nTNoPick[eMZ::Ready] > 10) 
-				{	
-					gData.nTNoPick[eMZ::Ready] = 1;
-					m_nFeederCase = 0; m_nFeederLoop.Set_LoopTime(5000);
-					m_strLog.Format("Elev Z Move to search Finish"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+				if(m_pEquipData->bUseMES)
+				{
+					m_nFeederCase = 10; m_nFeederLoop.Set_LoopTime(5000);
 				}
 				else
 				{
-					//gData.nTNoPick[eMZ::Ready]++;
-					m_nFeederCase = eFeederBr::RdySearch; m_nFeederLoop.Set_LoopTime(5000);
-					m_strLog.Format("Elev Z Move to search Zig"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
-				}
+					int nExist = -1;
+					nExist = g_dlgWork.CheckZigExistInMZ(eMZ::Ready, gData.nTNoPick[eMZ::Ready]);
+
+					if( nExist == gData.nTNoPick[eMZ::Ready])
+					{								
+						m_nFeederCase = 60; m_nFeederLoop.Set_LoopTime(5000);
+						m_strLog.Format("Feeder Y Move (Grip Zig)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+					}
+				}				
 			}
 		}
+		else
+		{
+			nMZDetectCnt[1]++;
+			nMZDetectCnt[0] = 0;
+
+			if(nMZDetectCnt[1] > 5)
+			{
+				nMZDetectCnt[0] = 0; nMZDetectCnt[1] = 0;
+
+				g_dlgWork.Set_TempSlot(eMZ::Ready, gData.nTNoPick[eMZ::Ready], FALSE);
+
+				m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
+			}
+		}		
 		break;
+	case 56:
+		gData.nTNoPick[eMZ::Ready]++;
+		if(gData.nTNoPick[eMZ::Ready] > 10)
+		{
+			gData.nTNoPick[eMZ::Ready] = 1;
+			m_nFeederCase = 0; m_nFeederLoop.Set_LoopTime(5000);
+			break;
+		}
+
+		dPosY = m_pMoveData->dFeederY[eFeeder_Y::MZReady] - 100;
+		g_objAJinAXL.Move_Absolute(AX_ZIG_FEEDER_Y, dPosY);
+		m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
+		break;
+	case 57:
+		if(g_objAJinAXL.Is_MoveDone(AX_ZIG_FEEDER_Y, dPosY))
+		{
+			dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] + m_pEquipData->dElevPitchZ * (gData.nTNoPick[eMZ::Ready] - 1);
+			g_objAJinAXL.Move_Absolute(AX_MZ_ELEVATOR_Z, dPosZ);
+			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
+		}
+		break;
+	case 58:
+		if(g_objAJinAXL.Is_MoveDone(AX_MZ_ELEVATOR_Z, dPosZ))
+		{
+			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZReady);
+			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZReady);
+			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
+		}
+		break;
+
+	case 59:		
+		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZReady) && g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZReady))
+		{			
+			m_nFeederCase = 55; m_nFeederLoop.Set_LoopTime(5000);
+		}
+		break;
+
 
 	case 60:
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZReady))
