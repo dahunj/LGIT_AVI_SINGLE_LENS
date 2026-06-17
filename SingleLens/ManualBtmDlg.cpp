@@ -210,7 +210,7 @@ void CManualBtmDlg::OnBtnBtmInspectZClick(UINT nID)
 	}
 	if(nIndex == eBtmInspect_Z::ScanStart)
 	{
-		double dStart = pEquipData->dTopStartZ;
+		double dStart = pEquipData->dBtmStartZ;
 		g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_Z, dStart - (pEquipData->dBtmPeriod/4));		
 	}
 	if(nIndex == eBtmInspect_Z::ScanEnd)

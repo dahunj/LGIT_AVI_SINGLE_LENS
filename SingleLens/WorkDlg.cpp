@@ -1380,6 +1380,23 @@ void CWorkDlg::Change_Model()
 
 void CWorkDlg::OnBnClickedButton1()
 {
+	CString strTemp;
+	for(int i = 1; i <= 141; i++)
+	{
+		strTemp.Format("%d - %d", i, g_objCommon.ConvertToAVINo(i));
+
+		g_objLogFile.Save_HandlerLog(strTemp);
+	}
+
+	g_objLogFile.Save_HandlerLog("End~~~~~~~~~~~~~~~");
+
+	for(int i = 1; i <= 144; i++)
+	{
+		strTemp.Format("%d - %d", i, g_objCommon.ConvertToMESNo(i));
+
+		g_objLogFile.Save_HandlerLog(strTemp);
+	}
+
 	//g_objSequenceMain.Job_LotStart(1);
 }
 
@@ -1691,9 +1708,10 @@ void CWorkDlg::init_LensMap()
 	//vision direction fixY
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	
-	for (int i = 0; i < gMes.nPocketCnt; i++)
+	for (int i = 0; i < 144; i++)
 	{
-		nLNo = atoi(gMes.sPocketNo[i]);
+		nLNo = i+1;
+		
 		if(pEquipData->nVisionDir == eVDir::fixY)
 		{
 			nYPos = ((nLNo-1) / gData.nLensCntX);
@@ -1705,7 +1723,17 @@ void CWorkDlg::init_LensMap()
 			nYPos = (nLNo-1) % gData.nLensCntY;
 		}	
 
-		if(gMes.sResult[i] == "OK") gData.InfoFeeder[nXPos][nYPos] = eLensState::Init;
+		if(nLNo == 32 || nLNo == 77 || nLNo == 113)
+		{
+			gData.InfoFeeder[nXPos][nYPos] = eLensState::None;
+			continue;
+		}
+		//if(gMes.sResult[i] == "OK") gData.InfoFeeder[nXPos][nYPos] = eLensState::Init;
+		
+		
+		
+		gData.InfoFeeder[nXPos][nYPos] = eLensState::Init;
+
 
 	}
 }

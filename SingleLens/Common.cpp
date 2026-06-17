@@ -1128,3 +1128,86 @@ BOOL CCommon::Get_RailAlignOut()
 	}
 	return FALSE;
 }
+
+
+
+bool CCommon::IsEmptyPocket(int oldNo)
+{
+	return oldNo == 32 || oldNo == 77 || oldNo == 113;
+}
+
+
+int CCommon::ConvertToMESNo(int nAVINo)
+{
+	const int ROWS = 16;
+	const int COLS = 9;
+
+	if (nAVINo < 1 || nAVINo > 144)
+		return -1;
+
+	if (IsEmptyPocket(nAVINo))
+		return 0;
+
+	int colBase[COLS] =
+	{
+		1, 17, 33, 49, 65, 78, 94, 110, 126
+	};
+
+	int row = (nAVINo - 1) / COLS;   // 0~15, 위에서 아래
+	int col = (nAVINo - 1) % COLS;   // 0~8
+
+	int offset = 0;
+
+	// 아래쪽부터 위로 올라가면서 빈 포켓은 건너뜀
+	for (int r = ROWS - 1; r >= 0; r--)
+	{
+		int checkOldNo = r * COLS + col + 1;
+
+		if (IsEmptyPocket(checkOldNo))
+			continue;
+
+		if (r == row)
+			return colBase[col] + offset;
+
+		offset++;
+	}
+
+	return -1;
+}
+
+
+int CCommon::ConvertToAVINo(int nMESNo)
+{
+	const int ROWS = 16;
+	const int COLS = 9;
+
+	int colBase[COLS] =
+	{
+		1, 17, 33, 49, 65, 78, 94, 110, 126
+	};
+
+	if (nMESNo < 1 || nMESNo > 141)
+		return -1;
+
+	for (int col = 0; col < COLS; col++)
+	{
+		int offset = 0;
+
+		for (int row = ROWS - 1; row >= 0; row--)
+		{
+			int oldNo = row * COLS + col + 1;
+
+			if (IsEmptyPocket(oldNo))
+				continue;
+
+			int checkNewNo = colBase[col] + offset;
+
+			if (checkNewNo == nMESNo)
+				return oldNo;
+
+			offset++;
+		}
+	}
+
+	return -1;
+}

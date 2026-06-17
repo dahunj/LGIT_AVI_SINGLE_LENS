@@ -292,6 +292,7 @@ void CMesAgent::Get_TrayID_Confirm(CString sStrings)
 	{
 		AfxExtractSubString(strTemp[2], sStrings, i*2 + 4, chSep);
 		AfxExtractSubString(strTemp[3], sStrings, i*2 + 5, chSep);
+
 		gMes.sPocketNo[i] = strTemp[2];
 		gMes.sResult[i] = strTemp[3];
 	}

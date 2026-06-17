@@ -1,4 +1,4 @@
-// Common.h : 헤더 파일
+// Common.h : Ci´o ÆAAI
 //
 #pragma once
 
@@ -167,9 +167,11 @@ public:
 	void Set_ElevCVRunCW();
 	void Set_ElevCVStop();
 
+	//MES와 AVI 포켓 번호 매핑 규칙 
+	bool IsEmptyPocket(int oldNo);
 
-	
-
+	int ConvertToMESNo(int nAVINo);
+	int ConvertToAVINo(int nMESNo);
 };
 
 extern CCommon g_objCommon;
