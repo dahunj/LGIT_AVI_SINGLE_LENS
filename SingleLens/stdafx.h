@@ -85,18 +85,12 @@
 	#pragma comment(lib, "CSGridR.lib")
 #endif
 
-#define MAIN_VERSION	_T("V 0.0.0.20b")
-
-
+#define MAIN_VERSION	_T("V 0.0.0.23b")
 
 
 
 //---------------------------------
-//#define AJIN_BOARD_USE
-
-
-
-
+#define AJIN_BOARD_USE
 
 
 
@@ -270,7 +264,8 @@ typedef struct
 
 	int		nSelectNo;
 
-
+	double  dDeltaX[3];
+	double  dDeltaY[3];
 
 } GLOVAL_DATA;
 

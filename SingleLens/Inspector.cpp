@@ -221,7 +221,7 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 	int nTNo = atoi(sTrayNo) - 1;	// Tray Index
 	int	nLNo = atoi(sLensNo) - 1;	// CM Index
 
-	if (nTNo < 0 || nTNo > 10 || nLNo < 0 || nLNo > ZIG_X*ZIG_Y) { g_objCommon.Show_Error(6101); return; }
+	if (nMNo < 0 || nMNo > 3 ||nTNo < 0 || nTNo > 10 || nLNo < 0 || nLNo > ZIG_X*ZIG_Y) { g_objCommon.Show_Error(6101); return; }
 
 	int nV = (sGbn == "TC" ? eVision::TC : (sGbn == "BC" ? eVision::BC : -1));
 	if (nV == -1) { g_objCommon.Show_Error(6102); return; }
@@ -229,8 +229,6 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 
 	gData.cJudgeCode[nMNo][nTNo][nLNo][nV] = *(LPSTR)(LPCTSTR)sJudge;
 	
-	
-
 	int nPreInfo = gData.nInspectInfo[nMNo][nTNo][nLNo];
 
 	if (sJudge == "N") 
@@ -242,6 +240,10 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 	else if (sJudge != "G")  // Good
 	{ 
 		if (nPreInfo < 2 || nPreInfo > 8) gData.nInspectInfo[nMNo][nTNo][nLNo] = 2;  
+	}	
+	else if (sJudge == "G")  // Good
+	{ 
+		if (nPreInfo < 2 || nPreInfo > 8) gData.nInspectInfo[nMNo][nTNo][nLNo] = 1;  
 	}	
 
 	gData.byInspectDone[nMNo][nTNo][nLNo] |= (1 << nV);
@@ -310,6 +312,40 @@ void CInspector::Get_TriggerRequest(int nVPc, CString sGbn, CString sMZNo, CStri
 		g_objSequenceMain.Set_MainRunCase(AUTO_BTM_INSPECT, eBtmBr::Trigger);
 	}
 }
+
+void CInspector::Get_AlignRequest(int nVPc, CString sMZID, CString sGbn, CString sMGZNo, CString sZigNo, CString sDeltaX, CString sDeltaY)
+{
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	if(sGbn == "TC" && pEquipData->bUseTopVision && !gData.bScanDone[eVision::TC])
+	{
+		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_TOP_INSPECT);
+		if(nCase >= 5 && nCase < 10)
+		{
+			gData.dDeltaX[eVision::TC] = atof(sDeltaX);
+			gData.dDeltaY[eVision::TC] = atof(sDeltaY);
+		}
+		else
+		{
+			g_objLogFile.Save_InspectorLog("[Align Fail]- TC");
+		}
+	}
+	
+	if(sGbn == "BC" && pEquipData->bUseTopVision && !gData.bScanDone[eVision::BC])
+	{
+		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_BTM_INSPECT);
+		if(nCase >= 5 && nCase < 10)
+		{
+			gData.dDeltaX[eVision::BC] = atof(sDeltaX);
+			gData.dDeltaY[eVision::BC] = atof(sDeltaY);
+		}
+		else
+		{
+			g_objLogFile.Save_InspectorLog("[Align Fail]- BC");
+		}
+	}	
+}
+
 
 void CInspector::Get_ReloadRequest(int nVPc, CString sLotID, CString sGbn)
 {

@@ -260,20 +260,20 @@ void CAJinAXL::Read_MotionStatus()
 		m_Status[i].bHom = (dwStatus == HOME_SUCCESS ? TRUE : FALSE);
 	}
 
-	int	nIndexPos = 0;
-	if      (!m_DX02.iIndexPosBit0 &&  !m_DX02.iIndexPosBit1 && !m_DX02.iIndexPosBit2) nIndexPos = 1;
-	else if ( m_DX02.iIndexPosBit0 &&  !m_DX02.iIndexPosBit1 && !m_DX02.iIndexPosBit2) nIndexPos = 2;
-	else if (!m_DX02.iIndexPosBit0 &&   m_DX02.iIndexPosBit1 && !m_DX02.iIndexPosBit2) nIndexPos = 3;
-	else if ( m_DX02.iIndexPosBit0 &&   m_DX02.iIndexPosBit1 && !m_DX02.iIndexPosBit2) nIndexPos = 4;
-	else if (!m_DX02.iIndexPosBit0 &&  !m_DX02.iIndexPosBit1 &&  m_DX02.iIndexPosBit2) nIndexPos = 5;
-	else if ( m_DX02.iIndexPosBit0 &&  !m_DX02.iIndexPosBit1 &&  m_DX02.iIndexPosBit2) nIndexPos = 6;
-	else if (!m_DX02.iIndexPosBit0 &&   m_DX02.iIndexPosBit1 &&  m_DX02.iIndexPosBit2) nIndexPos = 7;
-	else if ( m_DX02.iIndexPosBit0 &&   m_DX02.iIndexPosBit1 &&  m_DX02.iIndexPosBit2) nIndexPos = 8;
+	//int	nIndexPos = 0;
+	//if      (!m_DX02.iIndexPosBit0 &&  !m_DX02.iIndexPosBit1 && !m_DX02.iIndexPosBit2) nIndexPos = 1;
+	//else if ( m_DX02.iIndexPosBit0 &&  !m_DX02.iIndexPosBit1 && !m_DX02.iIndexPosBit2) nIndexPos = 2;
+	//else if (!m_DX02.iIndexPosBit0 &&   m_DX02.iIndexPosBit1 && !m_DX02.iIndexPosBit2) nIndexPos = 3;
+	//else if ( m_DX02.iIndexPosBit0 &&   m_DX02.iIndexPosBit1 && !m_DX02.iIndexPosBit2) nIndexPos = 4;
+	//else if (!m_DX02.iIndexPosBit0 &&  !m_DX02.iIndexPosBit1 &&  m_DX02.iIndexPosBit2) nIndexPos = 5;
+	//else if ( m_DX02.iIndexPosBit0 &&  !m_DX02.iIndexPosBit1 &&  m_DX02.iIndexPosBit2) nIndexPos = 6;
+	//else if (!m_DX02.iIndexPosBit0 &&   m_DX02.iIndexPosBit1 &&  m_DX02.iIndexPosBit2) nIndexPos = 7;
+	//else if ( m_DX02.iIndexPosBit0 &&   m_DX02.iIndexPosBit1 &&  m_DX02.iIndexPosBit2) nIndexPos = 8;
 
-	gData.nIndexPos = nIndexPos;
+	//gData.nIndexPos = nIndexPos;
 
-	gData.nIndexPos = gData.nIndexPos - 1;
-	if(gData.nIndexPos == 0) gData.nIndexPos= 8;
+	//gData.nIndexPos = gData.nIndexPos - 1;
+	//if(gData.nIndexPos == 0) gData.nIndexPos= 8;
 #endif
 }
 
@@ -299,7 +299,7 @@ void CAJinAXL::Set_EncoderType(int nAxis, int nType)
 	if (!Is_AbsoluteType(nAxis)) return;
 	if (nType == 0) return;		// RTEX일 경우 Incremental 모드 설정을 하지 않음
 	AxmSignalSetEncoderType(nAxis, nType);	// ENCODER_TYPE_INCREMENTAL(0), ENCODER_TYPE_ABSOLUTE(1)
-	Sleep(10);		// 추가 2017.07.28
+	theApp.uSleep(10);		// 추가 2017.07.28
 #endif
 }
 
@@ -399,9 +399,9 @@ void CAJinAXL::Alarm_Reset(int nAxis)
 	int nAxStart = (nAxis == -1 ? 0 : nAxis);
 	int nAxEnd = (nAxis == -1 ? AXIS_COUNT : nAxis + 1);
 	for (int i = nAxStart; i < nAxEnd; i++) AxmMoveEStop(i);
-	Sleep(200);
+	theApp.uSleep(200);
 	for (int i = nAxStart; i < nAxEnd; i++) AxmSignalServoAlarmReset(i, TRUE);
-	Sleep(200);
+	theApp.uSleep(200);
 	for (int i = nAxStart; i < nAxEnd; i++) AxmSignalServoAlarmReset(i, FALSE);
 #endif
 }
@@ -510,7 +510,7 @@ void CAJinAXL::Stop_Scan(int nAxis)
 {
 #if defined(AJIN_BOARD_USE)
 	AxcTriggerSetEnable(0, DISABLE);
-	Sleep(5);
+	theApp.uSleep(5);
 	AxcTriggerSetEnable(1, DISABLE);
 #endif
 }
@@ -519,7 +519,7 @@ void CAJinAXL::Clear_Scan(int nCh)
 {
 #if defined(AJIN_BOARD_USE)
 	if(nCh == 0) AxcStatusSetActPos(0,0.0);
-	Sleep(5);
+	theApp.uSleep(5);
 	if(nCh == 1 ) AxcStatusSetActPos(1,0.0);
 #endif
 }
@@ -597,7 +597,7 @@ UINT CAJinAXL::Thread_AJin(LPVOID lpVoid)
 	while (g_objAJinAXL.m_bThreadAJin) {
 		g_objAJinAXL.Read_Input();
 		g_objAJinAXL.Read_MotionStatus();
-		Sleep(5);
+		theApp.uSleep(5);
 	}
 	g_objAJinAXL.m_bThreadAJin = FALSE;
 	g_objAJinAXL.m_pThreadAJin = NULL;
@@ -716,7 +716,7 @@ void CAJinAXL::Sim_SetMotion(int nNo, int nAxis, double dPos)
 	t.id = 0;
 
 	proc.Enqueue(t);
-	::Sleep(SIM_WAITTIMEM);		
+	::theApp.uSleep(SIM_WAITTIMEM);		
 }
 
 
@@ -804,7 +804,7 @@ UINT __cdecl CAJinAXL::WorkerProc(LPVOID pParam)
 	{	
 		while(TRUE)
 		{	
-			::Sleep(SIM_WAITTIMEM);
+			::theApp.uSleep(SIM_WAITTIMEM);
 
 			if(nAxis == AX_MAIN_INDEX_R)
 			{
@@ -846,7 +846,7 @@ UINT __cdecl CAJinAXL::WorkerProc(LPVOID pParam)
 
 		while(TRUE)
 		{
-			::Sleep(SIM_WAITTIMEM);
+			::theApp.uSleep(SIM_WAITTIMEM);
 
 
 			if(nAxis == AX_MAIN_INDEX_R)
@@ -932,7 +932,7 @@ void CAJinAXL::NotifyDone(int id)
 
 void CAJinAXL::Sim_SetOutToIn(int nNo)
 {
-	Sleep(SIM_WAITTIMES);
+	theApp.uSleep(SIM_WAITTIMES);
 	
 	if(nNo == 0)
 	{

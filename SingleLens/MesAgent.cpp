@@ -49,7 +49,7 @@ void CMesAgent::Initialize()
 	if (m_bConnected) return;
 
 	BOOL ret = m_Client.Open_Socket(MES_AGENT_IP, MES_AGENT_PORT, this);	
-	Sleep(2000);
+	theApp.uSleep(2000);
 
 	if(ret)
 	{
@@ -73,7 +73,7 @@ void CMesAgent::Terminate()
 	m_bHostOnline = FALSE;
 	m_Client.Close_Socket();
 
-	g_objLogFile.Save_MesAgentLog("MesAgent Terminate.");	Sleep(500);
+	g_objLogFile.Save_MesAgentLog("MesAgent Terminate.");	theApp.uSleep(500);
 }
 
 

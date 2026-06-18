@@ -155,7 +155,7 @@ public:
 	void Init_InspectInfo(int nMZNo, int nTNo, int nLensNo);
 
 
-	BOOL Check_InspectDone(const CString& sZigID,int nMZNo, int sSlotNo, int sLensNo, int& nInfo, DWORD dwStart);
+	BOOL Check_InspectDone(const CString& sZigID,int nMZNo, int sSlotNo, int sLensNo, int& nInfo);
 	
 	void Init_MZSlot(int nSlotNo, int nX, int nY);
 

@@ -89,6 +89,10 @@ public:
 	CStaticCS		m_stcOperId;
 	CStaticCS		m_stcMesConnect;
 	CStaticCS		m_stcMesOnline;
+
+	CButton m_Btn1;
+	CButton m_Btn2;
+	CButton m_Btn_Simul;
 	
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
@@ -169,6 +173,9 @@ private:
 	void Reset_AlarmLog();
 
 public:
+	CString strLog;
+
+
 	void Set_AutoRun(BOOL bAutoRun);
 	void Set_AutoRunStatus(BOOL bAutoRun) { m_bAutoRunning = bAutoRun; }
 	void Set_State(int nState);
@@ -215,6 +222,7 @@ public:
 
 	
 	afx_msg void OnBnClickedChkSimul();
+	
 };
 
 

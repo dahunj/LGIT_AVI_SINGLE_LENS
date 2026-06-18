@@ -68,7 +68,7 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_GRD_TOP_VISION, m_grdTopVision);
 	DDX_Control(pDX, IDC_GRD_BTM_VISION, m_grdBtmVision);
 	DDX_Control(pDX, IDC_GRD_MARKING, m_grdMarking);
-	
+
 	DDX_Control(pDX, IDC_STC_BARCODE_MGZ, m_stcBarcodeMGZ);	
 	DDX_Control(pDX, IDC_STC_BARCODE_CTZIG, m_stcBarcodeCtZig);
 
@@ -91,6 +91,9 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	m_pDY02 = g_objAJinAXL.Get_pDY02();
 	m_pDY03 = g_objAJinAXL.Get_pDY03();
 
+	DDX_Control(pDX, IDC_BUTTON1, m_Btn1);
+	DDX_Control(pDX, IDC_BUTTON2, m_Btn2);
+	DDX_Control(pDX, IDC_BTN_SIMUL1, m_Btn_Simul);
 }
 
 BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
@@ -237,6 +240,15 @@ BOOL CWorkDlg::OnInitDialog()
 	m_chkNoTrayMode.ShowWindow(SW_HIDE);
 	m_chkSimulMode.ShowWindow(SW_HIDE);
 
+#ifndef AJIN_BOARD_USE
+	m_Btn_Simul.ShowWindow(SW_SHOW);
+	m_Btn1.ShowWindow(SW_SHOW);
+	m_Btn2.ShowWindow(SW_SHOW);
+#else
+	m_Btn_Simul.ShowWindow(SW_HIDE);
+	m_Btn1.ShowWindow(SW_HIDE);
+	m_Btn2.ShowWindow(SW_HIDE);
+#endif
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -469,6 +481,7 @@ void CWorkDlg::OnStcZigIDClick(UINT nID)
 void CWorkDlg::OnBnClickedRdoMZID(UINT nID)
 {
 	int ID = nID - IDC_RDO_MZ_ID_0;
+	 
 
 	if (m_rdoWorkStart.GetCheck()) {
 		if (gData.nLanguage == 0) AfxMessageBox(_T("장비 Stop 상태에서 진행이 가능합니다....."));
@@ -492,11 +505,18 @@ void CWorkDlg::OnBnClickedRdoMZID(UINT nID)
 	{	
 		if (g_objCommon.Show_MsgBox(2, "Data를 삭제 하시겠습니까?") != IDOK) return;
 		m_stcMZID[ID].SetWindowText(""); nTotalClick = 0;
+		strLog.Format("[Work Mode]MGZ ID Deleted - %d", ID);
+		g_objLogFile.Save_HandlerLog(strLog);
+
 	}
 
 	if(nTotalClick == 2)
 	{
 		if (g_objCommon.Show_MsgBox(2, "전체 Data를 삭제 하시겠습니까?") != IDOK) return;
+		
+		strLog.Format("[Work Mode]ALL MGZ ID Deleted - %d", ID);
+		g_objLogFile.Save_HandlerLog(strLog);
+		
 		m_stcMZID[ID].SetWindowText(""); nTotalClick = 0;
 
 		for(int i = 0; i < 10; i++)
@@ -526,6 +546,11 @@ void CWorkDlg::OnBnClickedRdoZigID(UINT nID)
 		m_rdoSelectNo[ID].SetCheck(FALSE);
 		return;
 	}
+
+
+	strLog.Format("[Work Mode]ZIG ID Rdo Clicked - %d", ID);
+	g_objLogFile.Save_HandlerLog(strLog);
+	
 
 	static int nTotalClick = 0;
 	static int nClickNo[60] = {0,};
@@ -586,6 +611,9 @@ void CWorkDlg::OnBnClickedRdoZigID(UINT nID)
 	nTotalClick = 0;
 	m_stcZigID[ID].SetWindowText("");
 	m_stcLensCnt[ID].SetWindowText("");
+
+	strLog.Format("[Work Mode]ZIG ID Deleted - %d", ID);
+	g_objLogFile.Save_HandlerLog(strLog);
 
 }
 
@@ -2037,6 +2065,8 @@ void CWorkDlg::OnStnClickedStcHidden()
 
 void CWorkDlg::OnBnClickedChkNoTray()
 {
+	g_objLogFile.Save_HandlerLog("[Work] Aging Mode checked");
+	
 	gData.bAgingMode = m_chkNoTrayMode.GetCheck();
 	InsertMGZTestInfo();
 }
@@ -2045,5 +2075,7 @@ void CWorkDlg::OnBnClickedChkNoTray()
 
 void CWorkDlg::OnBnClickedChkSimul()
 {
+	g_objLogFile.Save_HandlerLog("[Work] Simul Mode checked");
+
 	gData.bSimulMode = m_chkSimulMode.GetCheck();
 }

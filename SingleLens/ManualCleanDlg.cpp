@@ -285,7 +285,7 @@ UINT CManualCleanDlg::Thread_TopScan(LPVOID lpVoid)
 
 	while (pOwner->m_bThreadTopScan) {
 		if (!pOwner->TopScan_Run()) break;
-		Sleep(5);
+		theApp.uSleep(5);
 	}
 	pOwner->m_bThreadTopScan = FALSE;
 	pOwner->m_pThreadTopScan = NULL;

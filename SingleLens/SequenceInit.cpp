@@ -157,7 +157,7 @@ UINT CSequenceInit::Thread_Initial(LPVOID lpVoid)
 
 		if (!g_objSequenceInit.Initial_Simulation()) break;
 
-		Sleep(10);
+		theApp.uSleep(10);
 	}
 	g_objSequenceInit.m_bThreadInitial = FALSE;
 	g_objSequenceInit.m_pThreadInitial = NULL;
@@ -184,10 +184,10 @@ BOOL CSequenceInit::Initial_MainInit()
 	case 2:		
 		if (!m_pDX00->iElvMZExist1 && !m_pDX00->iElvMZExist2) 
 		{
-			g_objCommon.Set_ElevLift1Out();Sleep(5);
-			g_objCommon.Set_ElevLift2Out();Sleep(5);
-			g_objCommon.Set_ElevLift1Down();Sleep(5);
-			g_objCommon.Set_ElevLift2Down();Sleep(5);
+			g_objCommon.Set_ElevLift1Out();theApp.uSleep(5);
+			g_objCommon.Set_ElevLift2Out();theApp.uSleep(5);
+			g_objCommon.Set_ElevLift1Down();theApp.uSleep(5);
+			g_objCommon.Set_ElevLift2Down();theApp.uSleep(5);
 			m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
 		}
 		break;
@@ -310,15 +310,15 @@ BOOL CSequenceInit::Initial_MZ_Elevator()
 		if (!m_pDX00->iElvMZExist1 && !m_pDX00->iElvMZExist2) 
 		{			
 			g_objCommon.Set_ElevCVStop();
-			Sleep(10);
+			theApp.uSleep(10);
 			g_objCommon.Set_ElevLift1Out();
-			Sleep(10);
+			theApp.uSleep(10);
 			g_objCommon.Set_ElevLift1Down();
-			Sleep(10);
+			theApp.uSleep(10);
 			g_objCommon.Set_ElevLift2Out();
-			Sleep(10);
+			theApp.uSleep(10);
 			g_objCommon.Set_ElevLift2Down();
-			Sleep(10);
+			theApp.uSleep(10);
 			
 			g_objAJinAXL.Set_EncoderType(AX_MZ_ELEVATOR_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_MZ_ELEVATOR_Z, 1);	// Abs
@@ -506,7 +506,7 @@ BOOL CSequenceInit::Initial_TrayPicker()
 	case 15:
 		{
 			g_objCommon.Set_TrayPickMasterOut();
-			Sleep(5);
+			theApp.uSleep(5);
 			g_objCommon.Set_TrayPickSlaveOut();			
 			m_niTrayPickerCase++; m_tiTrayPickerLoop.Set_LoopTime(25000);
 		}
@@ -832,6 +832,8 @@ BOOL CSequenceInit::Initial_MarkUnit()
 	case 11:		// Tray Picker Slave Out 
 		if(g_objAJinAXL.Is_Home(AX_MARK_UNIT_X))
 		{			
+			m_pDY02->oMarkPenUp = TRUE; m_pDY02->oMarkPenDown = FALSE; 
+			g_objAJinAXL.Write_Output(2);
 			g_objCommon.Move_Position(AX_MARK_UNIT_X, eMark_X::Ready);
 			m_niMarkUnitCase++; m_tiMarkUnitLoop.Set_LoopTime(5000);
 		}
@@ -939,7 +941,7 @@ BOOL CSequenceInit::Initial_Simulation()
 	return TRUE;
 #endif
 
-	Sleep(SIM_WAITTIMES);
+	theApp.uSleep(SIM_WAITTIMES);
 
 	if(m_niMZElevCase == 2)
 	{

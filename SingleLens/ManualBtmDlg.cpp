@@ -357,7 +357,7 @@ UINT CManualBtmDlg::Thread_BtmScan(LPVOID lpVoid)
 
 	while (pOwner->m_bThreadBtmScan) {
 		if (!pOwner->BtmScan_Run()) break;
-		Sleep(5);
+		theApp.uSleep(5);
 	}
 	pOwner->m_bThreadBtmScan = FALSE;
 	pOwner->m_pThreadBtmScan = NULL;

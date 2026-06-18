@@ -612,7 +612,7 @@ void CManualElevDlg::OnBnClickedBtnMzBarcodeInit()
 	DWORD dTemp = GetTickCount();
 	g_objBarcodeLot_Cognex.Terminate(); 
 	while (TRUE) { if (GetTickCount() - dTemp > 2000) break;}
-	BOOL nRet = g_objBarcodeLot_Cognex.Initialize();	Sleep(500);
+	BOOL nRet = g_objBarcodeLot_Cognex.Initialize();	theApp.uSleep(500);
 
 	if(nRet) AfxMessageBox("Success");
 	else AfxMessageBox("fail");

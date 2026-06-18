@@ -256,6 +256,9 @@ void CSetupEquipDlg::OnStnClickedStcEquipName()
 	if (g_objCommon.Show_KeyPad(strKey) != IDOK) return;
 
 	m_stcEquipName.SetWindowText(strKey);
+
+	m_strLog.Format("[Equip Mode] EquipName - %s ", strKey);
+	g_objLogFile.Save_HandlerLog(m_strLog);
 }
 
 void CSetupEquipDlg::OnStnClickedStcMotionCheck()
@@ -265,6 +268,10 @@ void CSetupEquipDlg::OnStnClickedStcMotionCheck()
 	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
 
 	m_stcMotionCheck.SetWindowText(strNew);
+	
+	m_strLog.Format("[Equip Mode] Motion Check Changed - %s ", strNew);
+	g_objLogFile.Save_HandlerLog(m_strLog);
+
 }
 
 
@@ -275,8 +282,11 @@ void CSetupEquipDlg::OnStcDelayAddClick(UINT nID)
 	CString strOld, strNew;
 	m_stcDelayAdd[ID].GetWindowText(strOld);
 	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
-
+		
 	m_stcDelayAdd[ID].SetWindowText(strNew);
+
+	m_strLog.Format("[Equip Mode] Delay Add - %s ", strNew);
+	g_objLogFile.Save_HandlerLog(m_strLog);	
 }
 
 
@@ -599,6 +609,9 @@ void CSetupEquipDlg::OnStcZigDataClick(UINT nID)
 	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
 
 	m_stcZigData[ID].SetWindowText(strNew);
+
+	m_strLog.Format("[Equip Mode] Zig Data Click : %d - %s ", ID, strNew);
+	g_objLogFile.Save_HandlerLog(m_strLog);
 }
 
 
@@ -612,6 +625,9 @@ void CSetupEquipDlg::OnStcTriggerTopClick(UINT nID)
 	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
 
 	m_stcTriggerTop[ID].SetWindowText(strNew);
+
+	m_strLog.Format("[Equip Mode] Trigger Top Data : %d - %s ", ID, strNew);
+	g_objLogFile.Save_HandlerLog(m_strLog);
 }
 
 
@@ -625,6 +641,9 @@ void CSetupEquipDlg::OnStcTriggerBtmClick(UINT nID)
 	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
 
 	m_stcTriggerBtm[ID].SetWindowText(strNew);
+
+	m_strLog.Format("[Equip Mode] Trigger Btm Data : %d - %s ", ID, strNew);
+	g_objLogFile.Save_HandlerLog(m_strLog);
 }
 
 
@@ -637,6 +656,9 @@ void CSetupEquipDlg::OnStcElvDataClick(UINT nID)
 	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
 
 	m_stcElvData[ID].SetWindowText(strNew);
+
+	m_strLog.Format("[Equip Mode] Elevator Data : %d - %s ", ID, strNew);
+	g_objLogFile.Save_HandlerLog(m_strLog);
 }
 
 
@@ -649,6 +671,9 @@ void CSetupEquipDlg::OnStnClickedStcDoorlockTime()
 	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
 
 	m_stcDoorLockTime.SetWindowText(strNew);
+
+	m_strLog.Format("[Equip Mode] Door lock Time - %s ", strNew);
+	g_objLogFile.Save_HandlerLog(m_strLog);
 }
 
 
@@ -664,7 +689,8 @@ void CSetupEquipDlg::OnBnClickedBtnModelAdd()
 		sPathSource += _T("\\");
 		sPathSource += strModel;
 
-		if (GetFileAttributes(sPathSource) == -1) {	// 디렉토리 없음
+		if (GetFileAttributes(sPathSource) == -1) // 디렉토리 없음
+		{	
 			g_objLogFile.Create_Folder(sPathSource);
 
 			CString strOriginFile, strTargetFile;
@@ -675,6 +701,9 @@ void CSetupEquipDlg::OnBnClickedBtnModelAdd()
 				AfxMessageBox("EquipData.ini File Copy Fail!!!");
 				return;
 			}
+
+			m_strLog.Format("[Equip Mode] Model Copied");
+			g_objLogFile.Save_HandlerLog(m_strLog);
 /*
 			strOriginFile = gsCurrentDir + "\\System\\MoveData.ini";
 			strTargetFile = sPathSource + "\\MoveData.ini";
@@ -683,13 +712,20 @@ void CSetupEquipDlg::OnBnClickedBtnModelAdd()
 				return;
 			}
 */
-		} else {
+		}
+		else
+		{
 			if (gData.nLanguage == 0) AfxMessageBox("이미 같은 모델이 있습니다.");
 			else					  AfxMessageBox("You already have the same model.");
 		}
 		Save_EquipData();
 
 		Display_EquipData();
+
+		m_strLog.Format("[Equip Mode] Model Added");
+		g_objLogFile.Save_HandlerLog(m_strLog);
+
+
 	}
 }
 
@@ -734,6 +770,11 @@ void CSetupEquipDlg::OnCbnSelchangeCboModelChange()
 		//		g_objDataManager.Read_ModelMoveData(sPathSource);
 
 		Display_EquipData();
+
+		m_strLog.Format("[Equip Mode] Model Changed : %s ", sPathSource);
+		g_objLogFile.Save_HandlerLog(m_strLog);
+
+
 	}
 }
 
@@ -753,23 +794,38 @@ void CSetupEquipDlg::OnStnClickedStcCleanerData0(UINT nID)
 	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
 
 	m_stcCleanerData.SetWindowText(strNew);
+
+	m_strLog.Format("[Equip Mode] Clenaer Data - %s ", strNew);
+	g_objLogFile.Save_HandlerLog(m_strLog);
 }
 
 
 void CSetupEquipDlg::OnBnClickedChkUseBarcodeMgz()
 {
 	m_chkUseMES.SetCheck(FALSE);
+
+	m_strLog.Format("[Equip Mode] Use MGZ Barcode Checked");
+	g_objLogFile.Save_HandlerLog(m_strLog);
+
+
 }
 
 
 void CSetupEquipDlg::OnBnClickedChkUseBarcodeCtzig()
 {
 	m_chkUseMES.SetCheck(FALSE);
+
+	m_strLog.Format("[Equip Mode] Use Tray Barcode Checked");
+	g_objLogFile.Save_HandlerLog(m_strLog);
+
 }
 
 
 void CSetupEquipDlg::OnBnClickedChkUseMes()
 {
+	m_strLog.Format("[Equip Mode] Use MES Checked");
+	g_objLogFile.Save_HandlerLog(m_strLog);
+
 	m_chkUseBarcodeCtZig.SetCheck(FALSE);
 	m_chkUseBarcodeMGZ.SetCheck(FALSE);
 }
