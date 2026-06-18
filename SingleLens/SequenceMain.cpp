@@ -468,7 +468,7 @@ BOOL CSequenceMain::LoadConveyorRun()
 
 	if(m_nLoadConveyorCase == eLoadCVBr::Check && 
 		(m_pDX00->iLdCVMZExist1R || m_pDX00->iLdCVMZExist2 || m_pDX00->iLdCVMZExist3 || m_pDX00->iLdCVMZExist4 || m_pDX00->iLdCVMZExist5)
-		&& (g_dlgWork.SearchMZCVInfo() > 0 || (m_pEquipData->bUseMES && !gData.bSimulMode ) ))
+		&& (g_dlgWork.SearchMZCVInfo() > 0 || (m_pEquipData->bUseMES  ) ))
 	{
 		m_nLoadConveyorCase = 1; m_nLoadConveyorLoop.Set_LoopTime(5000);
 	}
@@ -2939,6 +2939,7 @@ BOOL CSequenceMain::MarkUnitRun()
 			g_objAJinAXL.Is_Done(AX_MARK_UNIT_X) &&
 			g_objAJinAXL.Is_Done(AX_MARK_UNIT_Z))
 		{
+			gData.dwInspectWait = GetTickCount();
 			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 		}		
 		break;
@@ -3876,17 +3877,17 @@ BOOL CSequenceMain::Check_InspectDone(const CString& sZigID, int nMZNo, int nTNo
 	DWORD dwTick = GetTickCount();
 	if (!bDone) 
 	{
-		/*if (m_pEquipData->bUseInspectSkip || ((dwTick - 0)  > m_pEquipData->nDelayAdd[delay::InspectionWait]))
+		if (m_pEquipData->bUseInspectSkip || ((dwTick - gData.dwInspectWait)  > 1500)) // m_pEquipData->nDelayAdd[delay::InspectionWait]
 		{
-		gData.nInspectInfo[nMNo][nSlot][nLens] = eLensInfo::NG;
-		nInfo = gData.nInspectInfo[nMNo][nSlot][nLens];
-		m_strLog.Format("Judge Time Over, SlotNo(%d), LensNo(%d)", nSlot+1, nLens+1);
-		g_objLogFile.Save_HandlerLog(m_strLog);
+			gData.nInspectInfo[nMNo][nSlot][nLens] = eLensInfo::NG;
+			nInfo = gData.nInspectInfo[nMNo][nSlot][nLens];
+			m_strLog.Format("Judge Time Over, SlotNo(%d), LensNo(%d)", nSlot+1, nLens+1);
+			g_objLogFile.Save_HandlerLog(m_strLog);
 		}
 		else
 		{
-		return FALSE;
-		}*/
+			return FALSE;
+		}
 	}		
 
 	nInfo = gData.nInspectInfo[nMNo][nSlot][nLens];

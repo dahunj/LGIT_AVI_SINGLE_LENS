@@ -610,17 +610,6 @@ void CLogFile::Save_Interlock(int nType)
 
 	SYSTEMTIME time;
 	GetLocalTime(&time);
-
-	if (nType == 1)	{ if (gDoorLock.nWriteHH == time.wHour) return; }
-	if (nType == 1)	
-		strTime.Format("%04d-%02d-%02d %02d:00:00.000", time.wYear, time.wMonth, time.wDay, time.wHour);
-	else			
-		strTime.Format("%04d-%02d-%02d %02d:%02d:%02d.%03d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
-
-	sTitle1 = "Door I/L 11,Door I/L 12,Door I/L 13,Door I/L 14,Door I/L 15,Door I/L 16,Door I/L 17,Door I/L 18,Door I/L 19,Door I/L 20,Door I/L 21,Door I/L 22,Door I/L 23,Door I/L 24,Door I/L 25,Door I/L 26,Door I/L 27,Door I/L 28,Door I/L 29,Door I/L 30";
-	sTitle.Format("time,station,lotNum,barcode,SWversion,State,site,Line,Machine,operator,result,Interlock,Interlock off Time,Interlock Coverage,Door I/L 1,Door I/L 2,Door I/L 3,Door I/L 4,Door I/L 5,Door I/L 6,Door I/L 7,Door I/L 8,Door I/L 9,Door I/L 10,%s\r\n", sTitle1);
-	strFile.Format("%sGSY827ADOOR1_%04d%02d%02d%02d_InterlockResult.csv", strPath, time.wYear, time.wMonth, time.wDay, time.wHour);
-
 	
 }
 

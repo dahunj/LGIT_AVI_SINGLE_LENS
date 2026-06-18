@@ -366,9 +366,10 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 			m_bLoadCVRun = m_pDY00->oLoadCVRun;
 			m_bUnloadCVRun = m_pDY01->oUldCvRun;
 
-			g_objCommon.Set_LoadCVStop();
-			g_objCommon.Set_ElevCVStop();
+			g_objCommon.Set_LoadCVStop(); theApp.uSleep(5);
+			g_objCommon.Set_ElevCVStop(); theApp.uSleep(5);
 			g_objSequenceMain.End_MainRunThread();
+			theApp.uSleep(5);
 
 			if(pEquipData->bUseMES) g_objMesAgent.Set_EquipState(eEquipState::DOWN);	//Down
 			
@@ -379,7 +380,7 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 			m_rdoWorkStart.Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
 			m_rdoWorkStop.Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
 
-			g_objCommon.Save_MotionPos();
+			if(!gData.bSimulMode) g_objCommon.Save_MotionPos();
 
 			pMainDlg->Enable_ModeButton(TRUE);
 			g_objCommon.Locking_MainDoor(FALSE);

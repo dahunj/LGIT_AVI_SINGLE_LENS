@@ -85,12 +85,12 @@
 	#pragma comment(lib, "CSGridR.lib")
 #endif
 
-#define MAIN_VERSION	_T("V 0.0.0.23b")
+#define MAIN_VERSION	_T("V 0.0.0.24b")
 
 
 
 //---------------------------------
-#define AJIN_BOARD_USE
+//#define AJIN_BOARD_USE
 
 
 
@@ -266,6 +266,8 @@ typedef struct
 
 	double  dDeltaX[3];
 	double  dDeltaY[3];
+
+	DWORD	dwInspectWait;
 
 } GLOVAL_DATA;
 
