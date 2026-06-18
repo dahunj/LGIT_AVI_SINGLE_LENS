@@ -1679,9 +1679,7 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo, int nDir)
 						}
 					}			
 				}
-			}
-
-			
+			}			
 		}
 		else if(nTo == eMZ::Load && nFrom == eMZ::Ready)
 		{
