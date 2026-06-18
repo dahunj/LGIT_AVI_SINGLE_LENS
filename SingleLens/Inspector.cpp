@@ -112,7 +112,7 @@ void CInspector::Receive_Command(int nVPc, CString sCommand)
 	}
 	else if (strCmd == "LOADALIGN")
 	{
-		if (strOp == "COMPLETE") Get_AlignRequest(nVPc, strA[0], strA[1], strA[2], strA[3], strA[4], strA[5]);
+		//if (strOp == "COMPLETE") Get_AlignRequest(nVPc, strA[0], strA[1], strA[2], strA[3], strA[4], strA[5]);
 	}
 	else if (strCmd == "FOB")
 	{
