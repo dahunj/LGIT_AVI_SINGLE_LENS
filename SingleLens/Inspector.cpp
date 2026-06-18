@@ -34,7 +34,7 @@ CInspector::~CInspector()
 
 BEGIN_MESSAGE_MAP(CInspector, CWnd)
 
-	
+
 END_MESSAGE_MAP()
 
 // CInspector 메시지 처리기입니다.
@@ -100,8 +100,7 @@ void CInspector::Receive_Command(int nVPc, CString sCommand)
 	} 
 	else if (strCmd == "POSITION")
 	{
-		if (strOp == "REQUEST") Get_PositionRequest(nVPc, strA[0]);
-	
+		if (strOp == "REQUEST") Get_PositionRequest(nVPc, strA[0]);	
 	}
 	else if (strCmd == "ERROR")
 	{
@@ -110,6 +109,10 @@ void CInspector::Receive_Command(int nVPc, CString sCommand)
 	else if (strCmd == "TRIGGER")
 	{
 		if (strOp == "REQUEST") Get_TriggerRequest(nVPc, strA[0], strA[1], strA[2], strA[3], strA[4]);
+	}
+	else if (strCmd == "LOADALIGN")
+	{
+		if (strOp == "COMPLETE") Get_AlignRequest(nVPc, strA[0], strA[1], strA[2], strA[3], strA[4], strA[5]);
 	}
 	else if (strCmd == "FOB")
 	{
@@ -544,8 +547,7 @@ void CInspector::Send_Command(int nVPc, CString sCommand)
 BOOL CInspector::Check_Connect(int nVPc)
 {
 	if (nVPc == VISION_PC1) return m_Vision1.Is_Connected();
-
-	
+		
 	return FALSE;
 }
 
@@ -562,4 +564,7 @@ BOOL CInspector::Check_LotReady()
 
 void CInspector::Test_Command()
 {
+
+
+
 }

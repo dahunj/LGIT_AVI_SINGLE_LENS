@@ -50,8 +50,7 @@ private:
 	void Get_ReloadRequest(int nVPc, CString sLotID, CString sGbn);
 	void Get_TriggerRequest(int nVPc, CString sGbn, CString sMZNo, CString sCtZigID, CString sZigNo, CString sLensNo);
 	void Get_AlignRequest(int nVPc, CString sMZID, CString sGbn, CString sMGZNo, CString sZigNo, CString sDeltaX, CString sDeltaY);
-
-
+	
 	void Get_ErrorRequest(int nVPc, CString sErrNo, CString sErrMsg);
 
 	void Send_Command(int nVPc, CString sCommand);

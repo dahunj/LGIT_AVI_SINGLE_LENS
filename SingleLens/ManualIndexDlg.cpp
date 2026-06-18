@@ -146,6 +146,21 @@ void CManualIndexDlg::OnBtnIndexRClick(UINT nID)
 
 	int nIndex = nID - IDC_BTN_INDEX_R_0;
 
+	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
+
+
+	if(!g_objCommon.Check_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Ready))
+	{
+		AfxMessageBox("Tray Picker Z축 Ready Up 아닙니다.");
+		return;
+	}
+
+	if(!pDX02->iMainIndexZigAlignIn || pDX02->iMainIndexZigAlignOut)
+	{
+		AfxMessageBox("Index Align 확인 후 진행하세요.");
+		return;
+	}
+
 
 	MOVE_DATA *pMoveData = g_objDataManager.Get_pMoveData();
 	
