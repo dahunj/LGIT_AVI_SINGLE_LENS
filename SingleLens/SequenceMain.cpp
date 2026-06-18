@@ -911,9 +911,7 @@ BOOL CSequenceMain::MZElevRun()
 		{
 			m_strBarcode = g_objBarcodeLot_Cognex.Get_BarcodeLot(eBarcode::MZ);
 			if (m_strBarcode != "") 
-			{
-				
-			
+			{							
 				gMes.nElevPos = eMZ::Ready;
 				gMes.sMGZID[eMZ::Ready] = m_strBarcode; gMes.bMGZIDReported = FALSE;
 
@@ -1376,11 +1374,11 @@ BOOL CSequenceMain::FeederRun()
 
 		if(gData.bAgingMode || gData.bSimulMode)
 		{
-			 m_pDX01->iFeederZigExist = TRUE;
+			 //m_pDX01->iFeederZigExist = TRUE;
 
 		
-			/*if(gData.nTNoPick[eMZ::Load] == 3 || gData.nTNoPick[eMZ::Load] == 6 ) m_pDX01->iFeederZigExist = TRUE;
-			else m_pDX01->iFeederZigExist = FALSE;*/
+			if(gData.nTNoPick[eMZ::Load] == 3 || gData.nTNoPick[eMZ::Load] == 6 ) m_pDX01->iFeederZigExist = TRUE;
+			else m_pDX01->iFeederZigExist = FALSE;
 		}
 
 
@@ -1428,6 +1426,7 @@ BOOL CSequenceMain::FeederRun()
 		gData.nTNoPick[eMZ::Load]++;
 		if(gData.nTNoPick[eMZ::Load] > 10)
 		{
+			gData.bFeederWorkWait = FALSE;
 			gData.nTNoPick[eMZ::Load] = 1;
 			m_nFeederCase = 0; m_nFeederLoop.Set_LoopTime(5000);
 			break;
@@ -1790,6 +1789,14 @@ BOOL CSequenceMain::FeederRun()
 			m_pDX01->iFeederZigExist = TRUE;
 		}*/
 
+		if(gData.bAgingMode || gData.bSimulMode)
+		{
+			 //m_pDX01->iFeederZigExist = TRUE;
+			 	
+			if(gData.nTNoPick[eMZ::Ready] == 3 || gData.nTNoPick[eMZ::Ready] == 6 ) m_pDX01->iFeederZigExist = TRUE;
+			else m_pDX01->iFeederZigExist = FALSE;
+		}
+
 		if(m_pDX01->iFeederZigExist)
 		{
 			nMZDetectCnt[0]++;
@@ -1801,7 +1808,7 @@ BOOL CSequenceMain::FeederRun()
 
 				if(m_pEquipData->bUseMES)
 				{
-					m_nFeederCase = 10; m_nFeederLoop.Set_LoopTime(5000);
+					m_nFeederCase = 60; m_nFeederLoop.Set_LoopTime(5000);
 				}
 				else
 				{
@@ -1835,6 +1842,7 @@ BOOL CSequenceMain::FeederRun()
 		gData.nTNoPick[eMZ::Ready]++;
 		if(gData.nTNoPick[eMZ::Ready] > 10)
 		{
+			gData.bFeederWorkWait = FALSE;
 			gData.nTNoPick[eMZ::Ready] = 1;
 			m_nFeederCase = 0; m_nFeederLoop.Set_LoopTime(5000);
 			break;
