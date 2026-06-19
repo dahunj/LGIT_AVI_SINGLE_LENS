@@ -289,7 +289,7 @@ void CHandler::Set_Lot_Start()
 void CHandler::Set_Lot_ID_Fail()
 {
 	CString strSend;
-	strSend.Format("LOT,FAIL,%s,%s", gMes.sHostLotId, gMes.sFailCode, gMes.sFailText);
+	strSend.Format("LOT,FAIL,%s,%s,%s", gMes.sHostLotId, gMes.sFailCode, gMes.sFailText);
 	Send_Command(strSend);
 }
 
@@ -312,7 +312,7 @@ void CHandler::Set_TrayID_Confirm()
 void CHandler::Set_Tray_Cancel()
 {
 	CString strSend;
-	strSend.Format("TRAY,CANCEL,%s,%s", gMes.sHostTrayID, gMes.sFailCode, gMes.sFailText);
+	strSend.Format("TRAY,CANCEL,%s,%s,%s", gMes.sHostTrayID, gMes.sFailCode, gMes.sFailText);
 	Send_Command(strSend);
 }
 

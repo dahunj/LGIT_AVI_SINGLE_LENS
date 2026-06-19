@@ -269,6 +269,7 @@ void CEquip::Set_S2F49_MGZ_CANCEL()
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"MGZID\" />" + CRLF;
 	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"" + gData.sHostMGZID +"\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\" />" + CRLF;
 	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\""+ gData.sHostOperID + "\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
@@ -449,6 +450,7 @@ void CEquip::Set_S2F49_PP_UPLOAD_FAIL()
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"RECIPEID\" />" + CRLF;
 	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"" + gData.sHostRecipeID +"\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\" />" + CRLF;
 	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\""+ gData.sHostOperID + "\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
@@ -578,6 +580,7 @@ void CEquip::Set_S2F49_TRAY_CANCEL()
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TRAYID\" />" + CRLF;
 	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"" + gData.sHostTrayID +"\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\" />" + CRLF;
 	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\""+ gData.sHostOperID + "\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
