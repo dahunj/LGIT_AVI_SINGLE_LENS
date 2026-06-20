@@ -337,6 +337,19 @@ void CSetupMotionTabDlg::OnBtnAbsMoveClick(UINT nID)
 	int nTemp = nStartAx +ID;
 	if(nTemp == AX_MAIN_INDEX_R)
 	{
+		DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
+		if(!g_objCommon.Check_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Ready))
+		{
+			AfxMessageBox("Tray Picker Z축 Ready Up 아닙니다.");
+			return;
+		}
+
+		if(!pDX02->iMainIndexZigAlignIn || pDX02->iMainIndexZigAlignOut)
+		{
+			AfxMessageBox("Index Align 확인 후 진행하세요.");
+			return;
+		}
+
 		AfxMessageBox("Can't Command Abs Move");
 	}
 	else
@@ -374,25 +387,30 @@ void CSetupMotionTabDlg::OnBtnRelMovePClick(UINT nID)
 	double dDist = atof(strText);
 
 	int nAxis = nStartAx + ID;
-
-	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
-
-	if(!g_objCommon.Check_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Ready))
-	{
-		AfxMessageBox("Tray Picker Z축 Ready Up 아닙니다.");
-		return;
-	}
-
-	if(!pDX02->iMainIndexZigAlignIn || pDX02->iMainIndexZigAlignOut)
-	{
-		AfxMessageBox("Index Align 확인 후 진행하세요.");
-		return;
-	}
-
+	
 
 	double dPulse = 0.0;
 	if(nAxis == AX_MAIN_INDEX_R )
 	{
+		DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
+		if(!g_objCommon.Check_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Ready))
+		{
+			AfxMessageBox("Tray Picker Z축 Ready Up 아닙니다.");
+			return;
+		}
+
+		if(!pDX02->iMainIndexZigAlignIn || pDX02->iMainIndexZigAlignOut)
+		{
+			AfxMessageBox("Index Align 확인 후 진행하세요.");
+			return;
+		}
+
+		if(dDist > 10.1)
+		{
+			AfxMessageBox("Can't move over 10");
+			return;
+		}
+
 		dPulse = dDist;//*7200;
 		g_objAJinAXL.Move_Relative(nStartAx + ID, (double)dPulse);
 	}
@@ -417,8 +435,29 @@ void CSetupMotionTabDlg::OnBtnRelMoveNClick(UINT nID)
 	int nAxis = nStartAx + ID;
 
 	double dPulse = 0.0;
+
+
+	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
 	if(nAxis == AX_MAIN_INDEX_R )
 	{
+		if(!g_objCommon.Check_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Ready))
+		{
+			AfxMessageBox("Tray Picker Z축 Ready Up 아닙니다.");
+			return;
+		}
+
+		if(!pDX02->iMainIndexZigAlignIn || pDX02->iMainIndexZigAlignOut)
+		{
+			AfxMessageBox("Index Align 확인 후 진행하세요.");
+			return;
+		}
+		if(dDist > 10.1)
+		{
+			AfxMessageBox("Can't move over 10");
+			return;
+		}
+
+
 		dPulse = dDist;//*7200;
 		g_objAJinAXL.Move_Relative(nStartAx + ID, (double)dPulse);
 	}

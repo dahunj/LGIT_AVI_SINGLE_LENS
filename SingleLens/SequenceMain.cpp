@@ -2538,7 +2538,7 @@ BOOL CSequenceMain::TopInspectorRun()
 							
 				m_nTopInspectCase = (int)eTopBr::VisionWait;
 				g_objInspector.Set_LoadComplete("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.nMZNoMainIndex[eMainIndex::Top]
-				, gData.sZigIDMainIndex[eMainIndex::Top], gData.nSlotNoMainIndex[eMainIndex::Top], nLensNo);				
+				, gData.sZigIDMainIndex[eMainIndex::Top], gData.nSlotNoMainIndex[eMainIndex::Top], (nLensNo) );				
 				m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);			
 			}
 		}
@@ -2745,7 +2745,7 @@ BOOL CSequenceMain::BtmInspectorRun()
 							
 				m_nBtmInspectCase = (int)eBtmBr::VisionWait;
 				g_objInspector.Set_LoadComplete("BC", gData.sMZIDMainIdex[eMainIndex::Btm],gData.nMZNoMainIndex[eMainIndex::Btm],
-					gData.sZigIDMainIndex[eMainIndex::Btm], gData.nSlotNoMainIndex[eMainIndex::Btm], nLensNo);				
+					gData.sZigIDMainIndex[eMainIndex::Btm], gData.nSlotNoMainIndex[eMainIndex::Btm], (nLensNo));				
 				 m_nBtmInspectLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);			
 			}
 		}

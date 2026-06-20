@@ -307,7 +307,7 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 		m_rdoWorkStart.SetCheck(TRUE);
 		//pMainDlg->Set_LotErrorLog("START", 903, "Start");
 		g_objLogFile.Save_EfficiencyLog(0, "Run", 903, "Run Start");	//Start
-
+		SetTimer(0, 100, NULL); return;
 	} 
 	else if (pDX03->iStopSw && !m_rdoWorkStop.GetCheck()) 
 	{
@@ -316,6 +316,7 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 		m_rdoWorkStop.SetCheck(TRUE);
 		//pMainDlg->Set_LotErrorLog("STOP", 904, "Stop");
 		g_objLogFile.Save_EfficiencyLog(0, "Stop", 903, "Stop Button Push");	//Stop
+		SetTimer(0, 100, NULL); return;
 	}
 
 	if (pDX03->iResetSw) g_objCommon.Show_Alarm("", STATE_ALARM, FALSE);
@@ -331,36 +332,42 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 				g_objCommon.Show_Error(50); SetTimer(0, 100, NULL); return; 
 			}
 
-			if (!Work_Start()) { m_rdoWorkStop.SetCheck(TRUE); SetTimer(0, 100, NULL); return; }
+			if (!Work_Start()) { m_rdoWorkStop.SetCheck(TRUE); SetTimer(0, 100, NULL); m_rdoWorkStart.SetCheck(FALSE); return; }
 
 			m_bAutoRunning = TRUE;
 			if (gData.bCycleStop && !m_bCycleStopRun) m_bCycleStopRun = TRUE;
 
 		
-			if(pEquipData->bUseMES)g_objMesAgent.Set_EquipState(eEquipState::RUN);	//Run
+			if(pEquipData->bUseMES) g_objMesAgent.Set_EquipState(eEquipState::RUN);	//Run
 
 			g_objCommon.Locking_MainDoor(TRUE);
 			pMainDlg->Enable_ModeButton(FALSE);
 			pMainDlg->Set_CurrentState(STATE_RUN);
 						
 			//If it was running before Stop, then run again 
-			if (m_bLoadCVRun ) g_objCommon.Set_LoadCVRunCW(); 
-			if (m_bUnloadCVRun) g_objCommon.Set_UnloadCVRunCW();
+			if (m_bLoadCVRun ) g_objCommon.Set_LoadCVRunCW(); theApp.uSleep(5);
+			if (m_bUnloadCVRun) g_objCommon.Set_UnloadCVRunCW(); theApp.uSleep(5);
 			m_bLoadCVRun = FALSE;
 			m_bUnloadCVRun = FALSE;
 
 			g_objSequenceMain.Begin_MainRunThread();
 			//g_objInspector.Set_StatusUpdate(VISION_ALL, 2);
 
-		} else {	// Auto Running
-			if (!g_objSequenceMain.Is_MainThreadRun()) {
+		} 
+		else
+		{	// Auto Running
+			if (!g_objSequenceMain.Is_MainThreadRun())
+			{
 				g_objLogFile.Save_HandlerLog("[Work Mode] Auto STOP");
 				pMainDlg->Set_CurrentState(STATE_STOP);
 			}
 		}
 
-	} else if (m_rdoWorkStop.GetCheck()) {
-		if (m_bAutoRunning) {	// First AutoStop
+	} 
+	else if (m_rdoWorkStop.GetCheck()) 
+	{
+		if (m_bAutoRunning) // First AutoStop 
+		{	
 			m_bAutoRunning = FALSE;
 			
 			m_bLoadCVRun = m_pDY00->oLoadCVRun;
