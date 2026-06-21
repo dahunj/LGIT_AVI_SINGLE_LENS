@@ -90,7 +90,7 @@
 
 
 //---------------------------------
-#define AJIN_BOARD_USE
+//#define AJIN_BOARD_USE
 
 
 
@@ -178,6 +178,7 @@ typedef struct
 	CString	sMZIDElevUnload;
 	CString	sZigIDElevUnload[10];
 	CString sRecipeElevUnload[10];
+	int		nTablePocketElevUnload[10];
 
 
 	CString	sLotIDFeeder;
@@ -185,18 +186,21 @@ typedef struct
 	CString	sZigIDFeeder;
 	CString sRecipeFeeder;
 	int		nSlotNoFeeder;	
+	int		nTablePocketFeeder;
 
 	CString sLotIDRail;
 	CString	sMZIDRail;
 	CString	sZigIDRail;
 	CString	sRecipeRail;
-	int		nSlotNoRail;	
+	int		nSlotNoRail;
+	int		nTablePocketRail;
 		
 	CString	sLotIDTrayPick;
 	CString	sMZIDTrayPick;
 	CString	sZigIDTrayPick;
 	CString	sRecipeTrayPick;
 	int		nSlotNoTrayPick;
+	int		nTablePocketTrayPick;
 	
 	//Main Index Pocket 6°³ + Unload 1°³ 
 	CString	sLotIDMainIndex[7];
@@ -204,8 +208,8 @@ typedef struct
 	CString	sZigIDMainIndex[7];
 	CString sRecipeMainIndex[7];
 	int		nSlotNoMainIndex[7];
+	int		nTablePocketMainIndex[7];
 
-	
 
 	int		nScanReqTop;
 	int		nScanReqBtm;

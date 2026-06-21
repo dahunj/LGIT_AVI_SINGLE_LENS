@@ -156,8 +156,10 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		if (m_nErrNo == 3408 ||
 			m_nErrNo == 4605 || m_nErrNo == 4905 // vision 
 			|| m_nErrNo == 3416
-			|| m_nErrNo == 3472  || m_nErrNo == 3482 || m_nErrNo == 3474 //barcode 
-			|| m_nErrNo == 3473 || m_nErrNo == 3483 
+			|| m_nErrNo == 3472  || m_nErrNo == 3482 //MGZ Barcode Retry 
+			|| m_nErrNo == 3773 || m_nErrNo == 3783  //Tray Barcode Retry 
+			|| m_nErrNo == 3474
+			|| m_nErrNo == 3473 || m_nErrNo == 3483 			
 			|| m_nErrNo == 3476 || m_nErrNo == 3486 //MES
 			|| m_nErrNo == 3775 || m_nErrNo == 3785 //MES
 			) 
@@ -171,6 +173,18 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 			m_btnErrRetry.ShowWindow(SW_HIDE);
 		}
 
+		if(m_nErrNo == 3472  || m_nErrNo == 3482	 //MGZ Barcode Skip 
+			|| m_nErrNo == 3773 || m_nErrNo == 3783  //Tray Barcode Skip 
+			)
+		{
+			m_btnErrSkip.EnableWindow(TRUE);
+			m_btnErrSkip.ShowWindow(SW_SHOW);
+		}
+		else
+		{
+			m_btnErrSkip.EnableWindow(FALSE);
+			m_btnErrSkip.ShowWindow(SW_HIDE);
+		}
 
 		strShow = m_strErrMsg;
 		if (strShow.Left(1) == "#") strShow.Delete(0);
@@ -297,6 +311,31 @@ void CErrorDlg::OnBnClickedBtnErrBuzzOff()
 
 void CErrorDlg::OnBnClickedBtnErrSkip()
 {
+	g_objLogFile.Save_HandlerLog("[Error Mode] SKIP button push");
+
+	if(m_nErrNo == 3472)
+	{
+		g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 79);
+	}
+
+	if(m_nErrNo == 3482)
+	{
+		g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 89);
+	}
+
+	switch (m_nErrNo) 
+	{
+	case 3773:
+		g_objSequenceMain.Set_MainRunCase(AUTO_FEEDER, 79);
+		break;
+	case 3783:
+		g_objSequenceMain.Set_MainRunCase(AUTO_FEEDER, 89);
+		break;
+	}
+
+	ShowWindow(SW_HIDE);
+	g_dlgWork.Set_AutoRun(TRUE);
+
 // 	g_objLogFile.Save_HandlerLog("[Error Mode] SKIP button push");
 // 
 // 	if (m_nErrNo == 3325) {		// Inspection Not Complete
@@ -326,7 +365,7 @@ void CErrorDlg::OnBnClickedBtnErrRetry()
 		g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 17);
 		break;
 	case 3472:
-		g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 3);
+		g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 71);
 		break;
 	case 3473:
 		g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 74);
@@ -336,7 +375,7 @@ void CErrorDlg::OnBnClickedBtnErrRetry()
 		g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 81);
 		break;
 	case 3483:
-		g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 81);
+		g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 84);
 		break;
 
 	case 3476:
@@ -351,6 +390,13 @@ void CErrorDlg::OnBnClickedBtnErrRetry()
 		break;
 	case 3785:
 		g_objSequenceMain.Set_MainRunCase(AUTO_FEEDER, 84);
+		break;
+
+	case 3773:
+		g_objSequenceMain.Set_MainRunCase(AUTO_FEEDER, 72);
+		break;
+	case 3783:
+		g_objSequenceMain.Set_MainRunCase(AUTO_FEEDER, 82);
 		break;
 	}
 

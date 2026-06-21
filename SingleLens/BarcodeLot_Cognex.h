@@ -30,6 +30,7 @@ public:
 
 	BOOL Is_Connected() { return m_bConnected; }
 	CString Get_BarcodeLot(int nNo) { return m_strBarcode[nNo-1]; }
+	void Set_BarcodeLot(int nNo, CString &sBarcode) { m_strBarcode[nNo-1] = sBarcode;}
 
 	BOOL Set_Trigger(int nNo, BOOL bOn);
 };

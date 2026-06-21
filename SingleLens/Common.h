@@ -80,8 +80,6 @@ public:
 	void Backup_File(CString strPath, CString strName);	// System Folder
 
 
-	void  Get_MainIndexPos(int nPos);
-
 	///////////////////////////////////////////////////////////////////////////
 	void Set_LdStopper1Up();
 	void Set_LdStopper1Down();
@@ -166,6 +164,8 @@ public:
 	void Set_ElevCVRunCCW();
 	void Set_ElevCVRunCW();
 	void Set_ElevCVStop();
+
+	int Get_TablePocketNo();
 
 	//MES와 AVI 포켓 번호 매핑 규칙 
 	bool IsEmptyPocket(int oldNo);

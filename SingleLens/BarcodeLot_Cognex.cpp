@@ -138,12 +138,13 @@ void CBarcodeLot_Cognex::Terminate()
 BOOL CBarcodeLot_Cognex::Set_Trigger(int nNo, BOOL bOn)
 {
 #ifndef AJIN_BOARD_USE
-	if (bOn) {
-		if (nNo == 1) m_strBarcode[0].Format("LDNGMGZ%02d", m_nCarSeq[0]++);
-		if (nNo == 2) m_strBarcode[1].Format("LOADMGZ%02d", m_nCarSeq[1]++);
-		if (nNo == 3) m_strBarcode[2].Format("ULNGMGZ%02d", m_nCarSeq[2]++);
-		if (nNo == 4) m_strBarcode[3].Format("ULGDMGZ%02d", m_nCarSeq[3]++);
-	}
+	//if (bOn) {
+	//	if (nNo == 1) m_strBarcode[0].Format("MAGAZINE - %02d", m_nCarSeq[0]++);
+	//	if (nNo == 2) m_strBarcode[1].Format("Tray - %02d", m_nCarSeq[1]++);
+	//	if (nNo == 3) m_strBarcode[2].Format("ULNGMGZ%02d", m_nCarSeq[2]++);
+	//	if (nNo == 4) m_strBarcode[3].Format("ULGDMGZ%02d", m_nCarSeq[3]++);
+	//}
+	m_strBarcode[nNo-1] = "";
 	return TRUE;
 #endif
 

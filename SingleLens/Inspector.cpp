@@ -161,7 +161,11 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 {
 	int nMNo = atoi(sMZNo);
 	int nTNo = atoi(sTrayNo);	// Tray Index
+
 	int	nLNo = atoi(sLensNo);	// CM Index
+
+	int nLAVINo = g_objCommon.ConvertToAVINo(nLNo);
+
 
 	int nXPos = 0, nYPos = 0;
 
@@ -169,13 +173,13 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	if(pEquipData->nVisionDir == eVDir::fixY)
 	{
-		nYPos = ((nLNo-1) / gData.nLensCntX);
-		nXPos = (nLNo-1) % gData.nLensCntX;
+		nYPos = ((nLAVINo-1) / gData.nLensCntX);
+		nXPos = (nLAVINo-1) % gData.nLensCntX;
 	}
 	else
 	{
-		nXPos = ((nLNo-1) / gData.nLensCntY);
-		nYPos = (nLNo-1) % gData.nLensCntY;
+		nXPos = ((nLAVINo-1) / gData.nLensCntY);
+		nYPos = (nLAVINo-1) % gData.nLensCntY;
 	}	
 
 	if (nTNo < 0 || nTNo > 99 || nLNo < 0 || nLNo > 200) { g_objCommon.Show_Error(6101); return; }
@@ -222,7 +226,9 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 {
 	int nMNo = atoi(sMZNo) - 1;
 	int nTNo = atoi(sTrayNo) - 1;	// Tray Index
-	int	nLNo = atoi(sLensNo) - 1;	// CM Index
+	int	nLNo = atoi(sLensNo);	// CM Index
+
+	int nLAVINo = g_objCommon.ConvertToAVINo(nLNo);
 
 	if (nMNo < 0 || nMNo > 3 ||nTNo < 0 || nTNo > 10 || nLNo < 0 || nLNo > ZIG_X*ZIG_Y) { g_objCommon.Show_Error(6101); return; }
 
@@ -230,31 +236,31 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 	if (nV == -1) { g_objCommon.Show_Error(6102); return; }
 
 
-	gData.cJudgeCode[nMNo][nTNo][nLNo][nV] = *(LPSTR)(LPCTSTR)sJudge;
+	gData.cJudgeCode[nMNo][nTNo][nLAVINo-1][nV] = *(LPSTR)(LPCTSTR)sJudge;
 	
-	int nPreInfo = gData.nInspectInfo[nMNo][nTNo][nLNo];
+	int nPreInfo = gData.nInspectInfo[nMNo][nTNo][nLAVINo-1];
 
 	if (sJudge == "N") 
 	{  
-		gData.nInspectInfo[nMNo][nTNo][nLNo] = 2;
-		gData.sJudgeCode[nMNo][nTNo][nLNo][eVision::MARKING] = sJudge;
-		gData.sNGCode[nMNo][nTNo][nLNo][eVision::MARKING] = sNgCode;
+		gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = 2;
+		gData.sJudgeCode[nMNo][nTNo][nLAVINo-1][eVision::MARKING] = sJudge;
+		gData.sNGCode[nMNo][nTNo][nLAVINo-1][eVision::MARKING] = sNgCode;
 	}		
 	else if (sJudge != "G")  // Good
 	{ 
-		if (nPreInfo < 2 || nPreInfo > 8) gData.nInspectInfo[nMNo][nTNo][nLNo] = 2;  
+		if (nPreInfo < 2 || nPreInfo > 8) gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = 2;  
 	}	
 	else if (sJudge == "G")  // Good
 	{ 
-		if (nPreInfo < 2 || nPreInfo > 8) gData.nInspectInfo[nMNo][nTNo][nLNo] = 1;  
+		if (nPreInfo < 2 || nPreInfo > 8) gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = 1;  
 	}	
 
-	gData.byInspectDone[nMNo][nTNo][nLNo] |= (1 << nV);
+	gData.byInspectDone[nMNo][nTNo][nLAVINo-1] |= (1 << nV);
 	
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
-	if (pEquipData->bUseTopVision && ((gData.byInspectDone[nMNo][nTNo][nLNo] >> 0) & 1) == 0) return;	// TC
-	if (pEquipData->bUseBtmVision  && ((gData.byInspectDone[nMNo][nTNo][nLNo] >> 1) & 1) == 0) return;	// BC
+	if (pEquipData->bUseTopVision && ((gData.byInspectDone[nMNo][nTNo][nLAVINo-1] >> 0) & 1) == 0) return;	// TC
+	if (pEquipData->bUseBtmVision  && ((gData.byInspectDone[nMNo][nTNo][nLAVINo-1] >> 1) & 1) == 0) return;	// BC
 
 }
 

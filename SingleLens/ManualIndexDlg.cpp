@@ -66,7 +66,7 @@ BOOL CManualIndexDlg::OnInitDialog()
 	Initial_Controls();
 		
 	SetTimer(0,100,0);
-
+	SetTimer(1,1000,0);
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
 }
@@ -105,6 +105,13 @@ void CManualIndexDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	if(nIDEvent == 0 ) Display_Status();
+
+	if(nIDEvent == 1)
+	{
+		int nPos = g_objCommon.Get_TablePocketNo();
+		m_strLog.Format("%d", nPos);
+		m_stcAxisPos[1].SetWindowText(m_strLog);
+	}
 	CDialogEx::OnTimer(nIDEvent);
 }
 
@@ -125,10 +132,7 @@ void CManualIndexDlg::Display_Status()
 
 	strPos.Format("%0.3lf", dPos);
 	m_stcAxisPos[0].SetWindowText(strPos);
-	
-	//int nPos = g_objCommon.Get_MainIndexPos(0);
-	strPos.Format("%d", gData.nIndexPos);
-	m_stcAxisPos[1].SetWindowText(strPos);
+		
 	
 	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
 	for (int i = 0; i < 3; i++) m_LedIndexPos[i].Set_On((pDX02->nValue >> i) & 1);					// Index Position

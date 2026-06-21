@@ -260,20 +260,7 @@ void CAJinAXL::Read_MotionStatus()
 		m_Status[i].bHom = (dwStatus == HOME_SUCCESS ? TRUE : FALSE);
 	}
 
-	//int	nIndexPos = 0;
-	//if      (!m_DX02.iIndexPosBit0 &&  !m_DX02.iIndexPosBit1 && !m_DX02.iIndexPosBit2) nIndexPos = 1;
-	//else if ( m_DX02.iIndexPosBit0 &&  !m_DX02.iIndexPosBit1 && !m_DX02.iIndexPosBit2) nIndexPos = 2;
-	//else if (!m_DX02.iIndexPosBit0 &&   m_DX02.iIndexPosBit1 && !m_DX02.iIndexPosBit2) nIndexPos = 3;
-	//else if ( m_DX02.iIndexPosBit0 &&   m_DX02.iIndexPosBit1 && !m_DX02.iIndexPosBit2) nIndexPos = 4;
-	//else if (!m_DX02.iIndexPosBit0 &&  !m_DX02.iIndexPosBit1 &&  m_DX02.iIndexPosBit2) nIndexPos = 5;
-	//else if ( m_DX02.iIndexPosBit0 &&  !m_DX02.iIndexPosBit1 &&  m_DX02.iIndexPosBit2) nIndexPos = 6;
-	//else if (!m_DX02.iIndexPosBit0 &&   m_DX02.iIndexPosBit1 &&  m_DX02.iIndexPosBit2) nIndexPos = 7;
-	//else if ( m_DX02.iIndexPosBit0 &&   m_DX02.iIndexPosBit1 &&  m_DX02.iIndexPosBit2) nIndexPos = 8;
-
-	//gData.nIndexPos = nIndexPos;
-
-	//gData.nIndexPos = gData.nIndexPos - 1;
-	//if(gData.nIndexPos == 0) gData.nIndexPos= 8;
+	
 #endif
 }
 
