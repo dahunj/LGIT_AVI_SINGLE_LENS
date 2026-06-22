@@ -63,6 +63,8 @@ public:
 
 	double m_dBtmZ;
 	double Get_BtmZ() { return m_dBtmZ; }
+	
+	CString m_strLog;
 
 	void Initialize();
 	void Terminate();

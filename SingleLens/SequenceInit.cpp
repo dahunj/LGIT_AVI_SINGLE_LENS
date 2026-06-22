@@ -599,7 +599,7 @@ BOOL CSequenceInit::Initial_TopInspector()
 		break;
 	case 2:
 		g_objAJinAXL.Home_Search(AX_TOP_INSPECTOR_Z);
-		m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
+		m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(90000);
 		break;
 	case 3:
 		if(g_objAJinAXL.Is_Home(AX_TOP_INSPECTOR_Z))
@@ -693,7 +693,7 @@ BOOL CSequenceInit::Initial_BtmInspector()
 		break;
 	case 2:
 		g_objAJinAXL.Home_Search(AX_BTM_INSPECTOR_Z);
-		m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
+		m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(90000);
 		break;
 	case 3:
 		if(g_objAJinAXL.Is_Home(AX_BTM_INSPECTOR_Z))

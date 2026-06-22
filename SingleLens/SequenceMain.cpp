@@ -208,6 +208,8 @@ void CSequenceMain::Set_ClearRunData(BOOL bInit)
 	gData.nTNoPick[0] = 0;
 	gData.nTNoPick[1] = 0;
 
+	for(int i = 0; i < 7; i++) gLot.nTrayCnt[i] = 0;
+
 	
 	gData.bElvUnloadWait = FALSE;
 	gData.bElvSlideOverWait = FALSE;
@@ -261,9 +263,11 @@ void CSequenceMain::Job_LotEnd(int nMZNo)
 	GetLocalTime(&time);
 	gLot.dwLotEnd[nMNo] = GetTickCount();
 	gLot.sEndTime[nMNo].Format("%04d%02d%02d_%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
-
+	
 	DWORD dwTime = gLot.dwLotEnd[nMNo] - gLot.dwLotStart[nMNo] -gLot.dwFirstUnloadTray[nMNo];
 	gLot.dTackTime = dwTime / 1000.0 / gLot.nLensCount[nMNo];
+
+	gLot.nTrayCnt[nMNo] = 0;
 
 	/*strLog.Format("LotID,%s,Start_Time,%s,End_Time,%s,Time,%d,Tray_Count,%02d,CM_Count,%04d,Tack,%0.7lf",
 		gData.sMZID[nMNo], gLot.sStartTime[nMNo], gLot.sEndTime[nMNo], dwTime, gData.nCtZigTotalCnt[nMNo], nCmCnt, gLot.dTackTime);
@@ -1420,6 +1424,7 @@ BOOL CSequenceMain::FeederRun()
 
 				if(m_pEquipData->bUseMES)
 				{
+					gLot.nTrayCnt[gData.nMZNoTrayPicker-1]++;
 					m_nFeederCase = 10; m_nFeederLoop.Set_LoopTime(5000);
 				}
 				else
@@ -1429,7 +1434,7 @@ BOOL CSequenceMain::FeederRun()
 
 					if(nExist == gData.nTNoPick[eMZ::Load])					
 					{						
-
+						gLot.nTrayCnt[gData.nMZNoTrayPicker-1]++;
 						m_nFeederCase = 10; m_nFeederLoop.Set_LoopTime(5000);
 						m_strLog.Format("Feeder Y Move (Grip Zig)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 					}
@@ -1555,7 +1560,7 @@ BOOL CSequenceMain::FeederRun()
 	case 15:
 		if(gData.bAgingMode || gData.bSimulMode) m_pDX01->iRailZigExist  = TRUE;
 
-		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready) && m_pDX01->iRailZigExist)
+		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready) )
 		{
 			g_objCommon.Set_RailAlignIn();
 
@@ -1571,7 +1576,7 @@ BOOL CSequenceMain::FeederRun()
 		}
 		break;
 	case 71:
-		if(g_objCommon.Get_RailAlignIn() && g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready))
+		if(g_objCommon.Get_RailAlignIn() && g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready) )
 		{
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::Barcode);
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
@@ -1639,7 +1644,7 @@ BOOL CSequenceMain::FeederRun()
 		}
 		break;
 	case 16:
-		if(g_objAJinAXL.Is_Done(AX_ZIG_FEEDER_X) && g_objCommon.Get_RailAlignIn() )
+		if(g_objAJinAXL.Is_Done(AX_ZIG_FEEDER_X) && g_objCommon.Get_RailAlignIn() && m_pDX01->iRailZigExist )
 		{
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(35000);
@@ -2073,7 +2078,7 @@ BOOL CSequenceMain::FeederRun()
 		}
 		break;
 	case 66:
-		if(g_objCommon.Get_RailAlignIn())
+		if(g_objCommon.Get_RailAlignIn() && m_pDX01->iRailZigExist)
 		{
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
@@ -2233,7 +2238,7 @@ BOOL CSequenceMain::ZigPickerRun()
 		}
 		break;
 	case 15:
-#ifndef AJINB_BOARD_USE
+#ifndef AJIN_BOARD_USE
 		m_pDX02->iIndexTZigExist = TRUE;
 #endif
 		if(g_objCommon.Get_TrayPickMasterSlaveOut() && m_pDX02->iIndexTZigExist)
@@ -2332,7 +2337,7 @@ BOOL CSequenceMain::ZigPickerRun()
 		if(g_objCommon.Check_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Ready) && (m_pDX01->iZigPickerExist || gData.bAgingMode || gData.bSimulMode))
 		{
 
-			if(gData.nSlotNoTrayPick == 1) gLot.dwFirstUnloadTray[gData.nMZNoTrayPicker-1] = GetTickCount();
+			if(gLot.nTrayCnt[gData.nMZNoTrayPicker-1] == 1) gLot.dwFirstUnloadTray[gData.nMZNoTrayPicker-1] = GetTickCount();
 			gData.bIndexDone[eMainIndex::Unload] = TRUE; // Index Unload Done 	
 
 			g_objCommon.Move_Position(AX_ZIG_PICKER_Y, eZigPicker_Y::Load);
@@ -2578,6 +2583,11 @@ BOOL CSequenceMain::TopInspectorRun()
 			dTopUnitX = m_pEquipData->dTopStartX + (m_pEquipData->dZigPitchX * (nTopXPos - 1)) + gData.dDeltaX[eVision::TC];
 			dTopUnitZ = m_pEquipData->dTopStartZ - (m_pEquipData->dTopPeriod/10);//m_pMoveData->dTopInspectorZ[eTopInspect_Z::ScanStart];
 			
+			m_strLog.Format("Align Value : %0.3lf, %0.3lf",dTopUnitX,dTopUnitY);
+			g_objLogFile.Save_HandlerLog(m_strLog);
+			if(dTopUnitY > 199) break;
+			if(dTopUnitX > 149) break;
+
 			g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Y, dTopUnitY);
 			g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_X, dTopUnitX);
 			g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, dTopUnitZ);
@@ -2785,6 +2795,11 @@ BOOL CSequenceMain::BtmInspectorRun()
 			dBtmUnitX = m_pEquipData->dBtmStartX + (m_pEquipData->dZigPitchX * (nBtmXPos - 1)) + gData.dDeltaX[eVision::BC];
 			dBtmUnitZ = m_pEquipData->dBtmStartZ- (m_pEquipData->dBtmPeriod/10);//m_pMoveData->dBtmInspectorZ[eTopInspect_Z::ScanStart];
 
+			m_strLog.Format("Align Value : %0.3lf, %0.3lf",dBtmUnitX,dBtmUnitY);
+			g_objLogFile.Save_HandlerLog(m_strLog);
+			if(dBtmUnitY > 199) break;
+			if(dBtmUnitX > 149) break;
+
 			g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_Y, dBtmUnitY);
 			g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_X, dBtmUnitX);
 			g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_Z, dBtmUnitZ);
@@ -2941,12 +2956,12 @@ BOOL CSequenceMain::MarkUnitRun()
 		m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);	
 		return TRUE;
 	case 1:
-		if (!m_pEquipData->bUseMark)
+		/*if (!m_pEquipData->bUseMark)
 		{
 			g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::Ready);
 			m_nMarkUnitCase = 15; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
-		} 	
-		else if(!gData.bIndexDone[eMainIndex::Mark] && !Check_IndexEmpty(eMainIndex::Mark))
+		} 	*/
+		 if(!gData.bIndexDone[eMainIndex::Mark] && !Check_IndexEmpty(eMainIndex::Mark))
 		{
 			
 			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);

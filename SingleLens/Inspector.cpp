@@ -329,10 +329,12 @@ void CInspector::Get_AlignRequest(int nVPc, CString sMZID, CString sGbn, CString
 	if(sGbn == "TC" && pEquipData->bUseTopVision && !gData.bScanDone[eVision::TC])
 	{
 		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_TOP_INSPECT);
-		if(nCase >= 5 && nCase < 10)
+		if(nCase >= 2 && nCase < 10)
 		{
 			gData.dDeltaX[eVision::TC] = atof(sDeltaX);
 			gData.dDeltaY[eVision::TC] = atof(sDeltaY);
+			m_strLog.Format("Align Value -TC : %0.3lf, %0.3lf",gData.dDeltaX[eVision::TC],gData.dDeltaY[eVision::TC]);
+			g_objLogFile.Save_HandlerLog(m_strLog);
 		}
 		else
 		{
@@ -343,10 +345,12 @@ void CInspector::Get_AlignRequest(int nVPc, CString sMZID, CString sGbn, CString
 	if(sGbn == "BC" && pEquipData->bUseTopVision && !gData.bScanDone[eVision::BC])
 	{
 		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_BTM_INSPECT);
-		if(nCase >= 5 && nCase < 10)
+		if(nCase >= 2 && nCase < 10)
 		{
 			gData.dDeltaX[eVision::BC] = atof(sDeltaX);
 			gData.dDeltaY[eVision::BC] = atof(sDeltaY);
+			m_strLog.Format("Align Value -TC : %0.3lf, %0.3lf",gData.dDeltaX[eVision::BC],gData.dDeltaY[eVision::BC]);
+			g_objLogFile.Save_HandlerLog(m_strLog);
 		}
 		else
 		{

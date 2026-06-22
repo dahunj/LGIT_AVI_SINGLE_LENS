@@ -85,12 +85,12 @@
 	#pragma comment(lib, "CSGridR.lib")
 #endif
 
-#define MAIN_VERSION	_T("V 0.0.0.26b")
+#define MAIN_VERSION	_T("V 0.0.1.1b")
 
 
 
 //---------------------------------
-//#define AJIN_BOARD_USE
+#define AJIN_BOARD_USE
 
 
 
@@ -212,7 +212,6 @@ typedef struct
 	int		nSlotNoMainIndex[7];
 	int		nTablePocketMainIndex[7];
 
-
 	int		nScanReqTop;
 	int		nScanReqBtm;
 	
@@ -294,6 +293,8 @@ typedef struct
 	CString sEndTime[7];
 	DWORD	dwLotStart[7];
 	DWORD	dwLotEnd[7];	
+
+	BOOL	nTrayCnt[7];
 	DWORD	dwFirstUnloadTray[7];
 
 
@@ -325,11 +326,7 @@ typedef struct {
 	DWORD	dwStartTime;
 	DWORD	dwEndTime;
 	DWORD	dwProcTime;
-
-
-
-
-
+	
 	double  dMotionChkPos;
 	double  dMotionPos[35];
 
