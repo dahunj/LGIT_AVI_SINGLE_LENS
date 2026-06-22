@@ -169,17 +169,19 @@ typedef struct
 	CString	sZigIDElevLoad[10];
 	CString	sRecipeElevLoad[10];
 
+
 	CString	sLotIDElevRdy[10];
 	CString	sMZIDElevReady[10];
 	CString	sZigIDElevReady[10];
 	CString	sRecipeElevReady[10];
+	
 	
 	CString	sLotIDElevUnload;
 	CString	sMZIDElevUnload;
 	CString	sZigIDElevUnload[10];
 	CString sRecipeElevUnload[10];
 	int		nTablePocketElevUnload[10];
-
+	
 
 	CString	sLotIDFeeder;
 	CString	sMZIDFeeder;
@@ -288,22 +290,28 @@ typedef struct
 	BOOL bEmptyLot[60];
 	
 	///////////old 	
-	CString sStartTime[7];
+	CString sStartTime[7]; // 동시에 7개 매거진 돌 수 있나? 
 	CString sEndTime[7];
 	DWORD	dwLotStart[7];
 	DWORD	dwLotEnd[7];	
-	
+	DWORD	dwFirstUnloadTray[7];
+
+
 	int		nTrayCount[7];
 	int		nLensCount[7];
 	double  dTackTime;
 	
-	int		nGoodCount[2];
-	int		nNgCount[2];
+	int		nGoodCount[7];
+	int		nNgCount[7];
 
 	int		nErrorCount;
 	DWORD	dwRunTime;
 	DWORD	dwStopTime;
 	DWORD	dwErrorTime;
+
+	DWORD	dwTime_StoE[7];
+	DWORD	dwTime_RunTime[7];
+	DWORD	dwTime_Unload[7];
 
 } GLOVAL_LOT;
 
@@ -317,6 +325,10 @@ typedef struct {
 	DWORD	dwStartTime;
 	DWORD	dwEndTime;
 	DWORD	dwProcTime;
+
+
+
+
 
 	double  dMotionChkPos;
 	double  dMotionPos[35];

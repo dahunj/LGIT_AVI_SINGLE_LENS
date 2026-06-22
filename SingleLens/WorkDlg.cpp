@@ -754,10 +754,10 @@ BOOL CWorkDlg::Work_Start()
 
 	if(pEquipData->bUseMES)
 	{
-		if(!g_objMesAgent.Is_Connected() || g_objMesAgent.Is_HostOnline())
+		/*if(!g_objMesAgent.Is_Connected() || g_objMesAgent.Is_HostOnline())
 		{
 			g_objCommon.Show_MsgBox(1, "MES가 연결되지 않았습니다."); return FALSE; 
-		}		
+		}	*/	
 	}
 
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
@@ -1806,7 +1806,7 @@ void CWorkDlg::init_LensMap()
 		
 		
 		gData.InfoFeeder[nXPos][nYPos] = eLensState::Init;
-
+		
 
 	}
 }

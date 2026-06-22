@@ -262,7 +262,7 @@ void CSequenceMain::Job_LotEnd(int nMZNo)
 	gLot.dwLotEnd[nMNo] = GetTickCount();
 	gLot.sEndTime[nMNo].Format("%04d%02d%02d_%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
 
-	DWORD dwTime = gLot.dwLotEnd[nMNo] - gLot.dwLotStart[nMNo];
+	DWORD dwTime = gLot.dwLotEnd[nMNo] - gLot.dwLotStart[nMNo] -gLot.dwFirstUnloadTray[nMNo];
 	gLot.dTackTime = dwTime / 1000.0 / gLot.nLensCount[nMNo];
 
 	/*strLog.Format("LotID,%s,Start_Time,%s,End_Time,%s,Time,%d,Tray_Count,%02d,CM_Count,%04d,Tack,%0.7lf",
@@ -1428,7 +1428,8 @@ BOOL CSequenceMain::FeederRun()
 					nExist = g_dlgWork.CheckZigExistInMZ(0, gData.nTNoPick[eMZ::Load]);
 
 					if(nExist == gData.nTNoPick[eMZ::Load])					
-					{							
+					{						
+
 						m_nFeederCase = 10; m_nFeederLoop.Set_LoopTime(5000);
 						m_strLog.Format("Feeder Y Move (Grip Zig)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 					}
@@ -1623,7 +1624,10 @@ BOOL CSequenceMain::FeederRun()
 		if(m_pEquipData->bUseMES && gMes.bTrayIDConfirm)
 		{
 			gMes.bTrayIDConfirm = FALSE; //Load : 1
-			g_dlgWork.init_LensMap();			
+			g_dlgWork.init_LensMap();	
+			gData.nLensUseCnt[gData.nMZNoFeeder-1][gData.nSlotNoFeeder-1] = 144;
+			gData.nLensTotalCnt[gData.nMZNoFeeder-1] += gData.nLensUseCnt[gData.nMZNoFeeder-1][gData.nSlotNoFeeder-1];
+			gLot.nLensCount[gData.nMZNoFeeder-1] = gData.nLensTotalCnt[gData.nMZNoFeeder-1];
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
 			m_nFeederCase = 16; m_nFeederLoop.Set_LoopTime(5000);
 		}
@@ -2056,6 +2060,9 @@ BOOL CSequenceMain::FeederRun()
 		{
 			gMes.bTrayIDConfirm = FALSE; //Load : 1
 			g_dlgWork.init_LensMap();
+			gData.nLensUseCnt[gData.nMZNoFeeder-1][gData.nSlotNoFeeder-1] = 144;
+			gData.nLensTotalCnt[gData.nMZNoFeeder-1] += gData.nLensUseCnt[gData.nMZNoFeeder-1][gData.nSlotNoFeeder-1];
+			gLot.nLensCount[gData.nMZNoFeeder-1] = gData.nLensTotalCnt[gData.nMZNoFeeder-1];
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
 			m_nFeederCase = 66; m_nFeederLoop.Set_LoopTime(5000);
 		}
@@ -2324,6 +2331,8 @@ BOOL CSequenceMain::ZigPickerRun()
 	case 26:
 		if(g_objCommon.Check_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Ready) && (m_pDX01->iZigPickerExist || gData.bAgingMode || gData.bSimulMode))
 		{
+
+			if(gData.nSlotNoTrayPick == 1) gLot.dwFirstUnloadTray[gData.nMZNoTrayPicker-1] = GetTickCount();
 			gData.bIndexDone[eMainIndex::Unload] = TRUE; // Index Unload Done 	
 
 			g_objCommon.Move_Position(AX_ZIG_PICKER_Y, eZigPicker_Y::Load);
