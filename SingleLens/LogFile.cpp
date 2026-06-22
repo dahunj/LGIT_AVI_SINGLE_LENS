@@ -236,8 +236,8 @@ void CLogFile::Save_JobListLog(CString sLog, BOOL bMode)
 	GetLocalTime(&time);
 
 	CString sTitle, strFile, strSave;
-	sTitle.Format("Time,MGZID,Start_Time,End_Time,Run_Time,Unload_Time,Tact(S-E),Tact(RunTime),Tact(Unload_Time),UPH(RunTime),,UPH(S-E),UPH(Unload_Time),Alarm_Count,Stop_Time,Lens_Count,Good_Count,NG_Count\r\n");
-	strFile.Format("%s\\%04d%02d%02d_JobList.txt", strPath, time.wYear, time.wMonth, time.wDay);
+	sTitle.Format("Time,LotID,MGZ_ID,Start_Time,End_Time,Run_Time,Unload_Time,Tact(S-E),Tact(RunTime),Tact(Unload_Time),UPH(S-E),UPH(RunTime),UPH(Unload_Time),Alarm_Count,Stop_Time,Zig_Count,Lens_Count,Good_Count,NG_Count\r\n");
+	strFile.Format("%s\\%04d%02d%02d_JobList.csv", strPath, time.wYear, time.wMonth, time.wDay);
 
 	CFile file;
 	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
@@ -256,7 +256,7 @@ void CLogFile::Save_JobListLog(CString sLog, BOOL bMode)
 	}
 	g_csJobListLog.Unlock();
 
-	if (bMode == TRUE) Save_ECMLog(2, sLog);
+	//if (bMode == TRUE) Save_ECMLog(2, sLog);
 }
 
 void CLogFile::Save_LotResult(int nPNo, CString sLog)

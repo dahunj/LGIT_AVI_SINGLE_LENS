@@ -90,7 +90,7 @@
 
 
 //---------------------------------
-#define AJIN_BOARD_USE
+//#define AJIN_BOARD_USE
 
 
 
@@ -293,21 +293,21 @@ typedef struct
 	CString sEndTime[7];
 	DWORD	dwLotStart[7];
 	DWORD	dwLotEnd[7];	
-
-	BOOL	nTrayCnt[7];
-	DWORD	dwFirstUnloadTray[7];
-
-
+	
 	int		nTrayCount[7];
 	int		nLensCount[7];
-	double  dTackTime;
+	DWORD	dwFirstUnloadTray[7];
 	
+	double  dTackTime_Unload;
+	double  dTactTime_RunTime;
+	double  dTactTime_StoETime; //Start to End 
+
 	int		nGoodCount[7];
 	int		nNgCount[7];
 
-	int		nErrorCount;
-	DWORD	dwRunTime;
-	DWORD	dwStopTime;
+	int		nErrorCount[7];
+
+	DWORD	dwStopTime[7];
 	DWORD	dwErrorTime;
 
 	DWORD	dwTime_StoE[7];

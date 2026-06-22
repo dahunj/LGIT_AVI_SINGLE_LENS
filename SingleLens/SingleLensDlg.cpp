@@ -985,13 +985,27 @@ void CSingleLensDlg::Set_LotStateTime()
 
 	switch(nPreState) {
 	case STATE_RUN:
-		gLot.dwRunTime += dwTime; break;
+		{
+			for(int i = 0; i < 7 ; i++)
+			{
+				gLot.dwTime_RunTime[i] += dwTime; 
+			}
+			break;
+		}
+		
 	case STATE_ALARM:
 	case STATE_ERROR:
-		/*gLot.dwErrorTime += dwTime;	gLot.nErrorCount++; break;*/
-		break;
 	default:
-		if (!gAlm.bBegin) gLot.dwStopTime += dwTime; break;
+		if (!gAlm.bBegin)
+		{
+
+			for(int i = 0; i < 7 ; i++)
+			{
+				gLot.dwStopTime[i] += dwTime; 
+			}
+			break;
+
+		}
 	}
 	m_dwSetTimer = GetTickCount();
 }
