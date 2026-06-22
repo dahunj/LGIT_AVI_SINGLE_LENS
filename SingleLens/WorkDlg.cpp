@@ -754,10 +754,10 @@ BOOL CWorkDlg::Work_Start()
 
 	if(pEquipData->bUseMES)
 	{
-		/*if(!g_objMesAgent.Is_Connected() || g_objMesAgent.Is_HostOnline())
+		if(!g_objMesAgent.Is_Connected() || !g_objMesAgent.Is_HostOnline())
 		{
 			g_objCommon.Show_MsgBox(1, "MES가 연결되지 않았습니다."); return FALSE; 
-		}	*/	
+		}		
 	}
 
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
@@ -2011,16 +2011,16 @@ void CWorkDlg::InsertMGZTestInfo()
 	m_stcZigID[28].SetWindowText("11119");
 	m_stcZigID[29].SetWindowText("11120");
 
-	m_stcLensCnt[20].SetWindowText("14");
-	m_stcLensCnt[21].SetWindowText("14");
-	m_stcLensCnt[22].SetWindowText("14");
-	m_stcLensCnt[23].SetWindowText("14");
-	m_stcLensCnt[24].SetWindowText("14");
-	m_stcLensCnt[25].SetWindowText("14");
-	m_stcLensCnt[26].SetWindowText("14");
-	m_stcLensCnt[27].SetWindowText("14");
-	m_stcLensCnt[28].SetWindowText("14");
-	m_stcLensCnt[29].SetWindowText("14");
+	m_stcLensCnt[20].SetWindowText("144");
+	m_stcLensCnt[21].SetWindowText("144");
+	m_stcLensCnt[22].SetWindowText("144");
+	m_stcLensCnt[23].SetWindowText("144");
+	m_stcLensCnt[24].SetWindowText("144");
+	m_stcLensCnt[25].SetWindowText("144");
+	m_stcLensCnt[26].SetWindowText("144");
+	m_stcLensCnt[27].SetWindowText("144");
+	m_stcLensCnt[28].SetWindowText("144");
+	m_stcLensCnt[29].SetWindowText("144");
 
 	strMGZID.Format("Test-%d", nIndex++);
 
@@ -2036,16 +2036,16 @@ void CWorkDlg::InsertMGZTestInfo()
 	m_stcZigID[38].SetWindowText("11119");
 	m_stcZigID[39].SetWindowText("11120");
 	
-	m_stcLensCnt[30].SetWindowText("14");
-	m_stcLensCnt[31].SetWindowText("14");
-	m_stcLensCnt[32].SetWindowText("14");
-	m_stcLensCnt[33].SetWindowText("14");
-	m_stcLensCnt[34].SetWindowText("14");
-	m_stcLensCnt[35].SetWindowText("14");
-	m_stcLensCnt[36].SetWindowText("14");
-	m_stcLensCnt[37].SetWindowText("14");
-	m_stcLensCnt[38].SetWindowText("14");
-	m_stcLensCnt[39].SetWindowText("14");
+	m_stcLensCnt[30].SetWindowText("144");
+	m_stcLensCnt[31].SetWindowText("144");
+	m_stcLensCnt[32].SetWindowText("144");
+	m_stcLensCnt[33].SetWindowText("144");
+	m_stcLensCnt[34].SetWindowText("144");
+	m_stcLensCnt[35].SetWindowText("144");
+	m_stcLensCnt[36].SetWindowText("144");
+	m_stcLensCnt[37].SetWindowText("144");
+	m_stcLensCnt[38].SetWindowText("144");
+	m_stcLensCnt[39].SetWindowText("144");
 
 	strMGZID.Format("Test-%d", nIndex++);
 
@@ -2061,16 +2061,16 @@ void CWorkDlg::InsertMGZTestInfo()
 	m_stcZigID[48].SetWindowText("11119");
 	m_stcZigID[49].SetWindowText("11119");
 
-	m_stcLensCnt[40].SetWindowText("14");
-	m_stcLensCnt[41].SetWindowText("14");
-	m_stcLensCnt[42].SetWindowText("14");
-	m_stcLensCnt[43].SetWindowText("14");
-	m_stcLensCnt[44].SetWindowText("14");
-	m_stcLensCnt[45].SetWindowText("14");
-	m_stcLensCnt[46].SetWindowText("14");
-	m_stcLensCnt[47].SetWindowText("14");
-	m_stcLensCnt[48].SetWindowText("14");
-	m_stcLensCnt[49].SetWindowText("14");
+	m_stcLensCnt[40].SetWindowText("144");
+	m_stcLensCnt[41].SetWindowText("144");
+	m_stcLensCnt[42].SetWindowText("144");
+	m_stcLensCnt[43].SetWindowText("144");
+	m_stcLensCnt[44].SetWindowText("144");
+	m_stcLensCnt[45].SetWindowText("144");
+	m_stcLensCnt[46].SetWindowText("144");
+	m_stcLensCnt[47].SetWindowText("144");
+	m_stcLensCnt[48].SetWindowText("144");
+	m_stcLensCnt[49].SetWindowText("144");
 }
 
 

@@ -1473,10 +1473,10 @@ BOOL CSequenceMain::FeederRun()
 
 		if(gData.bAgingMode || gData.bSimulMode)
 		{
-			//m_pDX01->iFeederZigExist = TRUE;
+			m_pDX01->iFeederZigExist = TRUE;
 			//Test when Tray not fulled 
-			if(gData.nTNoPick[eMZ::Load] == 3 || gData.nTNoPick[eMZ::Load] == 6 ) m_pDX01->iFeederZigExist = TRUE;
-			else m_pDX01->iFeederZigExist = FALSE;
+		/*	if(gData.nTNoPick[eMZ::Load] == 3 || gData.nTNoPick[eMZ::Load] == 6 ) m_pDX01->iFeederZigExist = TRUE;
+			else m_pDX01->iFeederZigExist = FALSE;*/
 		}
 
 
@@ -1910,10 +1910,10 @@ BOOL CSequenceMain::FeederRun()
 
 		if(gData.bAgingMode || gData.bSimulMode)
 		{
-			 //m_pDX01->iFeederZigExist = TRUE;
+			 m_pDX01->iFeederZigExist = TRUE;
 			 	
-			if(gData.nTNoPick[eMZ::Ready] == 3 || gData.nTNoPick[eMZ::Ready] == 6 ) m_pDX01->iFeederZigExist = TRUE;
-			else m_pDX01->iFeederZigExist = FALSE;
+			/*if(gData.nTNoPick[eMZ::Ready] == 3 || gData.nTNoPick[eMZ::Ready] == 6 ) m_pDX01->iFeederZigExist = TRUE;
+			else m_pDX01->iFeederZigExist = FALSE;*/
 		}
 
 		if(m_pDX01->iFeederZigExist)
