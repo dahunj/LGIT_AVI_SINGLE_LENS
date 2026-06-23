@@ -122,16 +122,22 @@ LRESULT CHandler::OnServerReceive(WPARAM wLocalPort, LPARAM lClientIdx)
 		CString strA[7];
 		for (int i = 0; i < 7; i++) AfxExtractSubString(strA[i], strRecv, i + 2, chSep);
 
-		if (strCmd == "OPER") {
+		if (strCmd == "OPER")
+		{
 			if (strOp == "UPDATE") Get_OperUpdate(strA[0]);
-
-		} else if (strCmd == "CONTROL") {
+		} 
+		else if (strCmd == "CONTROL") 
+		{
 			if (strOp == "STATE") Get_ControlState(strA[0], strA[1]);
 
-		} else if (strCmd == "EQUIP") {
+		} 
+		else if (strCmd == "EQUIP") 
+		{
 			if (strOp == "STATE") Get_EquipState(strA[0]);
 
-		} else if (strCmd == "ERROR") {
+		} 
+		else if (strCmd == "ERROR") 
+		{
 			if (strOp == "UPDATE") Get_ErrorUpdate(strA[0], strA[1], strA[2]);
 
 		}

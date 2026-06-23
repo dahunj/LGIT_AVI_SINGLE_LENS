@@ -155,8 +155,8 @@ LRESULT CHost::OnServerReceive(WPARAM wLocalPort, LPARAM lClientIdx)
 			else if (m_strStFn == "S2F49" && m_strRcmd == "LOT_ID_FAIL")		 Get_S2F49_LOT_ID_FAIL();
 			else if (m_strStFn == "S2F49" && m_strRcmd == "TRAY_ID_CONFIRM")	 Get_S2F49_TRAY_ID_CONFIRM();
 			else if (m_strStFn == "S2F49" && m_strRcmd == "TRAY_CANCEL")		 Get_S2F49_TRAY_CANCEL();
-			//else if (m_strStFn == "S5F2")  Get_S5F2_AlarmAck();	// Alarm Report Acknowledge
-			//else if (m_strStFn == "S10F3") Get_S10F3_Display();
+			else if (m_strStFn == "S5F2")  Get_S5F2_AlarmAck();	// Alarm Report Acknowledge
+			else if (m_strStFn == "S10F3") Get_S10F3_Display();
 		}
 	}
 
@@ -472,6 +472,38 @@ void CHost::Get_S2F31_Time()
 
 	g_objHandler.Set_TimeSync();
 }
+
+
+void CHost::Get_S5F2_AlarmAck()
+{
+	g_objHandler.Set_ErrorReply();
+
+	int nState = (gAlarm.nAlmSet == 1) ? 5 : 1;	// 5:Down, 1:Run
+	CString sNo = (gAlarm.nAlmSet == 1) ? gAlarm.sAlmNo : "0";
+	CString sCat = (gAlarm.nAlmSet == 1) ? gAlarm.sAlmCat : "0";
+	CString sMsg = (gAlarm.nAlmSet == 1) ? gAlarm.sAlmMsg : "";
+
+	Set_S6F11_EquipState(nState, sNo, sCat, sMsg);
+}
+
+void CHost::Get_S10F3_Display()
+{
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
+
+	strSend += "<EIF VERSION=\"1.4\" ID=\"S10F4\" NAME=\"Terminal Display,Single Acknowledge\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "  <ITEM>" + CRLF;
+	strSend += "    <ACKC VALUE=\"0\" />" + CRLF;
+	strSend += "  </ITEM>" + CRLF;
+	strSend += "</EIF>";
+
+	Send_Command(strSend, TRUE, "S10F4");	// Terminal Display,Single Acknowledge => S10F3_Display ¿¿¥‰
+
+	g_objHandler.Set_TerminalDisplay(m_strDisplay);
+}
+
 
 
 ///////////////////////////////////////////////////////////////////////////////

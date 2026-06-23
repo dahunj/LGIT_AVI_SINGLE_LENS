@@ -50,9 +50,9 @@ private:
 	void Get_S1F3_State();				// Equip Status Request
 	void Get_S2F3_Link();				// Link Test Request
 	void Get_S2F31_Time();				// Date and Time Set Request
-
-	void Reply_HeartBeat();				// Heart Beat
-
+	void Get_S5F2_AlarmAck();			// Alarm Report Acknowledge
+	void Get_S10F3_Display();			// Terminal Display, Single
+	
 	void Get_S2F49_PPSelect();
 	void Get_S2F49_MGZ_CANCEL();
 
@@ -67,6 +67,8 @@ private:
 	void Get_S2F49_TRAY_ID_CONFIRM();
 	void Get_S2F49_TRAY_CANCEL();
 
+	void Reply_HeartBeat();				// Heart Beat
+
 	void Send_Command(CString sSend, BOOL bReply, CString sStFn, CString sRcmd="");	// XML
 
 public:
@@ -79,11 +81,14 @@ public:
 
 	void Set_S1F1_Ready();		// Are You There Request
 	void Set_S5F1_AlarmReport(int nFlag, CString sErrNo, CString sErrMsg);	// nFlag(1:Alarm, 0:«ÿ¡¶) Alarm Report Send
+	void Set_S6F11_ControlState(int nState);	// 1:Online, 2:Offline
+	void Set_S6F11_EquipState(int nState, CString sErrNo, CString sCategory, CString sErrMsg);	// 2:Idle, 5:Run, 6:Down
+
+
 	void Set_S7F26();
 
 
-	void Set_S6F11_ControlState(int nState);	// 1:Online, 2:Offline
-	void Set_S6F11_EquipState(int nState, CString sErrNo, CString sCategory, CString sErrMsg);	// 2:Idle, 5:Run, 6:Down
+	
 
 	void Set_S6F11_MGZIDReport(CString sType, CString sMGZId);
 	
