@@ -876,7 +876,7 @@ BOOL CSequenceMain::MZElevRun()
 	case 79:		
 		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");
 		if(nBarcodeIdx > 999) nBarcodeIdx = 0;
-		m_strBarcode[eBarcode::MZ-1].Format("SkippedMGZ - %d", nBarcodeIdx++);
+		m_strBarcode[eBarcode::MZ-1].Format("SkippedMGZ - %d", nBarcodeIdx++); gMes.sMGZID[eMZ::Load] = m_strBarcode[eBarcode::MZ-1];
 		g_objBarcodeLot_Cognex.Set_BarcodeLot(eBarcode::MZ, m_strBarcode[eBarcode::MZ-1]);
 		m_strBarcode[eBarcode::MZ-1].Empty();
 		m_nMZElevCase = 74;m_nMZElevLoop.Set_LoopTime(10000);		
@@ -985,7 +985,7 @@ BOOL CSequenceMain::MZElevRun()
 				for(int i = 0; i < 10; i++)
 				{
 					gData.sLotIDElevLoad[i] = gMes.sHostLotID[eMZ::Load];
-					gData.sMZIDElevLoad[i] = gData.sMZID[eMZ::Load];
+					gData.sMZIDElevLoad[i] = gMes.sHostMGZID[eMZ::Load];
 					gData.nMZNoMZLoad[i] = nMZNo;
 					gData.sZigIDElevLoad[i] = gData.sZigID[eMZ::Load][i];
 					gData.sRecipeElevLoad[i] = gMes.sHostRecipe[eMZ::Load];
@@ -1102,8 +1102,8 @@ BOOL CSequenceMain::MZElevRun()
 		}		
 		break;
 	case 89:		
-		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_BarcodeLot");
-		if(nBarcodeIdx > 999) nBarcodeIdx = 0;
+		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_BarcodeLot");  gMes.sMGZID[eMZ::Load] = m_strBarcode[eBarcode::MZ-1];
+		if(nBarcodeIdx > 999) nBarcodeIdx = 0; 
 		m_strBarcode[eBarcode::MZ-1].Format("SkippedMGZ - %d", nBarcodeIdx++);
 		g_objBarcodeLot_Cognex.Set_BarcodeLot(eBarcode::MZ, m_strBarcode[eBarcode::MZ-1]);
 		m_strBarcode[eBarcode::MZ-1].Empty();
@@ -1144,18 +1144,17 @@ BOOL CSequenceMain::MZElevRun()
 	case 85:
 		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_PPSelectedReport");
 		gMes.bPPConfirm = FALSE;		
-		if(m_pEquipData->bUseMES) g_objMesAgent.Set_PPSelectedReport(gMes.sHostLotID[eMZ::Ready], gMes.sMGZID[eMZ::Ready], gMes.sHostRecipe[eMZ::Ready]);
+		if(m_pEquipData->bUseMES) g_objMesAgent.Set_PPSelectedReport(gMes.sHostLotID[eMZ::Ready], gMes.sHostMGZID[eMZ::Ready], gMes.sHostRecipe[eMZ::Ready]);
 		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 		break;
 	case 86:
 		if(gMes.bPPConfirm || m_pEquipData->bUseBarcodeMGZ)
 		{
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_PPUploadCompletedReport");
-			if(m_pEquipData->bUseMES) g_objMesAgent.Set_PPUploadCompletedReport(gMes.sHostLotID[eMZ::Ready], gMes.sMGZID[eMZ::Ready], gMes.sHostRecipe[eMZ::Ready]);
+			if(m_pEquipData->bUseMES) g_objMesAgent.Set_PPUploadCompletedReport(gMes.sHostLotID[eMZ::Ready], gMes.sHostMGZID[eMZ::Ready], gMes.sHostRecipe[eMZ::Ready]);
 			m_nMZElevCase = 12; m_nMZElevLoop.Set_LoopTime(10000);
 		}
 		break;
-
 	case 12:
 		if(g_objCommon.Get_ElevLift1Out() && g_objCommon.Get_ElevLift1Down())
 		{
@@ -1192,7 +1191,7 @@ BOOL CSequenceMain::MZElevRun()
 				for(int i = 0; i < 10; i++)
 				{
 					gData.sLotIDElevRdy[i] = gMes.sHostLotID[eMZ::Ready];
-					gData.sMZIDElevReady[i] = gData.sMZID[eMZ::Ready];
+					gData.sMZIDElevReady[i] = gMes.sHostMGZID[eMZ::Ready];
 					gData.sRecipeElevReady[i] = gMes.sHostRecipe[eMZ::Ready];
 					gData.nMZNoMZRdy[i] = nMZNo;
 					gData.sZigIDElevReady[i] = gData.sZigID[eMZ::Ready][i];

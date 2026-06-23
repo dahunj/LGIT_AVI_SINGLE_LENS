@@ -317,7 +317,7 @@ void CEquip::Set_S2F49_PP_SELECT(CString sMGZID, CString sOperID)
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"LOTCOUNT\" />" + CRLF;
-	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"140\" />" + CRLF;
+	strSend += "          <CPVAL NAME=\"CPVAL\" VALUE=\"141\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\" />" + CRLF;

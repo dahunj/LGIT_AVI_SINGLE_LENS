@@ -1818,9 +1818,7 @@ void CWorkDlg::init_LensMap()
 			continue;
 		}
 		//if(gMes.sResult[i] == "OK") gData.InfoFeeder[nXPos][nYPos] = eLensState::Init;
-		
-		
-		
+				
 		gData.InfoFeeder[nXPos][nYPos] = eLensState::Init;
 		
 

@@ -292,7 +292,7 @@ void CHandler::Get_IdleReport(CString sOperId, CString sCode, CString sText, CSt
 void CHandler::Set_PPSelect()
 {
 	CString strSend;
-	strSend.Format("PP,SELECT,%s,%s,%d", gMes.sHostLotId, gMes.sHostRecipe, gMes.nHostLensCount);
+	strSend.Format("PP,SELECT,%s,%s,%s,%d", gMes.sHostLotId, gMes.sHostLdMGZId, gMes.sHostRecipe, gMes.nHostLensCount);
 	Send_Command(strSend);
 }
 

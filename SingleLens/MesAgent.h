@@ -33,9 +33,8 @@ private:
 
 	void Get_LotStart(CString sLotId, CString sMGZId);
 	void Get_LotIDFail(CString sLotId, CString sCode, CString sText);
-
-
-	void Get_PPSelect(CString sLotId, CString sRecipe, CString sLensCount);
+	
+	void Get_PPSelect(CString sLotId, CString sMGZID, CString sRecipe, CString sLensCount);
 	void Get_MGZCancel(CString sMGZId, CString sCode, CString sText);
 
 	void Get_MGZ_Confirm(CString sMGZId);

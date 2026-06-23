@@ -224,6 +224,7 @@ BOOL CHost::Extract_Xml(CString sXmlData)
 
 				if (strName == "LOTID")			gMes.sHostLotId = strData;
 				if (strName == "RECIPEID")		gMes.sHostRecipe = strData;
+				if (strName == "MGZID")			gMes.sHostLdMGZId = strData;	
 				if (strName == "LOTCOUNT")		gMes.nHostLensCount = atoi(strData);
 			}
 		 }	

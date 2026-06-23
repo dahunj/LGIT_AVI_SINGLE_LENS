@@ -88,10 +88,8 @@
 #define MAIN_VERSION	_T("V 0.0.1.2b")
 
 
-
 //---------------------------------
-#define AJIN_BOARD_USE
-
+//#define AJIN_BOARD_USE
 
 
 

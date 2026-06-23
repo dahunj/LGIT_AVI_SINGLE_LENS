@@ -152,7 +152,7 @@ LRESULT CMesAgent::OnClientReceive(WPARAM wParam, LPARAM lParam)
 		} 
 		else if(strCmd == "PP")
 		{
-			if (strOp == "SELECT")	Get_PPSelect(strArg[0], strArg[1], strArg[2]);
+			if (strOp == "SELECT")	Get_PPSelect(strArg[0], strArg[1], strArg[2], strArg[3]);
 			if (strOp == "CONFIRM") Get_PPUpload_Confirm(strArg[0]);
 			if (strOp == "FAIL") Get_PPUpload_Fail(strArg[0], strArg[1], strArg[2]);
 		}
@@ -239,9 +239,10 @@ void CMesAgent::Get_LotIDFail(CString sLotId, CString sCode, CString sText)
 }
 
 
-void CMesAgent::Get_PPSelect(CString sLotId, CString sRecipe, CString sLensCount)
+void CMesAgent::Get_PPSelect(CString sLotId, CString sMGZID, CString sRecipe, CString sLensCount)
 {
 	gMes.sHostLotID[gMes.nElevPos] = sLotId;
+	gMes.sHostMGZID[gMes.nElevPos] = sMGZID;
 	gMes.sHostRecipe[gMes.nElevPos] = sRecipe;
 	gMes.nHostCount[gMes.nElevPos] = atoi(sLensCount);
 
