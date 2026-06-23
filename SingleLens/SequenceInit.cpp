@@ -383,7 +383,6 @@ BOOL CSequenceInit::Initial_Feeder()
 	case 1:
 		if (!m_pDX01->iFeederZigExist) 
 		{
-
 			m_niFeederCase++; m_tiFeederLoop.Set_LoopTime(5000);
 		}
 		break;
