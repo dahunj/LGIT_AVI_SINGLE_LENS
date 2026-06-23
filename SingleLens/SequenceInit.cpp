@@ -383,6 +383,7 @@ BOOL CSequenceInit::Initial_Feeder()
 	case 1:
 		if (!m_pDX01->iFeederZigExist) 
 		{
+
 			m_niFeederCase++; m_tiFeederLoop.Set_LoopTime(5000);
 		}
 		break;
@@ -395,11 +396,15 @@ BOOL CSequenceInit::Initial_Feeder()
 	case 3:	
 		if (!m_pDX01->iRailZigExist && m_niTrayPickerCase > 10)  
 		{				
+			g_objCommon.Set_RailAlignOut();
 			m_niFeederCase++; m_tiFeederLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 4:
-		m_niFeederCase++; m_tiFeederLoop.Set_LoopTime(30000);
+		if(g_objCommon.Get_RailAlignOut())
+		{
+			m_niFeederCase++; m_tiFeederLoop.Set_LoopTime(30000);
+		}		
 		break;
 	case 5:
 		if(m_niTrayPickerCase > 10) // Tray Picker Z Ready Up Complete 

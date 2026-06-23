@@ -1499,8 +1499,8 @@ BOOL CSequenceMain::FeederRun()
 					int nExist = -1;
 					nExist = g_dlgWork.CheckZigExistInMZ(0, gData.nTNoPick[eMZ::Load]);
 
-					if(nExist == gData.nTNoPick[eMZ::Load])						{						
-						
+					if(nExist == gData.nTNoPick[eMZ::Load])					
+					{					
 						m_nFeederCase = 10; m_nFeederLoop.Set_LoopTime(5000);
 						m_strLog.Format("Feeder Y Move (Grip Zig)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 					}
@@ -1626,7 +1626,7 @@ BOOL CSequenceMain::FeederRun()
 	case 15:
 		if(gData.bAgingMode || gData.bSimulMode) m_pDX01->iRailZigExist  = TRUE;
 
-		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready) )
+		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready))
 		{
 			g_objCommon.Set_RailAlignIn();
 
