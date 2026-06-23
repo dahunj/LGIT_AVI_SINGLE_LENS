@@ -17,6 +17,8 @@ public:
 
 	CLedCS		m_LedIndexPos[3];
 
+	CLedCS		m_LedZigExist;
+
 	CButtonCS	m_BtnIndexIO[2];
 	CLedCS		m_LedIndexIO[2];
 

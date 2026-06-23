@@ -40,6 +40,7 @@ void CManualIndexDlg::DoDataExchange(CDataExchange* pDX)
 
 	for (int i = 0; i <  2; i++) DDX_Control(pDX, IDC_BTN_INDEX_IO_0 + i, m_BtnIndexIO[i]);
 	for (int i = 0; i <  2; i++) DDX_Control(pDX, IDC_LED_INDEX_IO_0 + i, m_LedIndexIO[i]);
+	DDX_Control(pDX, IDC_LED_INDEX_ZIG_EXIST, m_LedZigExist);
 }
 
 
@@ -136,6 +137,8 @@ void CManualIndexDlg::Display_Status()
 	
 	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
 	for (int i = 0; i < 3; i++) m_LedIndexPos[i].Set_On((pDX02->nValue >> i) & 1);					// Index Position
+
+	m_LedZigExist.Set_On(pDX02->iIndexTZigExist);
 
 	m_LedIndexIO[0].Set_On(pDX02->iMainIndexZigAlignIn);
 	m_LedIndexIO[1].Set_On(pDX02->iMainIndexZigAlignOut);

@@ -366,8 +366,13 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 	} 
 	else if (m_rdoWorkStop.GetCheck()) 
 	{
+		
+
 		if (m_bAutoRunning) // First AutoStop 
 		{	
+			m_chkNoTrayMode.SetCheck(FALSE);
+			gData.bAgingMode = FALSE;
+
 			m_bAutoRunning = FALSE;
 			
 			m_bLoadCVRun = m_pDY00->oLoadCVRun;
@@ -387,7 +392,18 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 			m_rdoWorkStart.Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
 			m_rdoWorkStop.Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
 
-			if(!gData.bSimulMode) g_objCommon.Save_MotionPos();
+			if(gData.bSimulMode )
+			{
+				//pass
+			}
+			else if(gData.bAgingMode)
+			{
+				//pass
+			}
+			else
+			{
+				g_objCommon.Save_MotionPos();
+			}
 
 			pMainDlg->Enable_ModeButton(TRUE);
 			g_objCommon.Locking_MainDoor(FALSE);

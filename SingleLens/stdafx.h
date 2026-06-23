@@ -85,12 +85,12 @@
 	#pragma comment(lib, "CSGridR.lib")
 #endif
 
-#define MAIN_VERSION	_T("V 0.0.1.1b")
+#define MAIN_VERSION	_T("V 0.0.1.2b")
 
 
 
 //---------------------------------
-//#define AJIN_BOARD_USE
+#define AJIN_BOARD_USE
 
 
 
@@ -148,17 +148,17 @@ typedef struct
 	int InfoMainIndex[7][ZIG_X][ZIG_Y]; //0: Load , 1: Clean, 2: Top, 3:empty, 4:btm, 5: Mark, 6: Unload 
 	int InfoMZUnload[10][ZIG_X][ZIG_Y];
 
+	int	InfoCtZigLoad[10];
+	int	InfoCtZigRdy[10];
+	int	InfoCtZigUnload[10];
+
 	int nMZNoMZLoad[10];
 	int nMZNoMZRdy[10];
 	int nMZNoFeeder;
 	int nMZNoRail;
 	int nMZNoTrayPicker;
 	int nMZNoMainIndex[7];
-	int nMZNoMZUnload[10];
-	
-	int	InfoCtZigLoad[10];
-	int	InfoCtZigRdy[10];
-	int	InfoCtZigUnload[10];
+	int nMZNoMZUnload[10];	
 	
 	BOOL	ZigMap[3][10];
 	int		LensMap[3][10][ZIG_X][ZIG_Y];	

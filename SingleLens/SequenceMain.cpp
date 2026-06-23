@@ -180,9 +180,22 @@ void CSequenceMain::Set_ClearRunData(BOOL bInit)
 	}
 	for(int i = 0; i < 7; i++) gData.sMZID[i] = "";
 	for(int i = 0; i < 7; i++) for(int j = 0; j < 10; j++) gData.sZigID[i][j] = "";
-	for(int i = 0; i < 7; i++) gData.nMZNo[i];
+	for(int i = 0; i < 7; i++)
+	{
+		gData.nMZNo[i] = 0;
+		gData.nCtZigTotalCnt[i] = 0;
+		gData.nLensTotalCnt[i] = 0;
+		for(int j = 0; j < 10; j++) gData.nLensUseCnt[i][j] = 0;
+		
 
+	}
+	gData.nTNoPick[0] = 0;
+	gData.nTNoPick[1] = 0;
+		
+		
+	gData.nLensMaxCnt = 0;
 	gData.nMZCnt = 0;
+
 	for(int i = 0; i < 7; i++) for(int j = 0; j < 10; j++) gData.nLensUseCnt[i][j] = 0;
 	gData.nLensMaxCnt = 0;
 
@@ -202,20 +215,81 @@ void CSequenceMain::Set_ClearRunData(BOOL bInit)
 	memset(gData.nInspectInfo, 0x00, sizeof(int)*7*10*ZIG_X*ZIG_Y);
 	memset(gData.byInspectDone, 0x00, sizeof(BYTE)*7*10*ZIG_X*ZIG_Y);
 
-	memset(gData.bIndexDone, 0x00, sizeof(BOOL) * 7);		
+	memset(gData.bIndexDone, 0x00, sizeof(BOOL) * 7);
+
+	memset(gData.ZigMap, 0x00, sizeof(BOOL)*3*10);
+	memset(gData.LensMap, 0x00, sizeof(char)*3*10*ZIG_X*ZIG_Y);
+
+	for(int i = 0; i < 10; i++)
+	{
+		gData.nMZNoMZLoad[i] = 0;
+		gData.nMZNoMZRdy[i] = 0;
+		gData.nMZNoMZUnload[i] = 0;
+
+		gData.sLotIDElevLoad[i].Empty();
+		gData.sMZIDElevLoad[i].Empty();
+		gData.sZigIDElevLoad[i].Empty();
+		gData.sRecipeElevLoad[i].Empty();
 
 
-	gData.nTNoPick[0] = 0;
-	gData.nTNoPick[1] = 0;
+		gData.sLotIDElevRdy[i].Empty();
+		gData.sMZIDElevReady[i].Empty();
+		gData.sZigIDElevReady[i].Empty();
+		gData.sRecipeElevReady[i].Empty();
 
-	
+		gData.sZigIDElevUnload[i].Empty();
+		gData.sRecipeElevUnload[i].Empty();
+		gData.nTablePocketElevUnload[i]=0;
 
-	
+	}
+	gData.sLotIDElevUnload.Empty();
+	gData.sMZIDElevUnload.Empty();
+
+	gData.sLotIDFeeder.Empty();
+	gData.sMZIDFeeder.Empty();
+	gData.sZigIDFeeder.Empty();
+	gData.sRecipeFeeder.Empty();
+	gData.nSlotNoFeeder=0;
+	gData.nTablePocketFeeder=0;
+
+	gData.sLotIDRail.Empty();
+	gData.sMZIDRail.Empty();
+	gData.sZigIDRail.Empty();
+	gData.sRecipeRail.Empty();
+	gData.nSlotNoRail=0;
+	gData.nTablePocketRail=0;
+
+	gData.sLotIDTrayPick.Empty();
+	gData.sMZIDTrayPick.Empty();
+	gData.sZigIDTrayPick.Empty();
+	gData.sRecipeTrayPick.Empty();
+	gData.nSlotNoTrayPick=0;
+	gData.nTablePocketTrayPick=0;
+
+	for(int i = 0; i < 7; i++)
+	{
+		gData.sLotIDMainIndex[i].Empty();
+		gData.sMZIDMainIdex[i].Empty();
+		gData.sZigIDMainIndex[i].Empty();
+		gData.sRecipeMainIndex[i].Empty();
+		gData.nSlotNoMainIndex[i]=0;
+		gData.nTablePocketMainIndex[i]=0;
+	}
+
+	for(int i = 0; i < 7; i++) gData.nMZNoMainIndex[i] = 0;
+	gData.nMZNoFeeder = 0;
+	gData.nMZNoRail = 0;
+	gData.nMZNoTrayPicker = 0;
+
+	gData.bElvLoadWait = FALSE;
 	gData.bElvUnloadWait = FALSE;
 	gData.bElvSlideOverWait = FALSE;
 	gData.bFeederWorkWait = FALSE;
 	gData.bLdMZWait = FALSE;
 	gData.bUldMZWait = FALSE;
+
+	gData.bAgingMode = FALSE;
+	gData.bSimulMode = FALSE;
 	
 	g_dlgWork.TransferMZInfo(eMZ::Load, -1, m_pEquipData->nVisionDir);
 	g_dlgWork.TransferMZInfo(eMZ::Ready, -1, m_pEquipData->nVisionDir);
@@ -231,6 +305,8 @@ void CSequenceMain::Set_ClearRunData(BOOL bInit)
 		m_pDX00->iElvMZExist2 = FALSE;
 		m_pDX01->iUldCvMZExist4 = FALSE;
 	}	
+
+	for(int i = 0; i < 7; i++) gData.bIndexDone[i] = FALSE;
 
 	for(int i = 0; i < 7 ; i++)
 	{
@@ -1499,8 +1575,8 @@ BOOL CSequenceMain::FeederRun()
 					int nExist = -1;
 					nExist = g_dlgWork.CheckZigExistInMZ(0, gData.nTNoPick[eMZ::Load]);
 
-					if(nExist == gData.nTNoPick[eMZ::Load])					
-					{					
+					if(nExist == gData.nTNoPick[eMZ::Load])						{						
+						
 						m_nFeederCase = 10; m_nFeederLoop.Set_LoopTime(5000);
 						m_strLog.Format("Feeder Y Move (Grip Zig)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 					}
@@ -1568,7 +1644,12 @@ BOOL CSequenceMain::FeederRun()
 		}
 		break;
 	case 11:
-		if(m_pDX01->iFeederGripClose && !m_pDX01->iFeederGripOpen)
+		if(gData.bAgingMode)
+		{
+			m_pDX01->iFeederGripClose = TRUE;
+			m_pDX01->iFeederGripOpen = FALSE;
+		}
+		if(m_pDX01->iFeederGripClose && !m_pDX01->iFeederGripOpen )
 		{
 			
 //#ifndef AJIN_BOARD_USE
@@ -1626,7 +1707,7 @@ BOOL CSequenceMain::FeederRun()
 	case 15:
 		if(gData.bAgingMode || gData.bSimulMode) m_pDX01->iRailZigExist  = TRUE;
 
-		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready))
+		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready) )
 		{
 			g_objCommon.Set_RailAlignIn();
 
@@ -1710,6 +1791,10 @@ BOOL CSequenceMain::FeederRun()
 		}
 		break;
 	case 16:
+		if(gData.bAgingMode)
+		{
+			m_pDX01->iRailZigExist = TRUE;
+		}
 		if(g_objAJinAXL.Is_Done(AX_ZIG_FEEDER_X) && g_objCommon.Get_RailAlignIn() && m_pDX01->iRailZigExist )
 		{
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
@@ -2145,6 +2230,10 @@ BOOL CSequenceMain::FeederRun()
 		}
 		break;
 	case 66:
+		if(gData.bAgingMode)
+		{
+			m_pDX01->iRailZigExist = TRUE;
+		}
 		if(g_objCommon.Get_RailAlignIn() && m_pDX01->iRailZigExist)
 		{
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
@@ -3311,7 +3400,11 @@ BOOL CSequenceMain::MainIndexRun()
 		}
 		return TRUE;
 	case 11:
-		if(g_objCommon.Get_IndexLoadAlignIn() && m_pDX02->iIndexTZigExist)
+		if(gData.bAgingMode)
+		{
+			m_pDX02->iIndexTZigExist = TRUE;
+		}
+		if(g_objCommon.Get_IndexLoadAlignIn() && (m_pDX02->iIndexTZigExist || Check_IndexEmpty(0)))
 		{
 			g_objAJinAXL.Move_Relative(AX_MAIN_INDEX_R, m_pMoveData->dMainIndexR[eIndex_R::MoveP]);
 			m_nMainIndexCase++; m_nIndexTLoop.Set_LoopTime(10000);
