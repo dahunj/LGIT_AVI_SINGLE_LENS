@@ -154,7 +154,17 @@ LRESULT CHandler::OnServerReceive(WPARAM wLocalPort, LPARAM lClientIdx)
 		{
 			if(strOp == "ID") Get_TrayIDReport(strA[0], strA[1]);
 			if(strOp == "START") Get_TrayStartedReport(strA[0], strA[1], strA[2] );
-		}		
+		}	
+		else if (strCmd == "LOT") 
+		{			
+			if (strOp == "ABORT")   Get_LotAbort(strA[0], strA[1]);
+		}
+		else if (strCmd == "IDLE") 
+		{
+			if (strOp == "SET")    Get_IdleSet(strA[0], strA[1]);
+			if (strOp == "RESET")  Get_IdleReset(strA[0], strA[1]);
+			if (strOp == "REPORT") Get_IdleReport(strA[0], strA[1], strA[2], strA[3], strA[4]);
+		}
 	}
 
 	return 0;
@@ -243,6 +253,36 @@ void CHandler::Get_TrayIDReport(CString sType, CString sTrayID)
 void CHandler::Get_TrayStartedReport(CString sLotID, CString sTrayID, CString sRecipeID)
 {
 	g_objHost.Set_S6F11_TrayStartedReport(sLotID, sTrayID, sRecipeID);
+}
+
+
+void CHandler::Get_LotAbort(CString sLotId, CString sRecipe)
+{
+	g_objHost.Set_S6F11_LotAbort(sLotId, sRecipe);
+}
+
+void CHandler::Get_IdleSet(CString sOperId, CString sCode)
+{
+	gData.sOperId = sOperId;
+	gIdle.sIdleCode = sCode;
+	g_objHost.Set_S6F11_IdleSet();
+}
+
+void CHandler::Get_IdleReset(CString sOperId, CString sCode)
+{
+	gData.sOperId = sOperId;
+	gIdle.sIdleCode = sCode;
+	g_objHost.Set_S6F11_IdleReset();
+}
+
+void CHandler::Get_IdleReport(CString sOperId, CString sCode, CString sText, CString sSTime, CString sETime)
+{
+	gData.sOperId = sOperId;
+	gIdle.sIdleCode = sCode;
+	gIdle.sIdleText = sText;
+	gIdle.sIdleSTime = sSTime;
+	gIdle.sIdleETime = sETime;
+	g_objHost.Set_S6F11_IdleReport();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

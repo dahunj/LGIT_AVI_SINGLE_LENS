@@ -2308,7 +2308,7 @@ BOOL CSequenceMain::ZigPickerRun()
 #ifndef AJIN_BOARD_USE
 		m_pDX02->iIndexTZigExist = TRUE;
 #endif
-		if(g_objCommon.Get_TrayPickMasterSlaveOut() && m_pDX02->iIndexTZigExist)
+		if(g_objCommon.Get_TrayPickMasterSlaveOut() )
 		{
 			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TrayPickUnGrip])) break;
 			//Info Processing 
@@ -3311,7 +3311,7 @@ BOOL CSequenceMain::MainIndexRun()
 		}
 		return TRUE;
 	case 11:
-		if(g_objCommon.Get_IndexLoadAlignIn())
+		if(g_objCommon.Get_IndexLoadAlignIn() && m_pDX02->iIndexTZigExist)
 		{
 			g_objAJinAXL.Move_Relative(AX_MAIN_INDEX_R, m_pMoveData->dMainIndexR[eIndex_R::MoveP]);
 			m_nMainIndexCase++; m_nIndexTLoop.Set_LoopTime(10000);

@@ -6,6 +6,8 @@
 // Equip Data
 typedef struct tag_EQUIP_DATA {
 	
+	int		nNoWorkTime;
+
 	double	dElevPitchZ;
 	double	dElevPitchZReady;
 

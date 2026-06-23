@@ -352,6 +352,14 @@ void CSetupMotionTabDlg::OnBtnAbsMoveClick(UINT nID)
 
 		AfxMessageBox("Can't Command Abs Move");
 	}
+	else if(nTemp == AX_MZ_ELEVATOR_Z)
+	{
+		if(!g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready))
+		{
+			AfxMessageBox("Feeder Y Ready 위치가 아닙니다. 확인 후 진행하세요.");
+			return;
+		}
+	}
 	else
 	{
 		g_objAJinAXL.Move_Absolute(nStartAx + ID, dDist);
@@ -414,6 +422,14 @@ void CSetupMotionTabDlg::OnBtnRelMovePClick(UINT nID)
 		dPulse = dDist;//*7200;
 		g_objAJinAXL.Move_Relative(nStartAx + ID, (double)dPulse);
 	}
+	else if(nAxis == AX_MZ_ELEVATOR_Z)
+	{
+		if(!g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready))
+		{
+			AfxMessageBox("Feeder Y Ready 위치가 아닙니다. 확인 후 진행하세요.");
+			return;
+		}
+	}
 	else
 	{
 		g_objAJinAXL.Move_Relative(nStartAx + ID, dDist);
@@ -460,6 +476,14 @@ void CSetupMotionTabDlg::OnBtnRelMoveNClick(UINT nID)
 
 		dPulse = dDist;//*7200;
 		g_objAJinAXL.Move_Relative(nStartAx + ID, (double)dPulse);
+	}
+	else if(nAxis == AX_MZ_ELEVATOR_Z)
+	{
+		if(!g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready))
+		{
+			AfxMessageBox("Feeder Y Ready 위치가 아닙니다. 확인 후 진행하세요.");
+			return;
+		}
 	}
 	else
 	{

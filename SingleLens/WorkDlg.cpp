@@ -17,7 +17,7 @@
 #include "OperatorDlg.h"
 #include "SingleLensDlg.h"
 
-
+#include "NoWorkDlg.h"
 
 // CWorkDlg 대화 상자입니다.
 CWorkDlg g_dlgWork;
@@ -1985,6 +1985,10 @@ void CWorkDlg::OnBnClickedBtnIdleReport()
 		else					  AfxMessageBox(_T("You can proceed with the equipment stopped."));
 		return;
 	}
+
+	if (g_dlgNoWork.IsWindowVisible()) return;
+	g_dlgNoWork.Set_NoWorkAuto(FALSE);
+	g_dlgNoWork.ShowWindow(SW_SHOW);
 
 	/*if (g_dlgNoWork.IsWindowVisible()) g_dlgNoWork.ShowWindow(SW_HIDE);
 	else g_dlgNoWork.ShowWindow(SW_SHOW);	*/

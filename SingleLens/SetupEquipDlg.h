@@ -21,6 +21,7 @@ public:
 	CStaticCS	m_stcEquipModel;
 	CComboCS    m_cboModelChange;
 		
+	CStaticCS	m_stcNoWorkTime;
 	CStaticCS	m_stcMotionCheck;
 	CLabelCS	m_lblDoorLock;
 	CRadioCS	m_rdoDoorLock[2];
@@ -76,6 +77,7 @@ protected:
 	afx_msg void OnStnClickedStcEquipName();
 	afx_msg void OnStnClickedStcMotionCheck();
 	afx_msg void OnStnClickedStcDoorlockTime();
+	afx_msg void OnStnClickedStcNoWorkTime();
 	afx_msg void OnStcZigDataClick(UINT nID);
 	afx_msg void OnStcTriggerTopClick(UINT nID);
 	afx_msg void OnStcTriggerBtmClick(UINT nID);

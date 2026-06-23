@@ -40,6 +40,11 @@ private:
 	void Get_TrayIDReport(CString sType, CString sTrayID);
 	void Get_TrayStartedReport(CString sLotID, CString sTrayID, CString sRecipeID);
 
+	void Get_LotAbort(CString sLotId, CString sRecipe);
+	void Get_IdleSet(CString sOperId, CString sCode);
+	void Get_IdleReset(CString sOperId, CString sCode);
+	void Get_IdleReport(CString sOperId, CString sCode, CString sText, CString sSTime, CString sETime);
+
 	void Send_Command(CString sSend);
 
 public:

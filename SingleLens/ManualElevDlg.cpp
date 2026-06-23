@@ -466,8 +466,7 @@ void CManualElevDlg::OnBtnElevZClick(UINT nID)
 	{
 		AfxMessageBox("Feeder Y Ready 위치가 아닙니다. 확인 후 진행하세요."); return;
 	}
-	
-	
+		
 	
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	MOVE_DATA *pMoveData = g_objDataManager.Get_pMoveData();
@@ -512,6 +511,7 @@ void CManualElevDlg::OnBtnElevReadyZClick(UINT nID)
 {
 	if (!g_objAJinAXL.Is_Home(AX_MZ_ELEVATOR_Z)) return;
 	if (!g_objCommon.Check_MainDoor()) return;
+
 	if(!g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready))
 	{
 		AfxMessageBox("Feeder Y Ready 위치가 아닙니다. 확인 후 진행하세요."); return;

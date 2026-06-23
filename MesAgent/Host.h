@@ -86,10 +86,7 @@ public:
 
 
 	void Set_S7F26();
-
-
-	
-
+		
 	void Set_S6F11_MGZIDReport(CString sType, CString sMGZId);
 	
 	void Set_S6F11_PPSelectedReport(CString sLotId, CString sMGZId, CString sRecipeId);
@@ -112,6 +109,13 @@ public:
 
 	void Set_S2F50_TRAY_ID_CONFIRM();
 	void Set_S2F50_TRAY_CANCEL();
+
+	void Set_S6F11_LotAbort(CString sLotId, CString sRecipe);	// Lot Suspended Report
+	void Set_S6F11_IdleSet();
+	void Set_S6F11_IdleReset();
+	void Set_S6F11_IdleReport();
+
+
 
 	void Set_S9F13_Timeout();	// Conversation Timeout
 

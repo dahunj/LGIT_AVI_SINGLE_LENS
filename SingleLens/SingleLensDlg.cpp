@@ -26,7 +26,7 @@
 #include "MesAgent.h"
 #include "Inspector.h"
 #include "BarcodeLot_Cognex.h"
-
+#include "NoWorkDlg.h"
 
 
 #include "SequenceInit.h"
@@ -146,8 +146,6 @@ BOOL CSingleLensDlg::OnInitDialog()
 	g_objCommon.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
 	g_objInspector.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
 	
-
-
 	g_dlgOperator.Create(COperatorDlg::IDD, this);
 	g_dlgInitial.Create(CInitialDlg::IDD, this);
 	g_dlgWork.Create(CWorkDlg::IDD, this);
@@ -159,6 +157,7 @@ BOOL CSingleLensDlg::OnInitDialog()
 	g_dlgAlarm.Create(CAlarmDlg::IDD, this);
 	g_dlgVersion.Create(CVersionDlg::IDD, this);
 	g_objMesAgent.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
+	g_dlgNoWork.Create(CNoWorkDlg::IDD, this);
 
 	g_objBarcodeLot_Cognex.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
 
@@ -260,6 +259,7 @@ void CSingleLensDlg::OnDestroy()
 	g_objBarcodeLot_Cognex.DestroyWindow();
 	
 	g_objCommon.DestroyWindow();
+	g_dlgNoWork.DestroyWindow();
 		
 }
 
@@ -1031,4 +1031,25 @@ void CSingleLensDlg::Set_DoorLock()
 
 		g_dlgWork.PostMessage(UM_SHOW_MSG, 99, NULL);
 	}
+}
+
+void CSingleLensDlg::Set_NoWork()
+{
+	//if (gData.bDryRunTest) return;
+
+	static DWORD dwNoWorkBegin = GetTickCount();
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	if (pEquipData->nNoWorkTime < 1) { dwNoWorkBegin = GetTickCount(); return; }
+
+	int nState = theApp.Get_MainState();
+	if (nState != STATE_STOP) { dwNoWorkBegin = GetTickCount(); return; }
+
+	if (g_dlgNoWork.IsWindowVisible()) { dwNoWorkBegin = GetTickCount(); return; }
+
+	int nTerm = (int)(GetTickCount() - dwNoWorkBegin);
+	if (nTerm < pEquipData->nNoWorkTime * 1000) return;	// 초 -> 밀리초
+
+	g_dlgNoWork.Set_NoWorkAuto(TRUE);
+	g_dlgNoWork.ShowWindow(SW_SHOW);
 }
