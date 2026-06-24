@@ -50,6 +50,8 @@ BEGIN_MESSAGE_MAP(CManualCleanDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_AMOVE, &CManualCleanDlg::OnBnClickedBtnAmove)
 	ON_BN_CLICKED(IDC_BTN_CASERESET2, &CManualCleanDlg::OnBnClickedBtnCasereset2)
 	ON_BN_CLICKED(IDC_BUTTON2, &CManualCleanDlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BTN_DUST_OFF, &CManualCleanDlg::OnBnClickedBtnDustOff)
+	ON_BN_CLICKED(IDC_BTN_DUST_ON, &CManualCleanDlg::OnBnClickedBtnDustOn)
 END_MESSAGE_MAP()
 
 // CManualCleanDlg 메시지 처리기입니다.
@@ -390,4 +392,22 @@ void CManualCleanDlg::OnBnClickedBtnCasereset2()
 void CManualCleanDlg::OnBnClickedButton2()
 {
 	g_objAJinAXL.Clear_Scan(eVision::TC);
+}
+
+
+
+
+
+void CManualCleanDlg::OnBnClickedBtnDustOn()
+{
+	DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
+
+	pDY03->oDustPowerOn = TRUE;	g_objAJinAXL.Write_Output(3);
+}
+
+void CManualCleanDlg::OnBnClickedBtnDustOff()
+{
+	DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
+
+	pDY03->oDustPowerOn = FALSE; g_objAJinAXL.Write_Output(3);
 }

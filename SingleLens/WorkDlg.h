@@ -71,7 +71,7 @@ public:
 	CStaticCS		m_stcUph[4];
 	CStaticCS		m_stcDay[2];
 	CLedCS			m_ledVisionStatus[2];
-	CLedCS			m_ledEquipOption[2];
+	CLedCS			m_ledEquipOption[3];
 	
 	CButtonCS		m_btnMesCancel;
 

@@ -79,7 +79,7 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_STC_UPH_0 + i, m_stcUph[i]);
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_STC_DAY_0 + i, m_stcDay[i]);
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_LED_VISION_STATUS_0 + i, m_ledVisionStatus[i]);
-	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_LED_EQUIP_OPTION_0 + i, m_ledEquipOption[i]);
+	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_LED_EQUIP_OPTION_0 + i, m_ledEquipOption[i]);
 
 	DDX_Control(pDX, IDC_LBL_OPER_ID, m_lblOperId);
 	DDX_Control(pDX, IDC_STC_OPER_ID, m_stcOperId);
@@ -207,7 +207,7 @@ void CWorkDlg::Initial_Controls()
 	for (int i = 0; i < 2; i++) m_stcDay[i].Init_Ctrl("Arial", 9, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x40, 0x40));
 	for (int i = 0; i < 2; i++) m_ledVisionStatus[i].Init_Ctrl("Arial", 10, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em16);
 	
-	for (int i = 0; i < 2; i++) m_ledEquipOption[i].Init_Ctrl("Arial", 10, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em16);
+	for (int i = 0; i < 3; i++) m_ledEquipOption[i].Init_Ctrl("Arial", 10, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em16);
 
 	m_stcMesConnect.Init_Ctrl("바탕", 8, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00));
 	m_stcMesOnline.Init_Ctrl("바탕", 10, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00));
@@ -1059,6 +1059,7 @@ void CWorkDlg::Display_Status()
 	m_ledVisionStatus[0].Set_On(g_objInspector.Check_Connect(VISION_PC1));
 	m_ledEquipOption[0].Set_On(pEquipData->bUseTopVision);
 	m_ledEquipOption[1].Set_On(pEquipData->bUseBtmVision);
+	m_ledEquipOption[2].Set_On(pEquipData->bUseMark);
 }
 
 void CWorkDlg::Reset_AlarmLog()
@@ -1081,7 +1082,7 @@ void CWorkDlg::Reset_AlarmLog()
 	strErrNo.Format("%04d", gAlm.nAlmNo);
 	g_objMesAgent.Set_ErrorUpdate(0, strErrNo);
 
-	g_objLogFile.Save_ECMLog(1, strLog);
+	//g_objLogFile.Save_ECMLog(1, strLog);
 }
 
 void CWorkDlg::MachineStopLog(CString sType, CString sMsg)
@@ -1440,30 +1441,34 @@ void CWorkDlg::Change_Model()
 
 void CWorkDlg::OnBnClickedButton1()
 {
-	CString strTemp;
-	for(int i = 1; i <= 141; i++)
-	{
-		strTemp.Format("%d - %d", i, g_objCommon.ConvertToAVINo(i));
+	DX_DATA_03 *pDX03 = g_objAJinAXL.Get_pDX03();
+	pDX03->iUnloadOpenSw = TRUE;
+	//CString strTemp;
+	//for(int i = 1; i <= 141; i++)
+	//{
+	//	strTemp.Format("%d - %d", i, g_objCommon.ConvertToAVINo(i));
 
-		g_objLogFile.Save_HandlerLog(strTemp);
-	}
+	//	g_objLogFile.Save_HandlerLog(strTemp);
+	//}
 
-	g_objLogFile.Save_HandlerLog("End~~~~~~~~~~~~~~~");
+	//g_objLogFile.Save_HandlerLog("End~~~~~~~~~~~~~~~");
 
-	for(int i = 1; i <= 144; i++)
-	{
-		strTemp.Format("%d - %d", i, g_objCommon.ConvertToMESNo(i));
+	//for(int i = 1; i <= 144; i++)
+	//{
+	//	strTemp.Format("%d - %d", i, g_objCommon.ConvertToMESNo(i));
 
-		g_objLogFile.Save_HandlerLog(strTemp);
-	}
+	//	g_objLogFile.Save_HandlerLog(strTemp);
+	//}
 
 	//g_objSequenceMain.Job_LotStart(1);
 }
 
 void CWorkDlg::OnBnClickedButton2()
 {
-	g_objSequenceMain.Job_LotEnd(1);
-	OnUpdateUph(NULL, NULL);
+	DX_DATA_03 *pDX03 = g_objAJinAXL.Get_pDX03();
+	pDX03->iLoadOpenSw = TRUE;
+	/*g_objSequenceMain.Job_LotEnd(1);
+	OnUpdateUph(NULL, NULL);*/
 
 }
 
@@ -1960,32 +1965,7 @@ void CWorkDlg::OnBnClickedBtnMesAbort()
 	if (gData.nSelectNo < 1 || gData.nSelectNo > 6) { AfxMessageBox("Abort Lot을 먼저 선택해 주세요."); return; }
 	if (!m_rdoWorkStop.GetCheck()) { AfxMessageBox("장비 Stop상태에서 Abort처리 하세요."); return; }
 	//if (gMes.nLotStatus[gData.nSelectNo-1] == 0) { AfxMessageBox("진행중인 Lot만 Abort처리가 가능합니다."); return; }
-
-	//int nCase1 = g_objSequenceMain.Get_MainRunCase(AUTO_LOAD_STAGE_1);
-	//int nCase2 = g_objSequenceMain.Get_MainRunCase(AUTO_LOAD_STAGE_2);
-	//if ((nCase1 > 5 && nCase1 < 8) || (nCase2 > 5 && nCase2 < 8)) {
-
-	//	CString sData;
-	//	sData.Format("Are you want to cancel this Port[%d] Lot[%s]?", gData.nSelectNo, gLot.sLotID[gData.nSelectNo-1]);
-	//	if (g_objCommon.Show_MsgBox(2, sData) != IDOK) return;
-
-	//	gMes.nLotStatus[gData.nSelectNo-1] = 0;
-	//	g_objMesAgent.Set_LotAbort(gLot.sLotID[gData.nSelectNo-1]);
-
-	//	//	int nCase1 = g_objSequenceMain.Get_MainRunCase(AUTO_TRANSFER_1);
-	//	//	if (nCase1 == 7) g_objSequenceMain.Set_MainRunCase(AUTO_TRANSFER_1, 0);
-	//	if (nCase1 > 5 && nCase1 < 8) g_objSequenceMain.Set_MainRunCase(AUTO_LOAD_STAGE_1, 20);
-	//	if (nCase2 > 5 && nCase2 < 8) g_objSequenceMain.Set_MainRunCase(AUTO_LOAD_STAGE_2, 20);
-
-	//	m_stcLotsIdS[gData.nSelectNo-1].SetWindowText("");
-	//	m_stcCmsCountS[gData.nSelectNo-1].SetWindowText("");
-	//	g_objCommon.Set_LotDataClear(gData.nSelectNo-1);
-
-	//	sData.Format("[Work Dialog] MES Abort Button Click. PortNo[%d] LotID[%s]", gData.nSelectNo, gLot.sLotID[gData.nSelectNo-1]);
-	//	g_objLogFile.Save_HandlerLog(sData);
-	//} else {
-	//	AfxMessageBox("진행중인 Lot만 Abort처리가 가능합니다.");
-	//}
+		
 }
 
 

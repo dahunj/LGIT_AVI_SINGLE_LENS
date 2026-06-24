@@ -159,7 +159,7 @@ void CLogFile::Save_HandlerLog(CString sLog)
 	}
 	g_csHandlerLog.Unlock();
 
-	Save_ECMLog(4, sLog);
+	//Save_ECMLog(4, sLog);
 }
 
 void CLogFile::Save_SaveRunTimeLog(CString sLog)
@@ -354,9 +354,9 @@ void CLogFile::Save_LotError(CString sLog, int nPNo)
 }
 
 
-void CLogFile::Save_ECMLog(int nType, CString strLog)	//nType:1[Alarm], 2[Joblist] 3[Inspect]
+void CLogFile::Save_ECMLog(int nType, CString strLog, int nMGZNo)	//nType:1[Alarm], 2[Joblist] 3[Inspect]
 {
-	g_csECMLog.Lock();
+	int nMNo = nMGZNo - 1;
 
 	CString strFile, strFile2, sTitle, strTime, strSave;
 
@@ -369,7 +369,18 @@ void CLogFile::Save_ECMLog(int nType, CString strLog)	//nType:1[Alarm], 2[Joblis
 	GetLocalTime(&time);
 	strTime.Format("%04d-%02d-%02d %02d:%02d:%02d:%03d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
 
-	
+	if (nType == 1) sTitle.Format("Time,Station,Type,LotNum,Error Code,Error,Start_Time,End_Time,Lead_Time\r\n");
+	if (nType == 2) sTitle.Format("Time,Station,Type,LotNum,Start_Time,End_Time,Run_Time,Unload_Time,Tact(S-E),Tact(RunTime),Tact(Unload_Time),UPH(S-E),UPH(RunTime),UPH(Unload_Time),Alarm_Count,Stop_Time,Zig_Count,Lens_Count,Good_Count,NG_Count\r\n");
+	if (nType == 3) sTitle.Format("Time,Station,Type,LotNum,Load_Pick,Inspect,Barcode,NG_Pick,Good_Pick,Trans_Pick\r\n");
+	if (nType == 4) sTitle.Format("Time,Station,Type\r\n");
+
+	if (nType == 1) strFile.Format("%s%s_%04d%02d%02d%02d_Alarm.csv", strPath, gAlm.sLotID, time.wYear, time.wMonth, time.wDay, time.wHour);
+	if (nType == 2) strFile.Format("%s%s_%04d%02d%02d%02d_JobList.csv", strPath, gLot.sLotID[nMNo] , time.wYear, time.wMonth, time.wDay, time.wHour);
+	if (nType == 3) strFile.Format("%s%s_%04d%02d%02d%02d_Inspector.csv", strPath, gLot.sLotID[nMNo], time.wYear, time.wMonth, time.wDay, time.wHour);
+	if (nType == 4) strFile.Format("%s%s_%04d%02d%02d%02d_Handler.csv", strPath, gLot.sLotID[nMNo], time.wYear, time.wMonth, time.wDay, time.wHour);
+
+	g_csECMLog.Lock();
+
 
 	g_csECMLog.Unlock();
 }
@@ -539,11 +550,8 @@ void CLogFile::Save_TrackingLog(int nInfo, CString sBarcode, int nMZNo, int nZig
 
 	MOVE_DATA *pMoveData = g_objDataManager.Get_pMoveData();
 	double dMarkZ = pMoveData->dMarkUnitZ[eMark_Z::MarkDown];
-
-
-	/*if (gLot.sLotID == "") gLot.sLotID = "LOT_ID";
-	strFile.Format("%s\\%s_AVITracking.csv", strPath, gLot.sLotID);*/
-
+	
+	
 	CFile file;
 	if (!file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) return;
 

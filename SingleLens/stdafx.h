@@ -85,17 +85,17 @@
 	#pragma comment(lib, "CSGridR.lib")
 #endif
 
-#define MAIN_VERSION	_T("V 0.0.1.2b")
+#define MAIN_VERSION	_T("V 0.0.1.6b")
 
 
 //---------------------------------
-//#define AJIN_BOARD_USE
+#define AJIN_BOARD_USE
 
 
 
 #define SIM_WAITTIMES	 1		//
 #define SIM_WAITTIMEM	 1		//
-#define	VELOCITY_WEIGHT	 40
+#define	VELOCITY_WEIGHT	 5
 
 #define MES_WAITTIME	10000
 
@@ -112,9 +112,11 @@ extern CString gsCurrentDir;	// 현재 프로젝트 폴더
 typedef struct
 {
 	CString	sOperID;		// Operator
-	
+		
 	CString	sMZID[7];
 	CString	sZigID[7][10];	
+	
+
 
 	int		nMZNo[7]; // From UI MZ Input 
 	int		nMZCnt;
@@ -267,25 +269,25 @@ typedef struct
 
 	int		nSelectNo;
 
-	double  dDeltaX[3];
-	double  dDeltaY[3];
+	double  dDeltaX[7];
+	double  dDeltaY[7];
 
 	DWORD	dwInspectWait;
+
+	int		nTowerState;
 
 } GLOVAL_DATA;
 
 
 typedef struct 
 {
-	CString sLotID[60];
+	CString sLotID[7];
 
 	int nMZRunningCnt;
 
 	int nLensCnt[60];
-	int	nLotStatus[60];	//0:Wait, 1, 2:Run, 3:Lot_End
-
-	BOOL bEmptyLot[60];
-	
+	int	nLotStatus[7];	//0:Wait, 1, 2:Run, 3:Lot_End
+			
 	///////////old 	
 	CString sStartTime[7]; // 동시에 7개 매거진 돌 수 있나? 
 	CString sEndTime[7];

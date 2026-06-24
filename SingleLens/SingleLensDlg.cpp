@@ -394,6 +394,9 @@ void CSingleLensDlg::OnBnClickedRdoMainWork()
 void CSingleLensDlg::OnBnClickedRdoMainManual()
 {
 	Set_CurrentMode(MODE_MANUAL);
+	gData.nTowerState = 7;
+	Set_CurrentState(gData.nTowerState);
+
 }
 
 void CSingleLensDlg::OnBnClickedRdoMainSetup()
@@ -544,6 +547,8 @@ void CSingleLensDlg::Set_CurrentMode(int nMode)
 
 	Hide_ModeWindows(nMode, nPreMode);
 
+	gData.nTowerState = 0;
+
 	if (nMode == MODE_OPERATOR) m_btnMainOperator.SetWindowText("Engineer");
 	else m_btnMainOperator.SetWindowText("Operator");
 
@@ -567,7 +572,9 @@ void CSingleLensDlg::Set_CurrentMode(int nMode)
 		if (!m_rdoMainWork.GetCheck()) m_rdoMainWork.SetCheck(TRUE);
 		g_objLogFile.Save_HandlerLog("[Main Dialog] Work Mode start");
 
-	} else if (nMode == MODE_MANUAL) {
+	} else if (nMode == MODE_MANUAL) 
+	{
+		gData.nTowerState = 7;
 		g_dlgManual.ShowWindow(SW_SHOW);
 		m_stcMainMode.SetWindowText("Manual");
 		m_stcMainOpEng.SetWindowText("Engineer Mode");
@@ -614,21 +621,25 @@ void CSingleLensDlg::Set_CurrentState(int nState)
 	// Start, Stop, Reset SW
 	switch (nState) {
 	case STATE_NONE:
+		gData.nTowerState = 0;
 		pDY03->oStartLamp1 = pDY03->oStartLamp2 = FALSE;
 		pDY03->oStopLamp1  = pDY03->oStopLamp2 = FALSE;
 		pDY03->oResetLamp1 = pDY03->oResetLamp2 = FALSE;
 		break;
 	case STATE_INIT:
+		gData.nTowerState = 0;
 		pDY03->oStartLamp1 = pDY03->oStartLamp2 = TRUE;
 		pDY03->oStopLamp1  = pDY03->oStopLamp2 = TRUE;
 		pDY03->oResetLamp1 = pDY03->oResetLamp2 = FALSE;
 		break;
 	case STATE_RUN:
+		gData.nTowerState = 0;
 		pDY03->oStartLamp1 = pDY03->oStartLamp2 = TRUE;
 		pDY03->oStopLamp1  = pDY03->oStopLamp2 = FALSE;
 		pDY03->oResetLamp1 = pDY03->oResetLamp2 = FALSE;
 		break;
 	case STATE_STOP:
+		gData.nTowerState = 0;
 		pDY03->oStartLamp1 = pDY03->oStartLamp2 = FALSE;
 		pDY03->oStopLamp1  = pDY03->oStopLamp2 = TRUE;
 		pDY03->oResetLamp1 = pDY03->oResetLamp2 = FALSE;
@@ -636,6 +647,7 @@ void CSingleLensDlg::Set_CurrentState(int nState)
 	case STATE_ALARM:
 	case STATE_ERROR:
 	case STATE_LOTEND:
+		gData.nTowerState = 0;
 		pDY03->oStartLamp1 = pDY03->oStartLamp2 = FALSE;
 		pDY03->oStopLamp1  = pDY03->oStopLamp2 = FALSE;
 		pDY03->oResetLamp1 = pDY03->oResetLamp2 = TRUE;
@@ -644,10 +656,29 @@ void CSingleLensDlg::Set_CurrentState(int nState)
 	g_objAJinAXL.Write_Output(3);
 	Set_LotStateTime();
 	// Tower
-	m_bTowerOn = TRUE;
-	pDY03->oTowerGreen = pEquipData->bTower[nState][0];
-	pDY03->oTowerYellow = pEquipData->bTower[nState][1];
-	pDY03->oTowerRed = pEquipData->bTower[nState][2];
+	if(gData.nTowerState == 8) // In Out 
+	{
+		
+		m_bTowerOn = TRUE;
+		pDY03->oTowerGreen = TRUE;
+		pDY03->oTowerYellow = TRUE;
+		pDY03->oTowerRed = FALSE;
+	}
+	else if(gData.nTowerState == 7) // Manual 
+	{		
+		m_bTowerOn = TRUE;
+		pDY03->oTowerGreen = FALSE;
+		pDY03->oTowerYellow = TRUE;
+		pDY03->oTowerRed = FALSE;
+	}
+	else
+	{
+		m_bTowerOn = TRUE;
+		pDY03->oTowerGreen = pEquipData->bTower[nState][0];
+		pDY03->oTowerYellow = pEquipData->bTower[nState][1];
+		pDY03->oTowerRed = pEquipData->bTower[nState][2];
+	}
+	
 
 	// Tower Flicker
 	if (pEquipData->bTower[nState][3]) SetTimer(TIMER_TOWER_FLKR, 500, NULL);
@@ -770,11 +801,14 @@ void CSingleLensDlg::Set_LampFlicker_LdOpen(BOOL bEnable)
 	if (m_bLampOnLdOpen || !bEnable) {
 		m_bLampOnLdOpen = FALSE;
 		pDY03->oLdOpenLamp = FALSE;
+		gData.nTowerState = 0;
 		//		if (!bEnable) KillTimer(TIMER_LOAD_LAMP_FLKR);
 
 	} else {
 		m_bLampOnLdOpen = TRUE;
 		pDY03->oLdOpenLamp = TRUE;
+		gData.nTowerState = 8;
+		Set_CurrentState(gData.nTowerState);
 	}
 	g_objAJinAXL.Write_Output(3);
 }
@@ -783,12 +817,14 @@ void CSingleLensDlg::Set_LampFlicker_LdRun(BOOL bEnable)
 {
 	DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
 
-	if (m_bLampOnLdRun || !bEnable) {
+	if (m_bLampOnLdRun || !bEnable) 
+	{
 		m_bLampOnLdRun = FALSE;
 		pDY03->oLdRunLamp = FALSE;
 		//		if (!bEnable) KillTimer(TIMER_LOAD_LAMP_FLKR);
-
-	} else {
+	}
+	else
+	{
 		m_bLampOnLdRun = TRUE;
 		pDY03->oLdRunLamp = TRUE;
 	}
@@ -817,10 +853,12 @@ void CSingleLensDlg::Set_LampFlicker_UldOpen(BOOL bEnable)
 		m_bLampOnUldOpen = FALSE;
 		pDY03->oUldOpenLamp = FALSE;
 		//		if (!bEnable) KillTimer(TIMER_LOAD_LAMP_FLKR);
-
+		gData.nTowerState = 0;
 	} else {
 		m_bLampOnUldOpen = TRUE;
 		pDY03->oUldOpenLamp = TRUE;
+		gData.nTowerState = 8;
+		Set_CurrentState(gData.nTowerState);
 	}
 	g_objAJinAXL.Write_Output(3);
 }

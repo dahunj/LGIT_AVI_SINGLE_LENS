@@ -575,6 +575,8 @@ void CCommon::Set_ElevLift1Down()
 
 BOOL CCommon::Get_ElevLift1In()
 {
+	if(gData.bAgingMode) return TRUE;
+
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
 	if(pDX00->iElvLift1In && !pDX00->iElvLift1Out)
@@ -586,6 +588,8 @@ BOOL CCommon::Get_ElevLift1In()
 
 BOOL CCommon::Get_ElevLift1Out()
 {
+	if(gData.bAgingMode) return TRUE;
+
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
 	if(!pDX00->iElvLift1In && pDX00->iElvLift1Out)
@@ -598,6 +602,8 @@ BOOL CCommon::Get_ElevLift1Out()
 
 BOOL CCommon::Get_ElevLift1Up()
 {
+	if(gData.bAgingMode) return TRUE;
+
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
 	if(pDX00->iElvLift1UpL && !pDX00->iElvLift1Dn)
@@ -610,6 +616,8 @@ BOOL CCommon::Get_ElevLift1Up()
 
 BOOL CCommon::Get_ElevLift1Down()
 {
+	if(gData.bAgingMode) return TRUE;
+
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
 	if(!pDX00->iElvLift1UpL && pDX00->iElvLift1Dn)
@@ -677,6 +685,8 @@ BOOL CCommon::Get_ElevLift2In()
 
 BOOL CCommon::Get_ElevLift2Out()
 {
+	if(gData.bAgingMode) return TRUE;
+
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
 	if(!pDX00->iElvLift2In && pDX00->iElvLift2Out)
@@ -703,6 +713,8 @@ BOOL CCommon::Get_ElevLift2Up()
 
 BOOL CCommon::Get_ElevLift2Down()
 {
+	if(gData.bAgingMode) return TRUE;
+
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 
 	if(!pDX00->iElvLift2UpR && pDX00->iElvLift2Dn)
@@ -1027,9 +1039,7 @@ void CCommon::Set_FeederClose()
 }
 
 void CCommon::Set_FeederOpen()
-{
-
-
+{	
 	DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
 	pDY01->oFeederGripOpen = TRUE; pDY01->oFeederGripClose = FALSE;
 	g_objAJinAXL.Write_Output(1);

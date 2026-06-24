@@ -338,6 +338,7 @@ void COperatorDlg::OnBnClickedBtnOperManual()
 
 	ShowWindow(SW_HIDE);
 	pMainDlg->Set_CurrentMode(MODE_MANUAL);
+	pMainDlg->Set_CurrentState(gData.nTowerState); 
 #endif
 
 // 	ShowWindow(SW_HIDE);

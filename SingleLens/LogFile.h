@@ -22,7 +22,7 @@ public:
 	void Save_LotLog(int nPNo);
 	void Save_AviHandlerLog(CString sLog);
 	void Save_LotError(CString sLog, int nPNo=0);
-	void Save_ECMLog(int nType, CString strLog);	//nType:1[Alarm], 2[Joblist] 3[Inspect]
+	void Save_ECMLog(int nType, CString strLog, int nMGZNo = 0);	//nType:1[Alarm], 2[Joblist] 3[Inspect]
 	void Save_TestLog(CString sLog);
 	void Save_OperatingRatio(CString sLog);
 	
