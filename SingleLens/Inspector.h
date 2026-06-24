@@ -26,6 +26,8 @@ protected:
 private:
 	CInspectV1	m_Vision1;
 
+	CString		m_sMZID;
+
 	int		m_nStatusPC1;	// Vision PC1 ป๓ลย (0:Not Ready, 1:Ready, 2:Run)
 	int		m_nFOBStatus;
 	
@@ -47,7 +49,7 @@ private:
 	
 	void Get_AMoveRequest(int nVPc, CString sGbn, CString sZ1);
 	void Get_PositionRequest(int nVPc, CString sGbn);
-	void Get_ReloadRequest(int nVPc, CString sLotID, CString sGbn);
+	void Get_ReloadRequest(int nVPc, CString sMZID, CString sGbn);
 	void Get_TriggerRequest(int nVPc, CString sGbn, CString sMZNo, CString sCtZigID, CString sZigNo, CString sLensNo);
 	void Get_AlignRequest(int nVPc, CString sMZID, CString sGbn, CString sMGZNo, CString sZigNo, CString sDeltaX, CString sDeltaY);
 	

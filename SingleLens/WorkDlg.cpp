@@ -340,7 +340,11 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 		
 			if(pEquipData->bUseMES) g_objMesAgent.Set_EquipState(eEquipState::RUN);	//Run
 
-			g_objCommon.Locking_MainDoor(TRUE);
+			if(pEquipData->bUseDoorLock) g_objCommon.Locking_MainDoor(TRUE);
+			if (gAlm.bBegin)
+			{
+				Reset_AlarmLog();
+			}
 			pMainDlg->Enable_ModeButton(FALSE);
 			pMainDlg->Set_CurrentState(STATE_RUN);
 						
@@ -350,6 +354,7 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 			m_bLoadCVRun = FALSE;
 			m_bUnloadCVRun = FALSE;
 
+			g_objLogFile.Save_HandlerLog("[Work Mode] Main Thread Start");
 			g_objSequenceMain.Begin_MainRunThread();
 			//g_objInspector.Set_StatusUpdate(VISION_ALL, 2);
 
@@ -1076,13 +1081,18 @@ void CWorkDlg::Reset_AlarmLog()
 	
 	gLot.dwErrorTime += gAlm.dwProcTime; 
 
+	gAlm.sLotID = gData.sMZID[0];
+
 	strLog.Format("%s,%04d,%s,%s,%s,%d", gAlm.sLotID, gAlm.nAlmNo, gAlm.sAlmMsg, gAlm.sStartTime, gAlm.sEndTime, gAlm.dwProcTime);
 	g_objLogFile.Save_AlarmResetLog(strLog);	// Alarm Reset
 
 	strErrNo.Format("%04d", gAlm.nAlmNo);
-	g_objMesAgent.Set_ErrorUpdate(0, strErrNo);
 
-	//g_objLogFile.Save_ECMLog(1, strLog);
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	if(pEquipData->bUseMES) g_objMesAgent.Set_ErrorUpdate(0, strErrNo);
+
+	g_objLogFile.Save_ECMLog(1, strLog);
 }
 
 void CWorkDlg::MachineStopLog(CString sType, CString sMsg)

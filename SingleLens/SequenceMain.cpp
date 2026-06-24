@@ -381,12 +381,7 @@ void CSequenceMain::Job_LotEnd(int nMZNo)
 				   gLot.nErrorCount[nMNo], gLot.dwStopTime[nMNo],
 				   gLot.nTrayCount[nMNo], gLot.nLensCount[nMNo], gLot.nGoodCount[nMNo], gLot.nNgCount[nMNo]);
 
-	g_objLogFile.Save_JobListLog(m_strLog);
-
-	/*strLog.Format("LotID,%s,Start_Time,%s,End_Time,%s,Time,%d,Tray_Count,%02d,CM_Count,%04d,Tack,%0.7lf",
-		gData.sMZID[nMNo], gLot.sStartTime[nMNo], gLot.sEndTime[nMNo], dwTime, gData.nCtZigTotalCnt[nMNo], nCmCnt, gLot.dTackTime);
-	g_objLogFile.Save_JobListLog(strLog);
-*/
+	g_objLogFile.Save_JobListLog(m_strLog, nMZNo);
 
 
 	gUph.dTaktTime = gLot.dTackTime_Unload;
@@ -1572,29 +1567,22 @@ BOOL CSequenceMain::FeederRun()
 		}		
 		break;
 	case 3:
-		if(g_objAJinAXL.Is_MoveDone(AX_MZ_ELEVATOR_Z, dPosZ) && g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZLoad))
+	/*	if(g_objAJinAXL.Is_MoveDone(AX_MZ_ELEVATOR_Z, dPosZ) && g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZLoad))
 		{						
 			m_strLog.Format("FeederUnit X Move (MZ2), %d"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad);
-			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(15000);
-			
-		}
+			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(15000);			
+		}*/
 		break;
 	case 4:
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad))
 		{
 			m_strLog.Format("Feeder Y Move (Zig Exist) "); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(60000);			
-		}
-		
+		}		
 		break;
 	case 5:
-		/*if(gData.bAgingMode || gData.bSimulMode)
-		{
-			if(gData.nTNoPick[eMZ::Load] == 3 || gData.nTNoPick[eMZ::Load] == 6 ) m_pDX01->iFeederZigExist = TRUE;
-			else m_pDX01->iFeederZigExist = FALSE;
-		}*/
-
+	
 		if(gData.bAgingMode || gData.bSimulMode)
 		{
 			m_pDX01->iFeederZigExist = TRUE;

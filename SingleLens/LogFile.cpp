@@ -159,7 +159,7 @@ void CLogFile::Save_HandlerLog(CString sLog)
 	}
 	g_csHandlerLog.Unlock();
 
-	//Save_ECMLog(4, sLog);
+	Save_ECMLog(4, sLog);
 }
 
 void CLogFile::Save_SaveRunTimeLog(CString sLog)
@@ -224,7 +224,7 @@ void CLogFile::Save_InspectorLog(CString sLog)
 	g_csInspectorLog.Unlock();
 }
 
-void CLogFile::Save_JobListLog(CString sLog, BOOL bMode)
+void CLogFile::Save_JobListLog(CString sLog, int nMZNo)
 {
 	g_csJobListLog.Lock();
 
@@ -256,7 +256,7 @@ void CLogFile::Save_JobListLog(CString sLog, BOOL bMode)
 	}
 	g_csJobListLog.Unlock();
 
-	//if (bMode == TRUE) Save_ECMLog(2, sLog);
+	Save_ECMLog(2, sLog, nMZNo);
 }
 
 void CLogFile::Save_LotResult(int nPNo, CString sLog)
@@ -358,6 +358,8 @@ void CLogFile::Save_ECMLog(int nType, CString strLog, int nMGZNo)	//nType:1[Alar
 {
 	int nMNo = nMGZNo - 1;
 
+	if(nMNo < 0 ) nMNo = 0;
+
 	CString strFile, strFile2, sTitle, strTime, strSave;
 
 	CString strPath = "D:\\EVMS\\TP\\Log\\";
@@ -369,17 +371,43 @@ void CLogFile::Save_ECMLog(int nType, CString strLog, int nMGZNo)	//nType:1[Alar
 	GetLocalTime(&time);
 	strTime.Format("%04d-%02d-%02d %02d:%02d:%02d:%03d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
 
-	if (nType == 1) sTitle.Format("Time,Station,Type,LotNum,Error Code,Error,Start_Time,End_Time,Lead_Time\r\n");
-	if (nType == 2) sTitle.Format("Time,Station,Type,LotNum,Start_Time,End_Time,Run_Time,Unload_Time,Tact(S-E),Tact(RunTime),Tact(Unload_Time),UPH(S-E),UPH(RunTime),UPH(Unload_Time),Alarm_Count,Stop_Time,Zig_Count,Lens_Count,Good_Count,NG_Count\r\n");
+	if (nType == 1) sTitle.Format("Time,Station,Type,LotNum,Error Code,Error,Start_Time,End_Time,Lead_Time,Barcode\r\n");
+	if (nType == 2) sTitle.Format("Time,Station,Type,LotNum,Start_Time,End_Time,Run_Time,Unload_Time,Tact(S-E),Tact(RunTime),Tact(Unload_Time),UPH(S-E),UPH(RunTime),UPH(Unload_Time),Alarm_Count,Stop_Time,Efficiency(RunTime), Efficiency(Unload),Tray_Count,CM_Count,Good_Count,NG_Count,N1_Count,N2_Count,N3_Count,N4_Count,MESNG_Count\r\n");
 	if (nType == 3) sTitle.Format("Time,Station,Type,LotNum,Load_Pick,Inspect,Barcode,NG_Pick,Good_Pick,Trans_Pick\r\n");
 	if (nType == 4) sTitle.Format("Time,Station,Type\r\n");
 
-	if (nType == 1) strFile.Format("%s%s_%04d%02d%02d%02d_Alarm.csv", strPath, gAlm.sLotID, time.wYear, time.wMonth, time.wDay, time.wHour);
-	if (nType == 2) strFile.Format("%s%s_%04d%02d%02d%02d_JobList.csv", strPath, gLot.sLotID[nMNo] , time.wYear, time.wMonth, time.wDay, time.wHour);
-	if (nType == 3) strFile.Format("%s%s_%04d%02d%02d%02d_Inspector.csv", strPath, gLot.sLotID[nMNo], time.wYear, time.wMonth, time.wDay, time.wHour);
-	if (nType == 4) strFile.Format("%s%s_%04d%02d%02d%02d_Handler.csv", strPath, gLot.sLotID[nMNo], time.wYear, time.wMonth, time.wDay, time.wHour);
+	if (nType == 1) strFile.Format("%s%s_%04d%02d%02d%02d_Alarm.csv", strPath, "SingleLens", time.wYear, time.wMonth, time.wDay, time.wHour);
+	if (nType == 2) strFile.Format("%s%s_%04d%02d%02d%02d_JobList.csv", strPath, gData.sMZID[nMNo] , time.wYear, time.wMonth, time.wDay, time.wHour);
+	if (nType == 3) strFile.Format("%s%s_%04d%02d%02d%02d_Inspector.csv", strPath, "SingleLens", time.wYear, time.wMonth, time.wDay, time.wHour);
+	if (nType == 4) strFile.Format("%s%s_%04d%02d%02d%02d_Handler.csv", strPath, "SingleLens", time.wYear, time.wMonth, time.wDay, time.wHour);
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
 	g_csECMLog.Lock();
+
+	CFile file;
+	if (!file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) return;
+
+	try 
+	{
+		file.SeekToEnd();
+
+		if (file.GetLength() < 1) file.Write(sTitle, sTitle.GetLength());
+
+		if(nType == 4) strSave.Format("%s,%s,%s,%s\r\n", strTime, gData.sComName, pEquipData->sModelName, strLog);
+		else if(nType == 2) strSave.Format("%s,%s,%s,%s\r\n", strTime, gData.sComName, pEquipData->sModelName, strLog);
+		else
+		{
+			strSave.Format("%s,%s,%s,%s,%s\r\n", strTime, gData.sComName, pEquipData->sModelName, strLog, "");
+		}
+		file.Write(strSave, strSave.GetLength());
+		file.Close();
+
+	}
+	catch (CFileException *pEx)
+	{
+		pEx->Delete();
+	}
 
 
 	g_csECMLog.Unlock();

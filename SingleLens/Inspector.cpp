@@ -26,6 +26,8 @@ CInspector::CInspector()
 {
 	m_nStatusPC1 = 0;		// Vision PC1 ป๓ลย (0:Not Ready, 1:Ready, 2:Run)
 	m_bLotReady1 = FALSE;	
+
+	m_sMZID.Empty();
 }
 
 CInspector::~CInspector()
@@ -151,6 +153,8 @@ void CInspector::Get_LotReady(int nVPc, CString sMZID, CString sMZNo)
 	int nMNo = atoi(sMZNo) - 1;
 	if (nMNo < 0 || nMNo > 7) return;
 
+	m_sMZID = sMZID;
+
 	//if (sMZID != gData.sMZID[eMZ::Load]) return;
 	if (nVPc == VISION_PC1) m_bLotReady1 = TRUE;
 	Set_LotReadyDone(sMZID, nMNo);
@@ -166,7 +170,7 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 
 	int nLAVINo = g_objCommon.ConvertToAVINo(nLNo);
 
-
+	m_sMZID = sMZID;
 	int nXPos = 0, nYPos = 0;
 
 	//vision direction fixY
@@ -228,6 +232,7 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 	int nTNo = atoi(sTrayNo) - 1;	// Tray Index
 	int	nLNo = atoi(sLensNo);	// CM Index
 
+	m_sMZID = sMZID;
 	int nLAVINo = g_objCommon.ConvertToAVINo(nLNo);
 
 	if (nMNo < 0 || nMNo > 3 ||nTNo < 0 || nTNo > 10 || nLNo < 0 || nLNo > ZIG_X*ZIG_Y) { g_objCommon.Show_Error(6101); return; }
@@ -326,6 +331,8 @@ void CInspector::Get_AlignRequest(int nVPc, CString sMZID, CString sGbn, CString
 {
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
+	m_sMZID = sMZID;
+
 	if(sGbn == "TC" && pEquipData->bUseTopVision && !gData.bScanDone[eVision::TC])
 	{
 		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_TOP_INSPECT);
@@ -360,11 +367,11 @@ void CInspector::Get_AlignRequest(int nVPc, CString sMZID, CString sGbn, CString
 }
 
 
-void CInspector::Get_ReloadRequest(int nVPc, CString sLotID, CString sGbn)
+void CInspector::Get_ReloadRequest(int nVPc, CString sMZID, CString sGbn)
 {
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
-
+	m_sMZID = sMZID;
 	if(sGbn == "TC" && pEquipData->bUseTopVision && !gData.bScanDone[eVision::TC] && !gData.bReload[eVision::TC])
 	{
 		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_TOP_INSPECT);
@@ -458,6 +465,7 @@ void CInspector::Set_StatusReply(int nStatus)
 void CInspector::Set_LotStart(CString sMZID, int nMZNo, int nTrayCount, int nLensCount, CString sModel)
 {
 	m_bLotReady1 = FALSE;
+	m_sMZID = sMZID;
 
 	CString strSendCmd;
 	strSendCmd.Format("LOT,START,%s,%d,%d,%d,%s", sMZID, nMZNo, nTrayCount, nLensCount, sModel);
@@ -466,6 +474,8 @@ void CInspector::Set_LotStart(CString sMZID, int nMZNo, int nTrayCount, int nLen
 
 void CInspector::Set_LotEnd(CString sMZID, int nMZNo)
 {
+	m_sMZID = sMZID;
+
 	CString	strSendCmd;
 	strSendCmd.Format("LOT,END,%s,%d", sMZID, nMZNo);
 	Send_Command(VISION_PC1, strSendCmd);
@@ -473,6 +483,8 @@ void CInspector::Set_LotEnd(CString sMZID, int nMZNo)
 
 void CInspector::Set_LotReadyDone(CString sMZID, int nMZNo)
 {
+	m_sMZID = sMZID;
+
 	CString	strSendCmd;
 	strSendCmd.Format("LOT,RDYDONE,%s,%d", sMZID, nMZNo);
 	Send_Command(VISION_PC1, strSendCmd);
@@ -480,6 +492,8 @@ void CInspector::Set_LotReadyDone(CString sMZID, int nMZNo)
 
 void CInspector::Set_LoadComplete(CString sGbn, CString sMZID, int nMZNo, CString sTrayID, int nTrayNo, int nLensNo)
 {
+	m_sMZID = sMZID;
+	
 	CString	strSendCmd, strTemp;
 	strSendCmd.Format("LOAD,COMPLETE,%s,%s,%d,%s,%d,%d", sGbn, sMZID, nMZNo, sTrayID, nTrayNo, nLensNo);
 	if(sGbn == "TC") gData.bScanDone[eVision::TC] = FALSE;

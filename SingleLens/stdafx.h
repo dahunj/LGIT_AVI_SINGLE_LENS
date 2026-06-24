@@ -89,7 +89,7 @@
 
 
 //---------------------------------
-#define AJIN_BOARD_USE
+//#define AJIN_BOARD_USE
 
 
 
@@ -117,7 +117,7 @@ typedef struct
 	CString	sZigID[7][10];	
 	
 
-
+	//비전 요청으로 1~3까지만 운용, 4~7 나머지는 버퍼로 남겨둔다
 	int		nMZNo[7]; // From UI MZ Input 
 	int		nMZCnt;
 

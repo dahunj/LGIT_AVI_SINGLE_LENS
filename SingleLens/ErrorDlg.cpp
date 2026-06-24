@@ -137,14 +137,19 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		
 		pMainDlg->Set_CurrentState(STATE_ERROR);
 
-		g_objMesAgent.Set_ErrorUpdate(1, strErrNo);
+		EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+		if(pEquipData->bUseMES) g_objMesAgent.Set_ErrorUpdate(1, strErrNo);
 
 		strErrNo.Format("%04d", m_nErrNo);
 		strErrCode.Format("%05d", m_nErrCode);
 		m_stcErrNo.SetWindowText(strErrCode);
 		
 		CIniFileCS INI(gsCurrentDir + "\\System\\ErrorList.ini");
-		if (!INI.Check_File()) { AfxMessageBox("ErrorList.ini File Not Found!!!"); return; }
+		if (!INI.Check_File()) 
+		{ 
+			AfxMessageBox("ErrorList.ini File Not Found!!!"); return;
+		}
 		strErrMsg = INI.Get_String("ERROR", strErrNo, "");
 
 		CString strErrPick = "";		
@@ -459,8 +464,17 @@ void CErrorDlg::OnBnClickedBtnErrToManual()
 
 void CErrorDlg::Set_AlarmLog(int nErrNo, CString sErrMsg)
 {
+	SYSTEMTIME time;
+	int nMNo = 0;
+	gAlm.bBegin = TRUE;
 	
-	
+	gAlm.sLotID = gData.sMZID[nMNo];
+
+	gAlm.nAlmNo = nErrNo;
+	gAlm.sAlmMsg = sErrMsg;
+	GetLocalTime(&time);
+	gAlm.dwStartTime = GetTickCount();
+	gAlm.sStartTime.Format("%04d%02d%02d_%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -17,12 +17,11 @@ public:
 	void Save_HandlerLog(CString sLog);
 	void Save_SaveRunTimeLog(CString sLog);
 	void Save_InspectorLog(CString sLog);
-	void Save_JobListLog(CString sLog, BOOL bMode=FALSE);
+	void Save_JobListLog(CString sLog, int nMZNo);
 	void Save_LotResult(int nPNo, CString sLog);
 	void Save_LotLog(int nPNo);
 	void Save_AviHandlerLog(CString sLog);
 	void Save_LotError(CString sLog, int nPNo=0);
-	void Save_ECMLog(int nType, CString strLog, int nMGZNo = 0);	//nType:1[Alarm], 2[Joblist] 3[Inspect]
 	void Save_TestLog(CString sLog);
 	void Save_OperatingRatio(CString sLog);
 	
@@ -37,6 +36,8 @@ public:
 	void Save_LotTime(int nPNo, const CString& sLog);
 	
 	
+	void Save_ECMLog(int nType, CString strLog, int nMGZNo = 0);	//nType:1[Alarm], 2[Joblist] 3[Inspect]
+
 	void Save_JobListExcel(CString sLog);	
 
 	// Log «•¡ÿ»≠
