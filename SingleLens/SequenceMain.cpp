@@ -487,7 +487,7 @@ BOOL CSequenceMain::LotEnd_Run()
 
 	if(gData.bAgingMode)
 	{
-		g_dlgWork.InsertMGZTestInfo(1);
+		g_dlgWork.InsertMGZTestInfo(144);
 		return FALSE;
 	}
 

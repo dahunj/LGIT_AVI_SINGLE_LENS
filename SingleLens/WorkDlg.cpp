@@ -2112,7 +2112,7 @@ void CWorkDlg::OnBnClickedChkNoTray()
 	g_objLogFile.Save_HandlerLog("[Work] Aging Mode checked");
 	
 	gData.bAgingMode = m_chkNoTrayMode.GetCheck();
-	InsertMGZTestInfo(1);
+	InsertMGZTestInfo(144);
 }
 
 
