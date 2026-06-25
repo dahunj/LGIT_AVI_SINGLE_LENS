@@ -95,7 +95,7 @@
 
 #define SIM_WAITTIMES	 1		//
 #define SIM_WAITTIMEM	 1		//
-#define	VELOCITY_WEIGHT	 5
+#define	VELOCITY_WEIGHT	 45
 
 #define MES_WAITTIME	10000
 

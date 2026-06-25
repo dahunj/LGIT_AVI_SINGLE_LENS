@@ -1998,10 +1998,13 @@ void CWorkDlg::OnBnClickedBtnIdleReport()
 	else g_dlgNoWork.ShowWindow(SW_SHOW);	*/
 }
 
-void CWorkDlg::InsertMGZTestInfo()
+void CWorkDlg::InsertMGZTestInfo(int nLensCnt)
 {
 	static int nIndex;
 	CString strMGZID;
+
+	CString sLensCnt;
+	sLensCnt.Format("%d",nLensCnt);
 
 	if(nIndex > 1000) nIndex = 0; 
 
@@ -2019,16 +2022,16 @@ void CWorkDlg::InsertMGZTestInfo()
 	m_stcZigID[28].SetWindowText("11119");
 	m_stcZigID[29].SetWindowText("11120");
 
-	m_stcLensCnt[20].SetWindowText("144");
-	m_stcLensCnt[21].SetWindowText("144");
-	m_stcLensCnt[22].SetWindowText("144");
-	m_stcLensCnt[23].SetWindowText("144");
-	m_stcLensCnt[24].SetWindowText("144");
-	m_stcLensCnt[25].SetWindowText("144");
-	m_stcLensCnt[26].SetWindowText("144");
-	m_stcLensCnt[27].SetWindowText("144");
-	m_stcLensCnt[28].SetWindowText("144");
-	m_stcLensCnt[29].SetWindowText("144");
+	m_stcLensCnt[20].SetWindowText(sLensCnt);
+	m_stcLensCnt[21].SetWindowText(sLensCnt);
+	m_stcLensCnt[22].SetWindowText(sLensCnt);
+	m_stcLensCnt[23].SetWindowText(sLensCnt);
+	m_stcLensCnt[24].SetWindowText(sLensCnt);
+	m_stcLensCnt[25].SetWindowText(sLensCnt);
+	m_stcLensCnt[26].SetWindowText(sLensCnt);
+	m_stcLensCnt[27].SetWindowText(sLensCnt);
+	m_stcLensCnt[28].SetWindowText(sLensCnt);
+	m_stcLensCnt[29].SetWindowText(sLensCnt);
 
 	strMGZID.Format("Test-%d", nIndex++);
 
@@ -2044,16 +2047,16 @@ void CWorkDlg::InsertMGZTestInfo()
 	m_stcZigID[38].SetWindowText("11119");
 	m_stcZigID[39].SetWindowText("11120");
 	
-	m_stcLensCnt[30].SetWindowText("144");
-	m_stcLensCnt[31].SetWindowText("144");
-	m_stcLensCnt[32].SetWindowText("144");
-	m_stcLensCnt[33].SetWindowText("144");
-	m_stcLensCnt[34].SetWindowText("144");
-	m_stcLensCnt[35].SetWindowText("144");
-	m_stcLensCnt[36].SetWindowText("144");
-	m_stcLensCnt[37].SetWindowText("144");
-	m_stcLensCnt[38].SetWindowText("144");
-	m_stcLensCnt[39].SetWindowText("144");
+	m_stcLensCnt[30].SetWindowText(sLensCnt);
+	m_stcLensCnt[31].SetWindowText(sLensCnt);
+	m_stcLensCnt[32].SetWindowText(sLensCnt);
+	m_stcLensCnt[33].SetWindowText(sLensCnt);
+	m_stcLensCnt[34].SetWindowText(sLensCnt);
+	m_stcLensCnt[35].SetWindowText(sLensCnt);
+	m_stcLensCnt[36].SetWindowText(sLensCnt);
+	m_stcLensCnt[37].SetWindowText(sLensCnt);
+	m_stcLensCnt[38].SetWindowText(sLensCnt);
+	m_stcLensCnt[39].SetWindowText(sLensCnt);
 
 	strMGZID.Format("Test-%d", nIndex++);
 
@@ -2069,16 +2072,16 @@ void CWorkDlg::InsertMGZTestInfo()
 	m_stcZigID[48].SetWindowText("11119");
 	m_stcZigID[49].SetWindowText("11119");
 
-	m_stcLensCnt[40].SetWindowText("144");
-	m_stcLensCnt[41].SetWindowText("144");
-	m_stcLensCnt[42].SetWindowText("144");
-	m_stcLensCnt[43].SetWindowText("144");
-	m_stcLensCnt[44].SetWindowText("144");
-	m_stcLensCnt[45].SetWindowText("144");
-	m_stcLensCnt[46].SetWindowText("144");
-	m_stcLensCnt[47].SetWindowText("144");
-	m_stcLensCnt[48].SetWindowText("144");
-	m_stcLensCnt[49].SetWindowText("144");
+	m_stcLensCnt[40].SetWindowText(sLensCnt);
+	m_stcLensCnt[41].SetWindowText(sLensCnt);
+	m_stcLensCnt[42].SetWindowText(sLensCnt);
+	m_stcLensCnt[43].SetWindowText(sLensCnt);
+	m_stcLensCnt[44].SetWindowText(sLensCnt);
+	m_stcLensCnt[45].SetWindowText(sLensCnt);
+	m_stcLensCnt[46].SetWindowText(sLensCnt);
+	m_stcLensCnt[47].SetWindowText(sLensCnt);
+	m_stcLensCnt[48].SetWindowText(sLensCnt);
+	m_stcLensCnt[49].SetWindowText(sLensCnt);
 }
 
 
@@ -2109,7 +2112,7 @@ void CWorkDlg::OnBnClickedChkNoTray()
 	g_objLogFile.Save_HandlerLog("[Work] Aging Mode checked");
 	
 	gData.bAgingMode = m_chkNoTrayMode.GetCheck();
-	InsertMGZTestInfo();
+	InsertMGZTestInfo(1);
 }
 
 

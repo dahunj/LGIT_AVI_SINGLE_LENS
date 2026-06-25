@@ -202,7 +202,7 @@ public:
 	void MachineStopLog(CString sType, CString sMsg="");
 	void Change_Model();
 
-	void InsertMGZTestInfo();
+	void InsertMGZTestInfo(int nLensCnt);
 
 	afx_msg void OnBnClickedBtnSimul1();	
 	afx_msg void OnBnClickedButton1();

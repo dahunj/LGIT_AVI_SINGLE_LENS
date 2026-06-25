@@ -376,13 +376,17 @@ void CSequenceMain::Job_LotEnd(int nMZNo)
 	DWORD dwTime_Unload = gLot.dwLotEnd[nMNo] - gLot.dwFirstUnloadTray[nMNo];
 	gLot.dTackTime_Unload = dwTime_Unload / 1000.0 / gLot.nLensCount[nMNo];
 	
-	
+	if(gData.bAgingMode)
+	{
+		gData.sLotIDElevUnload = gData.sMZIDElevUnload;
+	}
+
 	m_strLog.Format("%s,%s,%s,%s,%d,%d,%0.3lf,%0.3lf,%0.3lf,%0.3lf,%0.3lf,%0.3lf,%d,%d,%d,%d,%d,%d", 
 				   gData.sLotIDElevUnload, gData.sMZIDElevUnload, gLot.sStartTime[nMNo], gLot.sEndTime[nMNo], 
 				   dwTime_RunTime, dwTime_Unload,
 				   gLot.dTactTime_StoETime, gLot.dTactTime_RunTime, gLot.dTackTime_Unload,
 				   3600.0/gLot.dTactTime_StoETime, 3600.0/gLot.dTactTime_RunTime, 3600.0/gLot.dTackTime_Unload,
-				   gLot.nErrorCount[nMNo], gLot.dwStopTime[nMNo],
+				   gLot.nErrorCount[nMNo], 0,
 				   gLot.nTrayCount[nMNo], gLot.nLensCount[nMNo], gLot.nGoodCount[nMNo], gLot.nNgCount[nMNo]);
 
 	g_objLogFile.Save_JobListLog(m_strLog, nMZNo);
@@ -427,6 +431,9 @@ void CSequenceMain::Job_LotEnd(int nMZNo)
 	gLot.dwTime_StoE[nMNo] = 0; 
 	gLot.dwTime_RunTime[nMNo] = 0;
 	gLot.dwTime_Unload[nMNo] = 0;
+
+	gData.nUnloadTrayCnt[nMNo] = 0;
+	gData.nLoadTrayCnt[nMNo] = 0;
 
 
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
@@ -480,7 +487,7 @@ BOOL CSequenceMain::LotEnd_Run()
 
 	if(gData.bAgingMode)
 	{
-		g_dlgWork.InsertMGZTestInfo();
+		g_dlgWork.InsertMGZTestInfo(1);
 		return FALSE;
 	}
 
@@ -1214,9 +1221,7 @@ BOOL CSequenceMain::MZElevRun()
 					}				
 					g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO, (int)eMZ::Ready, NULL);
 				}
-			}
-
-			Job_LotStart(nMZNo, eMZ::Ready);
+			}		
 
 			if(m_pEquipData->bUseMES) 
 			{					
@@ -1569,12 +1574,12 @@ BOOL CSequenceMain::FeederRun()
 		}		
 		break;
 	case 3:
-	/*	if(g_objAJinAXL.Is_MoveDone(AX_MZ_ELEVATOR_Z, dPosZ) && g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZLoad))
+		if(g_objAJinAXL.Is_MoveDone(AX_MZ_ELEVATOR_Z, dPosZ) && g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZLoad))
 		{						
 			m_strLog.Format("FeederUnit X Move (MZ2), %d"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad);
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(15000);			
-		}*/
+		}
 		break;
 	case 4:
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad))
@@ -2078,7 +2083,7 @@ BOOL CSequenceMain::FeederRun()
 
 				if(m_pEquipData->bUseMES)
 				{
-					gLot.nTrayCount[gData.nMZNoMZLoad[gData.nTNoPick[eMZ::Ready] -1]-1]++;
+					gLot.nTrayCount[gData.nMZNoMZRdy[gData.nTNoPick[eMZ::Ready] -1]-1]++;
 					m_nFeederCase = 60; m_nFeederLoop.Set_LoopTime(5000);
 				}
 				else
@@ -2088,7 +2093,7 @@ BOOL CSequenceMain::FeederRun()
 
 					if( nExist == gData.nTNoPick[eMZ::Ready])
 					{					
-						gLot.nTrayCount[gData.nMZNoMZLoad[gData.nTNoPick[eMZ::Load] -1]-1]++;
+						gLot.nTrayCount[gData.nMZNoMZRdy[gData.nTNoPick[eMZ::Ready] -1]-1]++;
 						m_strLog.Format("Feeder Y Move (Grip Zig)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 						m_nFeederCase = 60; m_nFeederLoop.Set_LoopTime(5000);
 						
@@ -2577,8 +2582,9 @@ BOOL CSequenceMain::ZigPickerRun()
 	case 26:
 		if(g_objCommon.Check_Position(AX_ZIG_PICKER_Z, eZigPicker_Z::Ready) && (m_pDX01->iZigPickerExist || gData.bAgingMode || gData.bSimulMode))
 		{
+			gData.nUnloadTrayCnt[gData.nMZNoTrayPicker - 1]++;
 
-			if(gData.nSlotNoTrayPick == 1)
+			if(gData.nUnloadTrayCnt[gData.nMZNoTrayPicker - 1] == 1)
 			{
 				gLot.dwFirstUnloadTray[gData.nMZNoTrayPicker-1] = GetTickCount();
 			}
@@ -2852,7 +2858,7 @@ BOOL CSequenceMain::TopInspectorRun()
 			g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Z))
 		{
 			if(nTopXPos < 1 || nTopYPos < 1) break;
-			if(gData.bAgingMode) if(!m_nTopInspectLoop.Waiting_Time(550)) break;
+			if(gData.bAgingMode) if(!m_nTopInspectLoop.Waiting_Time(250)) break;
 
 			if (!m_pEquipData->bUseTopVision)
 			{
@@ -3062,7 +3068,7 @@ BOOL CSequenceMain::BtmInspectorRun()
 			g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Z))
 		{
 			if(nBtmXPos < 1 || nBtmYPos < 1) break;
-			if(gData.bAgingMode) if(!m_nBtmInspectLoop.Waiting_Time(550)) break;
+			if(gData.bAgingMode) if(!m_nBtmInspectLoop.Waiting_Time(250)) break;
 
 			if (!m_pEquipData->bUseBtmVision)
 			{
