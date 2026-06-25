@@ -187,6 +187,10 @@ void CSequenceMain::Set_ClearRunData(BOOL bInit)
 		gData.nLensTotalCnt[i] = 0;
 		for(int j = 0; j < 10; j++) gData.nLensUseCnt[i][j] = 0;
 		
+		gData.nLoadTrayCnt[i] = 0;
+		gData.nUnloadTrayCnt[i] = 0;
+
+		
 		gLot.dwFirstUnloadTray[i] = 0;
 
 	}
@@ -1014,8 +1018,7 @@ BOOL CSequenceMain::MZElevRun()
 				g_objInspector.Set_LotStart(gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load], gMes.sHostRecipe[eMZ::Load]);
 			}
 			else
-			{
-				gLot.nTrayCount[nMZNo-1] = gData.nCtZigTotalCnt[nMZNo-1];
+			{			
 				gLot.nLensCount[nMZNo-1] = gData.nLensTotalCnt[eMZ::Load];
 				g_objInspector.Set_LotStart(gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load], m_pEquipData->sModelName);
 			}
@@ -1223,8 +1226,7 @@ BOOL CSequenceMain::MZElevRun()
 				g_objInspector.Set_LotStart(gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready] - 1], nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready],gMes.sHostRecipe[eMZ::Ready]);
 			}
 			else
-			{
-				gLot.nTrayCount[nMZNo-1] = gData.nCtZigTotalCnt[nMZNo-1];
+			{				
 				gLot.nLensCount[nMZNo-1] = gData.nLensTotalCnt[eMZ::Ready];
 				g_objInspector.Set_LotStart(gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready] - 1], nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready], m_pEquipData->sModelName);
 			}			
@@ -1613,6 +1615,7 @@ BOOL CSequenceMain::FeederRun()
 
 					if(nExist == gData.nTNoPick[eMZ::Load])						{						
 						
+						gLot.nTrayCount[gData.nMZNoMZLoad[gData.nTNoPick[eMZ::Load] -1]-1]++;
 						m_strLog.Format("Feeder Y Move (Grip Zig)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 						m_nFeederCase = 10; m_nFeederLoop.Set_LoopTime(5000);
 						
@@ -1734,7 +1737,7 @@ BOOL CSequenceMain::FeederRun()
 	case 13:
 		//if(g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip))
 		{
-			if(gData.nSlotNoFeeder == 1) Job_LotStart(gData.nMZNoFeeder, eMZ::Load);
+			if(gLot.nTrayCount[gData.nMZNoFeeder-1] == 1) Job_LotStart(gData.nMZNoFeeder, eMZ::Load);
 			g_objCommon.Set_FeederOpen();
 			m_strLog.Format("Feeder Open"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
@@ -2085,6 +2088,7 @@ BOOL CSequenceMain::FeederRun()
 
 					if( nExist == gData.nTNoPick[eMZ::Ready])
 					{					
+						gLot.nTrayCount[gData.nMZNoMZLoad[gData.nTNoPick[eMZ::Load] -1]-1]++;
 						m_strLog.Format("Feeder Y Move (Grip Zig)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 						m_nFeederCase = 60; m_nFeederLoop.Set_LoopTime(5000);
 						
@@ -2200,7 +2204,7 @@ BOOL CSequenceMain::FeederRun()
 	case 63:
 		//if(g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip))
 		{
-			if(gData.nSlotNoFeeder == 1) Job_LotStart(gData.nMZNoFeeder, eMZ::Ready);
+			if(gLot.nTrayCount[gData.nMZNoFeeder-1] == 1) Job_LotStart(gData.nMZNoFeeder, eMZ::Ready);
 			g_objCommon.Set_FeederOpen();
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 			m_strLog.Format("Feeder Open"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);

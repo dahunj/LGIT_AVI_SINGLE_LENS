@@ -125,6 +125,9 @@ typedef struct
 	int		nLensTotalCnt[7];
 	int		nLensUseCnt[7][10];
 	int		nLensMaxCnt;
+
+	int		nLoadTrayCnt[7];
+	int		nUnloadTrayCnt[7];
 	
 	int		nLTime[10];	 //LoopTime Set Value 
 
