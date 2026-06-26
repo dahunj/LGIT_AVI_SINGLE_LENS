@@ -1330,13 +1330,14 @@ BOOL CSequenceMain::MZElevRun()
 	case 34:
 		if(gData.bAgingMode || gData.bSimulMode)
 		{
-			if(m_pDX00->iElvMZExist2 )
-			{
+			
+			//if(m_pDX00->iElvMZExist2)
+			//{
 				gData.bElvUnloadWait = TRUE;
 				g_objCommon.Set_ElevLift2Down();
 
 				m_nMZElevCase++;m_nMZElevLoop.Set_LoopTime(5000);
-			}
+			//}
 		}
 		else
 		{
