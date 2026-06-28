@@ -4408,14 +4408,16 @@ void CSequenceMain::Write_LotJudge(int nMZNo, int nTrayNo, int nLensNo, int nInf
 		}
 	}
 
-	CString strCode;	// Log 순서 : AG, B1_SP, T1, T2, B2, B1_AG, B1_3D, CODE
-	strCode.Format("%c,%c,%d", chCode[0], chCode[1], nInfo);	// 마지막 CODE열 추가, 불량 종류 숫자 표시
+	
 	CString strResult = (nInfo == 1 ? "Pass" : "Fail");
 	for (int i = 0; i < 2; i++)
 	{
 		if(chCode[i] == 0x6E) strResult = "Fail";
 	}
 
+	CString strCode;	// Log 순서 : AG, B1_SP, T1, T2, B2, B1_AG, B1_3D, CODE
+	strCode.Format("%c,%c,%s", chCode[0], chCode[1], gData.sNGCode[nMx][nTx][nLx][eVision::MARKING]);	// 마지막 CODE열 추가, 불량 종류 숫자 표시
+	
 	m_strLog.Format("%s,%s,%s,%d,%d,"",%s,%s", m_pEquipData->sEquipName, MAIN_VERSION, gData.sZigIDMainIndex[eMainIndex::Mark], nTrayNo, g_objCommon.ConvertToMESNo(nLensNo) , strCode, strResult);
 	g_objLogFile.Save_LotTime(nMZNo, m_strLog);
 }

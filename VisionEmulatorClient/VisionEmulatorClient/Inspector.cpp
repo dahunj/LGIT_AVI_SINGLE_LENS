@@ -248,11 +248,26 @@ void CInspector::Set_InspectComplete(int nInspector, CString sGbn, CString sMZID
 	int nJudge = nRand < nNg ? 2 : 1;
 
 
-	if(nJudge == 2)
+	if(nJudge == 2 && nRand < 10)
 	{
 
 		m_sJudge[nPortNo - 1][nTNo - 1][nCNo - 1] = "N";
 		m_sCode[nPortNo - 1][nTNo - 1][nCNo - 1] = "NG";
+	}
+	else if (nJudge == 2  && nRand < 20)
+	{
+		m_sJudge[nPortNo - 1][nTNo - 1][nCNo - 1] = "N";
+		m_sCode[nPortNo - 1][nTNo - 1][nCNo - 1] = "NG - 2";
+	}
+	else if (nJudge == 2  && nRand < 30)
+	{
+		m_sJudge[nPortNo - 1][nTNo - 1][nCNo - 1] = "N";
+		m_sCode[nPortNo - 1][nTNo - 1][nCNo - 1] = "NG - 3";
+	}
+	else if (nJudge == 2 )
+	{
+		m_sJudge[nPortNo - 1][nTNo - 1][nCNo - 1] = "N";
+		m_sCode[nPortNo - 1][nTNo - 1][nCNo - 1] = "NG - 4";
 	}
 	else 
 	{
