@@ -330,6 +330,7 @@ void CSingleLensDlg::OnTimer(UINT_PTR nIDEvent)
 	case TIMER_DATE_TIME:
 		Display_DateTime();
 		Set_InsideLight();
+		Set_NoWork();
 		break;
 	case TIMER_TOWER_FLKR:
 		Set_TowerFlicker(TRUE);
