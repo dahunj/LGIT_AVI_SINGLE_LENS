@@ -279,6 +279,9 @@ typedef struct
 
 	int		nTowerState;
 
+	CString	sTempMZID;
+	CString sTempZigID;
+
 } GLOVAL_DATA;
 
 

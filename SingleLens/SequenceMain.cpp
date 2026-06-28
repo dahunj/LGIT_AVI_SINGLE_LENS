@@ -830,12 +830,21 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		return TRUE;
 	case ElvBranch::LoadMZ:	
-		if(gData.bAgingMode || gData.bSimulMode)
+		if(gData.bAgingMode )
 		{
 			if(m_pDX00->iLdCVMZExist1R)
 			{
 				m_pDX00->iElvMZExist2 = TRUE; m_pDX00->iLdCVMZExist1R = FALSE;
 				m_nMZElevCase = 4;m_nMZElevLoop.Set_LoopTime(10000);
+				break;
+			}
+		}
+
+		if(gData.bSimulMode)
+		{
+			if(m_pDX00->iLdCVMZExist1R)
+			{
+				m_pDX00->iElvMZExist1 = TRUE; m_pDX00->iLdCVMZExist1R = FALSE;				
 				break;
 			}
 		}
@@ -872,6 +881,7 @@ BOOL CSequenceMain::MZElevRun()
 			m_strBarcode[eBarcode::MZ-1].Empty(); g_objBarcodeLot_Cognex.Set_Trigger(eBarcode::MZ,TRUE);
 			if(gData.bSimulMode)
 			{
+				gData.sTempMZID.Format("SkipedMZ-%d", nBarcodeIdx++); 
 				m_nMZElevCase = 79; m_nMZElevLoop.Set_LoopTime(10000);	
 				break;
 			}
@@ -881,7 +891,8 @@ BOOL CSequenceMain::MZElevRun()
 	case 79:		
 		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");
 		if(nBarcodeIdx > 999) nBarcodeIdx = 0;
-		m_strBarcode[eBarcode::MZ-1].Format("SkippedMGZ - %d", nBarcodeIdx++); gMes.sMGZID[eMZ::Load] = m_strBarcode[eBarcode::MZ-1];
+		m_strBarcode[eBarcode::MZ-1] = gData.sTempMZID; gData.sTempMZID.Empty();
+		gMes.sMGZID[eMZ::Load] = m_strBarcode[eBarcode::MZ-1];
 		g_objBarcodeLot_Cognex.Set_BarcodeLot(eBarcode::MZ, m_strBarcode[eBarcode::MZ-1]);
 		m_strBarcode[eBarcode::MZ-1].Empty();
 		m_nMZElevCase = 74;m_nMZElevLoop.Set_LoopTime(10000);		
@@ -1094,6 +1105,7 @@ BOOL CSequenceMain::MZElevRun()
 			m_strBarcode[eBarcode::MZ-1].Empty(); g_objBarcodeLot_Cognex.Set_Trigger(eBarcode::MZ,TRUE);
 			if(gData.bSimulMode)
 			{
+				gData.sTempMZID.Format("SkipedMZ-%d", nBarcodeIdx++); 
 				m_nMZElevCase = 89; m_nMZElevLoop.Set_LoopTime(10000);	
 				break;
 			}
@@ -1102,9 +1114,10 @@ BOOL CSequenceMain::MZElevRun()
 		}		
 		break;
 	case 89:		
-		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_BarcodeLot");  gMes.sMGZID[eMZ::Load] = m_strBarcode[eBarcode::MZ-1];
+		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_BarcodeLot");  
 		if(nBarcodeIdx > 999) nBarcodeIdx = 0; 
-		m_strBarcode[eBarcode::MZ-1].Format("SkippedMGZ - %d", nBarcodeIdx++);
+		m_strBarcode[eBarcode::MZ-1] = gData.sTempMZID; gData.sTempMZID.Empty();
+		gMes.sMGZID[eMZ::Ready] = m_strBarcode[eBarcode::MZ-1];
 		g_objBarcodeLot_Cognex.Set_BarcodeLot(eBarcode::MZ, m_strBarcode[eBarcode::MZ-1]);
 		m_strBarcode[eBarcode::MZ-1].Empty();
 		m_nMZElevCase = 84;m_nMZElevLoop.Set_LoopTime(10000);		
@@ -1144,14 +1157,14 @@ BOOL CSequenceMain::MZElevRun()
 	case 85:
 		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_PPSelectedReport");
 		gMes.bPPConfirm = FALSE;		
-		if(m_pEquipData->bUseMES) g_objMesAgent.Set_PPSelectedReport(gMes.sHostLotID[eMZ::Ready], gMes.sHostMGZID[eMZ::Ready], gMes.sHostRecipe[eMZ::Ready]);
+		if(m_pEquipData->bUseMES) g_objMesAgent.Set_PPSelectedReport(gMes.sHostLotID[eMZ::Ready], gMes.sMGZID[eMZ::Ready], gMes.sHostRecipe[eMZ::Ready]);
 		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 		break;
 	case 86:
 		if(gMes.bPPConfirm || m_pEquipData->bUseBarcodeMGZ)
 		{
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_PPUploadCompletedReport");
-			if(m_pEquipData->bUseMES) g_objMesAgent.Set_PPUploadCompletedReport(gMes.sHostLotID[eMZ::Ready], gMes.sHostMGZID[eMZ::Ready], gMes.sHostRecipe[eMZ::Ready]);
+			if(m_pEquipData->bUseMES) g_objMesAgent.Set_PPUploadCompletedReport(gMes.sHostLotID[eMZ::Ready], gMes.sMGZID[eMZ::Ready], gMes.sHostRecipe[eMZ::Ready]);
 			m_nMZElevCase = 12; m_nMZElevLoop.Set_LoopTime(10000);
 		}
 		break;
@@ -1208,7 +1221,7 @@ BOOL CSequenceMain::MZElevRun()
 
 				if(nTo != -1)
 				{
-					nMZNo++;if(nMZNo > 3) nMZNo =1;
+					nMZNo++;if(nMZNo > 3) nMZNo = 1;
 					g_dlgWork.TransferMZInfo(nFrom, eMZ::Ready, m_pEquipData->nVisionDir);
 
 					for(int i = 0; i < 10; i++)
@@ -1796,6 +1809,7 @@ BOOL CSequenceMain::FeederRun()
 
 			if(gData.bSimulMode)
 			{
+				gData.sTempZigID.Format("Skip-%d", gData.nSlotNoFeeder);
 				m_nFeederCase = 79; m_nFeederLoop.Set_LoopTime(10000);	
 				break;
 			}
@@ -1805,7 +1819,7 @@ BOOL CSequenceMain::FeederRun()
 		break;
 	case 79:		
 		if(nBarcodeIdx > 999) nBarcodeIdx = 0;
-		m_strBarcode[eBarcode::CtZig-1].Format("SkippedZig - %d", nBarcodeIdx++);
+		m_strBarcode[eBarcode::CtZig-1]= gData.sTempZigID; gData.sTempZigID.Empty();
 		gData.sZigIDFeeder = m_strBarcode[eBarcode::CtZig-1];
 		g_objBarcodeLot_Cognex.Set_BarcodeLot(eBarcode::CtZig, m_strBarcode[eBarcode::CtZig-1]);
 		m_strBarcode[eBarcode::CtZig-1].Empty();
@@ -2259,6 +2273,7 @@ BOOL CSequenceMain::FeederRun()
 
 			if(gData.bSimulMode)
 			{
+				gData.sTempZigID.Format("Skip-%d", gData.nSlotNoFeeder);
 				m_nFeederCase = 89; m_nFeederLoop.Set_LoopTime(10000);	
 				break;
 			}
@@ -2268,7 +2283,7 @@ BOOL CSequenceMain::FeederRun()
 		break;
 	case 89:		
 		if(nBarcodeIdx > 999) nBarcodeIdx = 0;
-		m_strBarcode[eBarcode::CtZig-1].Format("SkippedZig - %d", nBarcodeIdx++);
+		m_strBarcode[eBarcode::CtZig-1]= gData.sTempZigID; gData.sTempZigID.Empty();
 		gData.sZigIDFeeder =  m_strBarcode[eBarcode::CtZig-1]; 
 		g_objBarcodeLot_Cognex.Set_BarcodeLot(eBarcode::CtZig, m_strBarcode[eBarcode::CtZig-1]);
 		m_strBarcode[eBarcode::CtZig-1].Empty();

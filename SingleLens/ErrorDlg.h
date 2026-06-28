@@ -1,6 +1,7 @@
 // ErrorDlg.h : 헤더 파일
 //
 #pragma once
+#include "afxwin.h"
 
 const int BASE_ERR_CODE = 0;
 
@@ -67,6 +68,7 @@ private:
 public:
 	void Set_ErrorNumber(int nErrNo) { m_nErrNo = nErrNo; m_nErrCode = BASE_ERR_CODE + nErrNo; }
 	void Set_ErrorSubMessage(CString sErrMsg) { m_strErrSubMsg = sErrMsg; }
+	CEdit m_Edit_ID;
 };
 
 extern CErrorDlg g_dlgError;

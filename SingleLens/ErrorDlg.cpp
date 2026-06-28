@@ -51,6 +51,7 @@ void CErrorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BTN_ERR_OK, m_btnErrOK);
 	DDX_Control(pDX, IDC_BTN_ERR_SYSTEM_EXIT, m_btnErrSystemExit);
 	DDX_Control(pDX, IDC_BTN_ERR_TO_MANUAL, m_btnErrToManual);
+	DDX_Control(pDX, IDC_EDIT_ID, m_Edit_ID);
 }
 
 BEGIN_MESSAGE_MAP(CErrorDlg, CDialogEx)
@@ -158,6 +159,8 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		
 		m_strErrMsg = strErrMsg + strErrPick + strMes + m_strErrSubMsg;
 
+
+		m_Edit_ID.ShowWindow(SW_HIDE);
 		if (m_nErrNo == 3408 ||
 			m_nErrNo == 4605 || m_nErrNo == 4905 // vision 
 			|| m_nErrNo == 3416
@@ -182,6 +185,7 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 			|| m_nErrNo == 3773 || m_nErrNo == 3783  //Tray Barcode Skip 
 			)
 		{
+			m_Edit_ID.ShowWindow(SW_SHOW);
 			m_btnErrSkip.EnableWindow(TRUE);
 			m_btnErrSkip.ShowWindow(SW_SHOW);
 		}
@@ -318,22 +322,48 @@ void CErrorDlg::OnBnClickedBtnErrSkip()
 {
 	g_objLogFile.Save_HandlerLog("[Error Mode] SKIP button push");
 
+	
+
 	if(m_nErrNo == 3472)
 	{
+		m_Edit_ID.GetWindowText(gData.sTempMZID);
+		if(gData.sTempMZID.GetLength() < 4)
+		{
+			AfxMessageBox("4자 이상 입력 하세요");
+			return;
+		}
 		g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 79);
 	}
 
 	if(m_nErrNo == 3482)
 	{
+		m_Edit_ID.GetWindowText(gData.sTempMZID);
+		if(gData.sTempMZID.GetLength() < 4)
+		{
+			AfxMessageBox("4자 이상 입력 하세요");
+			return;
+		}
 		g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 89);
 	}
 
 	switch (m_nErrNo) 
 	{
 	case 3773:
+		m_Edit_ID.GetWindowText(gData.sTempZigID);
+		if(gData.sTempZigID.GetLength() < 4)
+		{
+			AfxMessageBox("4자 이상 입력 하세요");
+			return;
+		}
 		g_objSequenceMain.Set_MainRunCase(AUTO_FEEDER, 79);
 		break;
 	case 3783:
+		m_Edit_ID.GetWindowText(gData.sTempZigID);
+		if(gData.sTempZigID.GetLength() < 4)
+		{
+			AfxMessageBox("4자 이상 입력 하세요");
+			return;
+		}
 		g_objSequenceMain.Set_MainRunCase(AUTO_FEEDER, 89);
 		break;
 	}

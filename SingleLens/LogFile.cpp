@@ -818,9 +818,9 @@ void CLogFile::Save_LotTime(int nMZNo,const CString& sLog)
 	Create_Folder(strPath3);
 
 	CString strFile1, strFile2, strFile3, strTitle, strTime, strPcName, strSave;
-	strFile1.Format("%s\\%s_%04d%02d%02d%02d_LOT_TIME.csv", strPath1, gData.sMZID[nMZNo-1], time.wYear, time.wMonth, time.wDay, time.wHour);
-	strFile2.Format("%s\\%s_%04d%02d%02d%02d_LOT_TIME.csv", strPath2, gData.sMZID[nMZNo-1], time.wYear, time.wMonth, time.wDay, time.wHour);
-	strFile3.Format("%s\\%s_LOT_TIME.csv", strPath3, gData.sMZID[nMZNo-1]);
+	strFile1.Format("%s\\%s_%04d%02d%02d%02d_LOT_TIME.csv", strPath1, gData.sMZIDMainIdex[eMainIndex::Mark], time.wYear, time.wMonth, time.wDay, time.wHour);
+	strFile2.Format("%s\\%s_%04d%02d%02d%02d_LOT_TIME.csv", strPath2, gData.sMZIDMainIdex[eMainIndex::Mark], time.wYear, time.wMonth, time.wDay, time.wHour);
+	strFile3.Format("%s\\%s_%s_LOT_TIME.csv", strPath3, gLot.sStartTime[nMZNo-1], gData.sMZIDMainIdex[eMainIndex::Mark]);
 
 	CFile file;
 	if (!file.Open(strFile1, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) return;

@@ -780,6 +780,24 @@ BOOL CWorkDlg::Work_Start()
 			g_objCommon.Show_MsgBox(1, "MES가 연결되지 않았습니다."); return FALSE; 
 		}		
 	}
+	
+	if(!pEquipData->bUseBtmVision || !pEquipData->bUseTopVision)
+	{
+		if(g_objCommon.Show_MsgBox(2, "Btm or Top Vision 설정되어 있지 않습니다. 진행하시겠습니까?") != IDOK)
+		{
+			return FALSE;
+		}
+	}
+
+	if(pEquipData->bUseBtmVision || pEquipData->bUseTopVision)
+	{
+		BOOL ret =	g_objInspector.Check_Connect(VISION_PC1);
+		if(!ret)
+		{
+			g_objCommon.Show_MsgBox(1, "Vision PC와 연결되지 않았습니다."); return FALSE; 
+		}
+	}
+
 
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00();
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
