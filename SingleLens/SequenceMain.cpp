@@ -1632,12 +1632,11 @@ BOOL CSequenceMain::FeederRun()
 					int nExist = -1;
 					nExist = g_dlgWork.CheckZigExistInMZ(0, gData.nTNoPick[eMZ::Load]);
 
-					if(nExist == gData.nTNoPick[eMZ::Load])						{						
-						
+					if(nExist == gData.nTNoPick[eMZ::Load])	
+					{								
 						gLot.nTrayCount[gData.nMZNoMZLoad[gData.nTNoPick[eMZ::Load] -1]-1]++;
 						m_strLog.Format("Feeder Y Move (Grip Zig)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
-						m_nFeederCase = 10; m_nFeederLoop.Set_LoopTime(5000);
-						
+						m_nFeederCase = 10; m_nFeederLoop.Set_LoopTime(5000);						
 					}
 				}				
 			}
@@ -1658,15 +1657,6 @@ BOOL CSequenceMain::FeederRun()
 		break;
 	case 6:
 		gData.nTNoPick[eMZ::Load]++;
-		if(gData.nTNoPick[eMZ::Load] > 10)
-		{
-			gData.bFeederWorkWait = FALSE;
-			gData.nTNoPick[eMZ::Load] = 1;
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
-			m_nFeederCase = 0; m_nFeederLoop.Set_LoopTime(5000);
-			break;
-		}
-
 		dPosY = m_pMoveData->dFeederY[eFeeder_Y::MZLoad] - 100;
 		g_objAJinAXL.Move_Absolute(AX_ZIG_FEEDER_Y, dPosY);
 		m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
@@ -1675,6 +1665,19 @@ BOOL CSequenceMain::FeederRun()
 	case 7:
 		if(g_objAJinAXL.Is_MoveDone(AX_ZIG_FEEDER_Y, dPosY))
 		{
+
+			if(gData.nTNoPick[eMZ::Load] > 10)
+			{
+				gData.bFeederWorkWait = FALSE;
+				gData.nTNoPick[eMZ::Load] = 0;
+				m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+				if(Check_TrayAllReturn())
+				{
+					m_nMZElevCase = ElvBranch::Unload;
+				}
+				m_nFeederCase = 0; m_nFeederLoop.Set_LoopTime(5000);
+				break;
+			}
 			dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] + m_pEquipData->dElevPitchZ * (gData.nTNoPick[eMZ::Load] - 1);
 			g_objAJinAXL.Move_Absolute(AX_MZ_ELEVATOR_Z, dPosZ);
 			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
@@ -2133,15 +2136,6 @@ BOOL CSequenceMain::FeederRun()
 		break;
 	case 56:
 		gData.nTNoPick[eMZ::Ready]++;
-		if(gData.nTNoPick[eMZ::Ready] > 10)
-		{
-			gData.bFeederWorkWait = FALSE;
-			gData.nTNoPick[eMZ::Ready] = 1;
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
-			m_nFeederCase = 0; m_nFeederLoop.Set_LoopTime(5000);
-			break;
-		}
-
 		dPosY = m_pMoveData->dFeederY[eFeeder_Y::MZReady] - 100;
 		g_objAJinAXL.Move_Absolute(AX_ZIG_FEEDER_Y, dPosY);
 		m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
@@ -2150,6 +2144,19 @@ BOOL CSequenceMain::FeederRun()
 	case 57:
 		if(g_objAJinAXL.Is_MoveDone(AX_ZIG_FEEDER_Y, dPosY))
 		{
+			if(gData.nTNoPick[eMZ::Ready] > 10)
+			{
+				gData.bFeederWorkWait = FALSE;
+				gData.nTNoPick[eMZ::Ready] = 0;
+				m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+				if(Check_TrayAllReturn())
+				{
+					m_nMZElevCase = ElvBranch::Unload;
+				}
+				m_nFeederCase = 0; m_nFeederLoop.Set_LoopTime(5000);
+				break;
+			}
+
 			dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] + m_pEquipData->dElevPitchZ * (gData.nTNoPick[eMZ::Ready] - 1);
 			g_objAJinAXL.Move_Absolute(AX_MZ_ELEVATOR_Z, dPosZ);
 			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
@@ -2852,7 +2859,7 @@ BOOL CSequenceMain::TopInspectorRun()
 			dTopUnitX = m_pEquipData->dTopStartX + (m_pEquipData->dZigPitchX * (nTopXPos - 1)) + gData.dDeltaX[eMainIndex::Top];
 			dTopUnitZ = m_pEquipData->dTopStartZ - (m_pEquipData->dTopPeriod / 10); //m_pMoveData->dTopInspectorZ[eTopInspect_Z::ScanStart];
 			
-			m_strLog.Format("Align Value : %0.3lf, %0.3lf",dTopUnitX,dTopUnitY); g_objLogFile.Save_HandlerLog(m_strLog);			
+			m_strLog.Format("Align Value : %0.3lf, %0.3lf,%0.3lf, %0.3lf",dTopUnitX,dTopUnitY,gData.dDeltaX[eMainIndex::Top], gData.dDeltaY[eMainIndex::Top]); g_objLogFile.Save_HandlerLog(m_strLog);			
 			if(dTopUnitY > 199) break;
 			if(dTopUnitX > 149) break;
 
@@ -3061,7 +3068,7 @@ BOOL CSequenceMain::BtmInspectorRun()
 			dBtmUnitX = m_pEquipData->dBtmStartX + (m_pEquipData->dZigPitchX * (nBtmXPos - 1)) + gData.dDeltaX[eMainIndex::Btm];
 			dBtmUnitZ = m_pEquipData->dBtmStartZ- (m_pEquipData->dBtmPeriod/10);//m_pMoveData->dBtmInspectorZ[eTopInspect_Z::ScanStart];
 
-			m_strLog.Format("Align Value : %0.3lf, %0.3lf",dBtmUnitX,dBtmUnitY);
+			m_strLog.Format("Align Value : %0.3lf, %0.3lf,%0.3lf, %0.3lf",dBtmUnitX,dBtmUnitY,gData.dDeltaX[eMainIndex::Btm], gData.dDeltaY[eMainIndex::Btm]);
 			g_objLogFile.Save_HandlerLog(m_strLog);
 			if(dBtmUnitY > 199) break;
 			if(dBtmUnitX > 149) break;
@@ -3276,6 +3283,11 @@ BOOL CSequenceMain::MarkUnitRun()
 			dMarkUnitY = m_pMoveData->dMarkUnitY[eMark_Y::MarkStart] - (m_pEquipData->dZigPitchY * (nMarkYPos - 1)) + gData.dDeltaY[eMainIndex::Mark];
 			dMarkUnitX = m_pMoveData->dMarkUnitX[eMark_X::MarkStart] + (m_pEquipData->dZigPitchX * (nMarkXPos - 1)) + gData.dDeltaX[eMainIndex::Mark];
 			dMarkUnitZ = m_pMoveData->dMarkUnitZ[eMark_Z::MarkStart];
+
+			m_strLog.Format("Align Value : %0.3lf, %0.3lf, %0.3lf, %0.3lf",dMarkUnitX,dMarkUnitY,gData.dDeltaX[eMainIndex::Mark],gData.dDeltaY[eMainIndex::Mark]);
+			g_objLogFile.Save_HandlerLog(m_strLog);
+			if(dMarkUnitY > 199) break;
+			if(dMarkUnitX > 149) break;
 
 			g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_Y, dMarkUnitY);
 			g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_X, dMarkUnitX);
