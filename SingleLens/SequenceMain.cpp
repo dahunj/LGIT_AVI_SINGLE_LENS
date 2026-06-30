@@ -4283,7 +4283,7 @@ BOOL CSequenceMain::Check_InspectDone(const CString& sZigID, int nMZNo, int nTNo
 	DWORD dwTick = GetTickCount();
 	if (!bDone) 
 	{
-		if (m_pEquipData->bUseInspectSkip || ((dwTick - gData.dwInspectWait)  > 1500)) // m_pEquipData->nDelayAdd[delay::InspectionWait]
+		if (m_pEquipData->bUseInspectSkip || ((dwTick - gData.dwInspectWait)  > 5500)) // m_pEquipData->nDelayAdd[delay::InspectionWait]
 		{
 			gData.nInspectInfo[nMNo][nSlot][nLens] = eLensInfo::NG;
 			nInfo = gData.nInspectInfo[nMNo][nSlot][nLens];
@@ -4430,7 +4430,7 @@ void CSequenceMain::Write_LotJudge(int nMZNo, int nTrayNo, int nLensNo, int nInf
 	CString strCode;	// Log 순서 : AG, B1_SP, T1, T2, B2, B1_AG, B1_3D, CODE
 	strCode.Format("%c,%c,%s", chCode[0], chCode[1], gData.sNGCode[nMx][nTx][nLx][eVision::MARKING]);	// 마지막 CODE열 추가, 불량 종류 숫자 표시
 	
-	m_strLog.Format("%s,%s,%s,%d,%d,"",%s,%s", m_pEquipData->sEquipName, MAIN_VERSION, gData.sZigIDMainIndex[eMainIndex::Mark], nTrayNo, g_objCommon.ConvertToMESNo(nLensNo) , strCode, strResult);
+	m_strLog.Format("%s,%s,%s,%d,%d,%d,"",%s,%s", m_pEquipData->sEquipName, MAIN_VERSION, gData.sZigIDMainIndex[eMainIndex::Mark], nTrayNo, g_objCommon.ConvertToMESNo(nLensNo), nLensNo, strCode, strResult);
 	g_objLogFile.Save_LotTime(nMZNo, m_strLog);
 }
 
