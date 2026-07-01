@@ -28,7 +28,7 @@ CCriticalSection g_csMCCLog;
 CCriticalSection g_csStdMotionLog;
 CCriticalSection g_csEfficiencyLog;
 
-
+CCriticalSection g_csLotTimeLog;
 CLogFile::CLogFile()
 {
 }
@@ -818,9 +818,12 @@ void CLogFile::Save_LotTime(int nMZNo,const CString& sLog)
 	Create_Folder(strPath3);
 
 	CString strFile1, strFile2, strFile3, strTitle, strTime, strPcName, strSave;
-	strFile1.Format("%s\\%s_%04d%02d%02d%02d_LOT_TIME.txt", strPath1, gData.sMZIDMainIdex[eMainIndex::Mark], time.wYear, time.wMonth, time.wDay, time.wHour);
+	strFile1.Format("%s\\%s_%04d%02d%02d%02d_LOT_TIME.csv", strPath1, gData.sMZIDMainIdex[eMainIndex::Mark], time.wYear, time.wMonth, time.wDay, time.wHour);
 	strFile2.Format("%s\\%s_%04d%02d%02d%02d_LOT_TIME.csv", strPath2, gData.sMZIDMainIdex[eMainIndex::Mark], time.wYear, time.wMonth, time.wDay, time.wHour);
 	strFile3.Format("%s\\%s_%s_LOT_TIME.csv", strPath3, gLot.sStartTime[nMZNo-1], gData.sMZIDMainIdex[eMainIndex::Mark]);
+
+
+	g_csLotTimeLog.Lock();
 
 	CFile file;
 	if (!file.Open(strFile1, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) 
@@ -828,7 +831,7 @@ void CLogFile::Save_LotTime(int nMZNo,const CString& sLog)
 		g_objLogFile.Save_HandlerLog("LotTime Open Fail");
 		return;
 	}
-	strTitle.Format("Time,Station,Machine,Version,ZigID,TrayNo,LensNo,AVINo,Barcode,TC,BC,CODE,Result\r\n");
+	strTitle.Format("Time,Station,Machine,Version,ZigID,TrayNo,LensNo,LensNo(AVI),Barcode,TC,BC,CODE,Result\r\n");
 
 	try {
 		file.SeekToEnd();
@@ -846,12 +849,76 @@ void CLogFile::Save_LotTime(int nMZNo,const CString& sLog)
 		file.Write(strSave, strSave.GetLength());
 		file.Close();
 
-		CopyFile(strFile1, strFile2, FALSE);	// Backup
-		CopyFile(strFile1, strFile3, FALSE);	// SPC
+		//CopyFile(strFile1, strFile2, FALSE);	// Backup
+		//CopyFile(strFile1, strFile3, FALSE);	// SPC
 
 	} catch (CFileException *pEx) {
 		pEx->Delete();
 	}
+
+
+
+	CFile file2;
+	if (!file2.Open(strFile2, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) 
+	{
+		g_objLogFile.Save_HandlerLog("LotTime Open Fail");
+		return;
+	}
+	strTitle.Format("Time,Station,Machine,Version,ZigID,TrayNo,LensNo,AVINo,Barcode,TC,BC,CODE,Result\r\n");
+
+	try {
+		file2.SeekToEnd();
+
+		if (file2.GetLength() < 1) file2.Write(strTitle, strTitle.GetLength());
+
+		strTime.Format("'%04d-%02d-%02d %02d:%02d:%02d.%03d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+
+		char szPcName[MAX_COMPUTERNAME_LENGTH + 1];
+		DWORD dwNameSize = MAX_COMPUTERNAME_LENGTH + 1;
+		GetComputerName(szPcName, &dwNameSize);
+
+		strSave.Format("%s,%s,%s\r\n", strTime, szPcName, sLog);
+
+		file2.Write(strSave, strSave.GetLength());
+		file2.Close();
+			
+
+	} catch (CFileException *pEx) {
+		pEx->Delete();
+	}
+
+
+
+	CFile file3;
+	if (!file3.Open(strFile3, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) 
+	{
+		g_objLogFile.Save_HandlerLog("LotTime Open Fail");
+		return;
+	}
+	strTitle.Format("Time,Station,Machine,Version,ZigID,TrayNo,LensNo,AVINo,Barcode,TC,BC,CODE,Result\r\n");
+
+	try {
+		file3.SeekToEnd();
+
+		if (file3.GetLength() < 1) file3.Write(strTitle, strTitle.GetLength());
+
+		strTime.Format("'%04d-%02d-%02d %02d:%02d:%02d.%03d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+
+		char szPcName[MAX_COMPUTERNAME_LENGTH + 1];
+		DWORD dwNameSize = MAX_COMPUTERNAME_LENGTH + 1;
+		GetComputerName(szPcName, &dwNameSize);
+
+		strSave.Format("%s,%s,%s\r\n", strTime, szPcName, sLog);
+
+		file3.Write(strSave, strSave.GetLength());
+		file3.Close();	
+
+	} catch (CFileException *pEx) {
+		pEx->Delete();
+	}
+
+	g_csLotTimeLog.Unlock();
+
 }
 
 
