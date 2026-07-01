@@ -115,11 +115,10 @@ public:
 	void Set_S6F11_IdleReset();
 	void Set_S6F11_IdleReport();
 
-
-
 	void Set_S9F13_Timeout();	// Conversation Timeout
 
 	void Test_Command();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };
 
 extern CHost g_objHost;

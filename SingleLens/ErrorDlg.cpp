@@ -139,9 +139,7 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		pMainDlg->Set_CurrentState(STATE_ERROR);
 
 		EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-
-		if(pEquipData->bUseMES) g_objMesAgent.Set_ErrorUpdate(1, strErrNo);
-
+		
 		strErrNo.Format("%04d", m_nErrNo);
 		strErrCode.Format("%05d", m_nErrCode);
 		m_stcErrNo.SetWindowText(strErrCode);
@@ -153,12 +151,9 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		}
 		strErrMsg = INI.Get_String("ERROR", strErrNo, "");
 
-		CString strErrPick = "";		
-			
-		if (m_nErrNo > 10 && m_nErrNo < 20) g_objSequenceInit.Set_InitComplete(FALSE);	// 3,4,5,6
-		
-		m_strErrMsg = strErrMsg + strErrPick + strMes + m_strErrSubMsg;
+		CString strErrPick = "";	
 
+		//////////////
 
 		m_Edit_ID.ShowWindow(SW_HIDE);
 		if (m_nErrNo == 3408 ||
@@ -181,6 +176,15 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 			m_btnErrRetry.ShowWindow(SW_HIDE);
 		}
 
+		if(m_nErrNo == 9032)
+		{
+			m_strErrSubMsg.Format(", Fail - LotID : %s, Code: %s, Text: %s", gMes.sHostFailLotId,gMes.sHostFailCode, gMes.sHostFailText);
+			m_btnErrRetry.EnableWindow(TRUE);
+			m_btnErrRetry.ShowWindow(SW_SHOW);
+		}
+
+
+
 		if(m_nErrNo == 3472  || m_nErrNo == 3482	 //MGZ Barcode Skip 
 			|| m_nErrNo == 3773 || m_nErrNo == 3783  //Tray Barcode Skip 
 			)
@@ -194,6 +198,15 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 			m_btnErrSkip.EnableWindow(FALSE);
 			m_btnErrSkip.ShowWindow(SW_HIDE);
 		}
+
+
+		//////////			
+		if (m_nErrNo > 10 && m_nErrNo < 20) g_objSequenceInit.Set_InitComplete(FALSE);	// 3,4,5,6
+		
+		m_strErrMsg = strErrMsg + strErrPick + strMes + m_strErrSubMsg;
+
+		m_strErrSubMsg.Empty();
+	
 
 		strShow = m_strErrMsg;
 		if (strShow.Left(1) == "#") strShow.Delete(0);
@@ -224,6 +237,8 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 			*(pCase+ 5), *(pCase+ 6), *(pCase+7),  *(pCase+ 8),  *(pCase+ 9));
 		g_objLogFile.Save_HandlerLog(strLog);
 
+		int nCategory = 33;	// 11:비가동중 알람, 21:경알람, 31:품질관련, 32:생산관련, 33:설비문제
+		g_objMesAgent.Set_AlarmLog(m_nErrNo, m_strErrMsg, nCategory);
 
 		//////////////////////////
 		int nZoneNo = 0;
@@ -432,6 +447,10 @@ void CErrorDlg::OnBnClickedBtnErrRetry()
 		break;
 	case 3783:
 		g_objSequenceMain.Set_MainRunCase(AUTO_FEEDER, 82);
+		break;
+
+	case 9032: //LOT ID FAIL 
+		g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 77);
 		break;
 	}
 

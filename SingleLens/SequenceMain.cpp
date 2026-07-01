@@ -956,20 +956,26 @@ BOOL CSequenceMain::MZElevRun()
 		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 		break;
 	case 76:
-
 		if(gMes.bPPConfirm || m_pEquipData->bUseBarcodeMGZ)
 		{
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "bPPConfirm");
+			
+			gMes.bLotStart = FALSE;
 			if(m_pEquipData->bUseMES) g_objMesAgent.Set_PPUploadCompletedReport(gMes.sHostLotID[eMZ::Load], gMes.sMGZID[eMZ::Load], gMes.sHostRecipe[eMZ::Load]);
 			m_nMZElevCase = 4; m_nMZElevLoop.Set_LoopTime(10000);
 		}
+		break;
+	case 77:
+		gMes.bLotStart = FALSE;
+		if(m_pEquipData->bUseMES) g_objMesAgent.Set_PPUploadCompletedReport(gMes.sHostLotID[eMZ::Load], gMes.sMGZID[eMZ::Load], gMes.sHostRecipe[eMZ::Load]);
+		m_nMZElevCase = 4; m_nMZElevLoop.Set_LoopTime(10000);
 		break;
 	case 4:
 		if(gData.bAgingMode || gData.bSimulMode)
 		{
 			m_pDX00->iElvMZExist2 = TRUE; m_pDX00->iElvMZExist1 = FALSE;
 		}
-
+		if(!gMes.bLotStart) break;
 		if(m_pDX00->iElvMZExist2)
 		{
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev CV CW Stop & Stopper2 Out");

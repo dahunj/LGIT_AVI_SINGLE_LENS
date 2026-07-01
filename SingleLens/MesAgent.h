@@ -59,7 +59,7 @@ public:
 	void Set_OperUpdate(CString sOperId);				// Operator ID 변경시 보고
 	void Set_ControlState(int nFlag, CString sOperId);	// 1:Onine, 2:Offline
 	void Set_EquipState(int nFlag);						// 
-	void Set_ErrorUpdate(int nFlag, CString sErrNo);	// 0:해제, 1:발생
+	void Set_ErrorUpdate(int nFlag, int nErrNo, int nCategory);	// nFlag(0:해제, 1:발생)
 		
 	void Set_LotAbort(CString sLotId, CString sRecipe);
 	void Set_IdleSet(CString sOperId, CString sCode);	// 비가동 집계 Set
@@ -76,6 +76,11 @@ public:
 	void Set_TrayStartedReport(CString sLotID, CString sTrayID, CString sRecipeID);
 
 	void Set_ProductCompletedReport(CString sLotID, CString sTrayID, CString sRecipeID, int nPocketNo, CString sResult, CString sReasonCode);
+
+
+	void Set_AlarmLog(int nErrNo, CString sErrMsg, int nCategory);
+	void Reset_AlarmLog();
+
 };
 
 

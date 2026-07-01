@@ -343,7 +343,7 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 			if(pEquipData->bUseDoorLock) g_objCommon.Locking_MainDoor(TRUE);
 			if (gAlm.bBegin)
 			{
-				Reset_AlarmLog();
+				g_objMesAgent.Reset_AlarmLog();
 			}
 			pMainDlg->Enable_ModeButton(FALSE);
 			pMainDlg->Set_CurrentState(STATE_RUN);
@@ -1085,33 +1085,6 @@ void CWorkDlg::Display_Status()
 	m_ledEquipOption[2].Set_On(pEquipData->bUseMark);
 }
 
-void CWorkDlg::Reset_AlarmLog()
-{
-	CString strLog, strErrNo;
-	SYSTEMTIME time;
-
-	gAlm.bBegin = FALSE;
-	GetLocalTime(&time);
-
-	gAlm.dwEndTime = GetTickCount();
-	gAlm.sEndTime.Format("%04d%02d%02d_%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
-	gAlm.dwProcTime = gAlm.dwEndTime - gAlm.dwStartTime;
-	
-	gLot.dwErrorTime += gAlm.dwProcTime; 
-
-	gAlm.sLotID = gData.sMZID[0];
-
-	strLog.Format("%s,%04d,%s,%s,%s,%d", gAlm.sLotID, gAlm.nAlmNo, gAlm.sAlmMsg, gAlm.sStartTime, gAlm.sEndTime, gAlm.dwProcTime);
-	g_objLogFile.Save_AlarmResetLog(strLog);	// Alarm Reset
-
-	strErrNo.Format("%04d", gAlm.nAlmNo);
-
-
-	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-	if(pEquipData->bUseMES) g_objMesAgent.Set_ErrorUpdate(0, strErrNo);
-
-	g_objLogFile.Save_ECMLog(1, strLog);
-}
 
 void CWorkDlg::MachineStopLog(CString sType, CString sMsg)
 {

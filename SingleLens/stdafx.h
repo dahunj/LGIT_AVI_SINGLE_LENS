@@ -329,6 +329,7 @@ typedef struct {
 	BOOL	bBegin;
 	CString	sLotID;
 	int		nAlmNo;
+	int		nCategory;
 	CString sAlmMsg;
 	CString sStartTime;
 	CString sEndTime;
@@ -353,6 +354,7 @@ typedef struct {
 	
 	BOOL		bMGZIDReported;
 	BOOL		bPPConfirm;
+	BOOL		bLotStart;
 	BOOL		bTrayIDConfirm;
 	
 	CString		sLotID[2];

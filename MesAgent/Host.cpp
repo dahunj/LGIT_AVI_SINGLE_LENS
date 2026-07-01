@@ -28,6 +28,12 @@ CHost::CHost()
 	m_strStFn = "";
 	m_strRcmd = "";
 	m_dwLastTime = GetTickCount();
+
+	for(int i = 0; i < 20; i++)
+	{
+		gMes.dwCTStart[i] = 0 ;
+		gMes.bCTTickStarted[i] = FALSE;    
+	}
 }
 
 CHost::~CHost()
@@ -38,6 +44,7 @@ BEGIN_MESSAGE_MAP(CHost, CWnd)
 	ON_MESSAGE(UM_SERVER_ACCEPT, &CHost::OnServerAccept)
 	ON_MESSAGE(UM_SERVER_RECEIVE, &CHost::OnServerReceive)
 	ON_MESSAGE(UM_SERVER_REMOVE, &CHost::OnServerRemove)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 // CHost 메시지 처리기입니다.
@@ -48,6 +55,8 @@ void CHost::Initialize()
 	m_nSendCmdCount = 0;
 	m_nLPort = gData.nHostPort;
 	m_Server.Listen_Socket(m_nLPort, this);
+
+	SetTimer(0, 100, NULL);
 }
 
 void CHost::Terminate()
@@ -369,6 +378,7 @@ BOOL CHost::Extract_Xml(CString sXmlData)
 	else if (m_strStFn == "S10F3")
 	{
 		m_strDisplay = m_xml.GetRoot()->GetChild("ITEM")->GetChild("TEXT")->GetAttribute("VALUE");
+		g_objHandler.Set_TerminalDisplay(m_strDisplay);
 	}
 
 	m_xml.Close();
@@ -512,6 +522,8 @@ void CHost::Get_S10F3_Display()
 
 void CHost::Get_S2F49_PPSelect()
 {
+	gMes.bCTTickStarted[eCT::MZID_REPORT] = FALSE;
+
 	Set_S2F50_PPSelect();
 	g_objHandler.Set_PPSelect();
 }
@@ -519,6 +531,8 @@ void CHost::Get_S2F49_PPSelect()
 
 void CHost::Get_S2F49_MGZ_CANCEL()
 {
+	gMes.bCTTickStarted[eCT::MZID_REPORT] = FALSE;
+
 	Set_S2F50_MGZ_Cancel();
 	g_objHandler.Set_MGZ_Cancel();
 }
@@ -531,6 +545,7 @@ void CHost::Get_S2F49_MGZ_CONFIRM()
 
 void CHost::Get_S2F49_PP_UPLOAD_CONFIRM()
 {
+	gMes.bCTTickStarted[eCT::PP_UPLOAD_CONFIRM] = FALSE;
 	Set_S2F50_PP_UPLOAD_CONFIRM();
 	g_objHandler.Set_PP_Upload_Confirm();
 }
@@ -538,18 +553,21 @@ void CHost::Get_S2F49_PP_UPLOAD_CONFIRM()
 
 void CHost::Get_S2F49_PP_UPLOAD_FAIL()
 {
+	gMes.bCTTickStarted[eCT::PP_UPLOAD_CONFIRM] = FALSE;
 	Set_S2F50_PP_UPLOAD_FAIL();
 	g_objHandler.Set_PP_Upload_Fail();
 }
 
 void CHost::Get_S2F49_LOT_START()
 {
+	
 	Set_S2F50_LOT_START();
 	g_objHandler.Set_Lot_Start();
 }
 
 void CHost::Get_S2F49_LOT_ID_FAIL()
 {
+	
 	Set_S2F50_LOT_ID_FAIL();
 	g_objHandler.Set_Lot_ID_Fail();
 }
@@ -557,12 +575,14 @@ void CHost::Get_S2F49_LOT_ID_FAIL()
 
 void CHost::Get_S2F49_TRAY_ID_CONFIRM()
 {
+	gMes.bCTTickStarted[eCT::TRAYID_REPORT] = FALSE;
 	Set_S2F50_TRAY_ID_CONFIRM();
 	g_objHandler.Set_TrayID_Confirm();
 }
 
 void CHost::Get_S2F49_TRAY_CANCEL()
 {
+	gMes.bCTTickStarted[eCT::TRAYID_REPORT] = FALSE;
 	Set_S2F50_TRAY_CANCEL();
 	g_objHandler.Set_Tray_Cancel();
 }
@@ -604,7 +624,7 @@ void CHost::Set_S1F1_Ready()
 {
 	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
-	strSend += "<EIF VERSION=\"1.4\" ID=\"S1F1\" NAME=\"Are You There Request\">" + CRLF;
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S1F1\" NAME=\"Are You There Request\">" + CRLF;
 	strSend += "  <ELEMENT>" + CRLF;
 	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
 	strSend += "  </ELEMENT>" + CRLF;
@@ -623,7 +643,7 @@ void CHost::Set_S5F1_AlarmReport(int nFlag, CString sErrNo, CString sErrMsg)
 
 	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
-	strSend += "<EIF VERSION=\"1.4\" ID=\"S5F1\" NAME=\"Alarm Report Send\">" + CRLF;
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S5F1\" NAME=\"Alarm Report Send\">" + CRLF;
 	strSend += "  <ELEMENT>" + CRLF;
 	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
 	strSend += "  </ELEMENT>" + CRLF;
@@ -641,8 +661,6 @@ void CHost::Set_S6F11_ControlState(int nState)
 {
 	CString strState;
 	strState.Format("%d", nState);
-
-	CString strUnitNo = (gData.nAgentType == 1) ? "4" : "3";	// 3:2D+Unloader, 4:CapAttach
 
 	SYSTEMTIME time;
 	GetLocalTime(&time);
@@ -690,7 +708,7 @@ void CHost::Set_S6F11_EquipState(int nState, CString sErrNo, CString sCategory, 
 
 	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
-	strSend += "<EIF VERSION=\"1.4\" ID=\"S6F11\" NAME=\"Event Report\">" + CRLF;
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S6F11\" NAME=\"Event Report\">" + CRLF;
 	strSend += "  <ELEMENT>" + CRLF;
 	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
 	strSend += "  </ELEMENT>" + CRLF;
@@ -740,12 +758,11 @@ void CHost::Set_S6F11_MGZIDReport(CString sType, CString sMGZId)
 	strSend += "  </ITEM>" + CRLF;
 	strSend += "</EIF>";
 
+	gMes.bCTTickStarted[eCT::MZID_REPORT] = TRUE;
+	gMes.dwCTStart[eCT::MZID_REPORT] = GetTickCount();
+
 	Send_Command(strSend, FALSE, "S6F11", "20203");
 }
-
-
-
-
 
 
 void CHost::Set_S6F11_PPSelectedReport(CString sLotId, CString sMGZId, CString sRecipeId)
@@ -775,10 +792,11 @@ void CHost::Set_S6F11_PPSelectedReport(CString sLotId, CString sMGZId, CString s
 	strSend += "  </ITEM>" + CRLF;
 	strSend += "</EIF>";
 
+	gMes.bCTTickStarted[eCT::PP_UPLOAD_CONFIRM] = TRUE;
+	gMes.dwCTStart[eCT::PP_UPLOAD_CONFIRM] = GetTickCount();
+
 	Send_Command(strSend, FALSE, "S6F11", "40102");
 }
-
-
 
 void CHost::Set_S6F11_PPUploadCompleted(CString sLotId, CString sMGZId, CString sRecipeId)
 {
@@ -835,6 +853,9 @@ void CHost::Set_S6F11_TrayIDReport(CString sType, CString sTrayID)
 	strSend += "    </DVLIST>" + CRLF;
 	strSend += "  </ITEM>" + CRLF;
 	strSend += "</EIF>";
+
+	gMes.bCTTickStarted[eCT::TRAYID_REPORT] = TRUE;
+	gMes.dwCTStart[eCT::TRAYID_REPORT] = GetTickCount();
 
 	Send_Command(strSend, FALSE, "S6F11", "20301");
 }
@@ -1058,7 +1079,7 @@ void CHost::Set_S6F11_LotAbort(CString sLotId, CString sRecipe)
 
 	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
-	strSend += "<EIF VERSION=\"1.4\" ID=\"S6F11\" NAME=\"Event Report\">" + CRLF;
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S6F11\" NAME=\"Event Report\">" + CRLF;
 	strSend += "  <ELEMENT>" + CRLF;
 	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
 	strSend += "  </ELEMENT>" + CRLF;
@@ -1174,7 +1195,7 @@ void CHost::Set_S9F13_Timeout()	// Conversation Timeout
 {
 	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
-	strSend += "<EIF VERSION=\"1.4\" ID=\"S9F13\" NAME=\"ConversationTimeout\">" + CRLF;
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S9F13\" NAME=\"ConversationTimeout\">" + CRLF;
 	strSend += "  <ELEMENT>" + CRLF;
 	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
 	strSend += "  </ELEMENT>" + CRLF;
@@ -1255,4 +1276,27 @@ void CHost::Test_Command()
 	if (!Extract_Xml(strXml)) { AfxMessageBox("Extract XML Fail."); return; }
 
 	AfxMessageBox("Test Command Sucess.");
+}
+
+
+void CHost::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	for(int i = 0; i < 20; i++)
+	{
+		if(GetTickCount() - gMes.dwCTStart[i] > 3000 && gMes.bCTTickStarted[i])
+		{
+			gMes.bCTTickStarted[i] = FALSE;
+			Set_S9F13_Timeout();
+		}
+	}
+
+	//if(GetTickCount() - gMes.dwTTStart[i] > 3000 && gMes.bCTTickStarted[i])
+	//{
+	//	gMes.bCTTickStarted[i] = FALSE;
+	//	Set_S9F13_Timeout();
+	//}
+
+
+	CWnd::OnTimer(nIDEvent);
 }

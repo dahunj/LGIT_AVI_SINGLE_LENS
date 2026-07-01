@@ -94,6 +94,14 @@ typedef struct {
 	CString		sPocketNo[141];
 	CString		sResult[141];
 
+
+	//S9F9
+	BOOL        bTTTickStarted[20]; 
+	DWORD        dwTTStart[20];
+	//S9F13
+	BOOL        bCTTickStarted[20]; 
+	DWORD        dwCTStart[20];
+
 } GLOVAL_MES;
 
 typedef struct {
@@ -114,3 +122,25 @@ extern  GLOVAL_DATA	gData;
 extern  GLOVAL_MES	gMes;
 extern  GLOVAL_IDLE	gIdle;
 extern  GLOVAL_ALM	gAlarm;
+
+
+
+struct eCT
+{
+	enum Name
+	{
+		MZID_REPORT = 0,
+		PP_UPLOAD_CONFIRM = 1,   
+		TRAYID_REPORT = 2,
+	};
+};
+
+struct eTT
+{
+	enum Name
+	{
+		MZID_REPORT = 0,
+		PP_UPLOAD_CONFIRM = 1,   
+		TRAYID_REPORT = 2,
+	};
+};

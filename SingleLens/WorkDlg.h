@@ -170,7 +170,6 @@ private:
 	void Initial_Grid(CGridCS *pGrid, int nRows, int nCols, int nNoDir=0);
 	void Check_Lamp();
 	void Display_Status();
-	void Reset_AlarmLog();
 
 public:
 	CString strLog;
