@@ -27,8 +27,9 @@ CCriticalSection g_csBarcodeLog;
 CCriticalSection g_csMCCLog;
 CCriticalSection g_csStdMotionLog;
 CCriticalSection g_csEfficiencyLog;
-
 CCriticalSection g_csLotTimeLog;
+CCriticalSection g_csTerminalLog;
+
 CLogFile::CLogFile()
 {
 }
@@ -160,6 +161,40 @@ void CLogFile::Save_HandlerLog(CString sLog)
 	g_csHandlerLog.Unlock();
 
 	Save_ECMLog(4, sLog);
+}
+
+
+void CLogFile::Save_TerminalLog(const CString& sLog)
+{
+	
+
+	CString strPath = gsCurrentDir + "\\LOG\\Terminal";
+
+	Create_Folder(strPath);
+
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+
+	CString strFile, strSave;
+	strFile.Format("%s\\%04d%02d%02d_Terminal.txt", strPath, time.wYear, time.wMonth, time.wDay);
+
+	g_csTerminalLog.Lock();
+	CFile file;
+	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
+		try {
+			file.SeekToEnd();
+
+			strSave.Format("[%02d:%02d:%02d.%03d], %s\r\n", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, sLog);
+
+			file.Write(strSave, strSave.GetLength());
+			file.Close();
+
+		} catch (CFileException *pEx) {
+			pEx->Delete();
+		}
+	}
+	g_csTerminalLog.Unlock();
+	
 }
 
 void CLogFile::Save_SaveRunTimeLog(CString sLog)
@@ -1088,3 +1123,4 @@ void CLogFile::Get_ZoneMsg(int nZone, int nCase, CString &sZone, CString &sMsg)
 
 	}
 }
+

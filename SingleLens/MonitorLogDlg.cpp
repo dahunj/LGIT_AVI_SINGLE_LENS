@@ -30,12 +30,12 @@ void CMonitorLogDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_REDT_LOG_DISPLAY, m_redtLogDisplay);
 	DDX_Control(pDX, IDC_STC_LOG_DATE, m_stcLogDate);
 	DDX_Control(pDX, IDC_BTN_GO_TODAY, m_btnGoToday);
-	DDX_Control(pDX, IDC_BTN_PRINT_LIST, m_btnPrintList);
 	DDX_Control(pDX, IDC_CAL_MONTH, m_calMonth);
 	DDX_Control(pDX, IDC_RDO_LOG_ALARM, m_rdoLogAlarm);
 	DDX_Control(pDX, IDC_RDO_LOG_JOB_LIST, m_rdoLogJobList);
 	DDX_Control(pDX, IDC_RDO_LOG_HANDLER, m_rdoLogHandler);
 	DDX_Control(pDX, IDC_RDO_LOG_INSPECTOR, m_rdoLogInspector);
+	DDX_Control(pDX, IDC_RDO_LOG_TERMINAL, m_rdoLogTerminal);
 }
 
 BEGIN_MESSAGE_MAP(CMonitorLogDlg, CDialogEx)
@@ -46,6 +46,7 @@ BEGIN_MESSAGE_MAP(CMonitorLogDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_RDO_LOG_JOB_LIST, &CMonitorLogDlg::OnBnClickedRdoLogJobList)
 	ON_BN_CLICKED(IDC_RDO_LOG_HANDLER, &CMonitorLogDlg::OnBnClickedRdoLogHandler)
 	ON_BN_CLICKED(IDC_RDO_LOG_INSPECTOR, &CMonitorLogDlg::OnBnClickedRdoLogInspector)
+	ON_BN_CLICKED(IDC_RDO_LOG_TERMINAL, &CMonitorLogDlg::OnBnClickedRdoLogTerminal)
 END_MESSAGE_MAP()
 
 // CMonitorLogDlg 메시지 처리기입니다.
@@ -54,11 +55,8 @@ void CMonitorLogDlg::Initial_Controls()
 {
 	for (int i = 0; i < 2; i++) m_Group[i].Init_Ctrl("바탕", 14, TRUE, RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
 	m_Label.Init_Ctrl("바탕", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60));
-
 	m_stcLogDate.Init_Ctrl("바탕", 18, TRUE, RGB(0xFF, 0x20, 0x20), RGB(0xF0, 0xE0, 0xFF));
-
-	m_btnGoToday.Init_Ctrl("바탕", 12, TRUE, RGB(0x00, 0x00, 0x00), COLOR_DEFAULT, 0, 0);
-	m_btnPrintList.Init_Ctrl("바탕", 12, TRUE, RGB(0x00, 0x00, 0x00), COLOR_DEFAULT, 0, 0);
+	m_btnGoToday.Init_Ctrl("바탕", 12, TRUE, RGB(0x00, 0x00, 0x00), COLOR_DEFAULT, 0, 0);	
 
 	m_fontCalendar.CreatePointFont(200, "바탕");
 	//m_fontCalendar.CreatePointFont(150, "바탕");
@@ -68,6 +66,7 @@ void CMonitorLogDlg::Initial_Controls()
 	m_rdoLogJobList.Init_Ctrl("바탕", 14, TRUE, RGB(0x00, 0x80, 0x00), COLOR_DEFAULT, 0, 0);
 	m_rdoLogHandler.Init_Ctrl("바탕", 14, TRUE, RGB(0x00, 0x00, 0xFF), COLOR_DEFAULT, 0, 0);
 	m_rdoLogInspector.Init_Ctrl("바탕", 14, TRUE, RGB(0x00, 0x00, 0xFF), COLOR_DEFAULT, 0, 0);
+	m_rdoLogTerminal.Init_Ctrl("바탕", 14, TRUE, RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT, 0, 0);
 }
 
 BOOL CMonitorLogDlg::OnInitDialog() 
@@ -144,21 +143,34 @@ void CMonitorLogDlg::OnMcnSelectCalMonth(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CMonitorLogDlg::OnBnClickedRdoLogAlarm()
 {
+	m_rdoLogTerminal.SetCheck(FALSE);
 	Read_LogFile();
 }
 
 void CMonitorLogDlg::OnBnClickedRdoLogJobList()
 {
+	m_rdoLogTerminal.SetCheck(FALSE);
 	Read_LogFile();
 }
 
 void CMonitorLogDlg::OnBnClickedRdoLogHandler()
 {
+	m_rdoLogTerminal.SetCheck(FALSE);
 	Read_LogFile();
 }
 
 void CMonitorLogDlg::OnBnClickedRdoLogInspector()
 {
+	m_rdoLogTerminal.SetCheck(FALSE);
+	Read_LogFile();
+}
+
+void CMonitorLogDlg::OnBnClickedRdoLogTerminal()
+{
+	m_rdoLogAlarm.SetCheck(FALSE);
+	m_rdoLogHandler.SetCheck(FALSE);
+	m_rdoLogInspector.SetCheck(FALSE);
+	m_rdoLogJobList.SetCheck(FALSE);
 	Read_LogFile();
 }
 
@@ -203,6 +215,7 @@ void CMonitorLogDlg::Read_LogFile()
 	else if (m_rdoLogHandler.GetCheck()) strFile.Format(gsCurrentDir + "\\LOG\\Handler\\%s_Handler.txt", strDate);
 	else if (m_rdoLogInspector.GetCheck()) strFile.Format(gsCurrentDir + "\\LOG\\Inspector\\%s_Inspector.txt", strDate);
 	else if (m_rdoLogJobList.GetCheck()) strFile.Format(gsCurrentDir + "\\LOG\\JobList\\%s_JobList.txt", strDate);
+	else if (m_rdoLogTerminal.GetCheck()) strFile.Format(gsCurrentDir + "\\LOG\\Terminal\\%s_Terminal.txt", strDate);
 	else return;
 
 	CFileFind Finder;
@@ -224,3 +237,4 @@ void CMonitorLogDlg::Read_LogFile()
 	int nLineCount = m_redtLogDisplay.GetLineCount();
 	if (nLineCount > nMaxLine) m_redtLogDisplay.LineScroll(nLineCount - nMaxLine);
 }
+

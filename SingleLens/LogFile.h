@@ -35,6 +35,7 @@ public:
 	void Save_BarcodeLog(const CString& sLog);
 	void Save_LotTime(int nPNo, const CString& sLog);
 	
+	void Save_TerminalLog(const CString& sLog);
 	
 	void Save_ECMLog(int nType, CString strLog, int nMGZNo = 0);	//nType:1[Alarm], 2[Joblist] 3[Inspect]
 

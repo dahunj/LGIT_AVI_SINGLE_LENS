@@ -44,6 +44,8 @@ private:
 	void Get_TrayID_Confirm(CString sStrings);
 	void Get_Tray_Cancel(CString sTrayID, CString sCode, CString sText);
 
+	void Get_Terminal(CString sMsg);
+
 	void Send_Command(CString sSend);
 
 public:

@@ -166,6 +166,10 @@ LRESULT CMesAgent::OnClientReceive(WPARAM wParam, LPARAM lParam)
 			if(strOp == "CONFIRM") Get_TrayID_Confirm(strRecv);
 			if(strOp == "CANCEL") Get_Tray_Cancel(strArg[0], strArg[1], strArg[2]);
 		}
+		else if(strCmd == "TERMINAL")
+		{
+			if(strOp == "DISPLAY") Get_Terminal(strArg[0]);
+		}
 	}
 	return 0;
 }
@@ -307,6 +311,12 @@ void CMesAgent::Get_Tray_Cancel(CString sTrayID, CString sCode, CString sText)
 	gMes.sHostCancelCode = sCode;
 	gMes.sHostCancelText = sText;
 	g_objCommon.Show_Error(9035);
+
+}
+
+void CMesAgent::Get_Terminal(CString sMsg)
+{
+	g_objLogFile.Save_TerminalLog(sMsg);
 }
 
 //Set

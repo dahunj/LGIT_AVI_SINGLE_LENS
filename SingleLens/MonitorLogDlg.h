@@ -19,12 +19,13 @@ public:
 	CRichEditCtrl	m_redtLogDisplay;
 	CStaticCS		m_stcLogDate;
 	CButtonCS		m_btnGoToday;
-	CButtonCS		m_btnPrintList;
+	
 	CMonthCalCtrl	m_calMonth;
 	CRadioCS		m_rdoLogAlarm;
 	CRadioCS		m_rdoLogJobList;
 	CRadioCS		m_rdoLogHandler;
 	CRadioCS		m_rdoLogInspector;
+	CRadioCS		m_rdoLogTerminal;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
@@ -50,6 +51,8 @@ private:
 protected:
 	void Initial_RichEdit();
 	void Read_LogFile();
+public:
+	afx_msg void OnBnClickedRdoLogTerminal();
 };
 
 ///////////////////////////////////////////////////////////////////////////////
