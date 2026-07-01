@@ -412,7 +412,7 @@ void CLogFile::Save_ECMLog(int nType, CString strLog, int nMGZNo)	//nType:1[Alar
 	if (nType == 4) sTitle.Format("Time,Station,Type\r\n");
 
 	if (nType == 1) strFile.Format("%s%s_%04d%02d%02d%02d_Alarm.csv", strPath, "SingleLens", time.wYear, time.wMonth, time.wDay, time.wHour);
-	if (nType == 2) strFile.Format("%s%s_%04d%02d%02d%02d_JobList.csv", strPath, gData.sMZID[nMNo] , time.wYear, time.wMonth, time.wDay, time.wHour);
+	if (nType == 2) strFile.Format("%s%s_%04d%02d%02d%02d_JobList.csv", strPath, gData.sMZID[eMZBuffer::Load] , time.wYear, time.wMonth, time.wDay, time.wHour);
 	if (nType == 3) strFile.Format("%s%s_%04d%02d%02d%02d_Inspector.csv", strPath, "SingleLens", time.wYear, time.wMonth, time.wDay, time.wHour);
 	if (nType == 4) strFile.Format("%s%s_%04d%02d%02d%02d_Handler.csv", strPath, "SingleLens", time.wYear, time.wMonth, time.wDay, time.wHour);
 

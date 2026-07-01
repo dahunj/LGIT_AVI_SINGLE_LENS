@@ -113,19 +113,22 @@ typedef struct
 {
 	CString	sOperID;		// Operator
 		
-	CString	sMZID[7];
-	CString	sZigID[7][10];	
+
+
+	//UI Buffer - 6개 
+	CString	sLotID[6];
+	CString	sMZID[6];  
+	CString	sZigID[6][10];	
 	
+	int		nMZNo[6]; // From UI MZ Input 
 
-	//비전 요청으로 1~3까지만 운용, 4~7 나머지는 버퍼로 남겨둔다
-	int		nMZNo[7]; // From UI MZ Input 
-	int		nMZCnt;
-
-	int		nCtZigTotalCnt[7];
-	int		nLensTotalCnt[7];
-	int		nLensUseCnt[7][10];
+	int		nCtZigTotalCnt[6];
+	int		nLensTotalCnt[6];
+	int		nLensUseCnt[6][10];
 	int		nLensMaxCnt;
 
+	//MZNo : 비전 요청으로 1~3까지만 운용, 4~7 나머지는 버퍼로 남겨둔다
+	int		nMZCnt;	
 	int		nLoadTrayCnt[7];
 	int		nUnloadTrayCnt[7];
 	

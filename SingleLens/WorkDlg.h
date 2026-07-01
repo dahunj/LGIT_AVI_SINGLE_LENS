@@ -187,8 +187,7 @@ public:
 
 	void	Init_TempLensMap(int nPos);
 	void	Set_TempSlot(int nPos, int nSlot, BOOL bExist);
-
-
+	
 	void	init_LensMap();
 		
 	int 	SearchZigInfo(int nMZNo);
@@ -196,13 +195,15 @@ public:
 
 	int		CheckZigExistInMZ(int nMZ, int nSlot);
 	
-	void Get_MZInfo(int nMZNo);
-	void Set_MZInfo(int nMZNo);
 	
 	void MachineStopLog(CString sType, CString sMsg="");
 	void Change_Model();
 
 	void InsertMGZTestInfo(int nLensCnt);
+
+	void Set_MZInfo(int nMZPos, CString sID);
+	void Set_CtZigInfo(int nMZPos, int nSlotNo, CString sID);
+
 
 	afx_msg void OnBnClickedBtnSimul1();	
 	afx_msg void OnBnClickedButton1();
@@ -218,8 +219,6 @@ public:
 	afx_msg void OnBnClickedBtnMesDisconnect();
 	afx_msg void OnBnClickedBtnMesAbort();
 	afx_msg void OnBnClickedBtnIdleReport();
-
-
 	
 	afx_msg void OnBnClickedChkSimul();
 	

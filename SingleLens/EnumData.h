@@ -235,3 +235,16 @@ struct eEquipState
 		DOWN = 5,
 	};
 };
+
+struct eMZBuffer
+{
+	enum name
+	{
+		Load = 0,
+		Ready = 1,
+		LoadCV1 = 2,
+		LoadCV2 = 3,
+		LoadCV3 = 4,
+		LoadCV4 = 5, 
+	};
+};

@@ -1190,26 +1190,6 @@ void CWorkDlg::Enable_UserInput(int nNo, BOOL bEnable)
 	}
 }
 
-void CWorkDlg::Get_MZInfo(int nMZNo)
-{
-	int nZigNo = 0;
-	CString sZigID, sLensCnt;
-
-	for(int i = 0; i < 10; i++)
-	{
-		nZigNo = (nMZNo-1)*10 +i;
-		m_stcZigID[nZigNo].GetWindowText(sZigID);
-		gData.sZigID[nMZNo-1][i] = sZigID;
-
-		m_stcLensCnt[nZigNo].GetWindowText(sLensCnt);
-		gData.nLensUseCnt[nMZNo-1][i] = atoi(sLensCnt);
-	}	
-}
-
-void CWorkDlg::Set_MZInfo(int nMZNo)
-{
-		
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1990,9 +1970,15 @@ void CWorkDlg::OnBnClickedBtnMesAbort()
 
 	if (!g_objMesAgent.Is_Connected()) { AfxMessageBox("MES Disconnect 상태에서는 처리를 할수 없습니다."); return; }
 	if (!g_objMesAgent.Is_HostOnline()) { AfxMessageBox("MES Offline 상태에서는 처리를 할수 없습니다."); return; }
-	if (gData.nSelectNo < 1 || gData.nSelectNo > 6) { AfxMessageBox("Abort Lot을 먼저 선택해 주세요."); return; }
-	if (!m_rdoWorkStop.GetCheck()) { AfxMessageBox("장비 Stop상태에서 Abort처리 하세요."); return; }
-	//if (gMes.nLotStatus[gData.nSelectNo-1] == 0) { AfxMessageBox("진행중인 Lot만 Abort처리가 가능합니다."); return; }
+	if (!g_objSequenceMain.Get_IsAutoRun()) { AfxMessageBox("진행중인 Lot이 없어 처리를 할수 없습니다."); return; }
+	if (m_rdoWorkStart.GetCheck() || !m_rdoWorkStop.GetCheck()) { AfxMessageBox("진행중인 Lot이 Stop되어 있어야 처리가 가능합니다."); return; }
+
+	if (g_objCommon.Show_MsgBox(2, "If there were the modules in the machine, Please remove the modules by the CycleStop. Are you want to cancel this Lot?") != IDOK) return;
+
+	g_objMesAgent.Set_LotAbort(gData.sLotID[eMZBuffer::Load], gMes.sHostRecipe[eMZ::Load]);
+	g_objMesAgent.Set_EquipState(4);	// Idle
+
+	g_objLogFile.Save_HandlerLog("[Work Mode] MES Abort Button Click.");
 		
 }
 
@@ -2014,6 +2000,17 @@ void CWorkDlg::OnBnClickedBtnIdleReport()
 
 	/*if (g_dlgNoWork.IsWindowVisible()) g_dlgNoWork.ShowWindow(SW_HIDE);
 	else g_dlgNoWork.ShowWindow(SW_SHOW);	*/
+}
+
+void CWorkDlg::Set_MZInfo(int nMZPos, CString sID)
+{
+	m_stcMZID[nMZPos].SetWindowText(sID);
+}
+
+void CWorkDlg::Set_CtZigInfo(int nMZPos, int nSlotNo, CString sID)
+{
+	int nNo = nMZPos*10 + (nSlotNo-1);
+	m_stcZigID[nNo].SetWindowText(sID);
 }
 
 void CWorkDlg::InsertMGZTestInfo(int nLensCnt)

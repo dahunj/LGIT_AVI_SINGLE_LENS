@@ -498,7 +498,7 @@ void CErrorDlg::Set_AlarmLog(int nErrNo, CString sErrMsg)
 	int nMNo = 0;
 	gAlm.bBegin = TRUE;
 	
-	gAlm.sLotID = gData.sMZID[nMNo];
+	gAlm.sLotID = gData.sMZID[eMZBuffer::Load];
 
 	gAlm.nAlmNo = nErrNo;
 	gAlm.sAlmMsg = sErrMsg;
