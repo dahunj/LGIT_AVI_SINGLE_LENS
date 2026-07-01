@@ -353,6 +353,7 @@ typedef struct {
 typedef struct {
 	
 	BOOL		bMGZIDReported;
+	BOOL		bUldIDReported;
 	BOOL		bPPConfirm;
 	BOOL		bLotStart;
 	BOOL		bTrayIDConfirm;

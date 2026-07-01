@@ -251,7 +251,7 @@ void CMesAgent::Get_PPSelect(CString sLotId, CString sMGZID, CString sRecipe, CS
 	gMes.sHostRecipe[gMes.nElevPos] = sRecipe;
 	gMes.nHostCount[gMes.nElevPos] = atoi(sLensCount);
 
-	if (gMes.sHostLotID[gMes.nElevPos].GetLength() < 5 || gMes.sHostRecipe[gMes.nElevPos].GetLength() < 2) 
+	if (gMes.sHostLotID[gMes.nElevPos].GetLength() < 3 || gMes.sHostRecipe[gMes.nElevPos].GetLength() < 2) 
 	{
 		g_objCommon.Show_Error(9004); return;
 	}	
@@ -268,6 +268,7 @@ void CMesAgent::Get_MGZCancel(CString sMGZId, CString sCode, CString sText)
 
 void CMesAgent::Get_MGZ_Confirm(CString sMGZId)
 {
+	gMes.bUldIDReported = TRUE;
 	gMes.sHostUldMGZID = sMGZId;
 }
 

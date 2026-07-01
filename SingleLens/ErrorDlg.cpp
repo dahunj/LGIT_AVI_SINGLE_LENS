@@ -176,9 +176,41 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 			m_btnErrRetry.ShowWindow(SW_HIDE);
 		}
 
+		if(m_nErrNo == 9030)
+		{
+			int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_MZ_ELEVATOR);
+			if(nCase == 91)
+			{
+				m_strErrSubMsg.Format(", Fail - LotID : %s, Code: %s, Text: %s", gMes.sHostUldMGZID,gMes.sHostCancelCode, gMes.sHostCancelText);
+				m_btnErrRetry.EnableWindow(TRUE);
+				m_btnErrRetry.ShowWindow(SW_SHOW);
+			}
+			else
+			{
+				m_strErrSubMsg.Format(", Fail - LotID : %s, Code: %s, Text: %s", gMes.sHostMGZID[gMes.nElevPos],gMes.sHostCancelCode, gMes.sHostCancelText);
+				m_btnErrRetry.EnableWindow(TRUE);
+				m_btnErrRetry.ShowWindow(SW_SHOW);
+			}			
+		}
+
+		if(m_nErrNo == 9031)
+		{
+			m_strErrSubMsg.Format(", Fail - Recipe : %s, Code: %s, Text: %s", gMes.sHostRecipe[gMes.nElevPos],gMes.sHostCancelCode, gMes.sHostCancelText);
+			m_btnErrRetry.EnableWindow(TRUE);
+			m_btnErrRetry.ShowWindow(SW_SHOW);
+		}
+
+
 		if(m_nErrNo == 9032)
 		{
 			m_strErrSubMsg.Format(", Fail - LotID : %s, Code: %s, Text: %s", gMes.sHostFailLotId,gMes.sHostFailCode, gMes.sHostFailText);
+			m_btnErrRetry.EnableWindow(TRUE);
+			m_btnErrRetry.ShowWindow(SW_SHOW);
+		}
+
+		if(m_nErrNo == 9035)
+		{
+			m_strErrSubMsg.Format(", Fail - TrayID : %s, Code: %s, Text: %s", gMes.sHostTrayID,gMes.sHostCancelCode, gMes.sHostCancelText);
 			m_btnErrRetry.EnableWindow(TRUE);
 			m_btnErrRetry.ShowWindow(SW_SHOW);
 		}
@@ -448,9 +480,42 @@ void CErrorDlg::OnBnClickedBtnErrRetry()
 	case 3783:
 		g_objSequenceMain.Set_MainRunCase(AUTO_FEEDER, 82);
 		break;
+	case 9030: // MGZ Cancel 
+		{
+			int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_MZ_ELEVATOR);
+			if(nCase == 72 || nCase == 73)
+			{
+				g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 74);
+			}
+			else if( nCase == 82 || nCase == 83)
+			{
+				g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 84);
+			}
+			else if( nCase == 91)
+			{
+				g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 31);
+			}
+		}
+		break;
+	case 9031:
+		{
+			int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_MZ_ELEVATOR);
+			if(nCase == 76) g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 75);
+			if(nCase == 86) g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 85);
+		}		
+		break;
 
-	case 9032: //LOT ID FAIL 
-		g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 77);
+	case 9032: //LOT ID FAIL - PPUploadCompletedReport 
+		{
+			int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_MZ_ELEVATOR);
+			if(nCase == 78) g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 77);
+			if(nCase == 88) g_objSequenceMain.Set_MainRunCase(AUTO_MZ_ELEVATOR, 87);
+		}				
+		break;
+	case 9035:
+		{
+			g_objSequenceMain.Set_MainRunCase(AUTO_FEEDER, 74);
+		}
 		break;
 	}
 
