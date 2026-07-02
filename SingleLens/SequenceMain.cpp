@@ -889,12 +889,12 @@ BOOL CSequenceMain::MZElevRun()
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Barcode Set Trigger - MZ");
 			dwTick1 = GetTickCount();
 			m_strBarcode[eBarcode::MZ-1].Empty(); g_objBarcodeLot_Cognex.Set_Trigger(eBarcode::MZ,TRUE);
-			if(gData.bSimulMode)
+			/*if(gData.bSimulMode)
 			{
 				gData.sTempMZID.Format("SkipedMZ-%d", nBarcodeIdx++); 
 				m_nMZElevCase = 79; m_nMZElevLoop.Set_LoopTime(10000);	
 				break;
-			}
+			}*/
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);		
 		}		
 		break;
@@ -915,6 +915,10 @@ BOOL CSequenceMain::MZElevRun()
 		if(GetTickCount() - dwTick1 < 3000)
 		{
 			m_strBarcode[eBarcode::MZ-1] = g_objBarcodeLot_Cognex.Get_BarcodeLot(eBarcode::MZ);
+			if(gData.bSimulMode)
+			{
+				m_strBarcode[eBarcode::MZ-1].Format("TestMZ-%d", nBarcodeIdx++); 				
+			}
 			if (m_strBarcode[eBarcode::MZ-1] != "" && m_strBarcode[eBarcode::MZ-1] !="NG") 
 			{
 				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_MGZIDReport");
@@ -1129,12 +1133,12 @@ BOOL CSequenceMain::MZElevRun()
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_Trigger");
 			dwTick1 = GetTickCount();
 			m_strBarcode[eBarcode::MZ-1].Empty(); g_objBarcodeLot_Cognex.Set_Trigger(eBarcode::MZ,TRUE);
-			if(gData.bSimulMode)
+			/*if(gData.bSimulMode)
 			{
 				gData.sTempMZID.Format("SkipedMZ-%d", nBarcodeIdx++); 
 				m_nMZElevCase = 89; m_nMZElevLoop.Set_LoopTime(10000);	
 				break;
-			}
+			}*/
 
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 		}		
@@ -1156,6 +1160,10 @@ BOOL CSequenceMain::MZElevRun()
 		if(GetTickCount() - dwTick1 < 3000)
 		{
 			m_strBarcode[eBarcode::MZ-1] = g_objBarcodeLot_Cognex.Get_BarcodeLot(eBarcode::MZ);
+			if(gData.bSimulMode)
+			{
+				m_strBarcode[eBarcode::MZ-1].Format("TestMZ-%d", nBarcodeIdx++); 				
+			}
 			if (m_strBarcode[eBarcode::MZ-1] != "" && m_strBarcode[eBarcode::MZ-1] != "NG") 
 			{				
 				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_MGZIDReport");
@@ -1318,26 +1326,26 @@ BOOL CSequenceMain::MZElevRun()
 		return TRUE;
 
 	case ElvBranch::Unload:
-		if(m_pEquipData->bUseMES)
+		/*if(m_pEquipData->bUseMES)
 		{
 			gMes.bUldIDReported = FALSE;
 			m_nMZElevCase = 91;m_nMZElevLoop.Set_LoopTime(10000);
 			g_objMesAgent.Set_MGZIDReport(2, gData.sMZIDElevUnload);			
 		}
 		else
-		{
+		{*/
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");
 			nMZCnt = 0;
 			g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::ToUldCV);
 			m_nMZElevCase = 32;m_nMZElevLoop.Set_LoopTime(10000);
-		}
+		//}
 		break;
-	case 91:
+	/*case 91:
 		if(gMes.bUldIDReported)
 		{
 			m_nMZElevCase = 32;m_nMZElevLoop.Set_LoopTime(10000);
 		}
-		break;
+		break;*/
 	case 32:		
 		if(gData.bAgingMode || gData.bSimulMode)
 		{
@@ -1874,12 +1882,12 @@ BOOL CSequenceMain::FeederRun()
 			dwTick = GetTickCount();
 			g_objBarcodeLot_Cognex.Set_Trigger(eBarcode::CtZig, TRUE);
 
-			if(gData.bSimulMode)
+			/*if(gData.bSimulMode)
 			{
 				gData.sTempZigID.Format("Skip-%d", gData.nSlotNoFeeder);
 				m_nFeederCase = 79; m_nFeederLoop.Set_LoopTime(10000);	
 				break;
-			}
+			}*/
 			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		}
@@ -1901,6 +1909,12 @@ BOOL CSequenceMain::FeederRun()
 		if(GetTickCount() - dwTick < 5000)
 		{			
 			m_strBarcode[eBarcode::CtZig-1].Empty(); m_strBarcode[eBarcode::CtZig-1] = g_objBarcodeLot_Cognex.Get_BarcodeLot(eBarcode::CtZig);
+
+			if(gData.bSimulMode)
+			{
+				m_strBarcode[eBarcode::CtZig-1].Format("Test-%d", gData.nSlotNoFeeder);				
+			}
+
 			if(m_strBarcode[eBarcode::CtZig-1] != "" && m_strBarcode[eBarcode::CtZig-1] != "NG")
 			{
 				gData.sZigIDFeeder = m_strBarcode[eBarcode::CtZig-1]; m_strBarcode[eBarcode::CtZig-1].Empty();
@@ -2090,8 +2104,9 @@ BOOL CSequenceMain::FeederRun()
 
 			gData.nTablePocketElevUnload[gData.nSlotNoFeeder-1] = gData.nTablePocketFeeder; gData.nTablePocketFeeder = 0;
 
+			g_objMesAgent.Set_TrayCompleted(gData.sLotIDElevUnload, gData.sMZIDElevUnload, gData.sRecipeElevUnload[gData.nSlotNoFeeder - 1], gData.sZigIDElevUnload[gData.nSlotNoFeeder - 1]);
 			gData.nSlotNoFeeder = 0;
-
+			
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready);
 
 			g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO,eMZ::Load, NULL);
@@ -2359,12 +2374,12 @@ BOOL CSequenceMain::FeederRun()
 			dwTick = GetTickCount();
 			g_objBarcodeLot_Cognex.Set_Trigger(eBarcode::CtZig, TRUE);
 
-			if(gData.bSimulMode)
+			/*if(gData.bSimulMode)
 			{
 				gData.sTempZigID.Format("Skip-%d", gData.nSlotNoFeeder);
 				m_nFeederCase = 89; m_nFeederLoop.Set_LoopTime(10000);	
 				break;
-			}
+			}*/
 			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		}

@@ -77,6 +77,7 @@ public:
 
 	void Set_ProductCompletedReport(CString sLotID, CString sTrayID, CString sRecipeID, int nPocketNo, CString sResult, CString sReasonCode);
 
+	void Set_TrayCompleted(CString sLotID, CString sMGZID, CString sRecipe, CString sTrayID);
 
 	void Set_AlarmLog(int nErrNo, CString sErrMsg, int nCategory);
 	void Reset_AlarmLog();

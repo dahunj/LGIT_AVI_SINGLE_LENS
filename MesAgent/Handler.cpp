@@ -154,9 +154,15 @@ LRESULT CHandler::OnServerReceive(WPARAM wLocalPort, LPARAM lClientIdx)
 		{
 			if(strOp == "ID") Get_TrayIDReport(strA[0], strA[1]);
 			if(strOp == "START") Get_TrayStartedReport(strA[0], strA[1], strA[2] );
+			if(strOp == "COMPLETE") Get_TrayCompleted(strA[0], strA[1], strA[2], strA[3]);
 		}	
+		else if (strCmd == "PRODUCT")
+		{
+			if(strOp == "COMPLETED") Get_ProductCompleted(strA[0], strA[1], strA[2], strA[3], strA[4], strA[5]);
+		}
 		else if (strCmd == "LOT") 
 		{			
+			if( strOp == "START") Get_LotStartedReport(strA[0], strA[1], strA[2]);
 			if (strOp == "ABORT")   Get_LotAbort(strA[0], strA[1]);
 		}
 		else if (strCmd == "IDLE") 
@@ -245,6 +251,12 @@ void CHandler::Get_PPUploadCompletedReport(CString sLotID, CString sMGZId, CStri
 	g_objHost.Set_S6F11_PPUploadCompleted(sLotID, sMGZId,sRecipeId);
 }
 
+
+void CHandler::Get_LotStartedReport(CString sLotID, CString sMZID, CString sRecipe)
+{
+	g_objHost.Set_S6F11_LotStartedReport(sLotID, sMZID, sRecipe);
+}
+
 void CHandler::Get_TrayIDReport(CString sType, CString sTrayID)
 {
 	g_objHost.Set_S6F11_TrayIDReport(sType, sTrayID);
@@ -254,6 +266,17 @@ void CHandler::Get_TrayStartedReport(CString sLotID, CString sTrayID, CString sR
 {
 	g_objHost.Set_S6F11_TrayStartedReport(sLotID, sTrayID, sRecipeID);
 }
+
+void CHandler::Get_TrayCompleted(CString sLotID, CString sMGZID, CString sRecipeID, CString sTrayID )
+{
+	g_objHost.Set_S6F11_TrayCompleted(sLotID, sMGZID, sRecipeID, sTrayID);
+}
+
+void CHandler::Get_ProductCompleted(CString sLotID, CString sTrayID, CString sRecipeID, CString sPocketNo, CString sResult, CString sReasonCode)
+{
+	g_objHost.Set_S6F11_ProductCompleted(sLotID, sTrayID, sRecipeID, sPocketNo, sResult, sReasonCode);
+}
+
 
 
 void CHandler::Get_LotAbort(CString sLotId, CString sRecipe)

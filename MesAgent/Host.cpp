@@ -677,7 +677,7 @@ void CHost::Set_S6F11_ControlState(int nState)
 	strSend += "  <ITEM>" + CRLF;
 	strSend += "    <CEID NAME=\"CEID\" VALUE=\"10101\" />" + CRLF;
 	strSend += "    <RPTID NAME=\"RPTID\" VALUE=\"10101\" />" + CRLF;
-	strSend += "    <DVLIST COUNT=\"5\">" + CRLF;
+	strSend += "    <DVLIST COUNT=\"4\">" + CRLF;
 	strSend += "      <DV NAME=\"TIME\" VALUE=\"" + strTime + "\" />" + CRLF;
 	strSend += "      <DV NAME=\"CONTROLSTATE\" VALUE=\"" + strState + "\" />" + CRLF;
 	strSend += "      <DV NAME=\"REASONTEXT\" VALUE=\"\"/>" + CRLF;
@@ -715,10 +715,10 @@ void CHost::Set_S6F11_EquipState(int nState, CString sErrNo, CString sCategory, 
 	strSend += "  <ITEM>" + CRLF;
 	strSend += "    <CEID NAME=\"CEID\" VALUE=\"10108\" />" + CRLF;
 	strSend += "    <RPTID NAME=\"RPTID\" VALUE=\"10108\" />" + CRLF;
-	strSend += "    <DVLIST COUNT=\"11\">" + CRLF;
+	strSend += "    <DVLIST COUNT=\"7\">" + CRLF;
 	strSend += "      <DV NAME=\"TIME\" VALUE=\"" + strTime + "\" />" + CRLF;
 	strSend += "      <DV NAME=\"NEWEQPSTATE\" VALUE=\"" + strState + "\" />" + CRLF;
-	strSend += "      <DV NAME=\"ALMLISTQTY\" VALUE=\"3\" />" + CRLF;
+	strSend += "      <DV NAME=\"ALARMLISTQTY\" VALUE=\"1\" />" + CRLF;
 	strSend += "      <DV NAME=\"ALARMID#1\" VALUE=\"" + sErrNo + "\" />" + CRLF;
 	strSend += "      <DV NAME=\"ALARMCATEGORY#1\" VALUE=\"" + sCategory + "\" />" + CRLF;
 	strSend += "      <DV NAME=\"ALARMTEXT#1\" VALUE=\"" + sErrMsg + "\" />" + CRLF;
@@ -747,8 +747,8 @@ void CHost::Set_S6F11_MGZIDReport(CString sType, CString sMGZId)
 	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
 	strSend += "  </ELEMENT>" + CRLF;
 	strSend += "  <ITEM>" + CRLF;
-	strSend += "    <CEID NAME=\"CEID\" VALUE=\"20203\" />" + CRLF;
-	strSend += "    <RPTID NAME=\"RPTID\" VALUE=\"20203\" />" + CRLF;
+	strSend += "    <CEID NAME=\"MGZ ID Report\" VALUE=\"20203\" />" + CRLF;
+	strSend += "    <RPTID NAME=\"MGZ ID Report\" VALUE=\"20203\" />" + CRLF;
 	strSend += "    <DVLIST COUNT=\"4\">" + CRLF;
 	strSend += "      <DV NAME=\"TIME\" VALUE=\""		+ strTime + "\" />" + CRLF;
 	strSend += "      <DV NAME=\"PORTNO\" VALUE=\""		+ sType +"\" />" + CRLF;
@@ -780,8 +780,8 @@ void CHost::Set_S6F11_PPSelectedReport(CString sLotId, CString sMGZId, CString s
 	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
 	strSend += "  </ELEMENT>" + CRLF;
 	strSend += "  <ITEM>" + CRLF;
-	strSend += "    <CEID NAME=\"CEID\" VALUE=\"40102\" />" + CRLF;
-	strSend += "    <RPTID NAME=\"RPTID\" VALUE=\"40102\" />" + CRLF;
+	strSend += "    <CEID NAME=\"PP-Selected Report\" VALUE=\"40102\" />" + CRLF;
+	strSend += "    <RPTID NAME=\"PP-Selected Report\" VALUE=\"40102\" />" + CRLF;
 	strSend += "    <DVLIST COUNT=\"5\">" + CRLF;
 	strSend += "      <DV NAME=\"TIME\" VALUE=\"" + strTime + "\" />" + CRLF;
 	strSend += "      <DV NAME=\"LOTID\" VALUE=\"" + sLotId + "\" />" + CRLF;
@@ -813,8 +813,8 @@ void CHost::Set_S6F11_PPUploadCompleted(CString sLotId, CString sMGZId, CString 
 	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
 	strSend += "  </ELEMENT>" + CRLF;
 	strSend += "  <ITEM>" + CRLF;
-	strSend += "    <CEID NAME=\"CEID\" VALUE=\"40103\" />" + CRLF;
-	strSend += "    <RPTID NAME=\"RPTID\" VALUE=\"40103\" />" + CRLF;
+	strSend += "    <CEID NAME=\"PP Upload Completed Report\" VALUE=\"40103\" />" + CRLF;
+	strSend += "    <RPTID NAME=\"PP Upload Completed Report\" VALUE=\"40103\" />" + CRLF;
 	strSend += "    <DVLIST COUNT=\"5\">" + CRLF;
 	strSend += "      <DV NAME=\"TIME\" VALUE=\"" + strTime + "\" />" + CRLF;
 	strSend += "      <DV NAME=\"LOTID\" VALUE=\"" + sLotId + "\" />" + CRLF;
@@ -827,6 +827,38 @@ void CHost::Set_S6F11_PPUploadCompleted(CString sLotId, CString sMGZId, CString 
 
 	Send_Command(strSend, FALSE, "S6F11", "40103");
 }
+
+
+void CHost::Set_S6F11_LotStartedReport(CString sLotID, CString sMZID, CString sRecipe)
+{
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+
+	CString strTime;
+	strTime.Format("%04d%02d%02d%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
+
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
+
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S6F11\" NAME=\"Event Report\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "  <ITEM>" + CRLF;
+	strSend += "    <CEID NAME=\"Lot Processing Started Report\" VALUE=\"20101\" />" + CRLF;
+	strSend += "    <RPTID NAME=\"Lot Processing Started Report\" VALUE=\"20101\" />" + CRLF;
+	strSend += "    <DVLIST COUNT=\"5\">" + CRLF;
+	strSend += "      <DV NAME=\"TIME\" VALUE=\"" + strTime + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"LOTID\" VALUE=\"" + sLotID + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"MGZID\" VALUE=\"" + sMZID + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"RECIPEID\" VALUE=\"" + sRecipe + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"OPERATORID\" VALUE=\"" + gData.sOperId + "\" />" + CRLF;
+	strSend += "    </DVLIST>" + CRLF;
+	strSend += "  </ITEM>" + CRLF;
+	strSend += "</EIF>";
+
+	Send_Command(strSend, FALSE, "S6F11", "20101");
+}
+
 
 void CHost::Set_S6F11_TrayIDReport(CString sType, CString sTrayID)
 {
@@ -843,9 +875,9 @@ void CHost::Set_S6F11_TrayIDReport(CString sType, CString sTrayID)
 	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
 	strSend += "  </ELEMENT>" + CRLF;
 	strSend += "  <ITEM>" + CRLF;
-	strSend += "    <CEID NAME=\"CEID\" VALUE=\"20301\" />" + CRLF;
-	strSend += "    <RPTID NAME=\"RPTID\" VALUE=\"20301\" />" + CRLF;
-	strSend += "    <DVLIST COUNT=\"5\">" + CRLF;
+	strSend += "    <CEID NAME=\"Tray ID Report\" VALUE=\"20301\" />" + CRLF;
+	strSend += "    <RPTID NAME=\"Tray ID Report\" VALUE=\"20301\" />" + CRLF;
+	strSend += "    <DVLIST COUNT=\"4\">" + CRLF;
 	strSend += "      <DV NAME=\"TIME\" VALUE=\"" + strTime + "\" />" + CRLF;
 	strSend += "      <DV NAME=\"PORTNO\" VALUE=\"" + sType + "\" />" + CRLF;
 	strSend += "      <DV NAME=\"TRAYID\" VALUE=\"" + sTrayID + "\" />" + CRLF;
@@ -876,9 +908,9 @@ void CHost::Set_S6F11_TrayStartedReport(CString sLotID, CString sTrayID, CString
 	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
 	strSend += "  </ELEMENT>" + CRLF;
 	strSend += "  <ITEM>" + CRLF;
-	strSend += "    <CEID NAME=\"CEID\" VALUE=\"20302\" />" + CRLF;
-	strSend += "    <RPTID NAME=\"RPTID\" VALUE=\"20302\" />" + CRLF;
-	strSend += "    <DVLIST COUNT=\"5\">" + CRLF;
+	strSend += "    <CEID NAME=\"Tray Processing Started Report\" VALUE=\"20302\" />" + CRLF;
+	strSend += "    <RPTID NAME=\"Tray Processing Started Report\" VALUE=\"20302\" />" + CRLF;
+	strSend += "    <DVLIST COUNT=\"6\">" + CRLF;
 	strSend += "      <DV NAME=\"TIME\" VALUE=\"" + strTime + "\" />" + CRLF;
 	strSend += "      <DV NAME=\"PORTNO\" VALUE=\"1\" />" + CRLF;
 	strSend += "      <DV NAME=\"LOTID\" VALUE=\""+ sLotID + "\" />" + CRLF;
@@ -892,6 +924,76 @@ void CHost::Set_S6F11_TrayStartedReport(CString sLotID, CString sTrayID, CString
 	Send_Command(strSend, FALSE, "S6F11", "20302");
 }
 
+
+
+void CHost::Set_S6F11_TrayCompleted(CString sLotID, CString sMGZID, CString sRecipeID, CString sTrayID)
+{
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+
+	CString strTime;
+	strTime.Format("%04d%02d%02d%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
+
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
+
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S6F11\" NAME=\"Event Report\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "  <ITEM>" + CRLF;
+	strSend += "    <CEID NAME=\"Tray Processing Completed Report\" VALUE=\"20303\" />" + CRLF;
+	strSend += "    <RPTID NAME=\"Tray Processing Completed Report\" VALUE=\"20303\" />" + CRLF;
+	strSend += "    <DVLIST COUNT=\"7\">" + CRLF;
+	strSend += "      <DV NAME=\"TIME\" VALUE=\"" + strTime + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"PORTNO\" VALUE=\"1\" />" + CRLF;
+	strSend += "      <DV NAME=\"LOTID\" VALUE=\""+ sLotID + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"MGZID\" VALUE=\"" + sMGZID + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"TRAYID\" VALUE=\"" + sTrayID + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"RECIPEID\" VALUE=\"" + sRecipeID + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"OPERATORID\" VALUE=\"" + gData.sOperId + "\" />" + CRLF;
+	strSend += "    </DVLIST>" + CRLF;
+	strSend += "  </ITEM>" + CRLF;
+	strSend += "</EIF>";
+
+	Send_Command(strSend, FALSE, "S6F11", "20303");
+}
+
+
+void CHost::Set_S6F11_ProductCompleted(CString sLotID, CString sTrayID, CString sRecipeID, CString sPocketNo, CString sResult, CString sReasonCode)
+{
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+
+	CString strTime;
+	strTime.Format("%04d%02d%02d%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
+
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
+
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S6F11\" NAME=\"Event Report\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "  <ITEM>" + CRLF;
+	strSend += "    <CEID NAME=\"Product Processing Completed Report\" VALUE=\"20401\" />" + CRLF;
+	strSend += "    <RPTID NAME=\"Product Processing Completed Report\" VALUE=\"20401\" />" + CRLF;
+	strSend += "    <DVLIST COUNT=\"8\">" + CRLF;
+	strSend += "      <DV NAME=\"TIME\" VALUE=\"" + strTime + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"LOTID\" VALUE=\""+ sLotID + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"TRAYID\" VALUE=\"" + sTrayID + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"RECIPEID\" VALUE=\"" + sRecipeID + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"POCKETNO\" VALUE=\"" + sPocketNo + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"RESULT\" VALUE=\"" + sResult + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"REASONCODE\" VALUE=\"" + sReasonCode + "\" />" + CRLF;
+	strSend += "      <DV NAME=\"OPERATORID\" VALUE=\"" + gData.sOperId + "\" />" + CRLF;
+	strSend += "    </DVLIST>" + CRLF;
+	strSend += "  </ITEM>" + CRLF;
+	strSend += "</EIF>";
+
+	Send_Command(strSend, FALSE, "S6F11", "20401");
+}
+
+
+
 void CHost::Set_S2F50_PPSelect()
 {
 	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
@@ -903,6 +1005,32 @@ void CHost::Set_S2F50_PPSelect()
 	strSend += "  <ITEM>" + CRLF;
 	strSend += "    <RCMDCP>" + CRLF;
 	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"PP_SELECT\" />" + CRLF;
+	strSend += "	  <CPLIST COUNT=\"6\">" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"LOTID\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"MGZID\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"RECIPEID\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"LOTCOUNT\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "	  </CPLIST>" + CRLF;
 	strSend += "    </RCMDCP>" + CRLF;
 	strSend += "    <HCACK NAME=\"HCACK\" VALUE=\"0\" />" + CRLF;
 	strSend += "  </ITEM>" + CRLF;
@@ -922,6 +1050,24 @@ void CHost::Set_S2F50_MGZ_Cancel()
 	strSend += "  <ITEM>" + CRLF;
 	strSend += "    <RCMDCP>" + CRLF;
 	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"MGZ_CANCEL\" />" + CRLF;
+	strSend += "	  <CPLIST COUNT=\"3\">" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"MGZID\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "	  </CPLIST>" + CRLF;
+	strSend += "	  <RESULT>" + CRLF;
+	strSend += "	    <CODE VALUE=""/>" + CRLF;
+	strSend += "	    <TEXT VALUE=""/>" + CRLF;
+	strSend += "	  </RESULT>" + CRLF;
 	strSend += "    </RCMDCP>" + CRLF;
 	strSend += "    <HCACK NAME=\"HCACK\" VALUE=\"0\" />" + CRLF;
 	strSend += "  </ITEM>" + CRLF;
@@ -941,6 +1087,20 @@ void CHost::Set_S2F50_MGZ_CONFIRM()
 	strSend += "  <ITEM>" + CRLF;
 	strSend += "    <RCMDCP>" + CRLF;
 	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"MGZ_ID_CONFIRM\" />" + CRLF;
+	strSend += "	  <CPLIST COUNT=\"3\">" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"MGZID\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "	  </CPLIST>" + CRLF;
 	strSend += "    </RCMDCP>" + CRLF;
 	strSend += "    <HCACK NAME=\"HCACK\" VALUE=\"0\" />" + CRLF;
 	strSend += "  </ITEM>" + CRLF;
@@ -960,6 +1120,28 @@ void CHost::Set_S2F50_PP_UPLOAD_CONFIRM()
 	strSend += "  <ITEM>" + CRLF;
 	strSend += "    <RCMDCP>" + CRLF;
 	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"PP_UPLOAD_CONFIRM\" />" + CRLF;
+	strSend += "	  <CPLIST COUNT=\"5\">" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"LOTID\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"MGZID\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"RECIPEID\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "	  </CPLIST>" + CRLF;
 	strSend += "    </RCMDCP>" + CRLF;
 	strSend += "    <HCACK NAME=\"HCACK\" VALUE=\"0\" />" + CRLF;
 	strSend += "  </ITEM>" + CRLF;
@@ -980,6 +1162,28 @@ void CHost::Set_S2F50_PP_UPLOAD_FAIL()
 	strSend += "  <ITEM>" + CRLF;
 	strSend += "    <RCMDCP>" + CRLF;
 	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"PP_UPLOAD_FAIL\" />" + CRLF;
+	strSend += "	  <CPLIST COUNT=\"4\">" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"LOTID\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"RECIPEID\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "	  </CPLIST>" + CRLF;
+	strSend += "	  <RESULT>" + CRLF;
+	strSend += "	    <CODE VALUE=""/>" + CRLF;
+	strSend += "	    <TEXT VALUE=""/>" + CRLF;
+	strSend += "	  </RESULT>" + CRLF;
 	strSend += "    </RCMDCP>" + CRLF;
 	strSend += "    <HCACK NAME=\"HCACK\" VALUE=\"0\" />" + CRLF;
 	strSend += "  </ITEM>" + CRLF;
@@ -1000,6 +1204,24 @@ void CHost::Set_S2F50_LOT_START()
 	strSend += "  <ITEM>" + CRLF;
 	strSend += "    <RCMDCP>" + CRLF;
 	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"LOT_START\" />" + CRLF;
+	strSend += "      <CPLIST COUNT=\"4\">" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\" />" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"0\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"LOTID\" />" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"0\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"MGZID\" />" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"0\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\" />" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"0\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "      </CPLIST>" + CRLF;	  
 	strSend += "    </RCMDCP>" + CRLF;
 	strSend += "    <HCACK NAME=\"HCACK\" VALUE=\"0\" />" + CRLF;
 	strSend += "  </ITEM>" + CRLF;
@@ -1020,6 +1242,24 @@ void CHost::Set_S2F50_LOT_ID_FAIL()
 	strSend += "  <ITEM>" + CRLF;
 	strSend += "    <RCMDCP>" + CRLF;
 	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"LOT_ID_FAIL\" />" + CRLF;
+	strSend += "      <CPLIST COUNT=\"3\">" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\" />" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"0\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"LOTID\" />" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"0\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\" />" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"0\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "      </CPLIST>" + CRLF;	
+	strSend += "	  <RESULT>" + CRLF;
+	strSend += "	    <CODE VALUE=""/>" + CRLF;
+	strSend += "	    <TEXT VALUE=""/>" + CRLF;
+	strSend += "	  </RESULT>" + CRLF;
 	strSend += "    </RCMDCP>" + CRLF;
 	strSend += "    <HCACK NAME=\"HCACK\" VALUE=\"0\" />" + CRLF;
 	strSend += "  </ITEM>" + CRLF;
@@ -1031,6 +1271,9 @@ void CHost::Set_S2F50_LOT_ID_FAIL()
 
 void CHost::Set_S2F50_TRAY_ID_CONFIRM()
 {
+	int		nTemp = 0;
+	CString strTemp;
+
 	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
 	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F50\" NAME=\"Enhanced Remote Command Acknowledge\">" + CRLF;
@@ -1040,6 +1283,32 @@ void CHost::Set_S2F50_TRAY_ID_CONFIRM()
 	strSend += "  <ITEM>" + CRLF;
 	strSend += "    <RCMDCP>" + CRLF;
 	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"TRAY_ID_CONFIRM\" />" + CRLF;
+	strSend += "	  <CPLIST COUNT=\"2\">" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\" />" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"0\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TRAYID\" />" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"0\" />" + CRLF;
+	strSend += "        </CP>" + CRLF;  
+	strSend += "      </CPLIST>" + CRLF; 
+	strSend += "      <MAPINFO>" + CRLF;
+	strSend += "        <PRODUCTLIST COUNT=\"141\">" +CRLF;
+
+
+	for(int i = 0;  i < 141; i++)
+	{
+		strTemp.Format("%d",++nTemp);
+
+		strSend += "		  <PRODUCTINFO>" +CRLF;
+		strSend += "			<POCKETID VALUE=\""+ strTemp + "\" />" +CRLF;
+		strSend += "			<STATUS VALUE=\"OK\" />" +CRLF;
+		strSend += "		  </PRODUCTINFO>" +CRLF;
+	}
+
+	strSend += "        </PRODUCTLIST>" +CRLF;
+	strSend += "      </MAPINFO>" + CRLF;
 	strSend += "    </RCMDCP>" + CRLF;
 	strSend += "    <HCACK NAME=\"HCACK\" VALUE=\"0\" />" + CRLF;
 	strSend += "  </ITEM>" + CRLF;
@@ -1059,6 +1328,24 @@ void CHost::Set_S2F50_TRAY_CANCEL()
 	strSend += "  <ITEM>" + CRLF;
 	strSend += "    <RCMDCP>" + CRLF;
 	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"TRAY_CANCEL\" />" + CRLF;
+	strSend += "	  <CPLIST COUNT=\"3\">" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TRAYID\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "        <CP>" + CRLF;
+	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\"/><CP>" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "        </CP>" + CRLF;
+	strSend += "	  </CPLIST>" + CRLF;
+	strSend += "	  <RESULT>" + CRLF;
+	strSend += "	    <CODE VALUE=""/>" + CRLF;
+	strSend += "	    <TEXT VALUE=""/>" + CRLF;
+	strSend += "	  </RESULT>" + CRLF;
 	strSend += "    </RCMDCP>" + CRLF;
 	strSend += "    <HCACK NAME=\"HCACK\" VALUE=\"0\" />" + CRLF;
 	strSend += "  </ITEM>" + CRLF;

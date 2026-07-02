@@ -92,8 +92,14 @@ public:
 	void Set_S6F11_PPSelectedReport(CString sLotId, CString sMGZId, CString sRecipeId);
 	void Set_S6F11_PPUploadCompleted(CString sLotId, CString sMGZId, CString sRecipeId);
 
+	void Set_S6F11_LotStartedReport(CString sLotID, CString sMZID, CString sRecipe);
+
 	void Set_S6F11_TrayIDReport(CString sType, CString sTrayID);
 	void Set_S6F11_TrayStartedReport(CString sLotID, CString sTrayID, CString sRecipeID);
+
+	void Set_S6F11_TrayCompleted(CString sLotID, CString sMGZID, CString sRecipeID, CString sTrayID);
+
+	void Set_S6F11_ProductCompleted(CString sLotID, CString sTrayID, CString sRecipeID, CString sPocketNo, CString sResult, CString sReasonCode);
 
 	//////////
 	void Set_S2F50_PPSelect();

@@ -251,10 +251,11 @@ void CMesAgent::Get_PPSelect(CString sLotId, CString sMGZID, CString sRecipe, CS
 	gMes.sHostRecipe[gMes.nElevPos] = sRecipe;
 	gMes.nHostCount[gMes.nElevPos] = atoi(sLensCount);
 
-	if (gMes.sHostLotID[gMes.nElevPos].GetLength() < 3 || gMes.sHostRecipe[gMes.nElevPos].GetLength() < 2) 
+	//다시 풀어야 해 
+	/*if (gMes.sHostLotID[gMes.nElevPos].GetLength() < 3 || gMes.sHostRecipe[gMes.nElevPos].GetLength() < 2) 
 	{
 		g_objCommon.Show_Error(9004); return;
-	}	
+	}	*/
 	gMes.bMGZIDReported = TRUE;	
 }
 
@@ -438,6 +439,13 @@ void CMesAgent::Set_ProductCompletedReport(CString sLotID, CString sTrayID, CStr
 	Send_Command(strSend);
 }
 
+void CMesAgent::Set_TrayCompleted(CString sLotID, CString sMGZID, CString sRecipe, CString sTrayID)
+{
+	CString strSend, strLogID;
+
+	strSend.Format("TRAY,COMPLETE,%s,%s,%s,%s", sLotID, sMGZID, sRecipe, sTrayID);
+	Send_Command(strSend);
+}
 
 
 

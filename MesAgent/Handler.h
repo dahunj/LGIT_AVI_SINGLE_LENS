@@ -37,8 +37,14 @@ private:
 	void Get_PPSelectedReport(CString sLotID, CString sMGZId, CString sRecipeId);
 	void Get_PPUploadCompletedReport(CString sLotID, CString sMGZId, CString sRecipeId);	
 
+	void Get_LotStartedReport(CString sLotID, CString sMZID, CString sRecipe);
+
 	void Get_TrayIDReport(CString sType, CString sTrayID);
 	void Get_TrayStartedReport(CString sLotID, CString sTrayID, CString sRecipeID);
+
+	void Get_TrayCompleted(CString sLotID, CString sMGZID, CString sRecipeID, CString sTrayID);
+
+	void Get_ProductCompleted(CString sLotID, CString sTrayID, CString sRecipeID, CString sPocketNo, CString sResult, CString sReasonCode);
 
 	void Get_LotAbort(CString sLotId, CString sRecipe);
 	void Get_IdleSet(CString sOperId, CString sCode);
