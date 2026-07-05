@@ -1061,8 +1061,8 @@ void CWorkDlg::Display_Status()
 
 	for (int i = 0; i < 7; i++) { strText.Format("%02d", gData.nSlotNoMainIndex[i]); m_stcTrayNo[i].Set_Text(strText); }
 
-	m_stcBarcodeMGZ.SetWindowText(g_objBarcodeLot_Cognex.Get_BarcodeLot(eBarcode::MZ));
-	m_stcBarcodeCtZig.SetWindowText(g_objBarcodeLot_Cognex.Get_BarcodeLot(eBarcode::CtZig));
+	//m_stcBarcodeMGZ.SetWindowText(g_objBarcodeLot_Cognex.Get_BarcodeLot(eBarcode::MZ));
+	//m_stcBarcodeCtZig.SetWindowText(g_objBarcodeLot_Cognex.Get_BarcodeLot(eBarcode::CtZig));
 	
 // 	if (g_objMesAgent.Is_Connected()) { m_stcMesConnect.Set_Text("Connected"); m_stcMesConnect.Set_Color(RGB(0x00, 0x00, 0x00), RGB(0x00, 0xFF, 0x00)); }
 // 	else { m_stcMesConnect.Set_Text("Disconnected"); m_stcMesConnect.Set_Color(RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00)); }
@@ -1978,12 +1978,14 @@ void CWorkDlg::OnBnClickedBtnIdleReport()
 void CWorkDlg::Set_MZInfo(int nMZPos, CString sID)
 {
 	m_stcMZID[nMZPos].SetWindowText(sID);
+	m_stcBarcodeMGZ.SetWindowText(sID);
 }
 
 void CWorkDlg::Set_CtZigInfo(int nMZPos, int nSlotNo, CString sID)
 {
 	int nNo = nMZPos*10 + (nSlotNo-1);
 	m_stcZigID[nNo].SetWindowText(sID);
+	m_stcBarcodeCtZig.SetWindowText(sID);
 }
 
 void CWorkDlg::InsertMGZTestInfo(int nLensCnt)

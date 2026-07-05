@@ -1283,7 +1283,7 @@ void CHost::Set_S2F50_TRAY_ID_CONFIRM()
 	strSend += "  <ITEM>" + CRLF;
 	strSend += "    <RCMDCP>" + CRLF;
 	strSend += "      <RCMD NAME=\"RCMD\" VALUE=\"TRAY_ID_CONFIRM\" />" + CRLF;
-	strSend += "	  <CPLIST COUNT=\"2\">" + CRLF;
+	strSend += "	   <CPLIST COUNT=\"2\">" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\" />" + CRLF;
 	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"0\" />" + CRLF;
@@ -1525,7 +1525,7 @@ void CHost::Send_Command(CString sSend, BOOL bReply, CString sStFn, CString sRcm
 
 	strSendSocket.Format("%c%08d%04d1%s%c", STX, nLen, nCount, sSend, ETX);
 
-	char chSend[8192] = { 0 };
+	char chSend[65535] = { 0 };
 	int nLength = strSendSocket.GetLength();
 	memcpy(chSend, (LPSTR)(LPCSTR)strSendSocket, nLength);
 

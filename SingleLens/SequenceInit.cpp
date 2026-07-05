@@ -175,8 +175,7 @@ BOOL CSequenceInit::Initial_MainInit()
 		return TRUE;
 
 	case 1:		// Initial Start
-		g_objLogFile.Save_HandlerLog("[Initial Sequence] MainInit Start");
-		gLot.sLotID[0] = gLot.sLotID[1] = "";
+		g_objLogFile.Save_HandlerLog("[Initial Sequence] MainInit Start");		
 		m_niMainInitCase++; m_tiMainInitLoop.Set_LoopTime(5000);
 		break;	
 
