@@ -46,6 +46,8 @@ private:
 
 	void Get_ProductCompleted(CString sLotID, CString sTrayID, CString sRecipeID, CString sPocketNo, CString sResult, CString sReasonCode);
 
+	void Get_LotCompleted(CString sLotID, CString sMGZID, CString sRecipeID);
+
 	void Get_LotAbort(CString sLotId, CString sRecipe);
 	void Get_IdleSet(CString sOperId, CString sCode);
 	void Get_IdleReset(CString sOperId, CString sCode);

@@ -164,6 +164,7 @@ LRESULT CHandler::OnServerReceive(WPARAM wLocalPort, LPARAM lClientIdx)
 		{			
 			if( strOp == "START") Get_LotStartedReport(strA[0], strA[1], strA[2]);
 			if (strOp == "ABORT")   Get_LotAbort(strA[0], strA[1]);
+			if (strOp == "COMPLETE")   Get_LotCompleted(strA[0], strA[1], strA[2]);
 		}
 		else if (strCmd == "IDLE") 
 		{
@@ -277,7 +278,10 @@ void CHandler::Get_ProductCompleted(CString sLotID, CString sTrayID, CString sRe
 	g_objHost.Set_S6F11_ProductCompleted(sLotID, sTrayID, sRecipeID, sPocketNo, sResult, sReasonCode);
 }
 
-
+void CHandler::Get_LotCompleted(CString sLotID, CString sMGZID, CString sRecipeID)
+{
+	g_objHost.Set_S6F11_LotCompleted(sLotID, sMGZID, sRecipeID);
+}
 
 void CHandler::Get_LotAbort(CString sLotId, CString sRecipe)
 {

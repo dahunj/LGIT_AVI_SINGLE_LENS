@@ -161,7 +161,7 @@ void CMesAgentDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	g_objHandler.Initialize();
 	g_objHost.Initialize();
 	gData.sOperId = "00000";
-	gData.nPreEquipState = gData.nCurEquipState = 0;
+	gData.nPreEquipState = gData.nCurEquipState = 4;
 
 	SetTimer(0, 1000, NULL);
 }

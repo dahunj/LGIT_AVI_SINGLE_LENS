@@ -1447,7 +1447,8 @@ BOOL CSequenceMain::MZElevRun()
 		if(g_objCommon.Get_ElevLift2Out())
 		{
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");			
-			g_objInspector.Set_LotEnd(gData.sMZIDElevUnload, Find_UnloadMZNo());			
+			g_objInspector.Set_LotEnd(gData.sMZIDElevUnload, Find_UnloadMZNo());
+			g_objMesAgent.Set_LotCompleted(gData.sLotIDElevUnload, gData.sMZIDElevUnload, gData.sRecipeElevUnload[Find_UnloadMZNo()]);
 			Job_LotEnd(Find_UnloadMZNo());
 
 			g_dlgWork.TransferMZInfo(eMZ::Load, -1, m_pEquipData->nVisionDir); // From Load To Out(-1)
@@ -1680,8 +1681,8 @@ BOOL CSequenceMain::FeederRun()
 		{
 			m_pDX01->iFeederZigExist = TRUE;
 			//Test when Tray not fulled 
-		/*	if(gData.nTNoPick[eMZ::Load] == 3 || gData.nTNoPick[eMZ::Load] == 6 ) m_pDX01->iFeederZigExist = TRUE;
-			else m_pDX01->iFeederZigExist = FALSE;*/
+			if(gData.nTNoPick[eMZ::Load] == 1 ) m_pDX01->iFeederZigExist = TRUE;
+			else m_pDX01->iFeederZigExist = FALSE;
 		}
 
 

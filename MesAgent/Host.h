@@ -101,6 +101,8 @@ public:
 
 	void Set_S6F11_ProductCompleted(CString sLotID, CString sTrayID, CString sRecipeID, CString sPocketNo, CString sResult, CString sReasonCode);
 
+	void Set_S6F11_LotCompleted(CString sLotID, CString sMGZID, CString sRecipeID);
+
 	//////////
 	void Set_S2F50_PPSelect();
 	void Set_S2F50_MGZ_Cancel();

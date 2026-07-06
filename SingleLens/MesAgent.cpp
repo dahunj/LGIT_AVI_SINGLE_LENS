@@ -84,7 +84,7 @@ LRESULT CMesAgent::OnClientConnect(WPARAM wConnect, LPARAM lParam)
 	if (!m_bConnected) return 0;
 
 	Set_OperUpdate(gData.sOperID);
-	Set_EquipState(2);	//Idle
+	Set_EquipState(4);	//Idle
 	g_objLogFile.Save_MesAgentLog("MesAgent Connected");
 	return 0;
 }
@@ -444,6 +444,14 @@ void CMesAgent::Set_TrayCompleted(CString sLotID, CString sMGZID, CString sRecip
 	CString strSend, strLogID;
 
 	strSend.Format("TRAY,COMPLETE,%s,%s,%s,%s", sLotID, sMGZID, sRecipe, sTrayID);
+	Send_Command(strSend);
+}
+
+void CMesAgent::Set_LotCompleted(CString sLotID, CString sMZID, CString sRecipe)
+{
+	CString strSend, strLogID;
+
+	strSend.Format("LOT,COMPLETE,%s,%s,%s", sLotID, sMZID, sRecipe);
 	Send_Command(strSend);
 }
 
