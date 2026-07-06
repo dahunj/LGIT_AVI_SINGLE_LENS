@@ -1669,7 +1669,7 @@ BOOL CSequenceMain::FeederRun()
 			if(gData.nTNoPick[eMZ::Load] > 10)
 			{
 				gData.bFeederWorkWait = FALSE;
-				gData.nTNoPick[eMZ::Load] = 0;
+				gData.nTNoPick[eMZ::Load] = 1;
 				m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
 				if(Check_TrayAllReturn())
 				{
@@ -2147,7 +2147,7 @@ BOOL CSequenceMain::FeederRun()
 			if(gData.nTNoPick[eMZ::Ready] > 10)
 			{
 				gData.bFeederWorkWait = FALSE;
-				gData.nTNoPick[eMZ::Ready] = 0;
+				gData.nTNoPick[eMZ::Ready] = 1;
 				m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
 				if(Check_TrayAllReturn())
 				{
