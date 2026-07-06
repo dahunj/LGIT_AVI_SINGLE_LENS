@@ -915,7 +915,7 @@ BOOL CSequenceMain::MZElevRun()
 		if(GetTickCount() - dwTick1 < 3000)
 		{
 			m_strBarcode[eBarcode::MZ-1] = g_objBarcodeLot_Cognex.Get_BarcodeLot(eBarcode::MZ);
-			if(gData.bSimulMode)
+			if(gData.bSimulMode || gData.bAgingMode)
 			{
 				m_strBarcode[eBarcode::MZ-1].Format("TestMZ-%d", nBarcodeIdx++); 				
 			}
@@ -1160,7 +1160,7 @@ BOOL CSequenceMain::MZElevRun()
 		if(GetTickCount() - dwTick1 < 3000)
 		{
 			m_strBarcode[eBarcode::MZ-1] = g_objBarcodeLot_Cognex.Get_BarcodeLot(eBarcode::MZ);
-			if(gData.bSimulMode)
+			if(gData.bSimulMode || gData.bAgingMode)
 			{
 				m_strBarcode[eBarcode::MZ-1].Format("TestMZ-%d", nBarcodeIdx++); 				
 			}
@@ -1681,8 +1681,8 @@ BOOL CSequenceMain::FeederRun()
 		{
 			m_pDX01->iFeederZigExist = TRUE;
 			//Test when Tray not fulled 
-			if(gData.nTNoPick[eMZ::Load] == 1 ) m_pDX01->iFeederZigExist = TRUE;
-			else m_pDX01->iFeederZigExist = FALSE;
+		/*	if(gData.nTNoPick[eMZ::Load] == 3 || gData.nTNoPick[eMZ::Load] == 6 ) m_pDX01->iFeederZigExist = TRUE;
+			else m_pDX01->iFeederZigExist = FALSE;*/
 		}
 
 
@@ -1911,7 +1911,7 @@ BOOL CSequenceMain::FeederRun()
 		{			
 			m_strBarcode[eBarcode::CtZig-1].Empty(); m_strBarcode[eBarcode::CtZig-1] = g_objBarcodeLot_Cognex.Get_BarcodeLot(eBarcode::CtZig);
 
-			if(gData.bSimulMode)
+			if(gData.bSimulMode || gData.bAgingMode)
 			{
 				m_strBarcode[eBarcode::CtZig-1].Format("Test-%d", gData.nSlotNoFeeder);				
 			}
@@ -2402,6 +2402,12 @@ BOOL CSequenceMain::FeederRun()
 		if(GetTickCount() - dwTick < 5000)
 		{			
 			m_strBarcode[eBarcode::CtZig-1].Empty(); m_strBarcode[eBarcode::CtZig-1] = g_objBarcodeLot_Cognex.Get_BarcodeLot(eBarcode::CtZig);
+			
+			if(gData.bSimulMode || gData.bAgingMode)
+			{
+				m_strBarcode[eBarcode::CtZig-1].Format("Test-%d", gData.nSlotNoFeeder);				
+			}
+
 			if(m_strBarcode[eBarcode::CtZig-1] != "" && m_strBarcode[eBarcode::CtZig-1] != "NG")
 			{
 				gData.sZigIDFeeder = m_strBarcode[eBarcode::CtZig-1]; m_strBarcode[eBarcode::CtZig-1].Empty();
@@ -4535,7 +4541,8 @@ void CSequenceMain::Write_LotJudge(int nMZNo, int nTrayNo, int nLensNo, int nInf
 	CString strCode;	// Log 순서 : AG, B1_SP, T1, T2, B2, B1_AG, B1_3D, CODE
 	strCode.Format("%c,%c,%s", chCode[0], chCode[1], gData.sNGCode[nMx][nTx][nLx][eVision::MARKING]);	// 마지막 CODE열 추가, 불량 종류 숫자 표시
 	
-	m_strLog.Format("%s,%s,%s,%d,%d,%d,"",%s,%s", m_pEquipData->sEquipName, MAIN_VERSION, gData.sZigIDMainIndex[eMainIndex::Mark], nTrayNo, g_objCommon.ConvertToMESNo(nLensNo), nLensNo, strCode, strResult);
+	m_strLog.Format("%s,%s,%s,%s,%s,%s,%d,%d,%d,"",%s,%s", m_pEquipData->sEquipName, MAIN_VERSION, gData.sLotIDMainIndex[eMainIndex::Mark], gData.sMZIDMainIdex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark],
+		gData.sZigIDMainIndex[eMainIndex::Mark], nTrayNo, g_objCommon.ConvertToMESNo(nLensNo), nLensNo, strCode, strResult);
 	g_objLogFile.Save_LotTime(nMZNo, m_strLog);
 }
 

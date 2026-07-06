@@ -401,6 +401,7 @@ void CLogFile::Save_ECMLog(int nType, CString strLog, int nMGZNo)	//nType:1[Alar
 	CString strPath2 = "D:\\EVMS\\TP\\Backup\\";
 
 	Create_Folder(strPath);
+	Create_Folder(strPath2);
 
 	SYSTEMTIME time;
 	GetLocalTime(&time);
@@ -866,7 +867,7 @@ void CLogFile::Save_LotTime(int nMZNo,const CString& sLog)
 		g_objLogFile.Save_HandlerLog("LotTime Open Fail");
 		return;
 	}
-	strTitle.Format("Time,Station,Machine,Version,ZigID,TrayNo,LensNo,LensNo(AVI),Barcode,TC,BC,CODE,Result\r\n");
+	strTitle.Format("Time,Station,Machine,Version,LotID,MZID,Recipe,ZigID,TrayNo,LensNo,LensNo(AVI),Barcode,TC,BC,CODE,Result\r\n");
 
 	try {
 		file.SeekToEnd();
@@ -899,7 +900,7 @@ void CLogFile::Save_LotTime(int nMZNo,const CString& sLog)
 		g_objLogFile.Save_HandlerLog("LotTime Open Fail");
 		return;
 	}
-	strTitle.Format("Time,Station,Machine,Version,ZigID,TrayNo,LensNo,AVINo,Barcode,TC,BC,CODE,Result\r\n");
+	strTitle.Format("Time,Station,Machine,Version,LotID,MZID,Recipe,ZigID,TrayNo,LensNo,LensNo(AVI),Barcode,TC,BC,CODE,Result\r\n");
 
 	try {
 		file2.SeekToEnd();
@@ -930,7 +931,7 @@ void CLogFile::Save_LotTime(int nMZNo,const CString& sLog)
 		g_objLogFile.Save_HandlerLog("LotTime Open Fail");
 		return;
 	}
-	strTitle.Format("Time,Station,Machine,Version,ZigID,TrayNo,LensNo,AVINo,Barcode,TC,BC,CODE,Result\r\n");
+	strTitle.Format("Time,Station,Machine,Version,LotID,MZID,Recipe,ZigID,TrayNo,LensNo,LensNo(AVI),Barcode,TC,BC,CODE,Result\r\n");
 
 	try {
 		file3.SeekToEnd();
