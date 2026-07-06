@@ -1,6 +1,7 @@
 // ManualCleanDlg.h : 헤더 파일
 //
 #pragma once
+#include "afxwin.h"
 
 // CManualCleanDlg 대화 상자입니다.
 
@@ -60,4 +61,6 @@ public:
 	afx_msg void OnBnClickedButton2();
 	afx_msg void OnBnClickedBtnDustOff();
 	afx_msg void OnBnClickedBtnDustOn();
+	CEdit m_Edit_LensNo;
+	afx_msg void OnBnClickedBtnLensMove();
 };

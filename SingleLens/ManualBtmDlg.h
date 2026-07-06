@@ -1,6 +1,7 @@
 // ManualBtmDlg.h : 헤더 파일
 //
 #pragma once
+#include "afxwin.h"
 
 // CManualNgDlg 대화 상자입니다.
 
@@ -68,4 +69,7 @@ public:
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();
 	afx_msg void OnBnClickedButton4();
+	CEdit m_Edit_LensNo;
+	afx_msg void OnBnClickedBtnLensMoveBtm();
+	afx_msg void OnBnClickedBtnLensMoveMark();
 };

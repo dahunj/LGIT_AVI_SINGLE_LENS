@@ -37,6 +37,7 @@ void CManualCleanDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_BTN_TOP_INSPECT_X_0 + i, m_BtnTopInspectX[i]);
 	for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_BTN_TOP_INSPECT_Y_0 + i, m_BtnTopInspectY[i]);
 	for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_BTN_TOP_INSPECT_Z_0 + i, m_BtnTopInspectZ[i]);
+	DDX_Control(pDX, IDC_EDIT_LENSNO, m_Edit_LensNo);
 }
 
 BEGIN_MESSAGE_MAP(CManualCleanDlg, CDialogEx)
@@ -52,6 +53,7 @@ BEGIN_MESSAGE_MAP(CManualCleanDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON2, &CManualCleanDlg::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BTN_DUST_OFF, &CManualCleanDlg::OnBnClickedBtnDustOff)
 	ON_BN_CLICKED(IDC_BTN_DUST_ON, &CManualCleanDlg::OnBnClickedBtnDustOn)
+	ON_BN_CLICKED(IDC_BTN_LENS_MOVE, &CManualCleanDlg::OnBnClickedBtnLensMove)
 END_MESSAGE_MAP()
 
 // CManualCleanDlg 메시지 처리기입니다.
@@ -410,4 +412,40 @@ void CManualCleanDlg::OnBnClickedBtnDustOff()
 	DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
 
 	pDY03->oDustPowerOn = FALSE; g_objAJinAXL.Write_Output(3);
+}
+
+void CManualCleanDlg::OnBnClickedBtnLensMove()
+{
+	CString sLensNo;
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	double dPosX = 0, dPosY = 0;
+
+	int nLensNo = 0;
+	int nLensX = 0, nLensY = 0;
+		
+	m_Edit_LensNo.GetWindowText(sLensNo);
+	nLensNo = atoi(sLensNo);
+
+	if(nLensNo < 1) AfxMessageBox("Please Input LensNo > 1");
+
+	if(pEquipData->nVisionDir == eVDir::fixY)
+	{
+		nLensY = ((nLensNo-1) / gData.nLensCntX);
+		nLensX = (nLensNo-1) % gData.nLensCntX;
+	}
+	else
+	{
+		nLensX = ((nLensNo-1) / gData.nLensCntY);
+		nLensY = (nLensNo-1) % gData.nLensCntY;
+	}	
+
+	dPosX = pEquipData->dTopStartX + pEquipData->dZigPitchX*nLensX;
+	dPosY = pEquipData->dTopStartY - pEquipData->dZigPitchY*nLensY;
+
+	g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Y, dPosY);	
+	g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_X, dPosX);	
+
+
 }

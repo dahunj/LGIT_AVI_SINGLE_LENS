@@ -29,7 +29,7 @@ void CManualBtmDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	/*for (int i = 0; i < 16; i++) DDX_Control(pDX, IDC_GROUP_0 + i, m_Group[i]);
 	for (int i = 0; i < 10; i++) DDX_Control(pDX, IDC_LABEL_0 + i, m_Label[i]);*/
-	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_STC_AXIS_POS_0 + i, m_stcAxisPos[i]);
+		for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_STC_AXIS_POS_0 + i, m_stcAxisPos[i]);
 	for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_BTN_BTM_INSPECT_X_0 + i, m_BtnBtmInspectX[i]);
 	for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_BTN_BTM_INSPECT_Y_0 + i, m_BtnBtmInspectY[i]);
 	for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_BTN_BTM_INSPECT_Z_0 + i, m_BtnBtmInspectZ[i]);
@@ -39,6 +39,7 @@ void CManualBtmDlg::DoDataExchange(CDataExchange* pDX)
 
 	for (int i = 0; i <  2; i++) DDX_Control(pDX, IDC_BTN_MARK_UNIT_IO_0 + i, m_BtnMarkUnitIO[i]);
 	for (int i = 0; i <  3; i++) DDX_Control(pDX, IDC_LED_MARK_UNIT_IO_0 + i, m_LedMarkUnitIO[i]);
+	DDX_Control(pDX, IDC_EDIT_LENSNO, m_Edit_LensNo);
 }
 
 BEGIN_MESSAGE_MAP(CManualBtmDlg, CDialogEx)
@@ -53,6 +54,8 @@ BEGIN_MESSAGE_MAP(CManualBtmDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON1, &CManualBtmDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CManualBtmDlg::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON4, &CManualBtmDlg::OnBnClickedButton4)
+	ON_BN_CLICKED(IDC_BTN_LENS_MOVE_BTM, &CManualBtmDlg::OnBnClickedBtnLensMoveBtm)
+	ON_BN_CLICKED(IDC_BTN_LENS_MOVE_MARK, &CManualBtmDlg::OnBnClickedBtnLensMoveMark)
 END_MESSAGE_MAP()
 
 // CManualBtmDlg 메시지 처리기입니다.
@@ -429,4 +432,75 @@ void CManualBtmDlg::OnBnClickedButton2()
 void CManualBtmDlg::OnBnClickedButton4()
 {
 	g_objAJinAXL.Clear_Scan(eVision::BC);
+}
+
+
+void CManualBtmDlg::OnBnClickedBtnLensMoveBtm()
+{
+	CString sLensNo;
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	double dPosX = 0, dPosY = 0;
+
+	int nLensNo = 0;
+	int nLensX = 0, nLensY = 0;
+
+	m_Edit_LensNo.GetWindowText(sLensNo);
+	nLensNo = atoi(sLensNo);
+
+	if(nLensNo < 1) AfxMessageBox("Please Input LensNo > 1");
+
+	if(pEquipData->nVisionDir == eVDir::fixY)
+	{
+		nLensY = ((nLensNo-1) / gData.nLensCntX);
+		nLensX = (nLensNo-1) % gData.nLensCntX;
+	}
+	else
+	{
+		nLensX = ((nLensNo-1) / gData.nLensCntY);
+		nLensY = (nLensNo-1) % gData.nLensCntY;
+	}	
+
+	dPosX = pEquipData->dBtmStartX + pEquipData->dZigPitchX*nLensX;
+	dPosY = pEquipData->dBtmStartY - pEquipData->dZigPitchY*nLensY;
+
+	g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_Y, dPosY);	
+	g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_X, dPosX);
+}
+
+
+void CManualBtmDlg::OnBnClickedBtnLensMoveMark()
+{
+	CString sLensNo;
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	MOVE_DATA *pMoveData = g_objDataManager.Get_pMoveData();
+
+	double dPosX = 0, dPosY = 0;
+
+	int nLensNo = 0;
+	int nLensX = 0, nLensY = 0;
+
+	m_Edit_LensNo.GetWindowText(sLensNo);
+	nLensNo = atoi(sLensNo);
+
+	if(nLensNo < 1) AfxMessageBox("Please Input LensNo > 1");
+
+	if(pEquipData->nVisionDir == eVDir::fixY)
+	{
+		nLensY = ((nLensNo-1) / gData.nLensCntX);
+		nLensX = (nLensNo-1) % gData.nLensCntX;
+	}
+	else
+	{
+		nLensX = ((nLensNo-1) / gData.nLensCntY);
+		nLensY = (nLensNo-1) % gData.nLensCntY;
+	}	
+
+	dPosX = pMoveData->dMarkUnitX[eMark_X::MarkStart] + pEquipData->dZigPitchX*nLensX;
+	dPosY = pMoveData->dMarkUnitY[eMark_Y::MarkStart] - pEquipData->dZigPitchY*nLensY;
+
+	g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_Y, dPosY);	
+	g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_X, dPosX);
 }
