@@ -313,6 +313,7 @@ typedef struct
 
 	int		nGoodCount[7];
 	int		nNgCount[7];
+	int		nEmptyCount[7];
 
 	int		nErrorCount[7];
 

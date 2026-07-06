@@ -325,6 +325,7 @@ void CSequenceMain::Set_ClearRunData(BOOL bInit)
 
 		gLot.nGoodCount[i] = 0;
 		gLot.nNgCount[i] = 0;
+		gLot.nEmptyCount[i] = 0;
 
 		gLot.dwStopTime[i] = 0; 
 		gLot.nErrorCount[i] = 0;
@@ -423,6 +424,7 @@ void CSequenceMain::Job_LotEnd(int nMZNo)
 
 	gLot.nGoodCount[nMNo] = 0;
 	gLot.nNgCount[nMNo] = 0;
+	gLot.nEmptyCount[nMNo] = 0;
 
 	gLot.dwStopTime[nMNo] = 0; 
 	gLot.nErrorCount[nMNo] = 0;
@@ -3436,13 +3438,22 @@ BOOL CSequenceMain::MarkUnitRun()
 			gData.sJudgeCode[gData.nMZNoMainIndex[eMainIndex::Mark]][gData.nSlotNoMainIndex[eMainIndex::Mark]][nLensNo][eVision::MARKING], 
 			gData.sNGCode[gData.nMZNoMainIndex[eMainIndex::Mark]][gData.nSlotNoMainIndex[eMainIndex::Mark]][nLensNo][eVision::MARKING] );
 
-		if(nTempInfo == eLensInfo::Init || nTempInfo == eLensInfo::Good) gLot.nGoodCount[gData.nMZNoMainIndex[eMainIndex::Mark]-1]++;
-		else gLot.nNgCount[gData.nMZNoMainIndex[eMainIndex::Mark]-1]++;
+		if(nTempInfo == eLensInfo::Init || nTempInfo == eLensInfo::Good)
+		{
+			gLot.nGoodCount[gData.nMZNoMainIndex[eMainIndex::Mark]-1]++;
+		}
+		else if( nTempInfo == eLensInfo::Empty)
+		{
+			gLot.nEmptyCount[gData.nMZNoMainIndex[eMainIndex::Mark]-1]++;
+		}
+		else
+		{
+			gLot.nNgCount[gData.nMZNoMainIndex[eMainIndex::Mark]-1]++;
+		}
 
 		g_objLogFile.Save_TrackingLog(nTempInfo, gData.sZigIDMainIndex[eMainIndex::Mark], gData.nMZNoMainIndex[eMainIndex::Mark], gData.nSlotNoMainIndex[eMainIndex::Mark], g_objCommon.ConvertToMESNo(nLensNo));
 		Write_LotJudge(gData.nMZNoMainIndex[eMainIndex::Mark], gData.nSlotNoMainIndex[eMainIndex::Mark],nLensNo, nTempInfo);
 		m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
-
 		break;
 	case 6:
 		if(nTempInfo == 2 && m_pEquipData->bUseMark)
@@ -4386,7 +4397,7 @@ BOOL CSequenceMain::Check_InspectDone(const CString& sZigID, int nMZNo, int nTNo
 
 		int nJudge = nRand < nNg ? 2 : 1;
 		nInfo = gData.nInspectInfo[nMNo][nSlot][nLens] = nJudge;
-		if (nInfo == 9) { nInfo = gData.nInspectInfo[nMNo][nSlot][nLens] = 1; }
+		if (nInfo == 9) { nInfo = gData.nInspectInfo[nMNo][nSlot][nLens] = eLensInfo::Good; }
 		strLog.Format("ResultTest_Use : %d,%d,%d",nInfo, nSlot+1, nLens+1);
 		g_objLogFile.Save_TestLog(strLog);
 	} 
@@ -4532,10 +4543,10 @@ void CSequenceMain::Write_LotJudge(int nMZNo, int nTrayNo, int nLensNo, int nInf
 	}
 
 	
-	CString strResult = (nInfo == 1 ? "Pass" : "Fail");
+	CString strResult = (nInfo == 1 ? "Pass" : nInfo == 8 ? "Empty" : "Fail");
 	for (int i = 0; i < 2; i++)
 	{
-		if(chCode[i] == 0x6E) strResult = "Fail";
+		if(chCode[i] == 0x6E) strResult = "Empty";
 	}
 
 	CString strCode;	// Log ¼ø¼­ : AG, B1_SP, T1, T2, B2, B1_AG, B1_3D, CODE

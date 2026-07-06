@@ -25,9 +25,10 @@ struct eLensInfo
 	enum eName
 	{
 		// 0:Empty,1:Good, 2:NG, 3:Top Ready, 4: Top Done, 5: Btm Ready, 6 : Btm Done,  9:Init 
-		Empty = 0,
+		None = 0,
 		Good = 1,
 		NG = 2,
+		Empty = 8,
 		Init = 9,
 	};
 };

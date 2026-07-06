@@ -247,17 +247,26 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 
 	if (sJudge == "N") 
 	{  
-		gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = 2;
-		gData.sJudgeCode[nMNo][nTNo][nLAVINo-1][eVision::MARKING] = sJudge;
-		gData.sNGCode[nMNo][nTNo][nLAVINo-1][eVision::MARKING] = sNgCode;
+		if(sNgCode == "EM")
+		{
+			gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = eLensInfo::Empty;
+			gData.sJudgeCode[nMNo][nTNo][nLAVINo-1][eVision::MARKING] = sJudge;
+			gData.sNGCode[nMNo][nTNo][nLAVINo-1][eVision::MARKING] = sNgCode;
+		}
+		else
+		{
+			gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = eLensInfo::NG;
+			gData.sJudgeCode[nMNo][nTNo][nLAVINo-1][eVision::MARKING] = sJudge;
+			gData.sNGCode[nMNo][nTNo][nLAVINo-1][eVision::MARKING] = sNgCode;
+		}		
 	}		
 	else if (sJudge != "G")  // Good
 	{ 
-		if (nPreInfo < 2 || nPreInfo > 8) gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = 2;  
+		if (nPreInfo < 2 || nPreInfo > 8) gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = eLensInfo::NG;  
 	}	
 	else if (sJudge == "G")  // Good
 	{ 
-		if (nPreInfo < 2 || nPreInfo > 8) gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = 1;  
+		if (nPreInfo < 2 || nPreInfo > 8) gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = eLensInfo::Good;  
 	}	
 
 	gData.byInspectDone[nMNo][nTNo][nLAVINo-1] |= (1 << nV);
