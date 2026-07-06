@@ -2957,7 +2957,7 @@ BOOL CSequenceMain::TopInspectorRun()
 				nLensNo = (gData.nLensCntY * (nTopXPos-1)) + nTopYPos;
 			}
 
-			if(nLensNo == 32 || nLensNo==77 || nLensNo == 113)
+			if(nLensNo == 32 || nLensNo== 77 || nLensNo == 113)
 			{
 				gData.InfoMainIndex[eMainIndex::Top][nTopXPos-1][nTopYPos-1] = eLensState::TopDone;	//Scan Done
 				m_nTopInspectCase = 10; m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
