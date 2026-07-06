@@ -79,7 +79,7 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_STC_UPH_0 + i, m_stcUph[i]);
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_STC_DAY_0 + i, m_stcDay[i]);
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_LED_VISION_STATUS_0 + i, m_ledVisionStatus[i]);
-	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_LED_EQUIP_OPTION_0 + i, m_ledEquipOption[i]);
+	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_LED_EQUIP_OPTION_0 + i, m_ledEquipOption[i]);
 
 	DDX_Control(pDX, IDC_LBL_OPER_ID, m_lblOperId);
 	DDX_Control(pDX, IDC_STC_OPER_ID, m_stcOperId);
@@ -207,7 +207,7 @@ void CWorkDlg::Initial_Controls()
 	for (int i = 0; i < 2; i++) m_stcDay[i].Init_Ctrl("Arial", 9, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x40, 0x40));
 	for (int i = 0; i < 2; i++) m_ledVisionStatus[i].Init_Ctrl("Arial", 10, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em16);
 	
-	for (int i = 0; i < 3; i++) m_ledEquipOption[i].Init_Ctrl("Arial", 10, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em16);
+	for (int i = 0; i < 4; i++) m_ledEquipOption[i].Init_Ctrl("Arial", 10, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, CLedCS::emGreen, CLedCS::em16);
 
 	m_stcMesConnect.Init_Ctrl("¹ÙÅÁ", 8, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00));
 	m_stcMesOnline.Init_Ctrl("¹ÙÅÁ", 10, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00));
@@ -1083,6 +1083,7 @@ void CWorkDlg::Display_Status()
 	m_ledEquipOption[0].Set_On(pEquipData->bUseTopVision);
 	m_ledEquipOption[1].Set_On(pEquipData->bUseBtmVision);
 	m_ledEquipOption[2].Set_On(pEquipData->bUseMark);
+	m_ledEquipOption[3].Set_On(pEquipData->bUseMES);
 }
 
 
