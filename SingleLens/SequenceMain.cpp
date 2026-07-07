@@ -2957,7 +2957,7 @@ BOOL CSequenceMain::TopInspectorRun()
 				nLensNo = (gData.nLensCntY * (nTopXPos-1)) + nTopYPos;
 			}
 
-			if(nLensNo == 32 || nLensNo== 77 || nLensNo == 113)
+			if(nLensNo == 32 || nLensNo== 68 || nLensNo == 113)
 			{
 				gData.InfoMainIndex[eMainIndex::Top][nTopXPos-1][nTopYPos-1] = eLensState::TopDone;	//Scan Done
 				m_nTopInspectCase = 10; m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
@@ -3169,7 +3169,7 @@ BOOL CSequenceMain::BtmInspectorRun()
 				nLensNo = (gData.nLensCntY * (nBtmXPos-1)) + nBtmYPos;
 			}	
 
-			if(nLensNo == 32 || nLensNo==77 || nLensNo == 113)
+			if(nLensNo == 32 || nLensNo==68 || nLensNo == 113)
 			{
 				gData.InfoMainIndex[eMainIndex::Btm][nBtmXPos-1][nBtmYPos-1] = eLensState::BtmDone;	//Scan Done
 				m_nBtmInspectCase = 10; m_nBtmInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
@@ -3385,7 +3385,7 @@ BOOL CSequenceMain::MarkUnitRun()
 
 			}	
 
-			if(nLensNo == 32 || nLensNo==77 || nLensNo == 113)
+			if(nLensNo == 32 || nLensNo==68 || nLensNo == 113)
 			{				
 				gData.InfoMainIndex[eMainIndex::Mark][nMarkXPos-1][nMarkYPos-1] = eLensState::NotMarked;	//Scan Done
 				m_nMarkUnitCase = 10; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);

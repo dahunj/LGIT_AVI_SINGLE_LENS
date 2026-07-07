@@ -1113,7 +1113,7 @@ BOOL CCommon::Get_RailAlignOut()
 
 bool CCommon::IsEmptyPocket(int oldNo)
 {
-	return oldNo == 32 || oldNo == 77 || oldNo == 113;
+	return oldNo == 32 || oldNo == 68 || oldNo == 113;
 }
 
 

@@ -1799,7 +1799,7 @@ void CWorkDlg::init_LensMap()
 			nYPos = (nLNo-1) % gData.nLensCntY;
 		}	
 
-		if(nLNo == 32 || nLNo == 77 || nLNo == 113)
+		if(nLNo == 32 || nLNo == 68 || nLNo == 113)
 		{
 			gData.InfoFeeder[nXPos][nYPos] = eLensState::None;
 			continue;
