@@ -152,6 +152,8 @@ BOOL CDataManager::Read_ModelEquipData(CString strPath)
 	m_EquipData.dBtmPitchX   = INI.Get_Double("TRIGGER",  "BTM_PITCH_X", 0.00);
 	m_EquipData.dBtmPitchY	 = INI.Get_Double("TRIGGER",  "BTM_PITCH_Y", 0.00);
 
+	m_EquipData.nMarkCount   = INI.Get_Integer("MARKER", "COUNT", 0);
+
 	m_EquipData.bUseTopVision = INI.Get_Bool("OPTION", "TOP_VISION", FALSE);	
 	m_EquipData.bUseBtmVision = INI.Get_Bool("OPTION", "BTM_VISION", FALSE);
 	m_EquipData.bUseMark = INI.Get_Bool("OPTION", "MARK_USE", FALSE);
@@ -208,7 +210,26 @@ BOOL CDataManager::Read_MoveData()
 	return TRUE;
 }
 
+BOOL CDataManager::Save_MarkData()
+{
+	CIniFileCS INI(gsCurrentDir + "\\System\\MarkData"+".ini");
+	if (!INI.Check_File()) { AfxMessageBox("MarkData.ini File Not Found!!!"); return FALSE; }
+	
+	
+	INI.Set_Integer("MARKER", "COUNT", m_EquipData.nMarkCount);
+	INI.Set_Integer("MARKER", "TIMEOUT", m_EquipData.nMarkTimeout );
 
+	return TRUE;
+}
 
+BOOL CDataManager::Read_MarkData()
+{
+	CIniFileCS INI(gsCurrentDir + "\\System\\MarkData"+".ini");
+	if (!INI.Check_File()) { AfxMessageBox("MarkData.ini File Not Found!!!"); return FALSE; }
 
+	m_EquipData.nMarkCount = INI.Get_Integer("MARKER", "COUNT", 0);
+	m_EquipData.nMarkTimeout = INI.Get_Integer("MARKER", "TIMEOUT", 0);
+
+	return TRUE;
+}
 ///////////////////////////////////////////////////////////////////////////////

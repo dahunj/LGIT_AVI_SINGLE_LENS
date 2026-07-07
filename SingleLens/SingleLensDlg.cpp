@@ -331,6 +331,7 @@ void CSingleLensDlg::OnTimer(UINT_PTR nIDEvent)
 		Display_DateTime();
 		Set_InsideLight();
 		Set_NoWork();
+		Set_MarkerTimeout();
 		break;
 	case TIMER_TOWER_FLKR:
 		Set_TowerFlicker(TRUE);
@@ -1091,4 +1092,16 @@ void CSingleLensDlg::Set_NoWork()
 
 	g_dlgNoWork.Set_NoWorkAuto(TRUE);
 	g_dlgNoWork.ShowWindow(SW_SHOW);
+}
+
+void CSingleLensDlg::Set_MarkerTimeout()
+{
+	static DWORD dwMarkBegin = GetTickCount();
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	int nTerm = (int)(GetTickCount() - dwMarkBegin);
+	if (nTerm < pEquipData->nMarkTimeout * 60 * 60 * 1000) return;	// 초 -> 밀리초
+
+	dwMarkBegin = GetTickCount();
+	g_objCommon.Show_Alarm("Need to Change Maker");
 }

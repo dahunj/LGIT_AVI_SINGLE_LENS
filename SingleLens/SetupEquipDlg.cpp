@@ -74,6 +74,9 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Control(pDX, IDC_STC_ELV_DATA_0, m_stcElvData[0]);
 	DDX_Control(pDX, IDC_STC_CLEANER_DATA_0, m_stcCleanerData);
+
+	DDX_Control(pDX, IDC_STC_MARK_COUNT, m_stcMarkCount);
+	DDX_Control(pDX, IDC_STC_MARK_TIMEOUT, m_stcMarkTimeout);
 	
 	DDX_Control(pDX, IDC_CHK_TOP_VISION, m_chkTopVision);
 	DDX_Control(pDX, IDC_CHK_BTM_VISION, m_chkBtmVision);
@@ -105,6 +108,7 @@ BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHK_USE_BARCODE_MGZ, &CSetupEquipDlg::OnBnClickedChkUseBarcodeMgz)
 	ON_BN_CLICKED(IDC_CHK_USE_BARCODE_CTZIG, &CSetupEquipDlg::OnBnClickedChkUseBarcodeCtzig)
 	ON_BN_CLICKED(IDC_CHK_USE_MES, &CSetupEquipDlg::OnBnClickedChkUseMes)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MARK_TIMEOUT, IDC_STC_MARK_TIMEOUT, OnStnClickedStcMarkTimeout)
 END_MESSAGE_MAP()
 
 // CSetupEquipDlg ¸Þ½ÃÁö Ã³¸®±âÀÔ´Ï´Ù.
@@ -162,6 +166,9 @@ void CSetupEquipDlg::Initial_Controls()
 
 	m_stcElvData[0].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
 	m_stcCleanerData.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
+
+	m_stcMarkCount.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
+	m_stcMarkTimeout.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
 	
 	m_chkTopVision.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
 	m_chkBtmVision.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
@@ -384,9 +391,12 @@ void CSetupEquipDlg::Display_EquipData()
 	strData.Format("%0.2lf",	pEquipData->dBtmStartY);	m_stcTriggerBtm[5].SetWindowText(strData);
 	strData.Format("%0.2lf",	pEquipData->dBtmPitchX);	m_stcTriggerBtm[6].SetWindowText(strData);
 	strData.Format("%0.2lf",	pEquipData->dBtmPitchY);	m_stcTriggerBtm[7].SetWindowText(strData);
-	
+		
 	strData.Format("%0.2lf", pEquipData->dElevPitchZ); m_stcElvData[0].SetWindowText(strData);
 	strData.Format("%02d", pEquipData->nCleanRepeat); m_stcCleanerData.SetWindowText(strData);
+
+	strData.Format("%02d", pEquipData->nMarkCount); m_stcMarkCount.SetWindowText(strData);
+	strData.Format("%02d", pEquipData->nMarkTimeout); m_stcMarkTimeout.SetWindowText(strData);
 	
 	m_chkTopVision.SetCheck(pEquipData->bUseTopVision);
 	m_chkBtmVision.SetCheck(pEquipData->bUseBtmVision);
@@ -477,6 +487,10 @@ void CSetupEquipDlg::Save_EquipData()
 	
 	m_stcCleanerData.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("CLEAN", "REPEAT", nData); pEquipData->nCleanRepeat = nData;
 	
+	m_stcMarkCount.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("MARKER", "COUNT", nData); pEquipData->nMarkCount = nData;
+	m_stcMarkTimeout.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("MARKER", "TIMEOUT", nData); pEquipData->nMarkTimeout = nData;
+
+	
 	pEquipData->bUseTopVision = m_chkTopVision.GetCheck();INI.Set_Bool("OPTION", "TOP_VISION", pEquipData->bUseTopVision);	 
 	pEquipData->bUseBtmVision = m_chkBtmVision.GetCheck();INI.Set_Bool("OPTION", "BTM_VISION", pEquipData->bUseBtmVision);
 	pEquipData->bUseMark = m_chkMarkUse.GetCheck(); INI.Set_Bool("OPTION", "MARK_USE", pEquipData->bUseMark);
@@ -563,7 +577,8 @@ void CSetupEquipDlg::Save_ModelEquipData(CString sPath)
 	
 	m_stcElvData[0].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("ELEVATOR", "PITCH_Z", dData, "%0.2lf"); pEquipData->dElevPitchZ = dData;
 	m_stcCleanerData.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("CLEAN", "REPEAT", nData); pEquipData->nCleanRepeat = nData;
-	
+
+
 
 	pEquipData->bUseTopVision = m_chkTopVision.GetCheck();INI.Set_Bool("OPTION", "TOP_VISION", pEquipData->bUseTopVision);	 
 	pEquipData->bUseBtmVision = m_chkBtmVision.GetCheck();INI.Set_Bool("OPTION", "BTM_VISION", pEquipData->bUseBtmVision);
@@ -590,6 +605,12 @@ void CSetupEquipDlg::Save_ModelEquipData(CString sPath)
 	m_edtResultTest.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("RESULT_TEST", "RESULT_NG", nData);
 
 
+	CIniFileCS INI2(gsCurrentDir + "\\System\\MarkData"+".ini");
+	if (!INI2.Check_File()) { AfxMessageBox("MarkData.ini File Not Found!!!"); return; }
+
+	m_stcMarkCount.GetWindowText(strData); nData = atoi(strData); INI2.Set_Integer ("MARKER", "COUNT", nData); pEquipData->nMarkCount = nData;
+	m_stcMarkTimeout.GetWindowText(strData); nData = atoi(strData); INI2.Set_Integer ("MARKER", "TIMEOUT", nData); pEquipData->nMarkTimeout = nData;
+
 	g_objLogFile.Save_HandlerLog("[Setup Equip] Model Save");
 }
 
@@ -598,7 +619,7 @@ void CSetupEquipDlg::Cancel_EquipData()
 {
 	g_objDataManager.Read_EquipData();
 	g_objDataManager.Read_MoveData();
-
+	g_objDataManager.Read_MarkData();
 	
 	Display_EquipData();
 
@@ -844,4 +865,18 @@ void CSetupEquipDlg::OnStnClickedStcNoWorkTime()
 	m_stcNoWorkTime.GetWindowText(strOld);
 	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
 	m_stcNoWorkTime.SetWindowText(strNew);
+}
+
+void CSetupEquipDlg::OnStnClickedStcMarkTimeout(UINT nID)
+{
+	int ID = nID - IDC_STC_MARK_TIMEOUT;
+
+	CString strOld, strNew;
+	m_stcMarkTimeout.GetWindowText(strOld);
+	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
+
+	m_stcMarkTimeout.SetWindowText(strNew);
+
+	m_strLog.Format("[Equip Mode] Mark Timeout Data - %s ", strNew);
+	g_objLogFile.Save_HandlerLog(m_strLog);
 }

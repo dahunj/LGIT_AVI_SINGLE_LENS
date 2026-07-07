@@ -41,6 +41,9 @@ public:
 	CStaticCS	m_stcElvData[1];
 	CStaticCS	m_stcCleanerData;
 
+	CStaticCS	m_stcMarkCount;
+	CStaticCS	m_stcMarkTimeout;
+
 	CGroupCS	m_grpTower;
 	CLabelCS	m_lblTower[10];
 	CCheckCS	m_chkTower[6][4];
@@ -87,6 +90,7 @@ protected:
 	afx_msg void OnCbnSelchangeCboModelChange();
 	afx_msg void OnCbnDropdownCboModelChange();
 	afx_msg void OnStnClickedStcCleanerData0(UINT nID);	
+	afx_msg void OnStnClickedStcMarkTimeout(UINT nID);
 	afx_msg void OnStcDelayAddClick(UINT nID);
 
 
@@ -109,6 +113,7 @@ public:
 	afx_msg void OnBnClickedChkUseBarcodeMgz();
 	afx_msg void OnBnClickedChkUseBarcodeCtzig();
 	afx_msg void OnBnClickedChkUseMes();
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////

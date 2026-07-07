@@ -3460,6 +3460,9 @@ BOOL CSequenceMain::MarkUnitRun()
 		{
 			m_pDY02->oMarkPenDown = TRUE;m_pDY02->oMarkPenUp = FALSE;
 			g_objAJinAXL.Write_Output(2);
+
+			m_pEquipData->nMarkCount++; g_objDataManager.Save_MarkData();
+
 			gData.InfoMainIndex[eMainIndex::Mark][nMarkXPos-1][nMarkYPos-1] = eLensState::Marked;	//Scan Done
 			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 		}

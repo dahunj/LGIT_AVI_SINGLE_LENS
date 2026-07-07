@@ -139,6 +139,8 @@ public:
 	void Set_LotStateTime();
 	void Set_DoorLock();
 	void Set_NoWork();
+
+	void Set_MarkerTimeout();
 };
 
 ///////////////////////////////////////////////////////////////////////////////

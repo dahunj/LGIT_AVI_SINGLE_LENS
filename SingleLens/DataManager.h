@@ -74,7 +74,8 @@ typedef struct tag_EQUIP_DATA {
 
 	int		nVisionDir;
 
-
+	int		nMarkCount;
+	int		nMarkTimeout;
 
 } EQUIP_DATA;
 
@@ -123,6 +124,9 @@ public:
 
 	EQUIP_DATA *Get_pEquipData() { return &m_EquipData; }
 	MOVE_DATA *Get_pMoveData() { return &m_MoveData; }
+
+	BOOL Save_MarkData();
+	BOOL Read_MarkData();
 };
 
 extern CDataManager g_objDataManager;
