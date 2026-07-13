@@ -112,8 +112,6 @@ extern CString gsCurrentDir;	// 현재 프로젝트 폴더
 typedef struct
 {
 	CString	sOperID;		// Operator
-		
-
 
 	//UI Buffer - 6개 
 	CString	sLotID[6];

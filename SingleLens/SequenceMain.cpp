@@ -932,6 +932,7 @@ BOOL CSequenceMain::MZElevRun()
 				gData.sMZID[eMZBuffer::Load] = gMes.sMGZID[eMZ::Load];
 				g_dlgWork.Set_MZInfo(eMZ::Load, gData.sMZID[eMZBuffer::Load]);				
 
+				gMes.bLotStart = FALSE;
 				if(m_pEquipData->bUseMES) g_objMesAgent.Set_MGZIDReport(1, gMes.sMGZID[eMZ::Load]);
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 			}			
@@ -972,10 +973,10 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		break;
 	case 77:
-		gMes.bLotStart = FALSE;
+		
 		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_PPUploadCompletedReport");
 		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
-		if(m_pEquipData->bUseMES) g_objMesAgent.Set_PPUploadCompletedReport(gMes.sHostLotID[eMZ::Load], gMes.sMGZID[eMZ::Load], gMes.sHostRecipe[eMZ::Load]);
+		//if(m_pEquipData->bUseMES) g_objMesAgent.Set_PPUploadCompletedReport(gMes.sHostLotID[eMZ::Load], gMes.sMGZID[eMZ::Load], gMes.sHostRecipe[eMZ::Load]);
 		break;
 	case 78:
 		if(!gMes.bLotStart) break;
@@ -1177,6 +1178,7 @@ BOOL CSequenceMain::MZElevRun()
 				gData.sMZID[eMZBuffer::Ready] = gMes.sMGZID[eMZ::Ready];
 				g_dlgWork.Set_MZInfo(eMZ::Ready, gData.sMZID[eMZBuffer::Ready]);	
 
+				gMes.bLotStart = FALSE;
 				if(m_pEquipData->bUseMES)g_objMesAgent.Set_MGZIDReport(1, gMes.sMGZID[eMZ::Ready]);
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 			}			
@@ -1214,7 +1216,7 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		break;
 	case 87:
-		gMes.bLotStart = FALSE;
+		
 		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 		//if(m_pEquipData->bUseMES) g_objMesAgent.Set_PPUploadCompletedReport(gMes.sHostLotID[eMZ::Ready], gMes.sMGZID[eMZ::Ready], gMes.sHostRecipe[eMZ::Ready]);
 		break;
