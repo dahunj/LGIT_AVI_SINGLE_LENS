@@ -927,19 +927,20 @@ BOOL CSequenceMain::MZElevRun()
 				gMes.sMGZID[eMZ::Load] = m_strBarcode[eBarcode::MZ-1]; m_strBarcode[eBarcode::MZ-1].Empty();
 				
 				gMes.bMGZIDReported = FALSE;
-				gMes.nElevPos = eMZ::Load;
-
+				
 				gData.sMZID[eMZBuffer::Load] = gMes.sMGZID[eMZ::Load];
 				g_dlgWork.Set_MZInfo(eMZ::Load, gData.sMZID[eMZBuffer::Load]);				
 
 				gMes.bLotStart = FALSE;
+
+				gMes.nElevPos = eMZ::Load;
 				if(m_pEquipData->bUseMES) g_objMesAgent.Set_MGZIDReport(1, gMes.sMGZID[eMZ::Load]);
 				m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 			}			
 		}			 
 		break;
 	case 73:		
-		if(m_pEquipData->bUseBarcodeMGZ)//if(gMes.bMGZIDReported || m_pEquipData->bUseBarcodeMGZ)
+		//if(gMes.bMGZIDReported || m_pEquipData->bUseBarcodeMGZ)
 		{
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "bMGZIDReported");
 			g_objCommon.Set_LoadCVStop(); theApp.uSleep(5);

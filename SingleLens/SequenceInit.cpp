@@ -254,8 +254,7 @@ BOOL CSequenceInit::Initial_MainInit()
 		g_objSequenceMain.Set_ClearRunData(TRUE);
 		g_objMesAgent.Set_EquipState(eEquipState::IDLE);	//Idle
 		if (gData.bCycleStop) g_dlgWork.PostMessage(UM_RESET_CYCLE_STOP, NULL, NULL);
-
-		
+				
 		g_objLogFile.Save_HandlerLog("[Initial Sequence] MainInit Complete");
 		return FALSE;	// Thread_Initial Á¾·á
 	}
