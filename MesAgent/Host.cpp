@@ -1239,6 +1239,13 @@ void CHost::Set_S2F50_PP_UPLOAD_FAIL()
 
 void CHost::Set_S2F50_LOT_START()
 {
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+
+	CString strTime;
+	strTime.Format("%04d%02d%02d%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
+
+
 	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
 	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F50\" NAME=\"Enhanced Remote Command Acknowledge\">" + CRLF;
@@ -1251,19 +1258,19 @@ void CHost::Set_S2F50_LOT_START()
 	strSend += "      <CPLIST COUNT=\"4\">" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\" />" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"0\" />" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\""+ strTime +"\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"LOTID\" />" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"0\" />" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\""+ gMes.sHostLotId +"\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"MGZID\" />" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"0\" />" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"" + gMes.sHostLdMGZId + "\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\" />" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"0\" />" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\""+ gData.sOperId  + "\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
 	strSend += "      </CPLIST>" + CRLF;
 	strSend += "	  <RESULT>" + CRLF;
@@ -1607,11 +1614,11 @@ void CHost::OnTimer(UINT_PTR nIDEvent)
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	for(int i = 0; i < 20; i++)
 	{
-		if(GetTickCount() - gMes.dwCTStart[i] > 3000 && gMes.bCTTickStarted[i])
+	/*	if(GetTickCount() - gMes.dwCTStart[i] > 3000 && gMes.bCTTickStarted[i])
 		{
 			gMes.bCTTickStarted[i] = FALSE;
 			Set_S9F13_Timeout();
-		}
+		}*/
 	}
 
 	//if(GetTickCount() - gMes.dwTTStart[i] > 3000 && gMes.bCTTickStarted[i])
