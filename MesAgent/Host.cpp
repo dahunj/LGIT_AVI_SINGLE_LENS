@@ -1028,6 +1028,15 @@ void CHost::Set_S6F11_LotCompleted(CString sLotID, CString sMGZID, CString sReci
 
 void CHost::Set_S2F50_PPSelect()
 {
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+
+	CString strTime;
+	strTime.Format("%04d%02d%02d%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
+
+	CString sLensCount;
+	sLensCount.Format("%d", gMes.nHostLensCount);
+
 	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
 	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F50\" NAME=\"Enhanced Remote Command Acknowledge\">" + CRLF;
@@ -1040,27 +1049,27 @@ void CHost::Set_S2F50_PPSelect()
 	strSend += "	  <CPLIST COUNT=\"6\">" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\"/>" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\""+ strTime +"\"/>" + CRLF;		
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"LOTID\"/>" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\""+gMes.sHostLotId +"\"/>" + CRLF;		
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"MGZID\"/>" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\""+ gMes.sHostLdMGZId +"\"/>" + CRLF;		
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"RECIPEID\"/>" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\""+ gMes.sHostRecipe+"\"/>" + CRLF;		
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"LOTCOUNT\"/>" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"" + sLensCount + "\"/>" + CRLF;		
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\"/>" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"" + gData.sOperId + "\"/>" + CRLF;		
 	strSend += "        </CP>" + CRLF;
 	strSend += "	  </CPLIST>" + CRLF;
 	strSend += "	  <RESULT>" + CRLF;
@@ -1077,6 +1086,12 @@ void CHost::Set_S2F50_PPSelect()
 
 void CHost::Set_S2F50_MGZ_Cancel()
 {
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+
+	CString strTime;
+	strTime.Format("%04d%02d%02d%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
+	
 	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
 	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F50\" NAME=\"Enhanced Remote Command Acknowledge\">" + CRLF;
@@ -1089,15 +1104,15 @@ void CHost::Set_S2F50_MGZ_Cancel()
 	strSend += "	    <CPLIST COUNT=\"3\">" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\"/>" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"" + strTime + "\"/>" + CRLF;		
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"MGZID\"/>" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\""+ gMes.sHostLdMGZId +"\"/>" + CRLF;		
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\"/>" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\""+ gData.sOperId +"\"/>" + CRLF;		
 	strSend += "        </CP>" + CRLF;
 	strSend += "	    </CPLIST>" + CRLF;
 	strSend += "	    <RESULT>" + CRLF;
@@ -1114,6 +1129,13 @@ void CHost::Set_S2F50_MGZ_Cancel()
 
 void CHost::Set_S2F50_MGZ_CONFIRM()
 {
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+
+	CString strTime;
+	strTime.Format("%04d%02d%02d%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
+
+
 	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
 	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F50\" NAME=\"Enhanced Remote Command Acknowledge\">" + CRLF;
@@ -1126,15 +1148,15 @@ void CHost::Set_S2F50_MGZ_CONFIRM()
 	strSend += "	  <CPLIST COUNT=\"3\">" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\"/>" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\""+ strTime +"\"/>" + CRLF;		
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"MGZID\"/>" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\""+ gMes.sHostLdMGZId +"\"/>" + CRLF;		
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\"/>" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"0\"/>" + CRLF;		
+	strSend += "          <CPACKC NAME=\"CPACKC\" VALUE=\"" + gData.sOperId +"\"/>" + CRLF;		
 	strSend += "        </CP>" + CRLF;
 	strSend += "	  </CPLIST>" + CRLF;
 	strSend += "	  <RESULT>" + CRLF;
@@ -1288,6 +1310,13 @@ void CHost::Set_S2F50_LOT_START()
 
 void CHost::Set_S2F50_LOT_ID_FAIL()
 {
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+
+	CString strTime;
+	strTime.Format("%04d%02d%02d%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
+
+
 	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
 	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F50\" NAME=\"Enhanced Remote Command Acknowledge\">" + CRLF;
@@ -1300,15 +1329,15 @@ void CHost::Set_S2F50_LOT_ID_FAIL()
 	strSend += "      <CPLIST COUNT=\"3\">" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\" />" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"0\" />" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\""+ strTime +"\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"LOTID\" />" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"0\" />" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\""+ gMes.sHostLotId +"\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"OPERATORID\" />" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"0\" />" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"" + gData.sOperId +"\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
 	strSend += "      </CPLIST>" + CRLF;	
 	strSend += "	  <RESULT>" + CRLF;
@@ -1329,6 +1358,12 @@ void CHost::Set_S2F50_TRAY_ID_CONFIRM()
 	int		nTemp = 0;
 	CString strTemp;
 
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+
+	CString strTime;
+	strTime.Format("%04d%02d%02d%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
+	
 	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
 
 	strSend += "<EIF VERSION=\"2.0\" ID=\"S2F50\" NAME=\"Enhanced Remote Command Acknowledge\">" + CRLF;
@@ -1341,11 +1376,11 @@ void CHost::Set_S2F50_TRAY_ID_CONFIRM()
 	strSend += "      <CPLIST COUNT=\"2\">" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TIME\" />" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"0\" />" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\""+ strTime +"\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;
 	strSend += "        <CP>" + CRLF;
 	strSend += "          <CPNAME NAME=\"CPNAME\" VALUE=\"TRAYID\" />" + CRLF;
-	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"0\" />" + CRLF;
+	strSend += "          <CPACKC NAME=\"CPVAL\" VALUE=\"" + gMes.sHostTrayID + "\" />" + CRLF;
 	strSend += "        </CP>" + CRLF;  
 	strSend += "      </CPLIST>" + CRLF; 
 	strSend += "	  <RESULT>" + CRLF;
