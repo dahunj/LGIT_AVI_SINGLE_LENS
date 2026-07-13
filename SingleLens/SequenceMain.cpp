@@ -973,8 +973,7 @@ BOOL CSequenceMain::MZElevRun()
 			m_nMZElevCase = 4; m_nMZElevLoop.Set_LoopTime(10000);
 		}
 		break;
-	case 77:
-		
+	case 77:		
 		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_PPUploadCompletedReport");
 		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 		//if(m_pEquipData->bUseMES) g_objMesAgent.Set_PPUploadCompletedReport(gMes.sHostLotID[eMZ::Load], gMes.sMGZID[eMZ::Load], gMes.sHostRecipe[eMZ::Load]);
@@ -1074,10 +1073,7 @@ BOOL CSequenceMain::MZElevRun()
 				gLot.nLensCount[nMZNo-1] = gData.nLensTotalCnt[eMZ::Load];
 				g_objInspector.Set_LotStart(gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load], m_pEquipData->sModelName);
 			}
-
-			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
-			
-					
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);					
 		}
 		break;
 	case 8:
@@ -1093,8 +1089,6 @@ BOOL CSequenceMain::MZElevRun()
 		g_objInspector.Set_LotStart(gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load],"Model");
 		m_nMZElevCase = 8;	m_nMZElevLoop.Set_LoopTime(5000);	
 		break;
-	
-
 	case ElvBranch::RdyMZ:
 		if(gData.bAgingMode || gData.bSimulMode)
 		{
