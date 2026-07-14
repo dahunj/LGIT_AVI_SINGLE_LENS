@@ -294,7 +294,7 @@ void CMesAgent::Get_TrayID_Confirm(CString sStrings)
 	char chSep = ',';
 	AfxExtractSubString(strTemp[0], sStrings, 2, chSep);
 	AfxExtractSubString(strTemp[1], sStrings, 3, chSep);
-	gMes.sHostTrayID = strTemp[1];
+	gMes.sHostTrayID = strTemp[0];
 	gMes.nPocketCnt = atoi(strTemp[1]);
 	for (int i = 0; i < gMes.nPocketCnt; i++)
 	{

@@ -1502,8 +1502,8 @@ void CHost::Set_S6F11_IdleReport()
 	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
 	strSend += "  </ELEMENT>" + CRLF;
 	strSend += "  <ITEM>" + CRLF;
-	strSend += "    <CEID NAME=\"CEID\" VALUE=\"50104\" />" + CRLF;
-	strSend += "    <RPTID NAME=\"RPTID\" VALUE=\"50104\" />" + CRLF;
+	strSend += "    <CEID NAME=\"Idle Reason Report\" VALUE=\"50104\" />" + CRLF;
+	strSend += "    <RPTID NAME=\"Idle Reason Report\" VALUE=\"50104\" />" + CRLF;
 	strSend += "    <DVLIST COUNT=\"6\">" + CRLF;	
 	strSend += "      <DV NAME=\"TIME\" VALUE=\"" + strTime + "\" />" + CRLF;
 	strSend += "      <DV NAME=\"REASONCODE\" VALUE=\"" + gIdle.sIdleCode + "\" />" + CRLF;
