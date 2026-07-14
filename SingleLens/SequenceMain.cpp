@@ -941,6 +941,7 @@ BOOL CSequenceMain::MZElevRun()
 		break;
 	case 73:		
 		//if(gMes.bMGZIDReported || m_pEquipData->bUseBarcodeMGZ)
+		if(gMes.bLotStart) 
 		{
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "bMGZIDReported");
 			g_objCommon.Set_LoadCVStop(); theApp.uSleep(5);
@@ -965,6 +966,8 @@ BOOL CSequenceMain::MZElevRun()
 		break;
 	case 76:
 		//if(gMes.bPPConfirm || m_pEquipData->bUseBarcodeMGZ)
+		
+
 		{
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "bPPConfirm");
 			
@@ -1033,7 +1036,7 @@ BOOL CSequenceMain::MZElevRun()
 					gData.sMZIDElevLoad[i] = gMes.sHostMGZID[eMZ::Load];
 					gData.nMZNoMZLoad[i] = nMZNo;
 					gData.sZigIDElevLoad[i] = gData.sZigID[eMZ::Load][i];
-					gData.sRecipeElevLoad[i] = gMes.sHostRecipe[eMZ::Load];
+					gData.sRecipeElevLoad[i] = m_pEquipData->sModelName;//gMes.sHostRecipe[eMZ::Load];
 				}	
 			}
 			else
@@ -1073,7 +1076,10 @@ BOOL CSequenceMain::MZElevRun()
 				gLot.nLensCount[nMZNo-1] = gData.nLensTotalCnt[eMZ::Load];
 				g_objInspector.Set_LotStart(gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load], m_pEquipData->sModelName);
 			}
-			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);					
+
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
+			
+					
 		}
 		break;
 	case 8:
@@ -1089,6 +1095,8 @@ BOOL CSequenceMain::MZElevRun()
 		g_objInspector.Set_LotStart(gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load],"Model");
 		m_nMZElevCase = 8;	m_nMZElevLoop.Set_LoopTime(5000);	
 		break;
+	
+
 	case ElvBranch::RdyMZ:
 		if(gData.bAgingMode || gData.bSimulMode)
 		{
@@ -1180,7 +1188,7 @@ BOOL CSequenceMain::MZElevRun()
 		}			 
 		break;	
 	case 83:
-		if(m_pEquipData->bUseBarcodeMGZ)//if(gMes.bMGZIDReported || m_pEquipData->bUseBarcodeMGZ)
+		if(gMes.bLotStart) //if(m_pEquipData->bUseBarcodeMGZ)//if(gMes.bMGZIDReported || m_pEquipData->bUseBarcodeMGZ)
 		{
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "bMGZIDReported");
 			g_objCommon.Set_ElevCVStop(); theApp.uSleep(5);
@@ -1258,7 +1266,7 @@ BOOL CSequenceMain::MZElevRun()
 				{
 					gData.sLotIDElevRdy[i] = gMes.sHostLotID[eMZ::Ready];
 					gData.sMZIDElevReady[i] = gMes.sHostMGZID[eMZ::Ready];
-					gData.sRecipeElevReady[i] = gMes.sHostRecipe[eMZ::Ready];
+					gData.sRecipeElevReady[i] = m_pEquipData->sModelName;//gMes.sHostRecipe[eMZ::Ready];
 					gData.nMZNoMZRdy[i] = nMZNo;
 					gData.sZigIDElevReady[i] = gData.sZigID[eMZ::Ready][i];
 				}			
@@ -2825,7 +2833,7 @@ BOOL CSequenceMain::LensCleanerRun()
 	case 1:
 		if(!gData.bIndexDone[eMainIndex::Clean] && !Check_IndexEmpty(eMainIndex::Clean))
 		{
-			m_pDY03->oDustPowerOn = TRUE; g_objAJinAXL.Write_Output(3);
+			//m_pDY03->oDustPowerOn = TRUE; g_objAJinAXL.Write_Output(3);
 			m_nLensCleanerCase++;  m_nLensCleanerLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 			m_strLog.Format("Lens Cleanner Start"); m_nLensCleanerLoop.Takt_Save(5, m_nLensCleanerCase, m_strLog);
 		}
@@ -2874,7 +2882,7 @@ BOOL CSequenceMain::LensCleanerRun()
 	case 7:
 		if(nRepeat >= m_pEquipData->nCleanRepeat)
 		{
-			m_pDY03->oDustPowerOn = FALSE; g_objAJinAXL.Write_Output(3);
+			//
 			nRepeat = 0; gData.bIndexDone[eMainIndex::Clean] = TRUE;
 			m_strLog.Format("Lens Cleanner Done"); m_nLensCleanerLoop.Takt_Save(5, m_nLensCleanerCase, m_strLog);
 			m_nLensCleanerCase = 0; m_nLensCleanerLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);	
@@ -3431,20 +3439,24 @@ BOOL CSequenceMain::MarkUnitRun()
 			break;
 		}
 		if(bInspectFail) break; //Not Complete
-		if(m_pEquipData->bUseMES) g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], g_objCommon.ConvertToMESNo(nLensNo), 
-			gData.sJudgeCode[gData.nMZNoMainIndex[eMainIndex::Mark]][gData.nSlotNoMainIndex[eMainIndex::Mark]][nLensNo][eVision::MARKING], 
-			gData.sNGCode[gData.nMZNoMainIndex[eMainIndex::Mark]][gData.nSlotNoMainIndex[eMainIndex::Mark]][nLensNo][eVision::MARKING] );
+		
 
 		if(nTempInfo == eLensInfo::Init || nTempInfo == eLensInfo::Good)
 		{
+			if(m_pEquipData->bUseMES) g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], g_objCommon.ConvertToMESNo(nLensNo), 
+				"OK", gData.sNGCode[gData.nMZNoMainIndex[eMainIndex::Mark]-1][gData.nSlotNoMainIndex[eMainIndex::Mark]-1][nLensNo-1][eVision::MARKING] );
 			gLot.nGoodCount[gData.nMZNoMainIndex[eMainIndex::Mark]-1]++;
 		}
 		else if( nTempInfo == eLensInfo::Empty)
 		{
+			if(m_pEquipData->bUseMES) g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], g_objCommon.ConvertToMESNo(nLensNo), 
+				"NG", gData.sNGCode[gData.nMZNoMainIndex[eMainIndex::Mark]-1][gData.nSlotNoMainIndex[eMainIndex::Mark]-1][nLensNo-1][eVision::MARKING] );
 			gLot.nEmptyCount[gData.nMZNoMainIndex[eMainIndex::Mark]-1]++;
 		}
 		else
 		{
+			if(m_pEquipData->bUseMES) g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], g_objCommon.ConvertToMESNo(nLensNo), 
+				"NG", gData.sNGCode[gData.nMZNoMainIndex[eMainIndex::Mark]-1][gData.nSlotNoMainIndex[eMainIndex::Mark]-1][nLensNo-1][eVision::MARKING] );
 			gLot.nNgCount[gData.nMZNoMainIndex[eMainIndex::Mark]-1]++;
 		}
 
@@ -3493,7 +3505,8 @@ BOOL CSequenceMain::MarkUnitRun()
 			m_nMarkUnitCase = 10; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 		}		
 		break;	
-	case 10:		
+	case 10:
+		if(!m_nMarkUnitLoop.Waiting_Time(300))break;
 		g_dlgWork.PostMessage(UM_UPDATE_VISION_INFO, (int)eVision::MARKING, NULL);
 
 		if(m_pEquipData->nVisionDir == eVDir::fixY)

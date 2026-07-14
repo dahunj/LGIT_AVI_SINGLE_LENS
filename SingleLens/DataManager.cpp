@@ -152,7 +152,7 @@ BOOL CDataManager::Read_ModelEquipData(CString strPath)
 	m_EquipData.dBtmPitchX   = INI.Get_Double("TRIGGER",  "BTM_PITCH_X", 0.00);
 	m_EquipData.dBtmPitchY	 = INI.Get_Double("TRIGGER",  "BTM_PITCH_Y", 0.00);
 
-	m_EquipData.nMarkCount   = INI.Get_Integer("MARKER", "COUNT", 0);
+
 
 	m_EquipData.bUseTopVision = INI.Get_Bool("OPTION", "TOP_VISION", FALSE);	
 	m_EquipData.bUseBtmVision = INI.Get_Bool("OPTION", "BTM_VISION", FALSE);
@@ -176,7 +176,12 @@ BOOL CDataManager::Read_ModelEquipData(CString strPath)
 	// Gloval Data		
 	m_EquipData.nResultTestNg = INI.Get_Integer("RESULT_TEST", "RESULT_NG", 0);
 	
+	CIniFileCS INI2(gsCurrentDir + "\\System\\MarkData"+".ini");
+	if (!INI2.Check_File()) { AfxMessageBox("MarkData.ini File Not Found!!!"); return FALSE; }
 
+	m_EquipData.nMarkCount = INI2.Get_Integer ("MARKER", "COUNT", 0);
+	m_EquipData.nMarkTimeout = INI2.Get_Integer ("MARKER", "TIMEOUT", 0);
+	
 	return TRUE;
 }
 

@@ -225,8 +225,9 @@ void COperatorDlg::OnStnClickedStcOperOperId()
 
 	gData.sOperID = strKey;
 	m_stcOperOperId.SetWindowText(strKey);
+	g_dlgWork.m_stcOperId.SetWindowText(strKey);
 	g_objMesAgent.Set_OperUpdate(gData.sOperID);
-
+	
 	CString sLog;
 	sLog.Format("[Operator] Operator ID Input....  OperID[%s]", gData.sOperID);
 	g_objLogFile.Save_HandlerLog(sLog);

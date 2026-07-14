@@ -487,10 +487,7 @@ void CSetupEquipDlg::Save_EquipData()
 	
 	m_stcCleanerData.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("CLEAN", "REPEAT", nData); pEquipData->nCleanRepeat = nData;
 	
-	m_stcMarkCount.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("MARKER", "COUNT", nData); pEquipData->nMarkCount = nData;
-	m_stcMarkTimeout.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("MARKER", "TIMEOUT", nData); pEquipData->nMarkTimeout = nData;
-
-	
+		
 	pEquipData->bUseTopVision = m_chkTopVision.GetCheck();INI.Set_Bool("OPTION", "TOP_VISION", pEquipData->bUseTopVision);	 
 	pEquipData->bUseBtmVision = m_chkBtmVision.GetCheck();INI.Set_Bool("OPTION", "BTM_VISION", pEquipData->bUseBtmVision);
 	pEquipData->bUseMark = m_chkMarkUse.GetCheck(); INI.Set_Bool("OPTION", "MARK_USE", pEquipData->bUseMark);

@@ -354,6 +354,9 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 			m_bLoadCVRun = FALSE;
 			m_bUnloadCVRun = FALSE;
 
+
+			m_pDY03->oDustPowerOn = TRUE; g_objAJinAXL.Write_Output(3);
+
 			g_objLogFile.Save_HandlerLog("[Work Mode] Main Thread Start");
 			g_objSequenceMain.Begin_MainRunThread();
 			//g_objInspector.Set_StatusUpdate(VISION_ALL, 2);
@@ -385,6 +388,9 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 
 			g_objCommon.Set_LoadCVStop(); theApp.uSleep(5);
 			g_objCommon.Set_ElevCVStop(); theApp.uSleep(5);
+
+			m_pDY03->oDustPowerOn = FALSE; g_objAJinAXL.Write_Output(3);
+
 			g_objSequenceMain.End_MainRunThread();
 			theApp.uSleep(5);
 

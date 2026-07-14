@@ -411,7 +411,7 @@ void CMesAgent::Set_LotStartedReport(CString sLotId, CString sMGZId, CString sRe
 {
 	CString strSend, strLogID;
 	
-	strSend.Format("LOT,START,%s,%s,%s", strLogID, sMGZId, sRecipe);
+	strSend.Format("LOT,START,%s,%s,%s", sLotId, sMGZId, sRecipe);
 	Send_Command(strSend);
 }
 
@@ -470,7 +470,7 @@ void CMesAgent::Set_AlarmLog(int nErrNo, CString sErrMsg, int nCategory)
 	gAlm.sLotID = gData.sLotID[eMZBuffer::Load];
 	gAlm.nAlmNo = nErrNo;
 	gAlm.sAlmMsg = sErrMsg;
-	gAlm.nCategory = 3;//nCategory;
+	gAlm.nCategory = 33;//nCategory;
 	gAlm.dwStartTime = GetTickCount();
 	gAlm.sStartTime.Format("%04d%02d%02d_%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
 
