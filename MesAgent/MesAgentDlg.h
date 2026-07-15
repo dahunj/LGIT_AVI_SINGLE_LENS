@@ -50,4 +50,5 @@ public:
 	void Set_HostConnect(BOOL bConnected, CString strIp, int nPort);
 	void Set_HandlerMsg(CString sMsg);
 	void Set_HostMsg(CString sMsg);
+	afx_msg void OnBnClickedBtnTesta();
 };

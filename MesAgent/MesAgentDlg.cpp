@@ -44,6 +44,7 @@ BEGIN_MESSAGE_MAP(CMesAgentDlg, CDialogEx)
 	ON_LBN_DBLCLK(IDC_LST_HANDLER_MSG, &CMesAgentDlg::OnDblclkLstHandlerMsg)
 	ON_LBN_DBLCLK(IDC_LST_HOST_MSG, &CMesAgentDlg::OnDblclkLstHostMsg)
 	ON_BN_CLICKED(IDC_BTN_TEST, &CMesAgentDlg::OnBnClickedBtnTest)
+	ON_BN_CLICKED(IDC_BTN_TESTA, &CMesAgentDlg::OnBnClickedBtnTesta)
 END_MESSAGE_MAP()
 
 // CMesAgentDlg 메시지 처리기
@@ -329,4 +330,21 @@ void CMesAgentDlg::Set_HostMsg(CString sMsg)
 void CMesAgentDlg::OnBnClickedBtnTest()
 {
 	g_objHost.Test_Command();
+}
+
+
+void CMesAgentDlg::OnBnClickedBtnTesta()
+{
+
+	SYSTEMTIME sysTime;
+	GetLocalTime(&sysTime);
+
+	sysTime.wHour	= 12;
+	sysTime.wMinute = 11;
+	sysTime.wSecond = 10;
+	sysTime.wYear	= 2025;
+	sysTime.wMonth	= 03;
+	sysTime.wDay	= 04;
+
+	SetLocalTime(&sysTime);	// 사용프로잭트속성.구성속성.링커.매니페스트파일(asInvoker->highestAvailable)
 }
