@@ -217,7 +217,7 @@ void CHandler::Get_ControlState(CString sFlag, CString sOperId)
 void CHandler::Get_EquipState(CString sState)
 {
 	int nState = atoi(sState);	// 1:Run, 4:Idle, 5:Down
-	//g_objHost.Set_S6F11_EquipState(nState, "0", "0", "");
+	g_objHost.Set_S6F11_EquipState(nState, "", "", "");
 }
 
 void CHandler::Get_ErrorUpdate(CString sFlag, CString sErrNo, CString sCategory)

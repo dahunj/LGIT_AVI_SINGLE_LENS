@@ -575,9 +575,13 @@ void CHost::Get_S5F2_AlarmAck()
 	g_objHandler.Set_ErrorReply();
 
 	int nState = (gAlarm.nAlmSet == 1) ? 5 : 1;	// 5:Down, 1:Run
-	CString sNo = (gAlarm.nAlmSet == 1) ? gAlarm.sAlmNo : "0";
+	/*CString sNo = (gAlarm.nAlmSet == 1) ? gAlarm.sAlmNo : "0";
 	CString sCat = (gAlarm.nAlmSet == 1) ? gAlarm.sAlmCat : "0";
-	CString sMsg = (gAlarm.nAlmSet == 1) ? gAlarm.sAlmMsg : "";
+	CString sMsg = (gAlarm.nAlmSet == 1) ? gAlarm.sAlmMsg : "";*/
+
+	CString sNo = gAlarm.sAlmNo;
+	CString sCat = gAlarm.sAlmCat;
+	CString sMsg = gAlarm.sAlmMsg;
 
 	Set_S6F11_EquipState(nState, sNo, sCat, sMsg);
 }
@@ -784,6 +788,16 @@ void CHost::Set_S6F11_EquipState(int nState, CString sErrNo, CString sCategory, 
 
 	CString strState;
 	strState.Format("%d", nState);
+
+	CString sAlmQty;
+	if((nState == 1 || nState == 4) && sErrNo =="")
+	{
+		sAlmQty.Empty();
+	}
+	else
+	{
+		sAlmQty = "1";
+	}
 		
 	SYSTEMTIME time;
 	GetLocalTime(&time);
@@ -803,7 +817,7 @@ void CHost::Set_S6F11_EquipState(int nState, CString sErrNo, CString sCategory, 
 	strSend += "    <DVLIST COUNT=\"7\">" + CRLF;
 	strSend += "      <DV NAME=\"TIME\" VALUE=\"" + strTime + "\" />" + CRLF;
 	strSend += "      <DV NAME=\"NEWEQPSTATE\" VALUE=\"" + strState + "\" />" + CRLF;
-	strSend += "      <DV NAME=\"ALARMLISTQTY\" VALUE=\"1\" />" + CRLF;
+	strSend += "      <DV NAME=\"ALARMLISTQTY\" VALUE=\"" + sAlmQty +"\" />" + CRLF;
 	strSend += "      <DV NAME=\"ALARMID#1\" VALUE=\"" + sErrNo + "\" />" + CRLF;
 	strSend += "      <DV NAME=\"ALARMCATEGORY#1\" VALUE=\"" + sCategory + "\" />" + CRLF;
 	strSend += "      <DV NAME=\"ALARMTEXT#1\" VALUE=\"" + sErrMsg + "\" />" + CRLF;
@@ -843,8 +857,8 @@ void CHost::Set_S6F11_MGZIDReport(CString sType, CString sMGZId)
 	strSend += "  </ITEM>" + CRLF;
 	strSend += "</EIF>";
 
-	gMes.bCTTickStarted[eCT::MZID_REPORT] = TRUE;
-	gMes.dwCTStart[eCT::MZID_REPORT] = GetTickCount();
+	//gMes.bCTTickStarted[eCT::MZID_REPORT] = TRUE;
+	//gMes.dwCTStart[eCT::MZID_REPORT] = GetTickCount();
 
 	Send_Command(strSend, FALSE, "S6F11", "20203");
 }
@@ -877,8 +891,8 @@ void CHost::Set_S6F11_PPSelectedReport(CString sLotId, CString sMGZId, CString s
 	strSend += "  </ITEM>" + CRLF;
 	strSend += "</EIF>";
 
-	gMes.bCTTickStarted[eCT::PP_UPLOAD_CONFIRM] = TRUE;
-	gMes.dwCTStart[eCT::PP_UPLOAD_CONFIRM] = GetTickCount();
+	//gMes.bCTTickStarted[eCT::PP_UPLOAD_CONFIRM] = TRUE;
+	//gMes.dwCTStart[eCT::PP_UPLOAD_CONFIRM] = GetTickCount();
 
 	Send_Command(strSend, FALSE, "S6F11", "40102");
 }
@@ -1746,11 +1760,11 @@ void CHost::OnTimer(UINT_PTR nIDEvent)
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	for(int i = 0; i < 20; i++)
 	{
-	/*	if(GetTickCount() - gMes.dwCTStart[i] > 3000 && gMes.bCTTickStarted[i])
+		if(GetTickCount() - gMes.dwCTStart[i] > 4000 && gMes.bCTTickStarted[i])
 		{
 			gMes.bCTTickStarted[i] = FALSE;
 			Set_S9F13_Timeout();
-		}*/
+		}
 	}
 
 	//if(GetTickCount() - gMes.dwTTStart[i] > 3000 && gMes.bCTTickStarted[i])
