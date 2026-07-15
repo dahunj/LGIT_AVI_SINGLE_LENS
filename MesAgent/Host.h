@@ -38,6 +38,10 @@ private:
 	CString m_strStFn;	// StreamFunction (S1F1, S2F3, S2F31, S2F49, S6F12)
 	CString m_strRcmd;	// RCMD Command (START, CANCEL, DATA, PERMIT)
 
+	CString m_strName;
+	CString m_strStream;
+	CString m_strFunction;
+
 	DWORD	m_dwLastTime;	// 마지막 통신 시간
 	CString m_strSetTime;	// Host 설정 시간
 
@@ -124,6 +128,11 @@ public:
 	void Set_S6F11_IdleReport();
 
 	void Set_S9F13_Timeout();	// Conversation Timeout
+
+	void Set_SSF0_Abort_Transaction(CString sStream);
+
+	void Set_S9F3_Unrecognized_Stream();
+	void Set_S9F5_Unrecognized_Function();
 
 	void Test_Command();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);

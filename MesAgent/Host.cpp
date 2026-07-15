@@ -212,6 +212,7 @@ BOOL CHost::Extract_Xml(CString sXmlData)
 
 	CXmlNode node = m_xml.GetRoot();
 	m_strStFn = node.GetAttribute("ID");
+	m_strName = node.GetAttribute("NAME");
 
 	if (m_strStFn == "S2F31") {
 		CXmlNode nodeTime = m_xml.GetRoot()->GetChild("ITEM")->GetChild("TIME");
@@ -379,7 +380,91 @@ BOOL CHost::Extract_Xml(CString sXmlData)
 	{
 		m_strDisplay = m_xml.GetRoot()->GetChild("ITEM")->GetChild("TEXT")->GetAttribute("VALUE");
 		g_objHandler.Set_TerminalDisplay(m_strDisplay);
+	
 	}
+
+
+	//F0 , S9F3, S9F5
+
+	
+
+	if(m_strName =="Are You There Request") //S1F1
+	{
+		m_strStream = m_strStFn.Mid(0, 2);
+		m_strFunction = m_strStFn.Mid(2, 2);
+		if(m_strStream != "S1") Set_S9F3_Unrecognized_Stream();
+		if(m_strFunction != "F1") Set_S9F5_Unrecognized_Function();
+
+		if(m_strStFn == "S1F1" && !Is_HostOnline())
+		{
+			Set_SSF0_Abort_Transaction("S1"); 
+		}
+
+	}
+	else if(m_strName =="Selected Equipment Status Request") //S1F3
+	{
+		m_strStream = m_strStFn.Mid(0, 2);
+		m_strFunction = m_strStFn.Mid(2, 2);
+		if(m_strStream != "S1") Set_S9F3_Unrecognized_Stream();
+		if(m_strFunction != "F3") Set_S9F5_Unrecognized_Function();
+
+		if(m_strStFn == "S1F3" && !Is_HostOnline())
+		{
+			Set_SSF0_Abort_Transaction("S1");
+		}
+	}
+	else if(m_strName =="Link Test Request") //S2F3
+	{
+		m_strStream = m_strStFn.Mid(0, 2);
+		m_strFunction = m_strStFn.Mid(2, 2);
+		if(m_strStream != "S2") Set_S9F3_Unrecognized_Stream();
+		if(m_strFunction != "F3") Set_S9F5_Unrecognized_Function();
+
+	/*	if(m_strStFn == "S2F3" && !Is_HostOnline())
+		{
+			Set_SSF0_Abort_Transaction("S2");
+		}*/
+	}
+	else if(m_strName =="Date and Time Set Request") //S2F31
+	{
+		m_strStream = m_strStFn.Mid(0, 2);
+		m_strFunction = m_strStFn.Mid(2, 3);
+		if(m_strStream != "S2") Set_S9F3_Unrecognized_Stream();
+		if(m_strFunction != "F31") Set_S9F5_Unrecognized_Function();
+
+		if(m_strStFn == "S2F31" && !Is_HostOnline())
+		{
+			Set_SSF0_Abort_Transaction("S2");
+		}
+
+	}
+	else if(m_strName == "Enhanced Remote Command") //S2F49
+	{
+		m_strStream = m_strStFn.Mid(0, 2);
+		m_strFunction = m_strStFn.Mid(2, 3);
+		if(m_strStream != "S2") Set_S9F3_Unrecognized_Stream();
+		if(m_strFunction != "F49") Set_S9F5_Unrecognized_Function();
+
+		if(m_strStFn == "S2F49" && !Is_HostOnline())
+		{
+			Set_SSF0_Abort_Transaction("S2");
+		}
+	}
+	else if(m_strName == "Terminal Display, Single") //S10F3
+	{
+		m_strStream = m_strStFn.Mid(0, 3);
+		m_strFunction = m_strStFn.Mid(3, 2);
+		if(m_strStream != "S10") Set_S9F3_Unrecognized_Stream();
+		if(m_strFunction != "F3") Set_S9F5_Unrecognized_Function();
+
+		if(m_strStFn == "S10F3" && !Is_HostOnline())
+		{
+			Set_SSF0_Abort_Transaction("S10");
+		}
+	}
+
+
+
 
 	m_xml.Close();
 	return TRUE;
@@ -1533,6 +1618,53 @@ void CHost::Set_S9F13_Timeout()	// Conversation Timeout
 
 	Send_Command(strSend, FALSE, "S9F13");
 }
+
+
+void CHost::Set_SSF0_Abort_Transaction(CString sStream)	// Conversation Timeout
+{
+	CString strTemp;
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
+
+	strSend += "<EIF VERSION=\"2.0\" ID=\""+ sStream + "F0\" NAME=\"Abort Transaction\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "</EIF>";
+
+	strTemp.Format("%sF0", sStream);
+
+	Send_Command(strSend, FALSE, strTemp);
+}
+
+
+
+void CHost::Set_S9F3_Unrecognized_Stream()	// Conversation Timeout
+{
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
+
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S9F3\" NAME=\"Unrecognized Stream Type\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "</EIF>";
+
+	Send_Command(strSend, FALSE, "S9F3");
+}
+
+
+void CHost::Set_S9F5_Unrecognized_Function()	// Conversation Timeout
+{
+	CString strSend = "<?xml version=\"1.0\" encoding=\"utf-16\"?>" + CRLF;
+
+	strSend += "<EIF VERSION=\"2.0\" ID=\"S9F5\" NAME=\"Unrecognized Function Type\">" + CRLF;
+	strSend += "  <ELEMENT>" + CRLF;
+	strSend += "    <EQPID VALUE=\"" + gData.sEquipId + "\" />" + CRLF;
+	strSend += "  </ELEMENT>" + CRLF;
+	strSend += "</EIF>";
+
+	Send_Command(strSend, FALSE, "S9F5");
+}
+
 
 void CHost::Reply_HeartBeat()
 {
