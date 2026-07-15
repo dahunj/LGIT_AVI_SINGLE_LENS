@@ -1284,8 +1284,8 @@ LRESULT CWorkDlg::OnUpdateVisionInfo(WPARAM nVision, LPARAM lParam)
 				if		(gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::Marked ) m_grdMarking.Set_CellBackClr(i, j, RGB(0xFF, 0x00, 0x00));	// Reserve
 				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::NotMarked) m_grdMarking.Set_CellBackClr(i, j, RGB(0x05, 0xFF, 0x05));	// Empty
 				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::MarkReady) m_grdMarking.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
+				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::Empty) m_grdMarking.Set_CellBackClr(i, j, RGB(0x10, 0x10, 0x80));	// Error
 				else				m_grdMarking.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
-
 				//if		(gData.nInspectInfo[gData.nMZNoMainIndex[eMainIndex::Mark]-1][j][i] == 2 ) m_grdMarking.Set_CellBackClr(i, j, RGB(0xFF, 0x00, 0x00));	// Reserve
 				//else if (gData.nInspectInfo[gData.nMZNoMainIndex[eMainIndex::Mark]-1][j][i] != 2) m_grdMarking.Set_CellBackClr(i, j, RGB(0x00, 0x00, 0xFF));	// Empty
 				//else				m_grdMarking.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
@@ -1787,11 +1787,12 @@ void CWorkDlg::init_LensMap()
 	int nCnt = 0;
 
 	int nXPos = 0, nYPos = 0;
-	int nLNo = 0;
-
-	//vision direction fixY
+	int nLNo = 0, nMESNo = 0;
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
 	
+	//1. 전수 검사 
+	/*	
 	for (int i = 0; i < 144; i++)
 	{
 		nLNo = i+1;
@@ -1815,8 +1816,38 @@ void CWorkDlg::init_LensMap()
 		//if(gMes.sResult[i] == "OK") gData.InfoFeeder[nXPos][nYPos] = eLensState::Init;
 				
 		gData.InfoFeeder[nXPos][nYPos] = eLensState::Init;
-		
+	}
+	*/
 
+	//2. MES 갯수, 번호 기준 검사 
+	for (int i = 0; i < 144; i++)
+	{
+		nLNo = i+1;
+		nMESNo = g_objCommon.ConvertToMESNo(nLNo);
+
+		if(pEquipData->nVisionDir == eVDir::fixY)
+		{
+			nYPos = ((nLNo-1) / gData.nLensCntX);
+			nXPos = (nLNo-1) % gData.nLensCntX;
+		}
+		else
+		{
+			nXPos = ((nLNo-1) / gData.nLensCntY);
+			nYPos = (nLNo-1) % gData.nLensCntY;
+		}		
+
+		if(nLNo == 32 || nLNo == 68 || nLNo == 113)
+		{
+			gData.InfoFeeder[nXPos][nYPos] = eLensState::None;			
+		}
+		else if(nMESNo > gMes.nPocketCnt) 
+		{
+			gData.InfoFeeder[nXPos][nYPos] = eLensState::None;
+		}
+		else if(nMESNo <= gMes.nPocketCnt)
+		{
+			gData.InfoFeeder[nXPos][nYPos] = eLensState::Init;
+		}			
 	}
 }
 

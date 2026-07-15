@@ -163,7 +163,12 @@ BOOL CEquip::Extract_Xml(CString sXmlData)
 				CString sMGZId =  nodes[2]->GetAttribute("VALUE", "");
 				CString sOperId = nodes[3]->GetAttribute("VALUE", "");
 
-				Set_S2F49_PP_SELECT(sMGZId, sOperId);
+				gData.sHostMGZID = sMGZId;
+				gData.sOperId = sOperId;
+
+				Set_S2F49_LOT_START();
+
+				//Set_S2F49_PP_SELECT(sMGZId, sOperId);
 				//Set_S2F49_MGZ_CANCEL();
 			}
 			else if(sType == "2") // unload MGZ ID report 
@@ -195,7 +200,7 @@ BOOL CEquip::Extract_Xml(CString sXmlData)
 			gData.sHostMGZID = nodes[2]->GetAttribute("VALUE", "");
 			gData.sHostRecipeID = nodes[3]->GetAttribute("VALUE", "");
 
-			Set_S2F49_LOT_START();
+			//Set_S2F49_LOT_START();
 		}
 
 		if(m_strRcmd == "20301")
@@ -534,10 +539,10 @@ void CEquip::Set_S2F49_TRAY_ID_CONFIRM()
 	strSend += "        </CP>" + CRLF;  
 	strSend += "      </CPLIST>" + CRLF; 
 	strSend += "      <MAPINFO>" + CRLF;
-	strSend += "        <PRODUCTLIST COUNT=\"141\">" +CRLF;
+	strSend += "        <PRODUCTLIST COUNT=\"50\">" +CRLF;
 	
 
-	for(int i = 0;  i < 141; i++)
+	for(int i = 0;  i < 50; i++)
 	{
 		strTemp.Format("%d",++nTemp);
 

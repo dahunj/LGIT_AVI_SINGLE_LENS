@@ -664,6 +664,7 @@ BOOL CSequenceMain::LoadConveyorRun()
 		}		
 		break;
 	case 3:
+
 		if(m_pDX00->iLdCVMZExist1R )
 		{
 			m_nLoadConveyorLoop.Takt_Save(1, m_nLoadConveyorCase, "Load CV Stop");
