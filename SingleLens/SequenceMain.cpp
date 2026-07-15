@@ -3465,7 +3465,12 @@ BOOL CSequenceMain::MarkUnitRun()
 		m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 		break;
 	case 6:
-		if(nTempInfo == 2 && m_pEquipData->bUseMark)
+		if(gData.sNGCode[gData.nMZNoMainIndex[eMainIndex::Mark]-1][gData.nSlotNoMainIndex[eMainIndex::Mark]-1][nLensNo-1][eVision::MARKING] =="EM")
+		{
+			gData.InfoMainIndex[eMainIndex::Mark][nMarkXPos-1][nMarkYPos-1] = eLensState::Empty;	//Scan Done
+			m_nMarkUnitCase = 10; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
+		}
+		else if(nTempInfo == 2 && m_pEquipData->bUseMark)
 		{
 			m_pDY02->oMarkPenDown = TRUE;m_pDY02->oMarkPenUp = FALSE;
 			g_objAJinAXL.Write_Output(2);
@@ -3474,7 +3479,7 @@ BOOL CSequenceMain::MarkUnitRun()
 
 			gData.InfoMainIndex[eMainIndex::Mark][nMarkXPos-1][nMarkYPos-1] = eLensState::Marked;	//Scan Done
 			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
-		}
+		}		
 		else
 		{
 			gData.InfoMainIndex[eMainIndex::Mark][nMarkXPos-1][nMarkYPos-1] = eLensState::NotMarked;	//Scan Done

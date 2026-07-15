@@ -338,7 +338,7 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 			if (gData.bCycleStop && !m_bCycleStopRun) m_bCycleStopRun = TRUE;
 
 		
-			if(pEquipData->bUseMES) g_objMesAgent.Set_EquipState(eEquipState::RUN);	//Run
+			
 
 			if(pEquipData->bUseDoorLock) g_objCommon.Locking_MainDoor(TRUE);
 			if (gAlm.bBegin)
@@ -359,6 +359,8 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 
 			g_objLogFile.Save_HandlerLog("[Work Mode] Main Thread Start");
 			g_objSequenceMain.Begin_MainRunThread();
+
+			if(pEquipData->bUseMES) g_objMesAgent.Set_EquipState(eEquipState::RUN);	//Run
 			//g_objInspector.Set_StatusUpdate(VISION_ALL, 2);
 
 		} 

@@ -14,6 +14,7 @@ struct eLensState
 		MarkReady = 5,
 		Marked = 6,
 		NotMarked = 7,
+		Empty =8,
 		Init = 9,
 
 	};

@@ -319,6 +319,7 @@ void CMesAgent::Get_Tray_Cancel(CString sTrayID, CString sCode, CString sText)
 
 void CMesAgent::Get_Terminal(CString sMsg)
 {
+	g_objCommon.Show_Alarm(sMsg, STATE_NONE, TRUE);
 	g_objLogFile.Save_TerminalLog(sMsg);
 }
 

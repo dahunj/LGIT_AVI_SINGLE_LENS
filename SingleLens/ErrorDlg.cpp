@@ -187,7 +187,7 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 			}
 			else
 			{
-				m_strErrSubMsg.Format(", Fail - LotID : %s, Code: %s, Text: %s", gMes.sHostMGZID[gMes.nElevPos],gMes.sHostCancelCode, gMes.sHostCancelText);
+				m_strErrSubMsg.Format(", Fail - MZID : %s, Code: %s, Text: %s", gMes.sHostMGZID[gMes.nElevPos],gMes.sHostCancelCode, gMes.sHostCancelText);
 				m_btnErrRetry.EnableWindow(TRUE);
 				m_btnErrRetry.ShowWindow(SW_SHOW);
 			}			
