@@ -144,6 +144,7 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_MES_ABORT, &CWorkDlg::OnBnClickedBtnMesAbort)
 	ON_BN_CLICKED(IDC_BTN_IDLE_REPORT, &CWorkDlg::OnBnClickedBtnIdleReport)
 	ON_BN_CLICKED(IDC_CHK_SIMUL, &CWorkDlg::OnBnClickedChkSimul)
+	ON_WM_RBUTTONDOWN()
 END_MESSAGE_MAP()
 
 // CWorkDlg 메시지 처리기입니다.
@@ -250,6 +251,38 @@ BOOL CWorkDlg::OnInitDialog()
 	m_Btn2.ShowWindow(SW_HIDE);
 #endif
 	
+	//Top Grid 
+	 CRect rectTop(1254, 642, 1454, 889);
+	 m_wndTopGrid.Create( this, rectTop, IDC_GRID_TOPVISION, 16, 9);
+	 	
+	 for (int i = 0; i < 144; ++i)
+	 {
+		 m_wndTopGrid.SetCellNumber(i, g_objCommon.ConvertToMESNo(i+1));
+	 }
+
+	 //Btm Grid 
+	 CRect rectBtm(1475, 642, 1675, 889);
+	 m_wndBtmGrid.Create( this, rectBtm, IDC_GRID_BTMVISION, 16, 9);
+	 for (int i = 0; i < 144; ++i)
+	 {
+		 m_wndBtmGrid.SetCellNumber(i, g_objCommon.ConvertToMESNo(i+1));
+	 }
+
+	 //Marking Grid 
+	  CRect rectMark(1700, 642, 1900, 889);
+	  m_wndMarkGrid.Create( this, rectMark, IDC_GRID_MARKING, 16, 9);
+	  for (int i = 0; i < 144; ++i)
+	 {
+		 m_wndMarkGrid.SetCellNumber(i, g_objCommon.ConvertToMESNo(i+1));
+	 }
+
+	 //Example - 0번 셀: 빨간색
+	// m_wndTopGrid.SetCellBackgroundColor( 0, RGB(255, 100, 100));
+
+	
+
+	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
 }
@@ -1246,15 +1279,29 @@ LRESULT CWorkDlg::OnUpdateMZInfo(WPARAM nTray, LPARAM lParam)
 
 LRESULT CWorkDlg::OnUpdateVisionInfo(WPARAM nVision, LPARAM lParam)
 {
+	int nLensNo = 0;
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
 	if (nVision == eVision::TC)
 	{	
 		for (int i = 0; i < gData.nLensCntY; i++)
 		{
 			for (int j = 0; j < gData.nLensCntX; j++) 
 			{
-				if		(gData.InfoMainIndex[eMainIndex::Top][j][i] == eLensState::TopDone ) m_grdTopVision.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0x00));	// Reserve
-				else if (gData.InfoMainIndex[eMainIndex::Top][j][i] == eLensState::TopReady) m_grdTopVision.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
-				else				m_grdTopVision.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
+
+				if(pEquipData->nVisionDir == eVDir::fixY)
+				{
+					nLensNo = (gData.nLensCntX * i) + (j + 1);	
+				}
+				else if(pEquipData->nVisionDir == eVDir::fixX)
+				{
+					nLensNo = (gData.nLensCntY * j) + ( i+1 );
+				}				
+
+				if		(gData.InfoMainIndex[eMainIndex::Top][j][i] == eLensState::TopDone ) m_wndTopGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0x00));	// Reserve
+				else if (gData.InfoMainIndex[eMainIndex::Top][j][i] == eLensState::TopReady) m_wndTopGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0xFF));	// Empty
+				else				m_wndTopGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x80, 0x80, 0x80));	// Error
 
 			}
 		}
@@ -1266,9 +1313,18 @@ LRESULT CWorkDlg::OnUpdateVisionInfo(WPARAM nVision, LPARAM lParam)
 		{
 			for (int j = 0; j < gData.nLensCntX; j++) 
 			{
-				if		(gData.InfoMainIndex[eMainIndex::Btm][j][i] == eLensState::BtmDone ) m_grdBtmVision.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0x00));	// Reserve
-				else if (gData.InfoMainIndex[eMainIndex::Btm][j][i] == eLensState::BtmReady) m_grdBtmVision.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
-				else				m_grdBtmVision.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
+				if(pEquipData->nVisionDir == eVDir::fixY)
+				{
+					nLensNo = (gData.nLensCntX * i) + (j + 1);	
+				}
+				else if(pEquipData->nVisionDir == eVDir::fixX)
+				{
+					nLensNo = (gData.nLensCntY * j) + ( i + 1 );
+				}				
+				
+				if		(gData.InfoMainIndex[eMainIndex::Btm][j][i] == eLensState::BtmDone ) m_wndBtmGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0x00));	// Reserve
+				else if (gData.InfoMainIndex[eMainIndex::Btm][j][i] == eLensState::BtmReady) m_wndBtmGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0xFF));	// Empty
+				else				m_wndBtmGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x80, 0x80, 0x80));	// Error
 
 			}
 		}
@@ -1281,15 +1337,22 @@ LRESULT CWorkDlg::OnUpdateVisionInfo(WPARAM nVision, LPARAM lParam)
 			for (int j = 0; j < gData.nLensCntX; j++) 
 			{
 			
-				if		(gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::Marked ) m_grdMarking.Set_CellBackClr(i, j, RGB(0xFF, 0x00, 0x00));	// Reserve
-				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::NotMarked) m_grdMarking.Set_CellBackClr(i, j, RGB(0x05, 0xFF, 0x05));	// Empty
-				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::MarkReady) m_grdMarking.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
-				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::Empty) m_grdMarking.Set_CellBackClr(i, j, RGB(0x10, 0x10, 0x80));	// Error
-				else				m_grdMarking.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
-				//if		(gData.nInspectInfo[gData.nMZNoMainIndex[eMainIndex::Mark]-1][j][i] == 2 ) m_grdMarking.Set_CellBackClr(i, j, RGB(0xFF, 0x00, 0x00));	// Reserve
-				//else if (gData.nInspectInfo[gData.nMZNoMainIndex[eMainIndex::Mark]-1][j][i] != 2) m_grdMarking.Set_CellBackClr(i, j, RGB(0x00, 0x00, 0xFF));	// Empty
-				//else				m_grdMarking.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
-
+				if(pEquipData->nVisionDir == eVDir::fixY)
+				{
+					nLensNo = (gData.nLensCntX * i) + (j + 1);	
+				}
+				else if(pEquipData->nVisionDir == eVDir::fixX)
+				{
+					nLensNo = (gData.nLensCntY * j) + ( i + 1 );
+				}				
+				
+				if		(gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::Marked ) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0x00, 0x00));	// Reserve
+				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::NotMarked) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x05, 0xFF, 0x05));	// Empty
+				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::MarkReady) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0xFF));	// Empty
+				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::Empty) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x10, 0x10, 0x80));	// Error
+				else				m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x80, 0x80, 0x80));	// Error
+				
+				
 			}
 		}
 	}
@@ -2152,4 +2215,19 @@ void CWorkDlg::OnBnClickedChkSimul()
 	g_objLogFile.Save_HandlerLog("[Work] Simul Mode checked");
 
 	gData.bSimulMode = m_chkSimulMode.GetCheck();
+}
+
+
+void CWorkDlg::OnRButtonDown(UINT nFlags, CPoint point)
+{
+	CString strLog;
+	strLog.Format("%d, %d", (int)point.x, (int)point.y);
+	if(gData.bSimulMode)
+	{
+		AfxMessageBox(strLog);
+	}	
+
+
+
+	CDialogEx::OnRButtonDown(nFlags, point);
 }

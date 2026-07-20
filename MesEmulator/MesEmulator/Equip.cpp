@@ -541,14 +541,22 @@ void CEquip::Set_S2F49_TRAY_ID_CONFIRM()
 	strSend += "      <MAPINFO>" + CRLF;
 	strSend += "        <PRODUCTLIST COUNT=\"50\">" +CRLF;
 	
+	int nStart = 1, nEnd = 99, nResult = 0;
+	CString sStatus;
+	
+	
 
-	for(int i = 0;  i < 50; i++)
-	{
+	for(int i = 0;  i < 141; i++)
+	{	
+		nResult = (rand() % (nEnd - nStart + 1) + nStart);
+		if(nResult < 40) sStatus="OK";
+		else			 sStatus="NG";
+
 		strTemp.Format("%d",++nTemp);
 
 		strSend += "		  <PRODUCTINFO>" +CRLF;
 		strSend += "			<POCKETID VALUE=\""+ strTemp + "\" />" +CRLF;
-		strSend += "			<STATUS VALUE=\"OK\" />" +CRLF;
+		strSend += "			<STATUS VALUE=\""+ sStatus+"\" />" +CRLF;
 		strSend += "		  </PRODUCTINFO>" +CRLF;
 	}
 

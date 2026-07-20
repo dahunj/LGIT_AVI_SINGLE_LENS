@@ -6,6 +6,7 @@
 #include "afxwin.h"
 #include "AJinDefine.h"
 
+#include "GridWindow.h"
 
 #define UM_UPDATE_MODEL			WM_USER+1
 #define UM_UPDATE_MZ_INFO		WM_USER+2
@@ -43,9 +44,7 @@ public:
 	CGridCS			m_grdLoadMZ;
 	CGridCS			m_grdRdyMZ;
 
-	CGridCS			m_grdTopVision;
-	CGridCS			m_grdBtmVision;
-	CGridCS			m_grdMarking;
+	
 	
 	CGroupCS		m_Group[10];
 	CLabelCS		m_Label[7];
@@ -93,6 +92,15 @@ public:
 	CButton m_Btn1;
 	CButton m_Btn2;
 	CButton m_Btn_Simul;
+
+	CGridWindow		m_wndTopGrid;
+	CGridWindow		m_wndBtmGrid;
+	CGridWindow		m_wndMarkGrid;
+
+	CGridCS			m_grdTopVision;
+	CGridCS			m_grdBtmVision;
+	CGridCS			m_grdMarking;
+
 	
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
@@ -221,6 +229,7 @@ public:
 	
 	afx_msg void OnBnClickedChkSimul();
 	
+	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 };
 
 

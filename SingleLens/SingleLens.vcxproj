@@ -150,6 +150,7 @@
     <ClInclude Include="EnumData.h" />
     <ClInclude Include="EnumIO.h" />
     <ClInclude Include="EnumMoveData.h" />
+    <ClInclude Include="GridWindow.h" />
     <ClInclude Include="InspectV1.h" />
     <ClInclude Include="MesAgent.h" />
     <ClInclude Include="NoWorkDlg.h" />
@@ -205,6 +206,7 @@
     <ClCompile Include="AJinAXL.cpp" />
     <ClCompile Include="AlarmDlg.cpp" />
     <ClCompile Include="BarcodeLot_Cognex.cpp" />
+    <ClCompile Include="GridWindow.cpp" />
     <ClCompile Include="InspectV1.cpp" />
     <ClCompile Include="MesAgent.cpp" />
     <ClCompile Include="NoWorkDlg.cpp" />
