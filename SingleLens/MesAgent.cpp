@@ -296,6 +296,12 @@ void CMesAgent::Get_TrayID_Confirm(CString sStrings)
 	AfxExtractSubString(strTemp[1], sStrings, 3, chSep);
 	gMes.sHostTrayID = strTemp[0];
 	gMes.nPocketCnt = atoi(strTemp[1]);
+
+	int nXPos = 0, nYPos = 0; 
+	int nLensNoMES = 0, nLensNoAVI = 0;
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
 	for (int i = 0; i < gMes.nPocketCnt; i++)
 	{
 		AfxExtractSubString(strTemp[2], sStrings, i*2 + 4, chSep);
@@ -303,7 +309,36 @@ void CMesAgent::Get_TrayID_Confirm(CString sStrings)
 
 		gMes.sPocketNo[i] = strTemp[2];
 		gMes.sResult[i] = strTemp[3];
+
+		nLensNoMES = atoi(gMes.sPocketNo[i]);
+		nLensNoAVI = g_objCommon.ConvertToAVINo(nLensNoMES);
+		
+		if(pEquipData->nVisionDir == eVDir::fixY)
+		{
+			nYPos = ((nLensNoAVI-1) / gData.nLensCntX);
+			nXPos = (nLensNoAVI-1) % gData.nLensCntX;
+		}
+		else
+		{
+			nXPos = ((nLensNoAVI-1) / gData.nLensCntY);
+			nYPos = (nLensNoAVI-1) % gData.nLensCntY;
+		}		
+
+		if(nLensNoAVI == 32 || nLensNoAVI == 68 || nLensNoAVI == 113)
+		{
+			gData.InfoFeeder[nXPos][nYPos] = eLensState::None;			
+		}
+		else if(gMes.sResult[i] == "OK")
+		{
+			gData.InfoFeeder[nXPos][nYPos] = eLensState::Init;
+		}
+		else
+		{
+			gData.InfoFeeder[nXPos][nYPos] = eLensState::None;
+		}
+
 	}
+
 	gMes.bTrayIDConfirm = TRUE;
 
 }

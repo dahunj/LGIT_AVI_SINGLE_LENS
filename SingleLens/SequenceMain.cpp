@@ -1951,7 +1951,7 @@ BOOL CSequenceMain::FeederRun()
 		if(m_pEquipData->bUseMES && gMes.bTrayIDConfirm)
 		{
 			gMes.bTrayIDConfirm = FALSE; //Load : 1
-			g_dlgWork.init_LensMap();	
+			//g_dlgWork.init_LensMap();	 // Get_TrayID_Confirm 에서 처리하는 걸로 변경 
 			gData.nLensUseCnt[gData.nMZNoFeeder-1][gData.nSlotNoFeeder-1] = 144;
 			gData.nLensTotalCnt[gData.nMZNoFeeder-1] += gData.nLensUseCnt[gData.nMZNoFeeder-1][gData.nSlotNoFeeder-1];
 			gLot.nLensCount[gData.nMZNoFeeder-1] = gData.nLensTotalCnt[gData.nMZNoFeeder-1];
@@ -2442,7 +2442,7 @@ BOOL CSequenceMain::FeederRun()
 		if(m_pEquipData->bUseMES && gMes.bTrayIDConfirm)
 		{
 			gMes.bTrayIDConfirm = FALSE; //Load : 1
-			g_dlgWork.init_LensMap();
+			//g_dlgWork.init_LensMap(); // Get_TrayID_Confirm 에서 처리하는 걸로 변경 
 			gData.nLensUseCnt[gData.nMZNoFeeder-1][gData.nSlotNoFeeder-1] = 144;
 			gData.nLensTotalCnt[gData.nMZNoFeeder-1] += gData.nLensUseCnt[gData.nMZNoFeeder-1][gData.nSlotNoFeeder-1];
 			gLot.nLensCount[gData.nMZNoFeeder-1] = gData.nLensTotalCnt[gData.nMZNoFeeder-1];
