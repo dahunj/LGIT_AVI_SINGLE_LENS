@@ -1,5 +1,5 @@
 // AJinAXL.cpp : 구현 파일
-//
+///
 #include "stdafx.h"
 #include "AJinAXL.h"
 #include "SingleLens.h"
