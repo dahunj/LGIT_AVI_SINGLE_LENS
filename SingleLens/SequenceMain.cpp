@@ -3807,7 +3807,7 @@ BOOL CSequenceMain::UnloadConveyorRun()
 			m_nUnloadConveyorLoop.Takt_Save(10, m_nUnloadConveyorCase, "");
 			m_nUnloadConveyorCase++; m_nUnloadConveyorLoop.Set_LoopTime(gData.nLTime[eLT::CV]);			
 		}
-		else if(GetTickCount() - dwTick > 15000 )
+		else if(GetTickCount() - dwTick > 25000 )
 		{
 		
 			nMZCntPost = 0;		
