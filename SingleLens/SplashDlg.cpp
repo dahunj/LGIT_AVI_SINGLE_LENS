@@ -45,6 +45,8 @@ void CSplashDlg::Initial_Controls()
 	m_bmpImage[1].LoadBitmap(IDB_SYNAPSE_LOGO);
 	m_Image[1].SetBitmap(m_bmpImage[1]);
 	m_Image[1].SetWindowPos(this, 0, 0, 260, 75, SWP_NOMOVE);
+
+	
 }
 
 BOOL CSplashDlg::OnInitDialog()

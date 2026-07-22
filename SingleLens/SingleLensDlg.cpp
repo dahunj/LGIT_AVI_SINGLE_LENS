@@ -274,9 +274,11 @@ void CSingleLensDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	CSplashDlg dlgSplash;
 	dlgSplash.Create(IDD_SPLASH_DLG, NULL);
 	dlgSplash.ShowWindow(SW_SHOW);
-
+	
 	g_objDataManager.Read_EquipData();
 	g_objDataManager.Read_MoveData();
+
+	
 
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	CIniFileCS INI(gsCurrentDir + "\\System\\EquipData.ini");
@@ -312,7 +314,7 @@ void CSingleLensDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	}
 
 
-	theApp.uSleep(1000);
+	theApp.uSleep(10000);
 
 	dlgSplash.DestroyWindow();
 
