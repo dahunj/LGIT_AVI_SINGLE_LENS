@@ -33,6 +33,7 @@ void CDataManager::Reset_EquipData()
 	m_EquipData.nNoWorkTime = 0;
 
 	m_EquipData.bUseMES = FALSE;
+	m_EquipData.bLotEndSelect = FALSE;
 	m_EquipData.bUseBarcodeMGZ = FALSE;
 	m_EquipData.bUseBarcodeCtZig = FALSE;
 	
@@ -111,6 +112,7 @@ BOOL CDataManager::Read_ModelEquipData(CString strPath)
 	m_EquipData.nNoWorkTime = INI.Get_Integer("EQUIPMENT", "NO_WORK_TIME", 0);
 
 	m_EquipData.bUseMES = INI.Get_Bool("OPTION", "MES_USE", FALSE);
+	m_EquipData.bLotEndSelect = INI.Get_Bool("OPTION", "LOT_END_SELECT", FALSE);
 	m_EquipData.bUseBarcodeMGZ = INI.Get_Bool("OPTION", "BARCODE_MGZ_USE", FALSE);
 	m_EquipData.bUseBarcodeCtZig = INI.Get_Bool("OPTION", "BARCODE_ZIG_USE", FALSE);
 

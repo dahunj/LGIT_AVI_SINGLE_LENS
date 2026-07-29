@@ -83,6 +83,9 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHK_MARK_USE, m_chkMarkUse);
 
 	DDX_Control(pDX, IDC_CHK_USE_MES, m_chkUseMES);
+	DDX_Control(pDX, IDC_CHK_MES_LOTEND_SELECT, m_chkUseMESLotEndSelect);
+
+
 	DDX_Control(pDX, IDC_CHK_USE_BARCODE_MGZ, m_chkUseBarcodeMGZ);
 	DDX_Control(pDX, IDC_CHK_USE_BARCODE_CTZIG, m_chkUseBarcodeCtZig);
 
@@ -177,6 +180,8 @@ void CSetupEquipDlg::Initial_Controls()
 	m_chkMarkUse.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
 
 	m_chkUseMES.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
+	m_chkUseMESLotEndSelect.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
+	
 	m_chkUseBarcodeMGZ.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
 	m_chkUseBarcodeCtZig.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
 
@@ -411,6 +416,7 @@ void CSetupEquipDlg::Display_EquipData()
 		
 	
 	m_chkUseMES.SetCheck(pEquipData->bUseMES);
+	m_chkUseMESLotEndSelect.SetCheck(pEquipData->bUseMES);
 	m_chkUseBarcodeMGZ.SetCheck(pEquipData->bUseBarcodeMGZ);
 	m_chkUseBarcodeCtZig.SetCheck(pEquipData->bUseBarcodeCtZig);
 		
@@ -499,7 +505,8 @@ void CSetupEquipDlg::Save_EquipData()
 
 	pEquipData->bUseAutoRecipeChange = m_chkAutoRecipeChange.GetCheck();INI.Set_Bool("OPTION", "AUTO_RECIPE_CHANGE", pEquipData->bUseAutoRecipeChange);	 
 
-	pEquipData->bUseMES = m_chkUseMES.GetCheck();INI.Set_Bool("OPTION", "MES_USE", pEquipData->bUseMES);	 
+	pEquipData->bUseMES = m_chkUseMES.GetCheck();INI.Set_Bool("OPTION", "MES_USE", pEquipData->bUseMES);	
+	pEquipData->bLotEndSelect = m_chkUseMESLotEndSelect.GetCheck();INI.Set_Bool("OPTION", "LOT_END_SELECT", pEquipData->bLotEndSelect);
 	pEquipData->bUseBarcodeMGZ = m_chkUseBarcodeMGZ.GetCheck();INI.Set_Bool("OPTION", "BARCODE_MGZ_USE", pEquipData->bUseBarcodeMGZ);
 	pEquipData->bUseBarcodeCtZig = m_chkUseBarcodeCtZig.GetCheck(); INI.Set_Bool("OPTION", "BARCODE_ZIG_USE", pEquipData->bUseBarcodeCtZig);
 	
@@ -589,6 +596,7 @@ void CSetupEquipDlg::Save_ModelEquipData(CString sPath)
 	pEquipData->bUseMark = m_chkMarkUse.GetCheck(); INI.Set_Bool("OPTION", "MARK_USE", pEquipData->bUseMark);
 
 	pEquipData->bUseMES = m_chkUseMES.GetCheck();INI.Set_Bool("OPTION", "MES_USE", pEquipData->bUseMES);	 
+	pEquipData->bLotEndSelect = m_chkUseMESLotEndSelect.GetCheck();INI.Set_Bool("OPTION", "LOT_END_SELECT", pEquipData->bLotEndSelect);
 	pEquipData->bUseBarcodeMGZ = m_chkUseBarcodeMGZ.GetCheck();INI.Set_Bool("OPTION", "BARCODE_MGZ_USE", pEquipData->bUseBarcodeMGZ);
 	pEquipData->bUseBarcodeCtZig = m_chkUseBarcodeCtZig.GetCheck(); INI.Set_Bool("OPTION", "BARCODE_ZIG_USE", pEquipData->bUseBarcodeCtZig);
 

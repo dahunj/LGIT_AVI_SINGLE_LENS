@@ -1451,14 +1451,28 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		break;
 	case 37:
-		m_nMZElevCase++;m_nMZElevLoop.Set_LoopTime(5000);
+		m_nMZElevCase = 91;m_nMZElevLoop.Set_LoopTime(5000);
 		break;
+	case 91:
+		if(m_pEquipData->bLotEndSelect)
+		{
+			g_objCommon.Show_Alarm("Lot End");
+			m_nMZElevCase = 38; m_nMZElevLoop.Set_LoopTime(5000);
+			return FALSE;
+		}
+		else
+		{
+			g_objMesAgent.Set_LotCompleted(gData.sLotIDElevUnload, gData.sMZIDElevUnload, gData.sRecipeElevUnload[Find_UnloadMZNo()]);
+			m_nMZElevCase = 38; m_nMZElevLoop.Set_LoopTime(5000);
+			break;
+		}		
+		
 	case 38:
 		if(g_objCommon.Get_ElevLift2Out())
 		{
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");			
 			g_objInspector.Set_LotEnd(gData.sMZIDElevUnload, Find_UnloadMZNo());
-			g_objMesAgent.Set_LotCompleted(gData.sLotIDElevUnload, gData.sMZIDElevUnload, gData.sRecipeElevUnload[Find_UnloadMZNo()]);
+			
 			Job_LotEnd(Find_UnloadMZNo());
 
 			g_dlgWork.TransferMZInfo(eMZ::Load, -1, m_pEquipData->nVisionDir); // From Load To Out(-1)
@@ -3835,6 +3849,11 @@ BOOL CSequenceMain::UnloadConveyorRun()
 	static int nDetectCnt[6] = {0,0,0,0,0,0};
 
 	static DWORD dwTick;
+
+	if(gData.bSimulMode)
+	{
+		m_pDX01->iUldCvMZExist1L = FALSE;
+	}
 
 	if(gData.bUldMZWait || gData.bElvUnloadWait) return TRUE;
 	

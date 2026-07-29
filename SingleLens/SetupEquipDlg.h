@@ -67,6 +67,8 @@ public:
 	CCheckCS	m_chkMarkUse;
 
 	CCheckCS	m_chkUseMES;
+	CCheckCS	m_chkUseMESLotEndSelect;
+
 	CCheckCS	m_chkUseBarcodeMGZ;
 	CCheckCS	m_chkUseBarcodeCtZig;
 

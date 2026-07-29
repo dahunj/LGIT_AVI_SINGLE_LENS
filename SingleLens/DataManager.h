@@ -35,6 +35,7 @@ typedef struct tag_EQUIP_DATA {
 	BOOL	bUseDoorLock;
 	
 	BOOL	bUseMES;	
+	BOOL	bLotEndSelect;
 	BOOL	bUseBarcodeMGZ;
 	BOOL	bUseBarcodeCtZig;
 

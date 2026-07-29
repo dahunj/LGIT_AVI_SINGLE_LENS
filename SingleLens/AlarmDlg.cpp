@@ -7,7 +7,10 @@
 
 #include "LogFile.h"
 #include "SequenceInit.h"
+#include "SequenceMain.h"
 #include "SingleLensDlg.h"
+
+#include "MesAgent.h"
 
 // CAlarmDlg 대화 상자입니다.
 CAlarmDlg g_dlgAlarm;
@@ -76,6 +79,12 @@ void CAlarmDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	if (bShow) {
 		CString strLog;
+
+		if (m_strMsg == "Lot End") {
+			m_btnAlmBuzzOff.SetWindowText("수동 완공");
+			m_btnAlmOK.SetWindowText("자동 완공");			
+		}
+
 		strLog.Format("[Alarm Mode] %s", m_strMsg);
 		strLog.Replace("\n", " ");
 		g_objLogFile.Save_HandlerLog(strLog);
@@ -110,10 +119,33 @@ void CAlarmDlg::OnBnClickedBtnAlmBuzzOff()
 {
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	pMainDlg->Set_BuzzerFlicker(FALSE);
+	
+	CString strText;
+	m_btnAlmBuzzOff.GetWindowText(strText);
+
+	if (strText == "수동 완공") 
+	{
+		g_objMesAgent.Set_ControlState(2, gData.sOperID);	//MES OffLine
+		g_objLogFile.Save_HandlerLog("[Alarm Mode] 수동완공 click");
+		m_btnAlmOK.SetWindowText("OK");		
+	}
+	ShowWindow(SW_HIDE);
 }
 
 void CAlarmDlg::OnBnClickedBtnAlmOk()
 {
+	CString strText, strLog;
+	m_btnAlmOK.GetWindowText(strText);
+	
+	if (strText == "자동 완공") 
+	{		
+		if (g_objMesAgent.Is_HostOnline()) g_objMesAgent.Set_LotCompleted(gData.sLotIDElevUnload, gData.sMZIDElevUnload, gData.sRecipeElevUnload[g_objSequenceMain.Find_UnloadMZNo()]);
+		strLog.Format("[Alarm Mode] 자동완공 click %s,%d,%d", gData.sLotID, gLot.nGoodCount, gLot.nNgCount);
+		g_objLogFile.Save_HandlerLog(strLog);
+		m_btnAlmOK.SetWindowText("OK");
+		ShowWindow(SW_HIDE);
+	}	
+
 	ShowWindow(SW_HIDE);
 }
 
