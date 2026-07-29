@@ -2970,8 +2970,8 @@ BOOL CSequenceMain::TopInspectorRun()
 				gRcp.dVelocity[eVision::TC] = m_pEquipData->dTopVelocity;
 				gRcp.dStartX[eVision::TC]	= m_pEquipData->dTopStartX;
 				gRcp.dStartY[eVision::TC]	= m_pEquipData->dTopStartY;
-				gRcp.dPitchX[eVision::TC]	= m_pEquipData->dTopPitchX;
-				gRcp.dPitchY[eVision::TC]	= m_pEquipData->dTopPitchY;
+				gRcp.dPitchX[eVision::TC]	= m_pEquipData->dZigPitchX;
+				gRcp.dPitchY[eVision::TC]	= m_pEquipData->dZigPitchY;
 
 				m_nTopInspectCase++;
 				m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
@@ -3237,8 +3237,8 @@ BOOL CSequenceMain::BtmInspectorRun()
 				gRcp.dVelocity[eVision::BC] = m_pEquipData->dTopVelocity;
 				gRcp.dStartX[eVision::BC]	= m_pEquipData->dTopStartX;
 				gRcp.dStartY[eVision::BC]	= m_pEquipData->dTopStartY;
-				gRcp.dPitchX[eVision::BC]	= m_pEquipData->dTopPitchX;
-				gRcp.dPitchY[eVision::BC]	= m_pEquipData->dTopPitchY;
+				gRcp.dPitchX[eVision::BC]	= m_pEquipData->dZigPitchX;
+				gRcp.dPitchY[eVision::BC]	= m_pEquipData->dZigPitchY;
 
 				m_nBtmInspectCase++;
 				m_nBtmInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
