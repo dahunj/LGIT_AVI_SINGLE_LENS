@@ -18,6 +18,7 @@ typedef struct tag_EQUIP_DATA {
 	BOOL	bUseBtmVision;
 	BOOL	bUseMark;
 
+	BOOL	bUseAutoRecipeChange;
 
 	int		nZigArrayX;
 	int		nZigArrayY;

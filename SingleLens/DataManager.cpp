@@ -151,12 +151,12 @@ BOOL CDataManager::Read_ModelEquipData(CString strPath)
 	m_EquipData.dBtmStartY   = INI.Get_Double("TRIGGER",  "BTM_START_Y", 0.00);
 	m_EquipData.dBtmPitchX   = INI.Get_Double("TRIGGER",  "BTM_PITCH_X", 0.00);
 	m_EquipData.dBtmPitchY	 = INI.Get_Double("TRIGGER",  "BTM_PITCH_Y", 0.00);
-
-
-
+	
 	m_EquipData.bUseTopVision = INI.Get_Bool("OPTION", "TOP_VISION", FALSE);	
 	m_EquipData.bUseBtmVision = INI.Get_Bool("OPTION", "BTM_VISION", FALSE);
 	m_EquipData.bUseMark = INI.Get_Bool("OPTION", "MARK_USE", FALSE);
+
+	m_EquipData.bUseAutoRecipeChange = INI.Get_Bool("OPTION", "AUTO_RECIPE_CHANGE", FALSE);	
 
 	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) { strKey.Format("%d%d", i, j); m_EquipData.bTower[i][j] = INI.Get_Bool("TOWER", strKey, FALSE); }
 	for (int i = 0; i < 5; i++) for (int j = 0; j < 6; j++) { strKey.Format("%d%d", i, j); m_EquipData.bBuzzer[i][j] = INI.Get_Bool("BUZZER", strKey, FALSE); }

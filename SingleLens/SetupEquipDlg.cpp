@@ -85,6 +85,8 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHK_USE_MES, m_chkUseMES);
 	DDX_Control(pDX, IDC_CHK_USE_BARCODE_MGZ, m_chkUseBarcodeMGZ);
 	DDX_Control(pDX, IDC_CHK_USE_BARCODE_CTZIG, m_chkUseBarcodeCtZig);
+
+	DDX_Control(pDX, IDC_CHK_RECIPE_CHANGE, m_chkAutoRecipeChange);
 }
 
 BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
@@ -177,6 +179,8 @@ void CSetupEquipDlg::Initial_Controls()
 	m_chkUseMES.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
 	m_chkUseBarcodeMGZ.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
 	m_chkUseBarcodeCtZig.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
+
+	m_chkAutoRecipeChange.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60), CCheckCS::emRed, 0);
 }
 
 
@@ -410,6 +414,7 @@ void CSetupEquipDlg::Display_EquipData()
 	m_chkUseBarcodeMGZ.SetCheck(pEquipData->bUseBarcodeMGZ);
 	m_chkUseBarcodeCtZig.SetCheck(pEquipData->bUseBarcodeCtZig);
 		
+	m_chkAutoRecipeChange.SetCheck(pEquipData->bUseAutoRecipeChange);
 	
 	for (int i = 0; i < 6; i++) 
 	{
@@ -491,6 +496,8 @@ void CSetupEquipDlg::Save_EquipData()
 	pEquipData->bUseTopVision = m_chkTopVision.GetCheck();INI.Set_Bool("OPTION", "TOP_VISION", pEquipData->bUseTopVision);	 
 	pEquipData->bUseBtmVision = m_chkBtmVision.GetCheck();INI.Set_Bool("OPTION", "BTM_VISION", pEquipData->bUseBtmVision);
 	pEquipData->bUseMark = m_chkMarkUse.GetCheck(); INI.Set_Bool("OPTION", "MARK_USE", pEquipData->bUseMark);
+
+	pEquipData->bUseAutoRecipeChange = m_chkAutoRecipeChange.GetCheck();INI.Set_Bool("OPTION", "AUTO_RECIPE_CHANGE", pEquipData->bUseAutoRecipeChange);	 
 
 	pEquipData->bUseMES = m_chkUseMES.GetCheck();INI.Set_Bool("OPTION", "MES_USE", pEquipData->bUseMES);	 
 	pEquipData->bUseBarcodeMGZ = m_chkUseBarcodeMGZ.GetCheck();INI.Set_Bool("OPTION", "BARCODE_MGZ_USE", pEquipData->bUseBarcodeMGZ);
@@ -584,6 +591,8 @@ void CSetupEquipDlg::Save_ModelEquipData(CString sPath)
 	pEquipData->bUseMES = m_chkUseMES.GetCheck();INI.Set_Bool("OPTION", "MES_USE", pEquipData->bUseMES);	 
 	pEquipData->bUseBarcodeMGZ = m_chkUseBarcodeMGZ.GetCheck();INI.Set_Bool("OPTION", "BARCODE_MGZ_USE", pEquipData->bUseBarcodeMGZ);
 	pEquipData->bUseBarcodeCtZig = m_chkUseBarcodeCtZig.GetCheck(); INI.Set_Bool("OPTION", "BARCODE_ZIG_USE", pEquipData->bUseBarcodeCtZig);
+
+	pEquipData->bUseAutoRecipeChange = m_chkAutoRecipeChange.GetCheck();INI.Set_Bool("OPTION", "AUTO_RECIPE_CHANGE", pEquipData->bUseAutoRecipeChange);	 
 	
 	m_stcDelayAdd[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "FEEDER_CLOSE", nData);
 	m_stcDelayAdd[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "FEEDER_OPEN", nData);

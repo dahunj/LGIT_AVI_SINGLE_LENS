@@ -121,6 +121,10 @@ void CInspector::Receive_Command(int nVPc, CString sCommand)
 		if (strOp == "UPDATE") Get_FOBUpdate(nVPc, strA[0]);
 		if (strOp == "REPLY") Get_FOBReply(nVPc, strA[0]);
 	}
+	else if (strCmd =="RECIPE")
+	{
+		if(strOp == "COMPLETE") Get_RecipeComplete(nVPc, strA[0], strA[1], strA[2]);
+	}
 
 	g_csInspectRecv.Unlock();
 }
@@ -422,6 +426,12 @@ void CInspector::Get_ErrorRequest(int nVPc, CString sErrNo, CString sErrMsg)
 	
 }
 
+void CInspector::Get_RecipeComplete(int nVPc, CString sGbn, CString sTrayID, CString sRecipe)
+{
+	if(sGbn == "TC") gData.bRcpChange[eVision::TC] = TRUE;
+	if(sGbn == "BC") gData.bRcpChange[eVision::BC] = TRUE;
+}
+
 void CInspector::Set_StatusUpdate(int nStatus)
 {
 	CString	strSendCmd;
@@ -507,6 +517,15 @@ void CInspector::Set_LoadComplete(CString sGbn, CString sMZID, int nMZNo, CStrin
 	strSendCmd.Format("LOAD,COMPLETE,%s,%s,%d,%s,%d,%d", sGbn, sMZID, nMZNo, sTrayID, nTrayNo, nLensNo);
 	if(sGbn == "TC") gData.bScanDone[eVision::TC] = FALSE;
 	if(sGbn == "BC") gData.bScanDone[eVision::BC] = FALSE;
+	Send_Command(VISION_PC1, strSendCmd);
+}
+
+void CInspector::Set_RecipeLoad(CString sGbn, CString sMZID, CString sTrayID, CString sRecipe)
+{
+	CString	strSendCmd, strTemp;
+	strSendCmd.Format("RECIPE,LOAD,%s,%s,%s,%s", sGbn, sMZID, sTrayID, sRecipe);
+	if(sGbn == "TC") gData.bRcpChange[eVision::TC] = FALSE;
+	if(sGbn == "BC") gData.bRcpChange[eVision::BC] = FALSE;
 	Send_Command(VISION_PC1, strSendCmd);
 }
 

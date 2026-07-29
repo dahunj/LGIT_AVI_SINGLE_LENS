@@ -822,6 +822,14 @@ BOOL CWorkDlg::Work_Start()
 		}		
 	}
 	
+	if(!pEquipData->bUseAutoRecipeChange)
+	{
+		if(g_objCommon.Show_MsgBox(2, "Auto Recipe Change 설정되어 있지 않습니다. 진행하시겠습니까?") != IDOK)
+		{
+			return FALSE;
+		}
+	}
+
 	if(!pEquipData->bUseBtmVision || !pEquipData->bUseTopVision)
 	{
 		if(g_objCommon.Show_MsgBox(2, "Btm or Top Vision 설정되어 있지 않습니다. 진행하시겠습니까?") != IDOK)

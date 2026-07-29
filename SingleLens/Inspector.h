@@ -55,6 +55,8 @@ private:
 	
 	void Get_ErrorRequest(int nVPc, CString sErrNo, CString sErrMsg);
 
+	void Get_RecipeComplete(int nVPc, CString sGbn, CString sTrayID, CString sRecipe);
+
 	void Send_Command(int nVPc, CString sCommand);
 	void Exception_Log(int nVPc, CString sFunc, CString sGbn, int nLotNo, int nTrayNo, int nCmNo, int nCase);	// Recevie Exception Log
 	
@@ -91,6 +93,8 @@ public:
 	void Set_TimeUpdate(int nVPc);
 
 	void Set_FOBRequest();
+
+	void Set_RecipeLoad(CString sGbn, CString sMZID, CString sTrayID, CString sRecipe);
 
 	BOOL Check_Connect(int nVPc);
 	BOOL Check_LotReady();

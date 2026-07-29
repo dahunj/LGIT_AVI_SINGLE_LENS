@@ -70,6 +70,8 @@ public:
 	CCheckCS	m_chkUseBarcodeMGZ;
 	CCheckCS	m_chkUseBarcodeCtZig;
 
+	CCheckCS	m_chkAutoRecipeChange;
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 

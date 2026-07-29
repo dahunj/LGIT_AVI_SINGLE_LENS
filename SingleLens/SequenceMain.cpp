@@ -2936,9 +2936,16 @@ BOOL CSequenceMain::TopInspectorRun()
 	case 1:
 		if(!gData.bIndexDone[eMainIndex::Top] && !Check_IndexEmpty(eMainIndex::Top)  )
 		{
-			m_nTopInspectCase++;
-			m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
-			m_strLog.Format("Top Vision Start"); m_nTopInspectLoop.Takt_Save(6, m_nTopInspectCase, m_strLog);
+			if(m_pEquipData->bUseAutoRecipeChange)
+			{
+				m_nTopInspectCase = 31; m_nTopInspectLoop.Set_LoopTime(10000);
+			}
+			else
+			{
+				m_nTopInspectCase++;
+				m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
+				m_strLog.Format("Top Vision Start"); m_nTopInspectLoop.Takt_Save(6, m_nTopInspectCase, m_strLog);
+			}			
 		}
 		else if(!gData.bIndexDone[eMainIndex::Top] && Check_IndexEmpty(eMainIndex::Top)  )
 		{
@@ -2947,14 +2954,46 @@ BOOL CSequenceMain::TopInspectorRun()
 			m_strLog.Format("Top Vision Done"); m_nTopInspectLoop.Takt_Save(5, m_nTopInspectCase, m_strLog);
 		}		
 		return TRUE;
+	
+		//Auto Recipe Change 
+	case 31:
+		m_sRecipe = gData.sZigIDMainIndex[eMainIndex::Top].Left(3);
+		if(m_sRecipe != "")
+		{
+			if(m_sRecipe == "CA1")
+			{
+				//
+				g_objInspector.Set_RecipeLoad("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.sZigIDMainIndex[eMainIndex::Top], "L1");
+			}
+			if(m_sRecipe == "CA2")
+			{
+				g_objInspector.Set_RecipeLoad("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.sZigIDMainIndex[eMainIndex::Top], "L2");
+			}
+			if(m_sRecipe == "CA3")
+			{
+				g_objInspector.Set_RecipeLoad("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.sZigIDMainIndex[eMainIndex::Top], "L3");
+			}
+			if(m_sRecipe == "CA4")
+			{
+				g_objInspector.Set_RecipeLoad("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.sZigIDMainIndex[eMainIndex::Top], "L4");
+			}
+			m_nTopInspectCase = 32; m_nTopInspectLoop.Set_LoopTime(10000);	
+		}
+		break;
+	case 32:
+		if(gData.bRcpChange[eVision::TC])
+		{
+			m_nTopInspectCase = 2; m_nTopInspectLoop.Set_LoopTime(10000);	
+		}
+		break;
 	case 2:
 		if(g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Z))
-		{
+		{			
 			Init_TopZig();
 			nTopXPos = 1; nTopYPos = 1;	
 			gData.dDeltaY[eMainIndex::Top] = 0; gData.dDeltaX[eMainIndex::Top] = 0;
 			m_nTopInspectCase++; m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
-			m_strLog.Format("Top Vision Use"); m_nTopInspectLoop.Takt_Save(6, m_nTopInspectCase, m_strLog);						
+			m_strLog.Format("Top Vision Use"); m_nTopInspectLoop.Takt_Save(6, m_nTopInspectCase, m_strLog);											
 		}
 		break;
 	case 3:

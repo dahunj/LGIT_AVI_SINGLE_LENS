@@ -35,6 +35,8 @@ private:
 	CString		m_strLog;	// Log String
 	CString		m_strBarcode[2];
 
+	CString		m_sRecipe;
+
 protected:
 	CWinThread	*m_pThreadBeep;
 	static UINT	Thread_Beep(LPVOID lpVoid);

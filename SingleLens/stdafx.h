@@ -222,6 +222,8 @@ typedef struct
 	BOOL    bScanDone[2];            // 0:Top 1: Btm
 	BOOL	bReload[2];
 
+	BOOL	bRcpChange[2];
+
 	char	cJudgeCode[7][10][ZIG_X*ZIG_Y][2];
 	CString	sJudgeCode[7][10][ZIG_X*ZIG_Y][3]; // 0:Top 1: Btm , 2: Top Priority  
 	CString sNGCode[7][10][ZIG_X*ZIG_Y][3];
@@ -405,12 +407,26 @@ typedef struct{
 }GLOBAL_DOORLOCK;
 
 
-extern GLOVAL_DATA	gData;
-extern GLOVAL_LOT	gLot;
-extern GLOVAL_ALM	gAlm;
-extern GLOVAL_UPH	gUph;
-extern GLOVAL_MES	gMes;
-extern GLOBAL_DOORLOCK gDoorLock;
+typedef struct{
+	//Recipe Auto Select 
+	double	dStartZ[2];
+	int		nCount[2];
+	double	dPeriod[2];
+	double	dVelocity[2];
+	double	dStartX[2];
+	double  dStartY[2];
+	double	dPitchX[2];
+	double	dPitchY[2];
+}GLOBAL_RECIPE;
+
+
+extern GLOBAL_RECIPE	gRcp;
+extern GLOVAL_DATA		gData;
+extern GLOVAL_LOT		gLot;
+extern GLOVAL_ALM		gAlm;
+extern GLOVAL_UPH		gUph;
+extern GLOVAL_MES		gMes;
+extern GLOBAL_DOORLOCK	gDoorLock;
 
 
 
