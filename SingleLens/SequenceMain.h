@@ -36,6 +36,7 @@ private:
 	CString		m_strBarcode[2];
 
 	CString		m_sRecipe;
+	CString		m_sVisionModel;
 
 protected:
 	CWinThread	*m_pThreadBeep;
@@ -164,6 +165,8 @@ public:
 	int Find_UnloadMZNo();
 	
 	void Write_LotJudge(int nMZNo, int nTrayNo, int nLensNo, int nInfo);
+
+	void Get_RecipeData(int nVision, CString sRcp);
 
 };
 

@@ -81,6 +81,11 @@ void CInspector::Receive_Command(int nVPc, CString sCommand)
 	{
 		if (strOp == "START") Get_LotStart(strA[0], strA[1]);
 	}
+	else if (strCmd == "RECIPE")
+	{
+		if(strOp == "LOAD") Get_RecipeLoad(strA[0], strA[1], strA[2], strA[3]);
+	}
+
 	
 	
 	
@@ -137,6 +142,12 @@ void CInspector::Get_LotStart(CString sMZID, CString sMZNo)
 	/*Set_LotReady(2, gData.sLotID[0]);
 	Set_LotReady(3, gData.sLotID[0]);
 	Set_LotReady(4, gData.sLotID[0]);*/
+}
+
+void CInspector::Get_RecipeLoad(CString sGbn, CString sMZID, CString sTrayID, CString sRecipe)
+{
+	if(sGbn == "TC") Set_RecipeComplete(1, sGbn);
+	if(sGbn == "BC") Set_RecipeComplete(1, sGbn);
 }
 
 
@@ -210,6 +221,14 @@ void CInspector::Get_LoadComplete(CString sGbn, CString sMZID, CString sMZNo, CS
 	Sleep(10);
 	
 }
+
+void CInspector::Set_RecipeComplete(int nInspector, CString sGbn)
+{
+	CString	strSendCmd;
+	strSendCmd.Format("RECIPE,COMPLETE,%s,%s,%s", sGbn,"TrayID","Recipe");
+	Send_Command(nInspector, strSendCmd);
+}
+
 
 
 void CInspector::Set_TriggerRequest(int nInspector, CString sGbn, CString sMZID, CString sMZNo, CString sTNo, CString sLensNo)

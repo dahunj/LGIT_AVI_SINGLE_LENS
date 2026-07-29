@@ -45,6 +45,8 @@ private:
 
 	void Get_LoadComplete(CString sGbn, CString sMZID, CString sMZNo, CString sTrayID, CString sTNo, CString sLensNo);
 	void Get_LotStart(CString sMZID, CString sMZNo);
+
+	void Get_RecipeLoad(CString sGbn, CString sMZID, CString sTrayID, CString sRecipe);
 public:
 
 	CString m_sJudge[10][30][30];
@@ -67,7 +69,8 @@ public:
 	void Set_TriggerRequest(int nInspector, CString sGbn, CString sMZID, CString sMZNo, CString sTNo, CString sLensNo);
 	void Set_ScanComplete(int nInspector, CString sGbn, CString sMZID, CString sMZNo, CString sTNo, CString sLensNo);
 	void Set_InspectComplete(int nInspector, CString sGbn, CString sMZID, CString sMZNo, CString sTNo, CString sLNo);
-
+	
+	void Set_RecipeComplete(int nInspector, CString sGbn);
 
 	int Get_Random(int nStart, int nEnd);
 

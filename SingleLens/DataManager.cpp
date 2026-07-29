@@ -60,7 +60,7 @@ void CDataManager::Reset_MoveData()
 
 BOOL CDataManager::Read_EquipData()
 {
- 	CIniFileCS INI(gsCurrentDir + "\\System\\EquipData.ini");
+	CIniFileCS INI(gsCurrentDir + "\\System\\EquipData.ini");
 	if (!INI.Check_File()) { AfxMessageBox("EquipData.ini File Not Found!!!"); return FALSE; }
 
 	CString strKey;

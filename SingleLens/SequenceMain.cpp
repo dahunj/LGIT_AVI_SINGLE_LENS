@@ -1923,7 +1923,11 @@ BOOL CSequenceMain::FeederRun()
 
 			if(gData.bSimulMode || gData.bAgingMode)
 			{
-				m_strBarcode[eBarcode::CtZig-1].Format("Test-%d", gData.nSlotNoFeeder);				
+				int nTemp = g_objCommon.Get_Random(1,99);
+				if(nTemp < 25) m_strBarcode[eBarcode::CtZig-1].Format("CA1Test-%d", gData.nSlotNoFeeder);
+				else if(nTemp < 50) m_strBarcode[eBarcode::CtZig-1].Format("CA2Test-%d", gData.nSlotNoFeeder);	
+				else if(nTemp < 50) m_strBarcode[eBarcode::CtZig-1].Format("CA3Test-%d", gData.nSlotNoFeeder);	
+				else m_strBarcode[eBarcode::CtZig-1].Format("CA4Test-%d", gData.nSlotNoFeeder);	
 			}
 
 			if(m_strBarcode[eBarcode::CtZig-1] != "" && m_strBarcode[eBarcode::CtZig-1] != "NG")
@@ -2417,7 +2421,11 @@ BOOL CSequenceMain::FeederRun()
 			
 			if(gData.bSimulMode || gData.bAgingMode)
 			{
-				m_strBarcode[eBarcode::CtZig-1].Format("Test-%d", gData.nSlotNoFeeder);				
+				int nTemp = g_objCommon.Get_Random(1,99);
+				if(nTemp < 25) m_strBarcode[eBarcode::CtZig-1].Format("CA1Test-%d", gData.nSlotNoFeeder);
+				else if(nTemp < 50) m_strBarcode[eBarcode::CtZig-1].Format("CA2Test-%d", gData.nSlotNoFeeder);	
+				else if(nTemp < 50) m_strBarcode[eBarcode::CtZig-1].Format("CA3Test-%d", gData.nSlotNoFeeder);	
+				else m_strBarcode[eBarcode::CtZig-1].Format("CA4Test-%d", gData.nSlotNoFeeder);		
 			}
 
 			if(m_strBarcode[eBarcode::CtZig-1] != "" && m_strBarcode[eBarcode::CtZig-1] != "NG")
@@ -2936,12 +2944,21 @@ BOOL CSequenceMain::TopInspectorRun()
 	case 1:
 		if(!gData.bIndexDone[eMainIndex::Top] && !Check_IndexEmpty(eMainIndex::Top)  )
 		{
-			if(m_pEquipData->bUseAutoRecipeChange)
+			if(m_pEquipData->bUseAutoRecipeChange && m_pEquipData->bUseTopVision)
 			{
 				m_nTopInspectCase = 31; m_nTopInspectLoop.Set_LoopTime(10000);
 			}
 			else
 			{
+				gRcp.dStartZ[eVision::TC]	= m_pEquipData->dTopStartZ;
+				gRcp.nCount[eVision::TC]	= m_pEquipData->nTopCount;
+				gRcp.dPeriod[eVision::TC]	= m_pEquipData->dTopPeriod;
+				gRcp.dVelocity[eVision::TC] = m_pEquipData->dTopVelocity;
+				gRcp.dStartX[eVision::TC]	= m_pEquipData->dTopStartX;
+				gRcp.dStartY[eVision::TC]	= m_pEquipData->dTopStartY;
+				gRcp.dPitchX[eVision::TC]	= m_pEquipData->dTopPitchX;
+				gRcp.dPitchY[eVision::TC]	= m_pEquipData->dTopPitchY;
+
 				m_nTopInspectCase++;
 				m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 				m_strLog.Format("Top Vision Start"); m_nTopInspectLoop.Takt_Save(6, m_nTopInspectCase, m_strLog);
@@ -2962,21 +2979,29 @@ BOOL CSequenceMain::TopInspectorRun()
 		{
 			if(m_sRecipe == "CA1")
 			{
-				//
+				Get_RecipeData(eVision::TC, "P1");
 				g_objInspector.Set_RecipeLoad("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.sZigIDMainIndex[eMainIndex::Top], "L1");
 			}
 			if(m_sRecipe == "CA2")
 			{
+				Get_RecipeData(eVision::TC, "P2");
 				g_objInspector.Set_RecipeLoad("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.sZigIDMainIndex[eMainIndex::Top], "L2");
 			}
 			if(m_sRecipe == "CA3")
 			{
+				Get_RecipeData(eVision::TC, "P3");
 				g_objInspector.Set_RecipeLoad("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.sZigIDMainIndex[eMainIndex::Top], "L3");
 			}
 			if(m_sRecipe == "CA4")
 			{
+				Get_RecipeData(eVision::TC, "P4");
 				g_objInspector.Set_RecipeLoad("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.sZigIDMainIndex[eMainIndex::Top], "L4");
 			}
+			m_strLog.Format("MZID:%s, TrayID:%s, Recipe:%s, TopVision", gData.sMZIDMainIdex[eMainIndex::Top], gData.sZigIDMainIndex[eMainIndex::Top], m_sRecipe);
+			g_objLogFile.Save_TestLog(m_strLog);
+			m_strLog.Format("Period:%0.2lf,PitchX:%0.2lf,PitchY:%0.2lf,dStartX:%0.2lf,dStartY:%0.2lf,dStartZ:%0.2lf,dVel:%0.2lf,Count:%d",
+				gRcp.dPeriod[eVision::TC], gRcp.dPitchX[eVision::TC], gRcp.dPitchY[eVision::TC], gRcp.dStartX[eVision::TC],gRcp.dStartY[eVision::TC],gRcp.dStartZ[eVision::TC], gRcp.dVelocity[eVision::TC], gRcp.nCount[eVision::TC]);
+			g_objLogFile.Save_TestLog(m_strLog);
 			m_nTopInspectCase = 32; m_nTopInspectLoop.Set_LoopTime(10000);	
 		}
 		break;
@@ -3019,9 +3044,9 @@ BOOL CSequenceMain::TopInspectorRun()
 			Init_InspectInfo(gData.nMZNoMainIndex[eMainIndex::Top], gData.nSlotNoMainIndex[eMainIndex::Top], nLensNo);
 						
 			int nIdx = (nTopYPos - 1) * gData.nLensCntX + nTopXPos;
-			dTopUnitY = m_pEquipData->dTopStartY - (m_pEquipData->dZigPitchY * (nTopYPos - 1)) + gData.dDeltaY[eMainIndex::Top];
-			dTopUnitX = m_pEquipData->dTopStartX + (m_pEquipData->dZigPitchX * (nTopXPos - 1)) + gData.dDeltaX[eMainIndex::Top];
-			dTopUnitZ = m_pEquipData->dTopStartZ - (m_pEquipData->dTopPeriod / 10); //m_pMoveData->dTopInspectorZ[eTopInspect_Z::ScanStart];
+			dTopUnitY = gRcp.dStartY[eVision::TC] - (gRcp.dPitchY[eVision::TC] * (nTopYPos - 1)) + gData.dDeltaY[eMainIndex::Top];
+			dTopUnitX = gRcp.dStartX[eVision::TC] + (gRcp.dPitchX[eVision::TC] * (nTopXPos - 1)) + gData.dDeltaX[eMainIndex::Top];
+			dTopUnitZ = gRcp.dStartZ[eVision::TC] - (gRcp.dPeriod[eVision::TC] / 10); 
 			
 			m_strLog.Format("Align Value : %0.3lf, %0.3lf,%0.3lf, %0.3lf",dTopUnitX,dTopUnitY,gData.dDeltaX[eMainIndex::Top], gData.dDeltaY[eMainIndex::Top]); g_objLogFile.Save_HandlerLog(m_strLog);			
 			if(dTopUnitY > 199) break;
@@ -3055,8 +3080,7 @@ BOOL CSequenceMain::TopInspectorRun()
 				m_nTopInspectCase = 10; m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 			} 
 			else 
-			{
-							
+			{							
 				m_nTopInspectCase = (int)eTopBr::VisionWait;
 				g_objInspector.Set_LoadComplete("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.nMZNoMainIndex[eMainIndex::Top]
 				, gData.sZigIDMainIndex[eMainIndex::Top], gData.nSlotNoMainIndex[eMainIndex::Top], g_objCommon.ConvertToMESNo(nLensNo));				
@@ -3084,11 +3108,11 @@ BOOL CSequenceMain::TopInspectorRun()
 	case 7:		// Scan Move
 		if (g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Z)) 
 		{
-			double dPeriod = m_pEquipData->dTopPeriod;	
-			double dTrigS = m_pEquipData->dTopStartZ;				
-			double dTrigE = dTrigS + (dPeriod) * (m_pEquipData->nTopCount-1);	// Trigger End
+			double dPeriod = gRcp.dPeriod[eVision::TC];//m_pEquipData->dTopPeriod;	
+			double dTrigS =  gRcp.dStartZ[eVision::TC];//m_pEquipData->dTopStartZ;				
+			double dTrigE = dTrigS + (dPeriod) * (gRcp.nCount[eVision::TC]-1);	// Trigger End
 			dTopZ = dTrigE + (dPeriod/10);								// Motion End (가감속)
-			double dVelocity = m_pEquipData->dTopVelocity;
+			double dVelocity = gRcp.dVelocity[eVision::TC];
 			g_objAJinAXL.Start_Scan(eVision::TC, AX_TOP_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
 			m_nTopInspectCase++; m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 		}
@@ -3187,9 +3211,25 @@ BOOL CSequenceMain::BtmInspectorRun()
 	case 1:
 		if(!gData.bIndexDone[eMainIndex::Btm] && !Check_IndexEmpty(eMainIndex::Btm) )
 		{
-			m_nBtmInspectCase++;
-			m_nBtmInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
-			m_strLog.Format("Btm Vision Start"); m_nBtmInspectLoop.Takt_Save(7, m_nBtmInspectCase, m_strLog);
+			if(m_pEquipData->bUseAutoRecipeChange && m_pEquipData->bUseBtmVision)
+			{
+				m_nBtmInspectCase = 31; m_nBtmInspectLoop.Set_LoopTime(10000);
+			}
+			else
+			{
+				gRcp.dStartZ[eVision::BC]	= m_pEquipData->dTopStartZ;
+				gRcp.nCount[eVision::BC]	= m_pEquipData->nTopCount;
+				gRcp.dPeriod[eVision::BC]	= m_pEquipData->dTopPeriod;
+				gRcp.dVelocity[eVision::BC] = m_pEquipData->dTopVelocity;
+				gRcp.dStartX[eVision::BC]	= m_pEquipData->dTopStartX;
+				gRcp.dStartY[eVision::BC]	= m_pEquipData->dTopStartY;
+				gRcp.dPitchX[eVision::BC]	= m_pEquipData->dTopPitchX;
+				gRcp.dPitchY[eVision::BC]	= m_pEquipData->dTopPitchY;
+
+				m_nBtmInspectCase++;
+				m_nBtmInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
+				m_strLog.Format("Btm Vision Start"); m_nBtmInspectLoop.Takt_Save(7, m_nBtmInspectCase, m_strLog);
+			}			
 		}
 		else if(!gData.bIndexDone[eMainIndex::Btm] && Check_IndexEmpty(eMainIndex::Btm) )
 		{
@@ -3198,6 +3238,47 @@ BOOL CSequenceMain::BtmInspectorRun()
 			m_strLog.Format("Btm Vision Done"); m_nBtmInspectLoop.Takt_Save(5, m_nBtmInspectCase, m_strLog);
 		}		
 		return TRUE;
+
+		//Auto Recipe Change 
+	case 31:
+		m_sRecipe = gData.sZigIDMainIndex[eMainIndex::Btm].Left(3);
+		if(m_sRecipe != "")
+		{
+			if(m_sRecipe == "CA1")
+			{
+				Get_RecipeData(eVision::BC, "P1");
+				g_objInspector.Set_RecipeLoad("BC", gData.sMZIDMainIdex[eMainIndex::Btm], gData.sZigIDMainIndex[eMainIndex::Btm], "L1");
+			}
+			if(m_sRecipe == "CA2")
+			{
+				Get_RecipeData(eVision::BC, "P2");
+				g_objInspector.Set_RecipeLoad("BC", gData.sMZIDMainIdex[eMainIndex::Btm], gData.sZigIDMainIndex[eMainIndex::Btm], "L2");
+			}
+			if(m_sRecipe == "CA3")
+			{
+				Get_RecipeData(eVision::BC, "P3");
+				g_objInspector.Set_RecipeLoad("BC", gData.sMZIDMainIdex[eMainIndex::Btm], gData.sZigIDMainIndex[eMainIndex::Btm], "L3");
+			}
+			if(m_sRecipe == "CA4")
+			{
+				Get_RecipeData(eVision::BC, "P4");
+				g_objInspector.Set_RecipeLoad("BC", gData.sMZIDMainIdex[eMainIndex::Btm], gData.sZigIDMainIndex[eMainIndex::Btm], "L4");
+			}
+			m_strLog.Format("MZID:%s, TrayID:%s, Recipe:%s, BtmVision", gData.sMZIDMainIdex[eMainIndex::Btm], gData.sZigIDMainIndex[eMainIndex::Btm], m_sRecipe);
+			g_objLogFile.Save_TestLog(m_strLog);
+			m_strLog.Format("Period:%0.2lf,PitchX:%0.2lf,PitchY:%0.2lf,dStartX:%0.2lf,dStartY:%0.2lf,dStartZ:%0.2lf,dVel:%0.2lf,Count:%d",
+				gRcp.dPeriod[eVision::BC], gRcp.dPitchX[eVision::BC], gRcp.dPitchY[eVision::BC], gRcp.dStartX[eVision::BC], gRcp.dStartY[eVision::BC], gRcp.dStartZ[eVision::BC], gRcp.dVelocity[eVision::BC], gRcp.nCount[eVision::BC]);
+			g_objLogFile.Save_TestLog(m_strLog);
+			m_nBtmInspectCase = 32; m_nBtmInspectLoop.Set_LoopTime(10000);	
+		}
+		break;
+	case 32:
+		if(gData.bRcpChange[eVision::BC])
+		{
+			m_nBtmInspectCase = 2; m_nBtmInspectLoop.Set_LoopTime(10000);	
+		}
+		break;
+
 	case 2:
 		if(g_objCommon.Check_Position(AX_BTM_INSPECTOR_Z, eBtmInspect_Z::Ready))
 		{
@@ -3228,9 +3309,9 @@ BOOL CSequenceMain::BtmInspectorRun()
 			}
 
 			int nIdx = (nBtmYPos - 1) * gData.nLensCntX + nBtmXPos;
-			dBtmUnitY = m_pEquipData->dBtmStartY - (m_pEquipData->dZigPitchY * (nBtmYPos - 1)) + gData.dDeltaY[eMainIndex::Btm];
-			dBtmUnitX = m_pEquipData->dBtmStartX + (m_pEquipData->dZigPitchX * (nBtmXPos - 1)) + gData.dDeltaX[eMainIndex::Btm];
-			dBtmUnitZ = m_pEquipData->dBtmStartZ- (m_pEquipData->dBtmPeriod/10);//m_pMoveData->dBtmInspectorZ[eTopInspect_Z::ScanStart];
+			dBtmUnitY = gRcp.dStartY[eVision::BC] - (gRcp.dPitchY[eVision::BC] * (nBtmYPos - 1)) + gData.dDeltaY[eMainIndex::Btm];
+			dBtmUnitX = gRcp.dStartX[eVision::BC] + (gRcp.dPitchX[eVision::BC] * (nBtmXPos - 1)) + gData.dDeltaX[eMainIndex::Btm];
+			dBtmUnitZ = gRcp.dStartZ[eVision::BC] - (gRcp.dPeriod[eVision::BC]/10);
 
 			m_strLog.Format("Align Value : %0.3lf, %0.3lf,%0.3lf, %0.3lf",dBtmUnitX,dBtmUnitY,gData.dDeltaX[eMainIndex::Btm], gData.dDeltaY[eMainIndex::Btm]);
 			g_objLogFile.Save_HandlerLog(m_strLog);
@@ -3290,11 +3371,11 @@ BOOL CSequenceMain::BtmInspectorRun()
 	case 7:		// Scan Move
 		if (g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Z)) 
 		{
-			double dPeriod = m_pEquipData->dBtmPeriod;	// 33mm
-			double dTrigS = m_pEquipData->dBtmStartZ;				// Trigger Start
-			double dTrigE = dTrigS + dPeriod * (m_pEquipData->nBtmCount - 1) ;	// Trigger End
+			double dPeriod = gRcp.dPeriod[eVision::BC]; 	// 33mm
+			double dTrigS = gRcp.dStartZ[eVision::BC];		// Trigger Start
+			double dTrigE = dTrigS + dPeriod * (gRcp.nCount[eVision::BC] - 1) ;	// Trigger End
 			dBtmZ = dTrigE + (dPeriod/10);								// Motion End (가감속)
-			double dVelocity = m_pEquipData->dBtmVelocity;
+			double dVelocity = gRcp.dVelocity[eVision::BC];
 			g_objAJinAXL.Start_Scan(eVision::BC, AX_BTM_INSPECTOR_Z, dBtmZ, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
 			m_nBtmInspectCase++; m_nBtmInspectLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		}
@@ -3354,10 +3435,8 @@ BOOL CSequenceMain::BtmInspectorRun()
 			m_strLog.Format("Btm Vision Done"); m_nBtmInspectLoop.Takt_Save(7, m_nBtmInspectCase, m_strLog);
 		}		
 		break;
-
 	}
-
-
+	
 	// 7. (Error : 4900)
 	if (m_nBtmInspectLoop.Over_LoopTime()) 
 	{		
@@ -4622,6 +4701,48 @@ void CSequenceMain::Write_LotJudge(int nMZNo, int nTrayNo, int nLensNo, int nInf
 }
 
 
+void CSequenceMain::Get_RecipeData(int nVision, CString sRcp)
+{
+	m_sVisionModel = sRcp;
+	CString sPathSource;
+	sPathSource = gsCurrentDir + "\\System\\Model";
+	sPathSource += _T("\\");
+	sPathSource += m_sVisionModel;
+	sPathSource += _T("\\");
+
+	CIniFileCS INI(sPathSource + "EquipData.ini");
+	if (!INI.Check_File()) {
+		AfxMessageBox("EquipData.ini File Not Found!!!!");
+		return;
+	}
+
+	if(nVision == eVision::TC)
+	{
+		gRcp.dStartZ[nVision]	= INI.Get_Double("TRIGGER",  "TOP_START_Z", 0.00);
+		gRcp.nCount[nVision]	= INI.Get_Integer("TRIGGER", "TOP_COUNT",	 0);
+		gRcp.dPeriod[nVision]	= INI.Get_Double("TRIGGER",  "TOP_PERIOD",  0.00);
+		gRcp.dVelocity[nVision]	= INI.Get_Double("TRIGGER",  "TOP_VEL",	 0.00);
+		gRcp.dStartX[nVision]	= INI.Get_Double("TRIGGER",  "TOP_START_X", 0.00);
+		gRcp.dStartY[nVision]	= INI.Get_Double("TRIGGER",  "TOP_START_Y", 0.00);
+
+		gRcp.dPitchX[nVision]	= INI.Get_Double("COAT_ZIG",  "PITCH_X", 0.00);
+		gRcp.dPitchY[nVision]	= INI.Get_Double("COAT_ZIG",  "PITCH_Y", 0.00);
+	}
+	else if(nVision == eVision::BC)
+	{
+		gRcp.dStartZ[nVision]	= INI.Get_Double("TRIGGER",  "BTM_START_Z", 0.00);
+		gRcp.nCount[nVision]	= INI.Get_Integer("TRIGGER", "BTM_COUNT",	 0);
+		gRcp.dPeriod[nVision]	= INI.Get_Double("TRIGGER",  "BTM_PERIOD",  0.00);
+		gRcp.dVelocity[nVision]	= INI.Get_Double("TRIGGER",  "BTM_VEL",	 0.00);
+		gRcp.dStartX[nVision]	= INI.Get_Double("TRIGGER",  "BTM_START_X", 0.00);
+		gRcp.dStartY[nVision]	= INI.Get_Double("TRIGGER",  "BTM_START_Y", 0.00);
+
+		gRcp.dPitchX[nVision]	= INI.Get_Double("COAT_ZIG",  "PITCH_X", 0.00);
+		gRcp.dPitchY[nVision]	= INI.Get_Double("COAT_ZIG",  "PITCH_Y", 0.00);
+	}
+
+	
+}
 
 BOOL CSequenceMain::Run_Simulation()
 {
