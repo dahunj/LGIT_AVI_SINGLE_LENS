@@ -85,6 +85,11 @@ void CAlarmDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 			m_btnAlmOK.SetWindowText("자동 완공");			
 		}
 
+		if (m_strMsg == "Run End") {
+			m_btnAlmBuzzOff.SetWindowText("Buzzer Off");
+			m_btnAlmOK.SetWindowText("OK");			
+		}
+
 		strLog.Format("[Alarm Mode] %s", m_strMsg);
 		strLog.Replace("\n", " ");
 		g_objLogFile.Save_HandlerLog(strLog);
@@ -127,9 +132,10 @@ void CAlarmDlg::OnBnClickedBtnAlmBuzzOff()
 	{
 		g_objMesAgent.Set_ControlState(2, gData.sOperID);	//MES OffLine
 		g_objLogFile.Save_HandlerLog("[Alarm Mode] 수동완공 click");
-		m_btnAlmOK.SetWindowText("OK");		
+		m_btnAlmOK.SetWindowText("OK");
+		ShowWindow(SW_HIDE);
 	}
-	ShowWindow(SW_HIDE);
+	
 }
 
 void CAlarmDlg::OnBnClickedBtnAlmOk()

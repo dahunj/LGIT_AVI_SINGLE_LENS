@@ -416,7 +416,7 @@ void CSetupEquipDlg::Display_EquipData()
 		
 	
 	m_chkUseMES.SetCheck(pEquipData->bUseMES);
-	m_chkUseMESLotEndSelect.SetCheck(pEquipData->bUseMES);
+	m_chkUseMESLotEndSelect.SetCheck(pEquipData->bLotEndSelect);
 	m_chkUseBarcodeMGZ.SetCheck(pEquipData->bUseBarcodeMGZ);
 	m_chkUseBarcodeCtZig.SetCheck(pEquipData->bUseBarcodeCtZig);
 		

@@ -514,7 +514,7 @@ BOOL CSequenceMain::LotEnd_Run()
 	g_objMesAgent.Set_EquipState(eEquipState::IDLE);	
 
 	CString strMsg;
-	strMsg.Format("Run End.\n\n");
+	strMsg.Format("Run End");
 	g_objCommon.Show_Alarm(strMsg, STATE_LOTEND);
 
 	return TRUE;
@@ -639,7 +639,7 @@ BOOL CSequenceMain::LoadConveyorRun()
 	switch(m_nLoadConveyorCase)
 	{
 	case eLoadCVBr::Check:
-		m_nLoadConveyorLoop.Set_LoopTime(5000);
+		m_nLoadConveyorLoop.Set_LoopTime(25000);
 		return TRUE;
 	case 1:		
 		m_nLoadConveyorLoop.Takt_Save(1, m_nLoadConveyorCase, "Load Stopper 1 Up");
@@ -669,13 +669,13 @@ BOOL CSequenceMain::LoadConveyorRun()
 		{
 			m_nLoadConveyorLoop.Takt_Save(1, m_nLoadConveyorCase, "Load CV Stop");
 			g_objCommon.Set_LoadCVStop();			
-			m_nLoadConveyorCase++; m_nLoadConveyorLoop.Set_LoopTime(5000);
+			m_nLoadConveyorCase++; m_nLoadConveyorLoop.Set_LoopTime(25000);
 		}		
 		else if(GetTickCount() - dwTick > 10000)
 		{
 			m_nLoadConveyorLoop.Takt_Save(1, m_nLoadConveyorCase, "Load CV Stop and return to 0");
 			g_objCommon.Set_LoadCVStop();
-			m_nLoadConveyorCase = 0; m_nLoadConveyorLoop.Set_LoopTime(5000);
+			m_nLoadConveyorCase = 0; m_nLoadConveyorLoop.Set_LoopTime(25000);
 		}
 		break;
 	case 4:
@@ -1703,10 +1703,10 @@ BOOL CSequenceMain::FeederRun()
 	
 		if(gData.bAgingMode || gData.bSimulMode)
 		{
-			m_pDX01->iFeederZigExist = TRUE;
+			//m_pDX01->iFeederZigExist = TRUE;
 			//Test when Tray not fulled 
-		/*	if(gData.nTNoPick[eMZ::Load] == 3 || gData.nTNoPick[eMZ::Load] == 6 ) m_pDX01->iFeederZigExist = TRUE;
-			else m_pDX01->iFeederZigExist = FALSE;*/
+			if(gData.nTNoPick[eMZ::Load] == 3  ) m_pDX01->iFeederZigExist = TRUE;
+			else m_pDX01->iFeederZigExist = FALSE;
 		}
 
 
