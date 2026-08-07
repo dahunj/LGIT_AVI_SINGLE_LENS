@@ -3231,12 +3231,12 @@ BOOL CSequenceMain::BtmInspectorRun()
 			}
 			else
 			{
-				gRcp.dStartZ[eVision::BC]	= m_pEquipData->dTopStartZ;
-				gRcp.nCount[eVision::BC]	= m_pEquipData->nTopCount;
-				gRcp.dPeriod[eVision::BC]	= m_pEquipData->dTopPeriod;
-				gRcp.dVelocity[eVision::BC] = m_pEquipData->dTopVelocity;
-				gRcp.dStartX[eVision::BC]	= m_pEquipData->dTopStartX;
-				gRcp.dStartY[eVision::BC]	= m_pEquipData->dTopStartY;
+				gRcp.dStartZ[eVision::BC]	= m_pEquipData->dBtmStartZ;
+				gRcp.nCount[eVision::BC]	= m_pEquipData->nBtmCount;
+				gRcp.dPeriod[eVision::BC]	= m_pEquipData->dBtmPeriod;
+				gRcp.dVelocity[eVision::BC] = m_pEquipData->dBtmVelocity;
+				gRcp.dStartX[eVision::BC]	= m_pEquipData->dBtmStartX;
+				gRcp.dStartY[eVision::BC]	= m_pEquipData->dBtmStartY;
 				gRcp.dPitchX[eVision::BC]	= m_pEquipData->dZigPitchX;
 				gRcp.dPitchY[eVision::BC]	= m_pEquipData->dZigPitchY;
 
