@@ -94,7 +94,7 @@ public:
 
 	void Set_FOBRequest();
 
-	void Set_RecipeLoad(CString sGbn, CString sMZID, CString sTrayID, CString sRecipe);
+	void Set_RecipeLoad(CString sGbn, CString sMZID, CString sTrayID, CString sRecipe, int nMZNo);
 
 	BOOL Check_Connect(int nVPc);
 	BOOL Check_LotReady();

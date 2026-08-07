@@ -520,10 +520,10 @@ void CInspector::Set_LoadComplete(CString sGbn, CString sMZID, int nMZNo, CStrin
 	Send_Command(VISION_PC1, strSendCmd);
 }
 
-void CInspector::Set_RecipeLoad(CString sGbn, CString sMZID, CString sTrayID, CString sRecipe)
+void CInspector::Set_RecipeLoad(CString sGbn, CString sMZID, CString sTrayID, CString sRecipe, int nMZNo)
 {
 	CString	strSendCmd, strTemp;
-	strSendCmd.Format("RECIPE,LOAD,%s,%s,%s,%s", sGbn, sMZID, sTrayID, sRecipe);
+	strSendCmd.Format("RECIPE,LOAD,%s,%s,%s,%s,%d", sGbn, sMZID, sTrayID, sRecipe, nMZNo);
 	if(sGbn == "TC") gData.bRcpChange[eVision::TC] = FALSE;
 	if(sGbn == "BC") gData.bRcpChange[eVision::BC] = FALSE;
 	Send_Command(VISION_PC1, strSendCmd);

@@ -2994,22 +2994,22 @@ BOOL CSequenceMain::TopInspectorRun()
 			if(m_sRecipe == "CA1")
 			{
 				Get_RecipeData(eVision::TC, "P1");
-				g_objInspector.Set_RecipeLoad("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.sZigIDMainIndex[eMainIndex::Top], "L1");
+				g_objInspector.Set_RecipeLoad("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.sZigIDMainIndex[eMainIndex::Top], "L1", gData.nMZNo[eMainIndex::Top]);
 			}
 			if(m_sRecipe == "CA2")
 			{
 				Get_RecipeData(eVision::TC, "P2");
-				g_objInspector.Set_RecipeLoad("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.sZigIDMainIndex[eMainIndex::Top], "L2");
+				g_objInspector.Set_RecipeLoad("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.sZigIDMainIndex[eMainIndex::Top], "L2", gData.nMZNo[eMainIndex::Top]);
 			}
 			if(m_sRecipe == "CA3")
 			{
 				Get_RecipeData(eVision::TC, "P3");
-				g_objInspector.Set_RecipeLoad("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.sZigIDMainIndex[eMainIndex::Top], "L3");
+				g_objInspector.Set_RecipeLoad("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.sZigIDMainIndex[eMainIndex::Top], "L3", gData.nMZNo[eMainIndex::Top]);
 			}
 			if(m_sRecipe == "CA4")
 			{
 				Get_RecipeData(eVision::TC, "P4");
-				g_objInspector.Set_RecipeLoad("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.sZigIDMainIndex[eMainIndex::Top], "L4");
+				g_objInspector.Set_RecipeLoad("TC", gData.sMZIDMainIdex[eMainIndex::Top], gData.sZigIDMainIndex[eMainIndex::Top], "L4", gData.nMZNo[eMainIndex::Top]);
 			}
 			m_strLog.Format("MZID:%s, TrayID:%s, Recipe:%s, TopVision", gData.sMZIDMainIdex[eMainIndex::Top], gData.sZigIDMainIndex[eMainIndex::Top], m_sRecipe);
 			g_objLogFile.Save_TestLog(m_strLog);
@@ -3261,22 +3261,22 @@ BOOL CSequenceMain::BtmInspectorRun()
 			if(m_sRecipe == "CA1")
 			{
 				Get_RecipeData(eVision::BC, "P1");
-				g_objInspector.Set_RecipeLoad("BC", gData.sMZIDMainIdex[eMainIndex::Btm], gData.sZigIDMainIndex[eMainIndex::Btm], "L1");
+				g_objInspector.Set_RecipeLoad("BC", gData.sMZIDMainIdex[eMainIndex::Btm], gData.sZigIDMainIndex[eMainIndex::Btm], "L1", gData.nMZNo[eMainIndex::Btm]);
 			}
 			if(m_sRecipe == "CA2")
 			{
 				Get_RecipeData(eVision::BC, "P2");
-				g_objInspector.Set_RecipeLoad("BC", gData.sMZIDMainIdex[eMainIndex::Btm], gData.sZigIDMainIndex[eMainIndex::Btm], "L2");
+				g_objInspector.Set_RecipeLoad("BC", gData.sMZIDMainIdex[eMainIndex::Btm], gData.sZigIDMainIndex[eMainIndex::Btm], "L2", gData.nMZNo[eMainIndex::Btm]);
 			}
 			if(m_sRecipe == "CA3")
 			{
 				Get_RecipeData(eVision::BC, "P3");
-				g_objInspector.Set_RecipeLoad("BC", gData.sMZIDMainIdex[eMainIndex::Btm], gData.sZigIDMainIndex[eMainIndex::Btm], "L3");
+				g_objInspector.Set_RecipeLoad("BC", gData.sMZIDMainIdex[eMainIndex::Btm], gData.sZigIDMainIndex[eMainIndex::Btm], "L3", gData.nMZNo[eMainIndex::Btm]);
 			}
 			if(m_sRecipe == "CA4")
 			{
 				Get_RecipeData(eVision::BC, "P4");
-				g_objInspector.Set_RecipeLoad("BC", gData.sMZIDMainIdex[eMainIndex::Btm], gData.sZigIDMainIndex[eMainIndex::Btm], "L4");
+				g_objInspector.Set_RecipeLoad("BC", gData.sMZIDMainIdex[eMainIndex::Btm], gData.sZigIDMainIndex[eMainIndex::Btm], "L4", gData.nMZNo[eMainIndex::Btm]);
 			}
 			m_strLog.Format("MZID:%s, TrayID:%s, Recipe:%s, BtmVision", gData.sMZIDMainIdex[eMainIndex::Btm], gData.sZigIDMainIndex[eMainIndex::Btm], m_sRecipe);
 			g_objLogFile.Save_TestLog(m_strLog);
