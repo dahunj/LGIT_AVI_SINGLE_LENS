@@ -15,7 +15,17 @@ public:
 // 대화 상자 데이터입니다.
 	enum { IDD = IDD_SETUP_EQUIP_DLG };
 	CGroupCS	m_Group[12];
-	CLabelCS	m_Label[7];
+
+	CLabelCS	m_lblMotionCheck;
+	CLabelCS	m_lblNoWorkTime;
+
+	CLabelCS	m_lblCtZig[4];
+	CLabelCS	m_lblTriggerTop[8];
+	CLabelCS	m_lblTriggerBtm[8];
+
+	CLabelCS	m_lblPitchZ;
+	CLabelCS	m_lblRepeat;
+	CLabelCS	m_lblMarking[2];
 
 	CStaticCS	m_stcEquipName;
 	CStaticCS	m_stcEquipModel;
