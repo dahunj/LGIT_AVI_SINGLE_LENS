@@ -67,6 +67,7 @@ void CSingleLensDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BTN_MAIN_EXIT, m_btnMainExit);
 	DDX_Control(pDX, IDC_BTN_MAIN_IO, m_btnMainIO);
 	DDX_Control(pDX, IDC_BTN_MAIN_ALARM, m_btnMainAlarm);
+	DDX_Control(pDX, IDC_STC_DOOR_LOCK, m_stcDoorLock);
 }
 
 BEGIN_MESSAGE_MAP(CSingleLensDlg, CDialogEx)
@@ -104,6 +105,8 @@ void CSingleLensDlg::Initial_Controls()
 	m_stcMainDate.Init_Ctrl("Segoe UI", 14, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xE6, 0xE6, 0xE6));
 	m_stcMainTime.Init_Ctrl("Segoe UI", 14, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xE6, 0xE6, 0xE6));
 	m_stcMainVer.Init_Ctrl("Segoe UI", 14, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xE6, 0xE6, 0xE6));
+
+	m_stcDoorLock.Init_Ctrl("Segoe UI", 12, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xE6, 0xE6, 0xE6));
 	for (int i = 0; i < 3; i++) m_stcMainTower[i].Init_Ctrl("Segoe UI", 14, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xFF, 0xFF));
 
 #ifdef DRY_RUN_TEST
@@ -120,6 +123,7 @@ void CSingleLensDlg::Initial_Controls()
 	m_btnMainIO.Init_Ctrl("Segoe UI", 14, TRUE, COLOR_DEFAULT, COLOR_DEFAULT, 0, 0);
 	m_btnMainAlarm.Init_Ctrl("Segoe UI", 14, TRUE, COLOR_DEFAULT, COLOR_DEFAULT, 0, 0);
 	m_btnMainExit.Init_Ctrl("Segoe UI", 14, TRUE, COLOR_DEFAULT, COLOR_DEFAULT, 0, 0);
+
 }
 
 BOOL CSingleLensDlg::OnInitDialog()
@@ -132,7 +136,7 @@ BOOL CSingleLensDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
-	SetWindowText("CME8000_Handler");
+	SetWindowText("SingleLens_Handler");
 
 	Initial_Controls();
 
@@ -275,6 +279,12 @@ void CSingleLensDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	dlgSplash.Create(IDD_SPLASH_DLG, NULL);
 	dlgSplash.ShowWindow(SW_SHOW);
 	
+	char myCom[256];
+	gethostname(myCom, sizeof(myCom));
+	gData.sComName.Format("%s", myCom);
+
+	g_objLogFile.Save_Interlock(0);
+
 	g_objDataManager.Read_EquipData();
 	g_objDataManager.Read_MoveData();
 
@@ -296,11 +306,8 @@ void CSingleLensDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	g_objInspector.Initialize();
 	g_objMesAgent.Initialize();
 	
-	gData.sOperID = "";
-	
-	char myCom[256];
-	gethostname(myCom, sizeof(myCom));
-	gData.sComName.Format("%s", myCom);
+	gData.sOperID = "";	
+
 
 	CString strVersion;
 	strVersion.Format("%s", MAIN_VERSION);
@@ -914,9 +921,17 @@ void CSingleLensDlg::Display_DateTime()
 		Clear_EquipRunTime();
 	} else nUphClear = 0;
 
-	if (gDoorLock.nWriteHH != datetime.GetHour() && gData.sComName.GetLength() > 0) {
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	if (pEquipData->bUseDoorLock) { m_stcDoorLock.Set_Text("Door Lock"); m_stcDoorLock.Set_Color(RGB(0x00, 0x00, 0x00), RGB(0x00, 0xFF, 0x00)); }
+	else						  { m_stcDoorLock.Set_Text("Door Unlock"); m_stcDoorLock.Set_Color(RGB(0xFF, 0xFF, 0x00), RGB(0xFF, 0x00, 0x00)); }
+	
+	int nHour = datetime.GetHour();
+	if (gIt.nLogMM >=1 && gIt.nLogMM <=12 && gIt.nLogHH != nHour) 
+	{
 		g_objLogFile.Save_Interlock(1);
+		nHour++;
 	}
+
 }
 
 void CSingleLensDlg::Exit_System(int nExitNo)
@@ -1060,16 +1075,27 @@ void CSingleLensDlg::Set_DoorLock()
 	if (gData.dwDoorStartTime <= 0) gData.dwDoorStartTime = GetTickCount();
 
 	DWORD dwCurrentTime = GetTickCount();
-	DWORD dwDoorEndTime = DWORD(gData.nDoorLockTime) * 60 * 1000;	//분
-	if (dwCurrentTime - gData.dwDoorStartTime >= dwDoorEndTime) {
-		CIniFileCS INI(gsCurrentDir + "\\System\\EquipData.ini");
+	DWORD dwDoorEndTime = DWORD(gData.nDoorLockTime) * 1000;	//분
+	if (dwCurrentTime - gData.dwDoorStartTime >= dwDoorEndTime) 
+	{
+		CString sPathSource;
+		sPathSource = gsCurrentDir + "\\System\\Model\\";
+		sPathSource += pEquipData->sModelName;
+		sPathSource += _T("\\");
+		sPathSource += "EquipData.ini";
+
+		CIniFileCS INI(sPathSource);
 		if (!INI.Check_File()) return;
+
+		pEquipData->bUseDoorLock = TRUE;
 		INI.Set_Bool("EQUIPMENT", "DOOR_LOCK", TRUE);
 
 		g_objLogFile.Save_HandlerLog("Door Lock을 Auto로 설정 하였습니다...");
 
 		gData.dwDoorStartTime = 0;
 		g_objDataManager.Read_EquipData();
+
+		g_dlgWork.Set_BmpDoorLock(TRUE);
 
 		g_dlgWork.PostMessage(UM_SHOW_MSG, 99, NULL);
 	}

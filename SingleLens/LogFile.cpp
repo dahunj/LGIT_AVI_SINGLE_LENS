@@ -733,14 +733,119 @@ void CLogFile::Save_TrackingLog(int nInfo, CString sBarcode, int nMZNo, int nZig
 
 void CLogFile::Save_Interlock(int nType)
 {
-	CString strPath, strFile, sTitle, sTitle1, strTime, strSave, strSave1, strSave2, strSave3, strSave4, strLotID, strDoor[13];
-		
-	strPath = "D:\\EVMS\\TP\\Log\\";
-	Create_Folder(strPath);
+	CString strFile, sTitle, sTitle1, strTime, strSave, strSave1, strSave2, strSave3, strSave4, strSave5, strSave6, strLotID, strDoor[23], sInterUse;
+
+	CString sECMPath = "D:\\EVMS\\TP\\LOG\\";
+	Create_Folder(sECMPath);
 
 	SYSTEMTIME time;
 	GetLocalTime(&time);
+
+	if (nType == 0) {
+		gIt.nOpenTime = 0;
+		gIt.nOpenStart = 0;
+		gIt.nLogYY = time.wYear;	//등록년
+		gIt.nLogMM = time.wMonth;	//등록월
+		gIt.nLogDD = time.wDay;		//등록날
+		gIt.nLogHH = time.wHour;	//등록시간
+	}
+	if (gIt.nLogMM < 1 || gIt.nLogMM > 12) return;
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	if (nType == 1)	strTime.Format("%04d-%02d-%02d %02d:00:00.000",		 time.wYear, time.wMonth, time.wDay, time.wHour);
+	else			strTime.Format("%04d-%02d-%02d %02d:%02d:%02d.%03d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+
 	
+	sTitle.Format("time,station,lotNum,barcode,SWversion,State,site,Line,Machine,operator,result,Interlock,Interlock off Time,Interlock Coverage,Door I/L 1,Door I/L 2,Door I/L 3,Door I/L 4,Door I/L 5,Door I/L 6,Door I/L 7,Door I/L 8\r\n");
+	strFile.Format("%sGSY848CP2C2N_%04d%02d%02d%02d_InterlockResult.csv", sECMPath, gIt.nLogYY, gIt.nLogMM, gIt.nLogDD, gIt.nLogHH);
+	if (nType == 0) { DeleteFile(strFile); return; }
+
+	
+
+	strLotID = gData.sLotIDElevLoad[eMZ::Load];
+
+
+	int		nSite;
+	CString sSite, sLine, sModel;
+	nSite = 5;  //C5
+	sModel = gData.sRecipeElevLoad[eMZ::Load];
+	sSite.Format("Gumi Campus %d Area", nSite);
+	sLine.Format("Campus %d %s", nSite, sModel);
+
+	int	   nNGTime;
+	double dTime, dPer;
+	if (nType == 1) 
+	{
+		if (gIt.nOpenStart == 1) {
+			nNGTime = (GetTickCount() - gIt.dwOpenStartTime) / 1000;	//초단위
+			gIt.nOpenTime = gIt.nOpenTime + nNGTime;
+		}
+		if (gIt.nOpenTime > 0) {
+			if (gIt.nOpenTime > 3600) gIt.nOpenTime = 3600;
+			dTime = gIt.nOpenTime / 60.0;	//분단위
+			dPer = ((3600.0 - gIt.nOpenTime) / 3600.0) * 100.0;
+			if (dPer > 100.0) dPer = 100.0;
+		} else {
+			dTime = 0.0; dPer = 100.0;
+		}
+		gIt.dwOpenStartTime = GetTickCount();
+		gIt.nOpenTime = 0;
+		gIt.nLogYY = time.wYear;
+		gIt.nLogMM = time.wMonth;
+		gIt.nLogDD = time.wDay;
+		gIt.nLogHH = time.wHour;
+
+		if (pEquipData->bUseDoorLock) sInterUse = "OK";
+		else						  sInterUse = "NG";
+	}
+	if (nType == 2) {
+		sInterUse = "NG";
+		gIt.nOpenStart = 1;
+		gIt.dwOpenStartTime = GetTickCount();
+	}
+	if (nType == 3) {
+		sInterUse = "OK";
+		gIt.nOpenStart = 0;
+		nNGTime = (GetTickCount() - gIt.dwOpenStartTime) / 1000;
+		gIt.nOpenTime = gIt.nOpenTime + nNGTime;
+	}
+
+	CFile file;
+	if (!file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) return;
+
+	try {
+		file.SeekToEnd();
+
+		if (file.GetLength() < 1) file.Write(sTitle, sTitle.GetLength());
+
+		strSave1.Format("%s,%s,%s,,%s,MP,%s,%s,%s,%s", strTime, gData.sComName, strLotID, MAIN_VERSION, sSite, sLine, "SingleLens", gData.sOperID);
+		if (nType == 1) strSave2.Format("A1,%s,%0.2lf,%d%%", sInterUse, dTime, int(dPer+0.5));
+		if (nType == 2) strSave2.Format("F,NG,,");
+		if (nType >= 3) strSave2.Format("A2,OK,,");
+
+		DX_DATA_03 *pDX03 = g_objAJinAXL.Get_pDX03();
+		
+		if (pDX03->iDoor01Unlock) strDoor[0] = "Open"; else strDoor[0] = "Close";
+		if (pDX03->iDoor02Unlock) strDoor[1] = "Open"; else strDoor[1] = "Close";
+		if (pDX03->iDoor03Unlock) strDoor[2] = "Open"; else strDoor[2] = "Close";
+		if (pDX03->iDoor04Unlock) strDoor[3] = "Open"; else strDoor[3] = "Close";
+		if (pDX03->iDoor05Unlock) strDoor[4] = "Open"; else strDoor[4] = "Close";
+		if (pDX03->iDoor06Unlock) strDoor[5] = "Open"; else strDoor[5] = "Close";
+		if (pDX03->iDoor07Unlock) strDoor[6] = "Open"; else strDoor[6] = "Close";
+		if (pDX03->iDoor08Unlock) strDoor[7] = "Open"; else strDoor[7] = "Close";
+		
+
+		strSave3.Format("%s,%s,%s,%s,%s,%s,%s,%s",    strDoor[0],  strDoor[1],  strDoor[2],  strDoor[3],  strDoor[4],  strDoor[5],  strDoor[6],  strDoor[7]);
+		
+
+		strSave.Format("%s,%s,%s\r\n", strSave1, strSave2, strSave3);
+		file.Write(strSave, strSave.GetLength());
+		file.Close();
+
+	} catch (CFileException *pEx) {
+		pEx->Delete();
+	}
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -6,10 +6,10 @@
 
 CString gsCurrentDir;		// 현재 프로젝트 폴더
 
-GLOBAL_RECIPE	gRcp;
-GLOVAL_DATA		gData;
-GLOVAL_LOT		gLot;
-GLOVAL_ALM		gAlm;
-GLOVAL_UPH		gUph;
-GLOVAL_MES		gMes;
-GLOBAL_DOORLOCK gDoorLock;
+GLOBAL_RECIPE			gRcp;
+GLOVAL_DATA				gData;
+GLOVAL_LOT				gLot;
+GLOVAL_ALM				gAlm;
+GLOVAL_UPH				gUph;
+GLOVAL_MES				gMes;
+GLOVAL_INTERLOCKDATA	gIt;

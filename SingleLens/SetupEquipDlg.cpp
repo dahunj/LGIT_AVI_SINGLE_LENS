@@ -481,16 +481,18 @@ void CSetupEquipDlg::Save_EquipData()
 	if(m_rdoDoorLock[0].GetCheck())
 	{
 		pEquipData->bUseDoorLock = FALSE;
-		INI.Set_Bool("EQUIPMENT", "DOOR_LOCK", m_rdoDoorLock[0].GetCheck());
+		INI.Set_Bool("EQUIPMENT", "DOOR_LOCK", FALSE);
 	}
 	else
 	{
-		INI.Set_Bool("EQUIPMENT", "DOOR_LOCK", m_rdoDoorLock[1].GetCheck());
 		pEquipData->bUseDoorLock = TRUE;
+		INI.Set_Bool("EQUIPMENT", "DOOR_LOCK", TRUE);		
 	}
+
+
 	m_stcMotionCheck.GetWindowText(strData); dData = atof(strData); INI.Set_Double("EQUIPMENT", "MOTION_CHECK", dData, "%0.3lf");
 	
-	m_stcDoorLockTime.GetWindowText(strData);gData.nDoorLockTime = atoi(strData);
+	m_stcDoorLockTime.GetWindowText(strData); gData.nDoorLockTime = atoi(strData);
 	INI.Set_Integer("EQUIPMENT", "DOOR_LOCK_TIME", gData.nDoorLockTime);
 	
 	m_stcZigData[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("COAT_ZIG", "ARRAY_X", nData);pEquipData->nZigArrayX = nData; gData.nLensCntX = pEquipData->nZigArrayX;
@@ -583,6 +585,9 @@ void CSetupEquipDlg::Save_ModelEquipData(CString sPath)
 	pEquipData->sModelName = strData;
 
 	INI.Set_Bool("EQUIPMENT", "DOOR_LOCK", m_rdoDoorLock[1].GetCheck());
+
+	m_stcDoorLockTime.GetWindowText(strData); gData.nDoorLockTime = atoi(strData);
+	INI.Set_Integer("EQUIPMENT", "DOOR_LOCK_TIME", gData.nDoorLockTime);
 
 	m_stcNoWorkTime.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("EQUIPMENT", "NO_WORK_TIME", nData);
 	

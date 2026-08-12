@@ -35,6 +35,9 @@ public:
 
 	//new 
 	CPictureCS		m_picUphBack;
+
+	CBitmap			m_bmpBg;
+	CRect			m_rcBgArea;   // IDC_STATIC_BG의 위치/크기 저장
 	
 	CRadioCS		m_rdoSelectNo[40]; // 20 ~ 59 
 	CStaticCS		m_stcMZID[6];
@@ -42,9 +45,7 @@ public:
 	CStaticCS		m_stcLensCnt[60];
 
 	CGridCS			m_grdLoadMZ;
-	CGridCS			m_grdRdyMZ;
-
-	
+	CGridCS			m_grdRdyMZ;	
 	
 	CGroupCS		m_Group[10];
 	CLabelCS		m_Label[7];
@@ -139,8 +140,7 @@ protected:
 	afx_msg LRESULT OnIndexTack(WPARAM wParam, LPARAM lParam);	//AHN
 	afx_msg LRESULT OnShowMsg(WPARAM wParam, LPARAM lParam);
 	
-	CBitmap m_bmpBg;
-	CRect   m_rcBgArea;   // IDC_STATIC_BG의 위치/크기 저장
+	
 
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
@@ -210,6 +210,9 @@ public:
 
 	void Set_MZInfo(int nMZPos, CString sID);
 	void Set_CtZigInfo(int nMZPos, int nSlotNo, CString sID);
+
+	void Set_BmpDoorLock(BOOL bLock);
+	
 
 
 	afx_msg void OnBnClickedBtnSimul1();	

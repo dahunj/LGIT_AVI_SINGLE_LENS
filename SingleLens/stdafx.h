@@ -91,13 +91,13 @@
 //---------------------------------
 //#define AJIN_BOARD_USE
 
-
-
 #define SIM_WAITTIMES	 1		//
 #define SIM_WAITTIMEM	 1		//
 #define	VELOCITY_WEIGHT	 45
 
 #define MES_WAITTIME	10000
+
+#define ECM_LOG			"D:\\EVMS\\TP\\LOG\\"
 
 //Magazine Slot MAX Number 
 const int SLOT_NO_MAX = 10;
@@ -402,22 +402,6 @@ typedef struct {
 	
 } GLOVAL_MES;
 
-typedef struct{
-	int		nType;			//nType:1[정시], 2[해제] 3[설정]
-	int		nWriteHH;		//등록시간
-	int		nOpenStart;		//1:Start, Open Start 했는지 안했는지 
-	DWORD	dwOpenStartTime;
-	int		nOpenTime;
-	BOOL	bFirst; // 처음 프로그램 켜질때 
-
-	CString sCurrTime;
-	int		nTimeYYYY;
-	int		nTimeMM;
-	int		nTimeDD;
-	int		nTimeHH;
-	double	dTime;
-	double	dPer;
-}GLOBAL_DOORLOCK;
 
 
 typedef struct{
@@ -433,13 +417,29 @@ typedef struct{
 }GLOBAL_RECIPE;
 
 
-extern GLOBAL_RECIPE	gRcp;
-extern GLOVAL_DATA		gData;
-extern GLOVAL_LOT		gLot;
-extern GLOVAL_ALM		gAlm;
-extern GLOVAL_UPH		gUph;
-extern GLOVAL_MES		gMes;
-extern GLOBAL_DOORLOCK	gDoorLock;
+typedef struct {
+	int		nType;			//nType:1[정시], 2[해제] 3[설정]
+	int		nOpenStart;		//1:Start
+	DWORD	dwOpenStartTime;
+	int		nOpenTime;
+	int		nLogYY;		//등록년
+	int		nLogMM;		//등록월
+	int		nLogDD;		//등록날
+	int		nLogHH;		//등록시간
+} GLOVAL_INTERLOCKDATA;
+
+
+
+
+
+
+extern GLOBAL_RECIPE			gRcp;
+extern GLOVAL_DATA				gData;
+extern GLOVAL_LOT				gLot;
+extern GLOVAL_ALM				gAlm;
+extern GLOVAL_UPH				gUph;
+extern GLOVAL_MES				gMes;
+extern  GLOVAL_INTERLOCKDATA	gIt;
 
 
 

@@ -106,7 +106,7 @@ BOOL CDataManager::Read_ModelEquipData(CString strPath)
 
 	m_EquipData.nLotBarcodePort = INI.Get_Integer("EQUIPMENT", "LOT_BARCODE", 1);
 
-	m_EquipData.bUseDoorLock = FALSE; //INI.Get_Bool("EQUIPMENT", "DOOR_LOCK", FALSE);
+	m_EquipData.bUseDoorLock = INI.Get_Bool("EQUIPMENT", "DOOR_LOCK", TRUE);
 	gData.nDoorLockTime = INI.Get_Integer("EQUIPMENT","DOOR_LOCK_TIME", 0);
 	gAlm.dMotionChkPos		= INI.Get_Double("EQUIPMENT","MOTION_CHECK", 0.0);
 	m_EquipData.nNoWorkTime = INI.Get_Integer("EQUIPMENT", "NO_WORK_TIME", 0);
@@ -122,11 +122,7 @@ BOOL CDataManager::Read_ModelEquipData(CString strPath)
 
 	m_EquipData.sAviIp = INI.Get_String("AVI", "AVI_IP", "");
 
-	//doorinterlock log
-	if (gDoorLock.nOpenStart == 0 && m_EquipData.bUseDoorLock == FALSE)
-		g_objLogFile.Save_Interlock(2);
-	if (gDoorLock.nOpenStart == 1 && m_EquipData.bUseDoorLock == TRUE) 
-		g_objLogFile.Save_Interlock(3);
+	
 
 	m_EquipData.nZigArrayX =  INI.Get_Integer("COAT_ZIG", "ARRAY_X", 0); gData.nLensCntX = m_EquipData.nZigArrayX;
 	m_EquipData.nZigArrayY =  INI.Get_Integer("COAT_ZIG", "ARRAY_Y", 0); gData.nLensCntY = m_EquipData.nZigArrayY;	
@@ -183,6 +179,10 @@ BOOL CDataManager::Read_ModelEquipData(CString strPath)
 
 	m_EquipData.nMarkCount = INI2.Get_Integer ("MARKER", "COUNT", 0);
 	m_EquipData.nMarkTimeout = INI2.Get_Integer ("MARKER", "TIMEOUT", 0);
+
+
+	if (gIt.nOpenStart == 0 && m_EquipData.bUseDoorLock == FALSE) g_objLogFile.Save_Interlock(2);
+	if (gIt.nOpenStart == 1 && m_EquipData.bUseDoorLock == TRUE)  g_objLogFile.Save_Interlock(3);
 	
 	return TRUE;
 }

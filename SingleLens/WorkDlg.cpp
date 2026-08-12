@@ -307,13 +307,28 @@ void CWorkDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	CDialogEx::OnShowWindow(bShow, nStatus);
 
 	if (bShow) 
-	{
-		Change_Model();	
-		
+	{		
 		EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-		CString strText;
 
-		g_objCommon.Locking_MainDoor(FALSE);
+		// 리소스에 있는 static의 위치/크기 가져오기
+		CWnd* pWndBg = GetDlgItem(IDC_STATIC_WORKIMAGE);
+		if (pWndBg && ::IsWindow(pWndBg->GetSafeHwnd()))
+		{
+			pWndBg->GetWindowRect(&m_rcBgArea);
+			ScreenToClient(&m_rcBgArea);
+
+			// 기준용 static은 숨김
+			pWndBg->ShowWindow(SW_HIDE);
+		}
+		else
+		{
+			m_rcBgArea.SetRectEmpty();
+		}
+
+		m_bmpBg.DeleteObject();
+
+		if(pEquipData->bUseDoorLock) m_bmpBg.LoadBitmap(IDB_EQUIP_WORK);
+		else m_bmpBg.LoadBitmap(IDB_EQUIP_DOOR);		
 
 		SetTimer(0, 100, NULL);
 		SetTimer(1, 5000, NULL);
@@ -989,7 +1004,7 @@ void CWorkDlg::Check_Lamp()
 				{
 					pMainDlg->Set_LampFlicker_LdOpen(FALSE);
 					pMainDlg->Set_LampFlicker_LdRun(TRUE);	
-					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = FALSE; g_objAJinAXL.Write_Output(33); }
+					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = FALSE; g_objAJinAXL.Write_Output(3); }
 					gData.bLdMZWait = FALSE;
 					m_bLdOpenSwOn = FALSE; m_bLdRunSwOn = TRUE;
 				}			
@@ -1013,7 +1028,7 @@ void CWorkDlg::Check_Lamp()
 				{
 					pMainDlg->Set_LampFlicker_LdOpen(TRUE);
 					pMainDlg->Set_LampFlicker_LdRun(FALSE);	
-					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = FALSE; g_objAJinAXL.Write_Output(33); }
+					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = FALSE; g_objAJinAXL.Write_Output(3); }
 					gData.bLdMZWait = TRUE;
 					m_bLdOpenSwOn = TRUE; m_bLdRunSwOn = FALSE;
 				}	
@@ -2108,6 +2123,15 @@ void CWorkDlg::Set_CtZigInfo(int nMZPos, int nSlotNo, CString sID)
 	int nNo = nMZPos*10 + (nSlotNo-1);
 	m_stcZigID[nNo].SetWindowText(sID);
 	m_stcBarcodeCtZig.SetWindowText(sID);
+}
+
+void CWorkDlg::Set_BmpDoorLock(BOOL bLock)
+{
+	m_bmpBg.DeleteObject();
+	if(bLock) m_bmpBg.LoadBitmap(IDB_EQUIP_WORK);
+	else m_bmpBg.LoadBitmap(IDB_EQUIP_DOOR);
+
+	Invalidate();
 }
 
 void CWorkDlg::InsertMGZTestInfo(int nLensCnt)

@@ -28,7 +28,7 @@ public:
 	CSingleLensDlg(CWnd* pParent = NULL);	// 표준 생성자입니다.
 
 // 대화 상자 데이터입니다.
-	enum { IDD = IDD_CME8000_DIALOG };
+	enum { IDD = IDD_SINGLENS_DIALOG };
 	CPictureCS	m_imgLgLogo;
 	CPictureCS	m_picMainLogo;
 	CStaticCS	m_stcMainEquip;
@@ -49,6 +49,7 @@ public:
 	CButtonCS	m_btnMainExit;
 	CButtonCS	m_btnMainIO;
 	CButtonCS	m_btnMainAlarm;
+	CStaticCS	m_stcDoorLock;
 
 	DWORD	m_dwSetTimer;	// 가동률 로그 삽입을 위해 추가
 

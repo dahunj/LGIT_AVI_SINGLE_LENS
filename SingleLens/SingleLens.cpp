@@ -74,8 +74,7 @@ BOOL CSingleLensApp::InitInstance()
 	// 적절한 내용으로 수정해야 합니다.
 	SetRegistryKey(_T("로컬 응용 프로그램 마법사에서 생성된 응용 프로그램"));
 
-	gDoorLock.nOpenStart = -1;//start with nothing
-	gDoorLock.bFirst = TRUE;
+
 	//gData.bAgingMode = TRUE;
 
 	CIniFileCS INI(gsCurrentDir + "\\System\\EquipData.ini");
