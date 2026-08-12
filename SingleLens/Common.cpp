@@ -349,14 +349,50 @@ BOOL CCommon::Check_HomeDone()
 
 void CCommon::Locking_MainDoor(BOOL bLock, BOOL bAuto)
 {
-	
+	DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
+
+	// 0000 0000 0000 1111 1111 1111 1111 1111
+	// 0    0    0    F    F    F    F    F
+	if (bLock) 
+	{
+		pDY03->oDoor01Unlock = FALSE;
+		pDY03->oDoor02Unlock = FALSE;
+		pDY03->oDoor03Unlock = FALSE;
+		pDY03->oDoor04Unlock = FALSE;
+		pDY03->oDoor05Unlock = FALSE;
+		pDY03->oDoor06Unlock = FALSE;
+		pDY03->oDoor07Unlock = FALSE;
+		pDY03->oDoor08Unlock = FALSE;
+		
+		if(bAuto && gData.bLoadOpenSW) pDY03->oDoor02Unlock = TRUE;
+		if(bAuto && gData.bUnloadOpenSW) pDY03->oDoor07Unlock = TRUE;
+	} 
+	else
+	{
+		DWORD dwStart = GetTickCount();
+		while (TRUE) {
+			BOOL bMove = FALSE;
+			for (int i = 0; i < AXIS_COUNT; i++) {
+				if (!g_objAJinAXL.Is_Done(i)) { bMove = TRUE; break; }
+			}
+			if (!bMove) break;
+			if (GetTickCount() - dwStart > 5000) break;	// 5ÃÊ
+			theApp.DoEvents();
+		}
+		pDY03->oDoor01Unlock = TRUE;
+		pDY03->oDoor02Unlock = TRUE;
+		pDY03->oDoor03Unlock = TRUE;
+		pDY03->oDoor04Unlock = TRUE;
+		pDY03->oDoor05Unlock = TRUE;
+		pDY03->oDoor06Unlock = TRUE;
+		pDY03->oDoor07Unlock = TRUE;
+		pDY03->oDoor08Unlock = TRUE;
+		
+	}
+	g_objAJinAXL.Write_Output(3);
 
 }
 
-void CCommon::Locking_PortSlide(BOOL bLock, int nPart)
-{
-	
-}
 
 /////////////////////////////////////////////////////////////////////////////
 

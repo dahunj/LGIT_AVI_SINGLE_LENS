@@ -384,11 +384,10 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 
 			m_bAutoRunning = TRUE;
 			if (gData.bCycleStop && !m_bCycleStopRun) m_bCycleStopRun = TRUE;
-
-		
 			
-
 			if(pEquipData->bUseDoorLock) g_objCommon.Locking_MainDoor(TRUE);
+			else g_objCommon.Locking_MainDoor(FALSE);
+				
 			if (gAlm.bBegin)
 			{
 				g_objMesAgent.Reset_AlarmLog();

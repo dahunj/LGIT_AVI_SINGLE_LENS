@@ -66,7 +66,7 @@ public:
 	BOOL Check_HomeDone();
 
  	void Locking_MainDoor(BOOL bLock, BOOL bAuto=FALSE);
- 	void Locking_PortSlide(BOOL bLock, int nPart=0);
+ 
 
 	///////////////////////////////////////////////////////////////////////////
 	void Get_RAMSize(CString &strRAM);
