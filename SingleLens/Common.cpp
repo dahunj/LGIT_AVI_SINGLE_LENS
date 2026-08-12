@@ -364,8 +364,8 @@ void CCommon::Locking_MainDoor(BOOL bLock, BOOL bAuto)
 		pDY03->oDoor07Unlock = FALSE;
 		pDY03->oDoor08Unlock = FALSE;
 		
-		if(bAuto && gData.bLoadOpenSW) pDY03->oDoor02Unlock = TRUE;
-		if(bAuto && gData.bUnloadOpenSW) pDY03->oDoor07Unlock = TRUE;
+		if(bAuto && gData.bLoadOpenSW) pDY03->oDoor08Unlock = TRUE;
+		if(bAuto && gData.bUnloadOpenSW) pDY03->oDoor03Unlock = TRUE;
 	} 
 	else
 	{
