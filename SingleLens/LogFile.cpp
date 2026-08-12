@@ -17,6 +17,7 @@ CCriticalSection g_csHandlerLog;
 CCriticalSection g_csRunTimeLog;
 CCriticalSection g_csInspectorLog;
 CCriticalSection g_csJobListLog;
+CCriticalSection g_csZigListLog;
 CCriticalSection g_csAviHandlerLog;
 CCriticalSection g_csECMLog;
 CCriticalSection g_csLoadCellLog;
@@ -292,6 +293,53 @@ void CLogFile::Save_JobListLog(CString sLog, int nMZNo)
 	g_csJobListLog.Unlock();
 
 	Save_ECMLog(2, sLog, nMZNo);
+}
+
+
+
+void CLogFile::Save_CtZigResult(CString sLog, CString sMZID, int nPos)
+{
+	g_csZigListLog.Lock();
+
+	CString strPath = gsCurrentDir + "\\LOG\\ZIgList";
+
+	Create_Folder(strPath);
+
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+
+	CString sVisionPos;
+
+	if(nPos == eVision::TC)
+	{
+		sVisionPos = "Top";
+	}
+	else
+	{
+		sVisionPos = "Btm";
+	}
+
+	CString sTitle, strFile, strSave;
+	sTitle.Format("Time,LotID,MGZ_ID,Start_Time,End_Time,Run_Time,Tact,UPH,UPH_Compare,Inspection_Count\r\n");
+	strFile.Format("%s\\%04d%02d%02d_%s_ZIgList_%s.csv", strPath, time.wYear, time.wMonth, time.wDay, sMZID, sVisionPos);
+
+	CFile file;
+	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
+		try {
+			file.SeekToEnd();
+			if (file.GetLength() < 1) file.Write(sTitle, sTitle.GetLength());
+
+			strSave.Format("[%02d:%02d:%02d.%03d], %s\r\n", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, sLog);
+
+			file.Write(strSave, strSave.GetLength());
+			file.Close();
+
+		} catch (CFileException *pEx) {
+			pEx->Delete();
+		}
+	}
+	g_csZigListLog.Unlock();
+
 }
 
 void CLogFile::Save_LotResult(int nPNo, CString sLog)

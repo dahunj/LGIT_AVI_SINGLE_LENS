@@ -1402,60 +1402,71 @@ LRESULT CWorkDlg::OnUpdateUph(WPARAM wParam, LPARAM lParam)
 	double	dDispTakt[4] = { 0.0 };
 	CString strText;
 
-	dDispTakt[0] = gUph.dTaktTime;		// 현재 Lot
+	if(wParam == 1 && gData.dUPHTray != 0)
+	{
+		strText.Format("%0.2lf", (3600.0 / gData.dUPHTray));
+		m_stcTakt[0].SetWindowText(strText);
 
-	int nCount = gUph.nLotCount[nHour];
-	for (int i = 0; i < nCount; i++) dDispTakt[1] += gUph.dTakt[nHour][i];
-	dDispTakt[1] /= nCount;				// 1시간
+		strText.Format("%0.2lf", gData.dUPHTray);
+		m_stcUph[0].SetWindowText(strText);
+	}
+	else
+	{
+		dDispTakt[0] = gUph.dTaktTime;		// 현재 Lot
 
-	int nTotalCount = 0;
-	if (nHour >= 7 && nHour < 19) {
-		for (int i = 7; i < 19; i++) {
+		int nCount = gUph.nLotCount[nHour];
+		for (int i = 0; i < nCount; i++) dDispTakt[1] += gUph.dTakt[nHour][i];
+		dDispTakt[1] /= nCount;				// 1시간
+
+		int nTotalCount = 0;
+		if (nHour >= 7 && nHour < 19) {
+			for (int i = 7; i < 19; i++) {
+				nCount = gUph.nLotCount[i];
+				for (int j = 0; j < nCount; j++) dDispTakt[2] += gUph.dTakt[i][j];
+				nTotalCount += nCount;
+			}
+		} else {
+			for (int i = 0; i < 7; i++) {
+				nCount = gUph.nLotCount[i];
+				for (int j = 0; j < nCount; j++) dDispTakt[2] += gUph.dTakt[i][j];
+				nTotalCount += nCount;
+			}
+
+			for (int i = 19; i < 24; i++) {
+				nCount = gUph.nLotCount[i];
+				for (int j = 0; j < nCount; j++) dDispTakt[2] += gUph.dTakt[i][j];
+				nTotalCount += nCount;
+			}
+		}
+		dDispTakt[2] /= nTotalCount;		// 12시간
+
+		nTotalCount = 0;
+		for (int i = 0; i < 24; i++) {
 			nCount = gUph.nLotCount[i];
-			for (int j = 0; j < nCount; j++) dDispTakt[2] += gUph.dTakt[i][j];
+			for (int j = 0; j < nCount; j++) dDispTakt[3] += gUph.dTakt[i][j];
 			nTotalCount += nCount;
 		}
-	} else {
-		for (int i = 0; i < 7; i++) {
-			nCount = gUph.nLotCount[i];
-			for (int j = 0; j < nCount; j++) dDispTakt[2] += gUph.dTakt[i][j];
-			nTotalCount += nCount;
+		dDispTakt[3] /= nTotalCount;		// 1일
+
+		// Takt & UPH
+		for (int i = 1; i < 4; i++) {
+			if (dDispTakt[i] == 0) strText = "";
+			else strText.Format("%0.5f", dDispTakt[i]);
+			m_stcTakt[i].SetWindowText(strText);
+
+			if (dDispTakt[i] == 0) strText = "";
+			else strText.Format("%d", int(3600 / dDispTakt[i]));
+			m_stcUph[i].SetWindowText(strText);
 		}
 
-		for (int i = 19; i < 24; i++) {
-			nCount = gUph.nLotCount[i];
-			for (int j = 0; j < nCount; j++) dDispTakt[2] += gUph.dTakt[i][j];
-			nTotalCount += nCount;
+		//생산량
+		for (int i = 0; i < 2; i++) {
+			if (gUph.nLensCount[i] == 0) strText = "";
+			else strText.Format("%d", gUph.nLensCount[i]);
+			m_stcDay[i].SetWindowText(strText);
 		}
-	}
-	dDispTakt[2] /= nTotalCount;		// 12시간
 
-	nTotalCount = 0;
-	for (int i = 0; i < 24; i++) {
-		nCount = gUph.nLotCount[i];
-		for (int j = 0; j < nCount; j++) dDispTakt[3] += gUph.dTakt[i][j];
-		nTotalCount += nCount;
-	}
-	dDispTakt[3] /= nTotalCount;		// 1일
-
-	// Takt & UPH
-	for (int i = 0; i < 4; i++) {
-		if (dDispTakt[i] == 0) strText = "";
-		else strText.Format("%0.5f", dDispTakt[i]);
-		m_stcTakt[i].SetWindowText(strText);
-
-		if (dDispTakt[i] == 0) strText = "";
-		else strText.Format("%d", int(3600 / dDispTakt[i]));
-		m_stcUph[i].SetWindowText(strText);
-	}
-
-	//생산량
-	for (int i = 0; i < 2; i++) {
-		if (gUph.nLensCount[i] == 0) strText = "";
-		else strText.Format("%d", gUph.nLensCount[i]);
-		m_stcDay[i].SetWindowText(strText);
-	}
-
+	}	
 	return 0;
 }
 

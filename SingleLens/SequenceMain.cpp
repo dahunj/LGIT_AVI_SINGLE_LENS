@@ -11,7 +11,7 @@
 
 #include "WorkDlg.h"
 
-
+#include <algorithm>
 
 CSequenceMain g_objSequenceMain;
 
@@ -334,6 +334,12 @@ void CSequenceMain::Set_ClearRunData(BOOL bInit)
 		gLot.dwTime_RunTime[i] = 0;
 		gLot.dwTime_Unload[i] = 0;
 	}
+		
+	memset(gData.dwElapsedBtm, 0x00, sizeof(DWORD)*3*10);
+	memset(gData.dwElapsedTop, 0x00, sizeof(DWORD)*3*10);
+
+	memset(gData.dUPHBtm, 0x00, sizeof(double)*3*10);
+	memset(gData.dUPHTop, 0x00, sizeof(double)*3*10);
 }
 
 void CSequenceMain::Set_ClearLotData(BOOL bInit, int nLotNo)
@@ -356,11 +362,7 @@ void CSequenceMain::Job_LotStart(int nMZNo, int nPos)
 void CSequenceMain::Job_LotEnd(int nMZNo)
 {
 	int nMNo = nMZNo -1 ;
-
-	memset(gData.cJudgeCode[nMNo], 0x00, sizeof(char)*10*ZIG_X*ZIG_Y*2);
-	memset(gData.nInspectInfo[nMNo], 0x00, sizeof(int)*10*ZIG_X*ZIG_Y);
-	memset(gData.byInspectDone[nMNo], 0x00, sizeof(BYTE)*10*ZIG_X*ZIG_Y);
-
+	
 
 	SYSTEMTIME time;
 	GetLocalTime(&time);
@@ -370,7 +372,7 @@ void CSequenceMain::Job_LotEnd(int nMZNo)
 	DWORD dwTime_StoE = gLot.dwLotEnd[nMNo] - gLot.dwLotStart[nMNo];
 	gLot.dTactTime_StoETime = dwTime_StoE / 1000.0 / gLot.nLensCount[nMNo];
 
-	DWORD dwTime_RunTime = gLot.dwLotEnd[nMNo] - gLot.dwLotStart[nMNo] ;
+	DWORD dwTime_RunTime = gLot.dwLotEnd[nMNo] - gLot.dwLotStart[nMNo];
 	gLot.dTactTime_RunTime = dwTime_RunTime / 1000.0 / gLot.nLensCount[nMNo];
 
 	DWORD dwTime_Unload = gLot.dwLotEnd[nMNo] - gLot.dwFirstUnloadTray[nMNo];
@@ -384,7 +386,7 @@ void CSequenceMain::Job_LotEnd(int nMZNo)
 	m_strLog.Format("%s,%s,%s,%s,%d,%d,%0.3lf,%0.3lf,%0.3lf,%0.3lf,%0.3lf,%0.3lf,%d,%d,%d,%d,%d,%d", 
 				   gData.sLotIDElevUnload, gData.sMZIDElevUnload, gLot.sStartTime[nMNo], gLot.sEndTime[nMNo], 
 				   dwTime_RunTime, dwTime_Unload,
-				   gLot.dTactTime_StoETime, gLot.dTactTime_RunTime, gLot.dTackTime_Unload,
+				   gLot.dTactTime_StoETime, gLot.dTactTime_RunTime, gLot.dTackTime_Unload,				
 				   3600.0/gLot.dTactTime_StoETime, 3600.0/gLot.dTactTime_RunTime, 3600.0/gLot.dTackTime_Unload,
 				   gLot.nErrorCount[nMNo], 0,
 				   gLot.nTrayCount[nMNo], gLot.nLensCount[nMNo], gLot.nGoodCount[nMNo], gLot.nNgCount[nMNo]);
@@ -435,6 +437,16 @@ void CSequenceMain::Job_LotEnd(int nMZNo)
 
 	gData.nUnloadTrayCnt[nMNo] = 0;
 	gData.nLoadTrayCnt[nMNo] = 0;
+
+	memset(gData.dwElapsedBtm[nMNo], 0x00, sizeof(DWORD)*10);
+	memset(gData.dwElapsedTop[nMNo], 0x00, sizeof(DWORD)*10);
+
+	memset(gData.dUPHBtm[nMNo], 0x00, sizeof(double)*10);
+	memset(gData.dUPHTop[nMNo], 0x00, sizeof(double)*10);
+
+	memset(gData.cJudgeCode[nMNo], 0x00, sizeof(char)*10*ZIG_X*ZIG_Y*2);
+	memset(gData.nInspectInfo[nMNo], 0x00, sizeof(int)*10*ZIG_X*ZIG_Y);
+	memset(gData.byInspectDone[nMNo], 0x00, sizeof(BYTE)*10*ZIG_X*ZIG_Y);
 
 
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
@@ -2944,6 +2956,10 @@ BOOL CSequenceMain::TopInspectorRun()
 	static double dTopZ = 0.0;
 	static int nLensNo = 0;
 
+	static DWORD dwStartTop = 0, dwEndTop = 0;
+	
+
+
 	if(gData.bCycleStop)
 	{
 		gData.bIndexDone[eMainIndex::Top] = TRUE;
@@ -2964,6 +2980,15 @@ BOOL CSequenceMain::TopInspectorRun()
 			}
 			else
 			{
+				gData.nInspectCnt[eVision::TC] = 0;
+				dwStartTop = GetTickCount(); dwEndTop = 0;
+
+				SYSTEMTIME time;
+				GetLocalTime(&time);
+
+				gData.sStartTime[eVision::TC].Format("%04d-%02d-%02d %02d:%02d:%02d %03d", 
+					time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+			
 				gRcp.dStartZ[eVision::TC]	= m_pEquipData->dTopStartZ;
 				gRcp.nCount[eVision::TC]	= m_pEquipData->nTopCount;
 				gRcp.dPeriod[eVision::TC]	= m_pEquipData->dTopPeriod;
@@ -2980,6 +3005,9 @@ BOOL CSequenceMain::TopInspectorRun()
 		}
 		else if(!gData.bIndexDone[eMainIndex::Top] && Check_IndexEmpty(eMainIndex::Top)  )
 		{
+			gData.nInspectCnt[eVision::TC] = 0;
+			dwStartTop = 0; dwEndTop = 0;
+
 			gData.bIndexDone[eMainIndex::Top] = TRUE;
 			m_nTopInspectCase = 0; m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);	
 			m_strLog.Format("Top Vision Done"); m_nTopInspectLoop.Takt_Save(5, m_nTopInspectCase, m_strLog);
@@ -3180,14 +3208,28 @@ BOOL CSequenceMain::TopInspectorRun()
 				nTopXPos++; nTopYPos = 1;
 			}
 		}
+		gData.nInspectCnt[eVision::TC]++;
 		g_dlgWork.PostMessage(UM_UPDATE_VISION_INFO, (int)eVision::TC, NULL);
 		m_nTopInspectCase = 3; m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		break;	
 	case 15:
-		g_objCommon.Move_Position(AX_TOP_INSPECTOR_Z, eTopInspect_Z::Ready);
-		gData.bIndexDone[eMainIndex::Top] = TRUE;
-		m_nTopInspectCase = 0; m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
-		m_strLog.Format("Top Vision Done"); m_nTopInspectLoop.Takt_Save(6, m_nTopInspectCase, m_strLog);
+		{
+			SYSTEMTIME time;
+			GetLocalTime(&time);
+
+			gData.sEndTime[eVision::TC].Format("%04d-%02d-%02d %02d:%02d:%02d %03d", 
+				time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+
+			dwEndTop = GetTickCount();			
+			DWORD	dwInspect = gData.dwElapsedTop[gData.nMZNoMainIndex[eMainIndex::Top]-1][gData.nSlotNoMainIndex[eMainIndex::Top]-1] =  dwEndTop - dwStartTop;
+			double	dTactTime = dwInspect / 1000.0 / gData.nInspectCnt[eVision::TC];
+			gData.dUPHTop[gData.nMZNoMainIndex[eMainIndex::Top]-1][gData.nSlotNoMainIndex[eMainIndex::Top]-1] = 3600 / dTactTime;				
+			
+			g_objCommon.Move_Position(AX_TOP_INSPECTOR_Z, eTopInspect_Z::Ready);
+			gData.bIndexDone[eMainIndex::Top] = TRUE;
+			m_nTopInspectCase = 0; m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
+			m_strLog.Format("Top Vision Done"); m_nTopInspectLoop.Takt_Save(6, m_nTopInspectCase, m_strLog);
+		}		
 		break;
 
 	}
@@ -3208,6 +3250,9 @@ BOOL CSequenceMain::BtmInspectorRun()
 	static double	dBtmUnitX, dBtmUnitY, dBtmUnitZ = 0.0;
 	static double dBtmZ;
 	static int nLensNo = 0;
+
+	static DWORD dwStartBtm = 0, dwEndBtm = 0;
+
 
 	if(gData.bCycleStop)
 	{
@@ -3231,6 +3276,16 @@ BOOL CSequenceMain::BtmInspectorRun()
 			}
 			else
 			{
+				gData.nInspectCnt[eVision::BC] = 0;
+				dwStartBtm = GetTickCount(); dwEndBtm = 0;
+
+				SYSTEMTIME time;
+				GetLocalTime(&time);
+
+				gData.sStartTime[eVision::BC].Format("%04d-%02d-%02d %02d:%02d:%02d %03d", 
+					time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+
+
 				gRcp.dStartZ[eVision::BC]	= m_pEquipData->dBtmStartZ;
 				gRcp.nCount[eVision::BC]	= m_pEquipData->nBtmCount;
 				gRcp.dPeriod[eVision::BC]	= m_pEquipData->dBtmPeriod;
@@ -3247,6 +3302,9 @@ BOOL CSequenceMain::BtmInspectorRun()
 		}
 		else if(!gData.bIndexDone[eMainIndex::Btm] && Check_IndexEmpty(eMainIndex::Btm) )
 		{
+			gData.nInspectCnt[eVision::BC] = 0;
+			dwStartBtm = 0; dwEndBtm = 0;
+
 			gData.bIndexDone[eMainIndex::Btm] = TRUE;
 			m_nBtmInspectCase = 0; m_nBtmInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);	
 			m_strLog.Format("Btm Vision Done"); m_nBtmInspectLoop.Takt_Save(5, m_nBtmInspectCase, m_strLog);
@@ -3437,10 +3495,26 @@ BOOL CSequenceMain::BtmInspectorRun()
 				nBtmXPos++; nBtmYPos = 1;
 			}
 		}
+		gData.nInspectCnt[eVision::BC]++;
 		g_dlgWork.PostMessage(UM_UPDATE_VISION_INFO, (int)eVision::BC, NULL);
 		m_nBtmInspectCase = 3; m_nBtmInspectLoop.Set_LoopTime(5000);
 		break;	
 	case 15:
+		if(dwEndBtm == 0)
+		{
+			dwEndBtm = GetTickCount();		
+			DWORD	dwInspect =gData.dwElapsedBtm[gData.nMZNoMainIndex[eMainIndex::Btm]-1][gData.nSlotNoMainIndex[eMainIndex::Btm]-1] = dwEndBtm - dwStartBtm;
+			double	dTactTime = dwInspect / 1000.0 / gData.nInspectCnt[eVision::BC];
+			gData.dUPHBtm[gData.nMZNoMainIndex[eMainIndex::Btm]-1][gData.nSlotNoMainIndex[eMainIndex::Btm]-1] = 3600 / dTactTime;
+
+			SYSTEMTIME time;
+			GetLocalTime(&time);
+
+			gData.sEndTime[eVision::BC].Format("%04d-%02d-%02d %02d:%02d:%02d %03d", 
+				time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+
+
+		}
 		if(gData.bIndexDone[eMainIndex::Mark] || m_nMarkUnitCase > 2)
 		{
 			gData.bIndexDone[eMainIndex::Btm] = TRUE;
@@ -4166,7 +4240,58 @@ BOOL CSequenceMain::Check_FeederEmpty()
 
 void CSequenceMain::Set_IndexEnd()
 {
+	double dUphTop = gData.dUPHTop[gData.nMZNoMainIndex[eMainIndex::Top]-1][gData.nSlotNoMainIndex[eMainIndex::Top]-1];
+	double dUphBtm = gData.dUPHBtm[gData.nMZNoMainIndex[eMainIndex::Btm]-1][gData.nSlotNoMainIndex[eMainIndex::Btm]-1];
+	double dUphSmaller = 0;
+
+	if(dUphTop != 0 && dUphBtm != 0)
+	{
+		if(dUphTop < dUphBtm)
+		{
+			dUphSmaller = dUphTop; 
+		}
+		else if(dUphTop >= dUphBtm)
+		{
+			dUphSmaller = dUphBtm;
+		}
+	}
+	else if(dUphBtm == 0 && dUphTop != 0) //Top 만 검사
+	{
+		dUphSmaller = dUphTop;
+	}
+	else if(dUphTop == 0 && dUphBtm != 0) // Btm 만 검사 
+	{
+		dUphSmaller = dUphBtm;
+	}
+	else
+	{
+		dUphSmaller = 0;
+	}
 	
+	CString sLog;
+
+	if(dUphSmaller !=0 && gData.sMZIDMainIdex[eMainIndex::Top] != "")
+	{
+		sLog.Format("%s,%s,%s,%s,%0.2lf,%0.2lf,%0.2lf,%0.2lf,%d", 
+			gData.sLotIDMainIndex[eMainIndex::Top], gData.sMZIDMainIdex[eMainIndex::Top], 
+			gData.sStartTime[eVision::TC], gData.sEndTime[eVision::TC],
+			(3600.0 / dUphTop)*gData.nInspectCnt[eVision::TC], (3600.0 / dUphTop), dUphTop,
+			dUphSmaller, gData.nInspectCnt[eVision::TC]);
+		g_objLogFile.Save_CtZigResult(sLog, gData.sMZIDMainIdex[eMainIndex::Top], eVision::TC);		
+	}
+
+	if(dUphSmaller !=0 && gData.sMZIDMainIdex[eMainIndex::Btm] != "")
+	{
+		sLog.Format("%s,%s,%s,%s,%0.2lf,%0.2lf,%0.2lf,%0.2lf,%d", 
+			gData.sLotIDMainIndex[eMainIndex::Btm], gData.sMZIDMainIdex[eMainIndex::Btm], 
+			gData.sStartTime[eVision::BC], gData.sEndTime[eVision::BC],
+			(3600.0 / dUphBtm)*gData.nInspectCnt[eVision::BC], (3600.0 / dUphBtm), dUphBtm,
+			dUphSmaller, gData.nInspectCnt[eVision::BC]);
+		g_objLogFile.Save_CtZigResult(sLog, gData.sMZIDMainIdex[eMainIndex::Btm], eVision::BC);
+	}
+	
+	g_dlgWork.PostMessage(UM_UPDATE_UPH, 1, 0);
+
 	gData.sLotIDMainIndex[eMainIndex::Unload] = gData.sLotIDMainIndex[eMainIndex::Mark];
 	gData.sLotIDMainIndex[eMainIndex::Mark] = gData.sLotIDMainIndex[eMainIndex::Btm];
 	gData.sLotIDMainIndex[eMainIndex::Btm] = gData.sLotIDMainIndex[eMainIndex::None];

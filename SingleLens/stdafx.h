@@ -89,7 +89,7 @@
 
 
 //---------------------------------
-#define AJIN_BOARD_USE
+//#define AJIN_BOARD_USE
 
 
 
@@ -284,6 +284,19 @@ typedef struct
 
 	CString	sTempMZID;
 	CString sTempZigID;
+
+	DWORD	dwElapsedTop[3][10]; // MZ NO., tray No 
+	DWORD	dwElapsedBtm[3][10];
+
+	double	dUPHTop[3][10];
+	double	dUPHBtm[3][10];	
+	double	dUPHTray;	//MZ No.
+
+	int		nInspectCnt[2]; //vision Pos 
+
+	CString	sStartTime[2]; // vision Pos;
+	CString sEndTime[2];
+	
 
 } GLOVAL_DATA;
 
