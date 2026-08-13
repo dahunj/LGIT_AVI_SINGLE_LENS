@@ -755,15 +755,18 @@ void CLogFile::Save_Interlock(int nType)
 	if (nType == 1)	strTime.Format("%04d-%02d-%02d %02d:00:00.000",		 time.wYear, time.wMonth, time.wDay, time.wHour);
 	else			strTime.Format("%04d-%02d-%02d %02d:%02d:%02d.%03d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
 
+	strLotID = gData.sLotIDElevLoad[eMZ::Load];
+	if(strLotID == "") strLotID = gData.sMZIDElevLoad[eMZ::Load]; 
+
+
+	if(strLotID != "") strFile.Format("%s%s_%04d%02d%02d%02d_InterlockResult.csv", sECMPath, strLotID, gIt.nLogYY, gIt.nLogMM, gIt.nLogDD, gIt.nLogHH);
+	else strFile.Format("%sSingleLensDOOR1_%04d%02d%02d%02d_InterlockResult.csv", sECMPath, gIt.nLogYY, gIt.nLogMM, gIt.nLogDD, gIt.nLogHH);
 	
 	sTitle.Format("time,station,lotNum,barcode,SWversion,State,site,Line,Machine,operator,result,Interlock,Interlock off Time,Interlock Coverage,Door I/L 1,Door I/L 2,Door I/L 3,Door I/L 4,Door I/L 5,Door I/L 6,Door I/L 7,Door I/L 8\r\n");
-	strFile.Format("%sGSY848CP2C2N_%04d%02d%02d%02d_InterlockResult.csv", sECMPath, gIt.nLogYY, gIt.nLogMM, gIt.nLogDD, gIt.nLogHH);
-	if (nType == 0) { DeleteFile(strFile); return; }
-
 	
-
-	strLotID = gData.sLotIDElevLoad[eMZ::Load];
-
+	if (nType == 0) { DeleteFile(strFile); return; }
+	
+	
 
 	int		nSite;
 	CString sSite, sLine, sModel;

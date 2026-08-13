@@ -251,12 +251,10 @@ BOOL CCommon::Check_MainEmgAir()
 
 BOOL CCommon::Check_MainDoor(BOOL bAuto)
 {
-
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
 #ifdef AJIN_BOARD_USE
 	DX_DATA_03 *pDX03 = g_objAJinAXL.Get_pDX03();
-
 
 	if (!pEquipData->bUseDoorLock) 
 	{		

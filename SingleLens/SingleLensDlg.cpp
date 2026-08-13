@@ -802,7 +802,7 @@ void CSingleLensDlg::Set_BuzzerFlicker(BOOL bEnable)
 			pDY03->oBuzzerBit4 = pEquipData->bBuzzer[nState-STATE_ALARM][4];
 		//}
 	}
-	g_objAJinAXL.Write_Output(12);
+	g_objAJinAXL.Write_Output(3);
 }
 
 void CSingleLensDlg::Set_LampFlicker_LdOpen(BOOL bEnable)
@@ -926,6 +926,7 @@ void CSingleLensDlg::Display_DateTime()
 	else						  { m_stcDoorLock.Set_Text("Door Unlock"); m_stcDoorLock.Set_Color(RGB(0xFF, 0xFF, 0x00), RGB(0xFF, 0x00, 0x00)); }
 	
 	int nHour = datetime.GetHour();
+	
 	if (gIt.nLogMM >=1 && gIt.nLogMM <=12 && gIt.nLogHH != nHour) 
 	{
 		g_objLogFile.Save_Interlock(1);

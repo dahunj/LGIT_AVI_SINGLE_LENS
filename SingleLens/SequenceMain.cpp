@@ -3407,6 +3407,7 @@ BOOL CSequenceMain::BtmInspectorRun()
 			g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_X) &&
 			g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Z))
 		{
+		
 			if(nBtmXPos < 1 || nBtmYPos < 1) break;
 			if(gData.bAgingMode) if(!m_nBtmInspectLoop.Waiting_Time(250)) break;
 
