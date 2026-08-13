@@ -18,7 +18,7 @@ public:
 	void Save_SaveRunTimeLog(CString sLog);
 	void Save_InspectorLog(CString sLog);
 	void Save_JobListLog(CString sLog, int nMZNo);
-	void Save_CtZigResult(CString sLog, CString sMZID, int nPos);
+	void Save_CtZigResult(CString sLog, int nMZNo, int nPos);
 	void Save_LotResult(int nPNo, CString sLog);
 	void Save_LotLog(int nPNo);
 	void Save_AviHandlerLog(CString sLog);

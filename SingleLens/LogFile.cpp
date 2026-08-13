@@ -297,13 +297,9 @@ void CLogFile::Save_JobListLog(CString sLog, int nMZNo)
 
 
 
-void CLogFile::Save_CtZigResult(CString sLog, CString sMZID, int nPos)
+void CLogFile::Save_CtZigResult(CString sLog, int nMZNo, int nPos)
 {
-	g_csZigListLog.Lock();
 
-	CString strPath = gsCurrentDir + "\\LOG\\ZIgList";
-
-	Create_Folder(strPath);
 
 	SYSTEMTIME time;
 	GetLocalTime(&time);
@@ -317,27 +313,105 @@ void CLogFile::Save_CtZigResult(CString sLog, CString sMZID, int nPos)
 	else
 	{
 		sVisionPos = "Btm";
-	}
+	}	
 
-	CString sTitle, strFile, strSave;
-	sTitle.Format("Time,LotID,MGZ_ID,Start_Time,End_Time,Run_Time,Tact,UPH,UPH_Compare,Inspection_Count\r\n");
-	strFile.Format("%s\\%04d%02d%02d_%s_ZIgList_%s.csv", strPath, time.wYear, time.wMonth, time.wDay, sMZID, sVisionPos);
+	CString strPath1 = "D:\\EVMS\\TP\\Log";
+	CString strPath2 = "D:\\EVMS\\TP\\Backup";
+	CString strPath3;
 
+	Create_Folder(strPath1);
+	Create_Folder(strPath2);
+
+
+	strPath3 = gsCurrentDir + "\\LOG\\ZIgList";
+	Create_Folder(strPath3);
+
+	CString strFile1, strFile2, strFile3, strTitle, strTime, strPcName, strSave;
+	
+	strFile1.Format("%s\\%s_%04d%02d%02d%02d_ZigList.csv", strPath1, gData.sMZIDMainIdex[eMainIndex::Mark], time.wYear, time.wMonth, time.wDay, time.wHour);
+	strFile2.Format("%s\\%s_%04d%02d%02d%02d_ZigList.csv", strPath2, gData.sMZIDMainIdex[eMainIndex::Mark], time.wYear, time.wMonth, time.wDay, time.wHour);
+	strFile3.Format("%s\\%s_%s_ZigList.csv", strPath3, gLot.sStartTime[nMZNo-1], gData.sMZIDMainIdex[eMainIndex::Mark]);
+	
+	g_csZigListLog.Lock();
+	
 	CFile file;
-	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
-		try {
-			file.SeekToEnd();
-			if (file.GetLength() < 1) file.Write(sTitle, sTitle.GetLength());
-
-			strSave.Format("[%02d:%02d:%02d.%03d], %s\r\n", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, sLog);
-
-			file.Write(strSave, strSave.GetLength());
-			file.Close();
-
-		} catch (CFileException *pEx) {
-			pEx->Delete();
-		}
+	if (!file.Open(strFile1, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) 
+	{
+		g_objLogFile.Save_HandlerLog("LotTime Open Fail");
+		return;
 	}
+	strTitle.Format("Time,LotID,MGZ_ID,Start_Time,End_Time,Run_Time,Tact,UPH,UPH_Compare,Inspection_Count\r\n");
+	
+	try {
+		file.SeekToEnd();
+
+		if (file.GetLength() < 1) file.Write(strTitle, strTitle.GetLength());
+
+		strTime.Format("'%04d-%02d-%02d %02d:%02d:%02d.%03d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+		
+		strSave.Format("%s,%s\r\n", strTime, sLog);
+
+		file.Write(strSave, strSave.GetLength());
+		file.Close();
+
+
+	} catch (CFileException *pEx) {
+		pEx->Delete();
+	}
+
+
+
+	CFile file2;
+	if (!file2.Open(strFile2, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) 
+	{
+		g_objLogFile.Save_HandlerLog("LotTime Open Fail");
+		return;
+	}
+	strTitle.Format("Time,LotID,MGZ_ID,Start_Time,End_Time,Run_Time,Tact,UPH,UPH_Compare,Inspection_Count\r\n");
+
+	try {
+		file2.SeekToEnd();
+
+		if (file2.GetLength() < 1) file2.Write(strTitle, strTitle.GetLength());
+
+		strTime.Format("'%04d-%02d-%02d %02d:%02d:%02d.%03d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+		
+		strSave.Format("%s,%s\r\n", strTime, sLog);
+
+		file2.Write(strSave, strSave.GetLength());
+		file2.Close();
+
+
+	} catch (CFileException *pEx) {
+		pEx->Delete();
+	}
+	
+
+	CFile file3;
+	if (!file3.Open(strFile3, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) 
+	{
+		g_objLogFile.Save_HandlerLog("LotTime Open Fail");
+		return;
+	}
+	strTitle.Format("Time,LotID,MGZ_ID,Start_Time,End_Time,Run_Time,Tact,UPH,UPH_Compare,Inspection_Count\r\n");
+
+	try {
+		file3.SeekToEnd();
+
+		if (file3.GetLength() < 1) file3.Write(strTitle, strTitle.GetLength());
+
+		strTime.Format("'%04d-%02d-%02d %02d:%02d:%02d.%03d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+		
+		strSave.Format("%s,%s\r\n", strTime, sLog);
+
+		file3.Write(strSave, strSave.GetLength());
+		file3.Close();	
+
+	} catch (CFileException *pEx) {
+		pEx->Delete();
+	}
+
+
 	g_csZigListLog.Unlock();
 
 }
@@ -1041,8 +1115,6 @@ void CLogFile::Save_LotTime(int nMZNo,const CString& sLog)
 		file.Write(strSave, strSave.GetLength());
 		file.Close();
 
-		//CopyFile(strFile1, strFile2, FALSE);	// Backup
-		//CopyFile(strFile1, strFile3, FALSE);	// SPC
 
 	} catch (CFileException *pEx) {
 		pEx->Delete();

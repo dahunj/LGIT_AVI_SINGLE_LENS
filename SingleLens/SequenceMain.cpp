@@ -1984,7 +1984,9 @@ BOOL CSequenceMain::FeederRun()
 		{
 			gMes.bTrayIDConfirm = FALSE; //Load : 1
 			//g_dlgWork.init_LensMap();	 // Get_TrayID_Confirm 에서 처리하는 걸로 변경 
-			gData.nLensUseCnt[gData.nMZNoFeeder-1][gData.nSlotNoFeeder-1] = 144;
+			
+			gData.nLensUseCnt[gData.nMZNoFeeder-1][gData.nSlotNoFeeder-1] = gMes.nPocketCnt;
+			
 			gData.nLensTotalCnt[gData.nMZNoFeeder-1] += gData.nLensUseCnt[gData.nMZNoFeeder-1][gData.nSlotNoFeeder-1];
 			gLot.nLensCount[gData.nMZNoFeeder-1] = gData.nLensTotalCnt[gData.nMZNoFeeder-1];
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
@@ -1993,7 +1995,8 @@ BOOL CSequenceMain::FeederRun()
 		}
 		else if(m_pEquipData->bUseBarcodeCtZig)
 		{
-			gMes.bTrayIDConfirm = FALSE; //Load : 1
+			gMes.bTrayIDConfirm = FALSE; //Load : 1		
+
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
 			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
 			m_nFeederCase = 16; m_nFeederLoop.Set_LoopTime(5000);
@@ -2481,7 +2484,7 @@ BOOL CSequenceMain::FeederRun()
 		{
 			gMes.bTrayIDConfirm = FALSE; //Load : 1
 			//g_dlgWork.init_LensMap(); // Get_TrayID_Confirm 에서 처리하는 걸로 변경 
-			gData.nLensUseCnt[gData.nMZNoFeeder-1][gData.nSlotNoFeeder-1] = 144;
+			gData.nLensUseCnt[gData.nMZNoFeeder-1][gData.nSlotNoFeeder-1] = gMes.nPocketCnt;
 			gData.nLensTotalCnt[gData.nMZNoFeeder-1] += gData.nLensUseCnt[gData.nMZNoFeeder-1][gData.nSlotNoFeeder-1];
 			gLot.nLensCount[gData.nMZNoFeeder-1] = gData.nLensTotalCnt[gData.nMZNoFeeder-1];
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
@@ -3189,9 +3192,7 @@ BOOL CSequenceMain::TopInspectorRun()
 			m_nTopInspectCase = 5; m_nTopInspectLoop.Set_LoopTime(30000);	// 90AE		
 		}
 		break;
-	
-
-	case 10:
+	case 10:		
 		if(m_pEquipData->nVisionDir == eVDir::fixY)
 		{
 			nTopXPos++;
@@ -4268,7 +4269,9 @@ void CSequenceMain::Set_IndexEnd()
 	{
 		dUphSmaller = 0;
 	}
-	
+	gData.dUPHTray = dUphSmaller;
+
+
 	CString sLog;
 
 	if(dUphSmaller !=0 && gData.sMZIDMainIdex[eMainIndex::Top] != "")
@@ -4278,7 +4281,7 @@ void CSequenceMain::Set_IndexEnd()
 			gData.sStartTime[eVision::TC], gData.sEndTime[eVision::TC],
 			(3600.0 / dUphTop)*gData.nInspectCnt[eVision::TC], (3600.0 / dUphTop), dUphTop,
 			dUphSmaller, gData.nInspectCnt[eVision::TC]);
-		g_objLogFile.Save_CtZigResult(sLog, gData.sMZIDMainIdex[eMainIndex::Top], eVision::TC);		
+		g_objLogFile.Save_CtZigResult(sLog, gData.nMZNoMainIndex[eMainIndex::Top], eVision::TC);		
 	}
 
 	if(dUphSmaller !=0 && gData.sMZIDMainIdex[eMainIndex::Btm] != "")
@@ -4288,7 +4291,7 @@ void CSequenceMain::Set_IndexEnd()
 			gData.sStartTime[eVision::BC], gData.sEndTime[eVision::BC],
 			(3600.0 / dUphBtm)*gData.nInspectCnt[eVision::BC], (3600.0 / dUphBtm), dUphBtm,
 			dUphSmaller, gData.nInspectCnt[eVision::BC]);
-		g_objLogFile.Save_CtZigResult(sLog, gData.sMZIDMainIdex[eMainIndex::Btm], eVision::BC);
+		g_objLogFile.Save_CtZigResult(sLog, gData.nMZNoMainIndex[eMainIndex::Btm], eVision::BC);
 	}
 	
 	g_dlgWork.PostMessage(UM_UPDATE_UPH, 1, 0);

@@ -345,12 +345,15 @@ BOOL CHost::Extract_Xml(CString sXmlData)
 			 }
 
 			 CXmlNodes nodeP = m_xml.GetRoot()->GetChild("ITEM")->GetChild("RCMDCP")->GetChild("MAPINFO")->GetChild("PRODUCTLIST")->GetChildren();
+			 
 			 gMes.nPocketCnt = nodeP.GetCount();
+			 gMes.nLensCnt = 0;
 
 			 for (int i = 0; i < gMes.nPocketCnt; i++) 
 			 {
 				 gMes.sPocketNo[i] = nodeP[i]->GetChild("POCKETID")->GetAttribute("VALUE");
 				 gMes.sResult[i] = nodeP[i]->GetChild("STATUS")->GetAttribute("VALUE");	
+				 if(gMes.sResult[i] == "OK") gMes.nLensCnt++;
 			 }
 		 }	
 

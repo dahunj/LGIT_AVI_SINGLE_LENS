@@ -91,6 +91,7 @@ typedef struct {
 	int			nHostType;		// 0:LotId, 1:CapId, 2:ShipId
 
 	int			nPocketCnt;
+	int			nLensCnt;
 	CString		sPocketNo[141];
 	CString		sResult[141];
 

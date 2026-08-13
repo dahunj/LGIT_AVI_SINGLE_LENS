@@ -89,7 +89,7 @@
 
 
 //---------------------------------
-#define AJIN_BOARD_USE
+//#define AJIN_BOARD_USE
 
 #define SIM_WAITTIMES	 1		//
 #define SIM_WAITTIMEM	 1		//

@@ -301,11 +301,14 @@ void CMesAgent::Get_TrayID_Confirm(CString sStrings)
 	int nLensNoMES = 0, nLensNoAVI = 0;
 
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-
-	for (int i = 0; i < gMes.nPocketCnt; i++)
+	BOOL Ret = FALSE;
+	for (int i = 0; i < 141; i++)
 	{
-		AfxExtractSubString(strTemp[2], sStrings, i*2 + 4, chSep);
-		AfxExtractSubString(strTemp[3], sStrings, i*2 + 5, chSep);
+		Ret = AfxExtractSubString(strTemp[2], sStrings, i*2 + 4, chSep);
+		if(!Ret) break;
+		
+		Ret = AfxExtractSubString(strTemp[3], sStrings, i*2 + 5, chSep);
+		if(!Ret) break;
 
 		gMes.sPocketNo[i] = strTemp[2];
 		gMes.sResult[i] = strTemp[3];
@@ -338,7 +341,6 @@ void CMesAgent::Get_TrayID_Confirm(CString sStrings)
 		}
 
 	}
-
 	gMes.bTrayIDConfirm = TRUE;
 
 }

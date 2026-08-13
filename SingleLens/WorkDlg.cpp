@@ -1424,7 +1424,7 @@ LRESULT CWorkDlg::OnUpdateUph(WPARAM wParam, LPARAM lParam)
 		strText.Format("%0.2lf", gData.dUPHTray);
 		m_stcUph[0].SetWindowText(strText);
 	}
-	else if(wParam == 0)
+	else if(wParam == NULL)
 	{
 		dDispTakt[0] = gUph.dTaktTime;		// ÇöÀç Lot
 
