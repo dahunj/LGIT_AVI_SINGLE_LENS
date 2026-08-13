@@ -394,7 +394,7 @@ void CSequenceMain::Job_LotEnd(int nMZNo)
 	g_objLogFile.Save_JobListLog(m_strLog, nMZNo);
 
 
-	gUph.dTaktTime = gLot.dTackTime_Unload;
+	
 
 	if (time.wHour >= 7 && time.wHour < 19) gUph.nLensCount[0] += gLot.nLensCount[nMNo];
 	else gUph.nLensCount[1] += gLot.nLensCount[nMNo];
@@ -403,7 +403,9 @@ void CSequenceMain::Job_LotEnd(int nMZNo)
 	int j = gUph.nLotCount[i];
 	if (j > 49) return;		// 1시간에 LOT 수량 MAX 50개
 
-	gUph.dTakt[i][j] = gLot.dTackTime_Unload;
+
+	gUph.dTaktTime = gLot.dTactTime_RunTime;
+	gUph.dTakt[i][j] = gLot.dTactTime_RunTime;
 	gUph.nLotCount[i] = j + 1;
 
 	

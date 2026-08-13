@@ -1416,7 +1416,7 @@ LRESULT CWorkDlg::OnUpdateUph(WPARAM wParam, LPARAM lParam)
 	double	dDispTakt[4] = { 0.0 };
 	CString strText;
 
-	if(wParam == 1 && gData.dUPHTray != 0)
+	/*if(wParam == 1 && gData.dUPHTray != 0)
 	{
 		strText.Format("%0.2lf", (3600.0 / gData.dUPHTray));
 		m_stcTakt[0].SetWindowText(strText);
@@ -1424,7 +1424,7 @@ LRESULT CWorkDlg::OnUpdateUph(WPARAM wParam, LPARAM lParam)
 		strText.Format("%0.2lf", gData.dUPHTray);
 		m_stcUph[0].SetWindowText(strText);
 	}
-	else if(wParam == NULL)
+	else*/ if(wParam == NULL)
 	{
 		dDispTakt[0] = gUph.dTaktTime;		// ÇöÀç Lot
 
@@ -1463,7 +1463,7 @@ LRESULT CWorkDlg::OnUpdateUph(WPARAM wParam, LPARAM lParam)
 		dDispTakt[3] /= nTotalCount;		// 1ÀÏ
 
 		// Takt & UPH
-		for (int i = 1; i < 4; i++) {
+		for (int i = 0; i < 4; i++) {
 			if (dDispTakt[i] == 0) strText = "";
 			else strText.Format("%0.5f", dDispTakt[i]);
 			m_stcTakt[i].SetWindowText(strText);

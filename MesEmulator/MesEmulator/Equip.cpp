@@ -547,7 +547,7 @@ void CEquip::Set_S2F49_TRAY_ID_CONFIRM()
 	for(int i = 0;  i < 141; i++)
 	{	
 		nResult = (rand() % (nEnd - nStart + 1) + nStart);
-		if(nResult < 50) sStatus="OK";
+		if(nResult < 100) sStatus="OK";
 		else			 sStatus="NG";
 
 		strTemp.Format("%d",++nTemp);
