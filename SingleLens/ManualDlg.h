@@ -2,11 +2,14 @@
 //
 #pragma once
 
+#include "SingleLensDlg.h"
+
 #include "ManualElevDlg.h"
 #include "ManualLoadDlg.h"
 #include "ManualCleanDlg.h"
 #include "ManualBtmDlg.h"
 #include "ManualIndexDlg.h"
+
 
 // CManualDlg 대화 상자입니다.
 
@@ -49,6 +52,8 @@ protected:
 	afx_msg void OnBnClickedRdoManualDoorUnlock();
 
 public:
+	CSingleLensDlg *pMainDlg;
+
 	CManualElevDlg			*m_pManualElevDlg;
 	CManualLoadDlg			*m_pManualLoadDlg;
 	CManualCleanDlg			*m_pManualCleanDlg;

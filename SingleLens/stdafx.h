@@ -297,6 +297,8 @@ typedef struct
 	CString	sStartTime[2]; // vision Pos;
 	CString sEndTime[2];
 	
+	DWORD	dwTouched;
+
 
 } GLOVAL_DATA;
 

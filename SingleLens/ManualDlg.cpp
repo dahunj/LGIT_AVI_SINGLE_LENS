@@ -74,6 +74,8 @@ BOOL CManualDlg::OnInitDialog()
 
 	Initial_Controls();
 
+	pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
+
 	m_pManualElevDlg = new CManualElevDlg(this);
 	m_pManualElevDlg->Create(IDD_MANUAL_ELEV_DLG, this);
 
@@ -89,7 +91,7 @@ BOOL CManualDlg::OnInitDialog()
 	m_pManualIndexDlg = new CManualIndexDlg(this);
 	m_pManualIndexDlg->Create(IDD_MANUAL_MAIN_INDEX_DLG, this);
 
-	// Load Dlg Visible
+		// Load Dlg Visible
 	m_rdoManualElev.SetCheck(TRUE);
 	m_rdoManualElev.Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
 
@@ -99,6 +101,25 @@ BOOL CManualDlg::OnInitDialog()
 
 BOOL CManualDlg::PreTranslateMessage(MSG* pMsg) 
 {
+	switch (pMsg->message)
+	{
+	case WM_KEYDOWN:
+	case WM_KEYUP:
+	case WM_SYSKEYDOWN:
+	case WM_SYSKEYUP:
+		gData.dwTouched = GetTickCount();
+		break;
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONUP:
+	case WM_RBUTTONDOWN:
+	case WM_RBUTTONUP:
+	case WM_MBUTTONDOWN:
+	case WM_MBUTTONUP:
+	case WM_MOUSEMOVE:
+	case WM_MOUSEWHEEL:	
+		gData.dwTouched = GetTickCount();
+		break;
+	}
 	if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE))
 		return TRUE;
 
@@ -132,7 +153,10 @@ void CManualDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {
 	CDialogEx::OnShowWindow(bShow, nStatus);
 
-	if (bShow) {
+	if (bShow) 
+	{
+		
+
 		if (m_rdoManualElev.GetCheck()) m_pManualElevDlg->ShowWindow(SW_SHOW);
 		if (m_rdoManualLoad.GetCheck()) m_pManualLoadDlg->ShowWindow(SW_SHOW);
 		if (m_rdoManualClean.GetCheck()) m_pManualCleanDlg->ShowWindow(SW_SHOW);

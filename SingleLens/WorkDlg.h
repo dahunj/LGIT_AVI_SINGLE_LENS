@@ -7,6 +7,7 @@
 #include "AJinDefine.h"
 
 #include "GridWindow.h"
+#include "SingleLensDlg.h"
 
 #define UM_UPDATE_MODEL			WM_USER+1
 #define UM_UPDATE_MZ_INFO		WM_USER+2
@@ -102,6 +103,8 @@ public:
 	CGridCS			m_grdBtmVision;
 	CGridCS			m_grdMarking;
 
+public:
+	CSingleLensDlg *pMainDlg;
 	
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.

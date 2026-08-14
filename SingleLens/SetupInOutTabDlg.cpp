@@ -62,6 +62,26 @@ BOOL CSetupInOutTabDlg::OnInitDialog()
 
 BOOL CSetupInOutTabDlg::PreTranslateMessage(MSG* pMsg) 
 {
+	switch (pMsg->message)
+	{
+	case WM_KEYDOWN:
+	case WM_KEYUP:
+	case WM_SYSKEYDOWN:
+	case WM_SYSKEYUP:
+		gData.dwTouched = GetTickCount();
+		break;
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONUP:
+	case WM_RBUTTONDOWN:
+	case WM_RBUTTONUP:
+	case WM_MBUTTONDOWN:
+	case WM_MBUTTONUP:
+	case WM_MOUSEMOVE:
+	case WM_MOUSEWHEEL:	
+		gData.dwTouched = GetTickCount();
+		break;
+	}
+
 	if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE))
 		return TRUE;
 

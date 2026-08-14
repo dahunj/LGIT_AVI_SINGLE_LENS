@@ -71,6 +71,8 @@ BOOL CSetupDlg::OnInitDialog()
 
 	Initial_Controls();
 
+	pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
+
 	m_pSetupEquipDlg = new CSetupEquipDlg(this);
 	m_pSetupEquipDlg->Create(IDD_SETUP_EQUIP_DLG, this);
 
@@ -82,7 +84,7 @@ BOOL CSetupDlg::OnInitDialog()
 
 	m_pSetupInOutDlg = new CSetupInOutDlg(this);
 	m_pSetupInOutDlg->Create(IDD_SETUP_IN_OUT_DLG, this);
-
+	
 	m_rdoSetupEquip.SetCheck(TRUE);
 	m_rdoSetupEquip.Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
 
@@ -92,9 +94,29 @@ BOOL CSetupDlg::OnInitDialog()
 
 BOOL CSetupDlg::PreTranslateMessage(MSG* pMsg) 
 {
+	switch (pMsg->message)
+	{
+	case WM_KEYDOWN:
+	case WM_KEYUP:
+	case WM_SYSKEYDOWN:
+	case WM_SYSKEYUP:
+		gData.dwTouched = GetTickCount();
+		break;
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONUP:
+	case WM_RBUTTONDOWN:
+	case WM_RBUTTONUP:
+	case WM_MBUTTONDOWN:
+	case WM_MBUTTONUP:
+	case WM_MOUSEMOVE:
+	case WM_MOUSEWHEEL:	
+		gData.dwTouched = GetTickCount();
+		break;
+	}
+
 	if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE))
 		return TRUE;
-
+	
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
@@ -122,8 +144,10 @@ void CSetupDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {
 	CDialogEx::OnShowWindow(bShow, nStatus);
 
-	if (bShow) {
-		if (theApp.bParamMode) {
+	if (bShow) 
+	{
+		if (theApp.bParamMode) 
+		{
 			m_rdoSetupMove.SetCheck(TRUE);
 			OnBnClickedRdoSetupMove();
 

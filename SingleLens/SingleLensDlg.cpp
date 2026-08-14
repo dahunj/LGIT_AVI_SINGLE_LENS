@@ -238,11 +238,36 @@ HCURSOR CSingleLensDlg::OnQueryDragIcon()
 
 BOOL CSingleLensDlg::PreTranslateMessage(MSG* pMsg)
 {
+	switch (pMsg->message)
+	{
+	case WM_KEYDOWN:
+	case WM_KEYUP:
+	case WM_SYSKEYDOWN:
+	case WM_SYSKEYUP:
+		gData.dwTouched = GetTickCount();
+		break;
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONUP:
+	case WM_RBUTTONDOWN:
+	case WM_RBUTTONUP:
+	case WM_MBUTTONDOWN:
+	case WM_MBUTTONUP:
+	case WM_MOUSEMOVE:
+	case WM_MOUSEWHEEL:	
+		gData.dwTouched = GetTickCount();
+		break;
+	}
+
 	if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE))
 		return TRUE;
 
+
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
+
+
+
+
 
 void CSingleLensDlg::OnDestroy()
 {
@@ -341,6 +366,7 @@ void CSingleLensDlg::OnTimer(UINT_PTR nIDEvent)
 		Set_InsideLight();
 		Set_NoWork();
 		Set_MarkerTimeout();
+		Set_OperMode();
 		break;
 	case TIMER_TOWER_FLKR:
 		Set_TowerFlicker(TRUE);
@@ -572,13 +598,13 @@ void CSingleLensDlg::Set_CurrentMode(int nMode)
 	} else if (nMode == MODE_INITIAL) {
 		g_dlgInitial.ShowWindow(SW_SHOW);
 		m_stcMainMode.SetWindowText("Initial");
-		m_stcMainOpEng.SetWindowText("Engineer Mode");
+		m_stcMainOpEng.SetWindowText("Operator Mode");
 		g_objLogFile.Save_HandlerLog("[Main Dialog] Initial Mode start");
 
 	} else if (nMode == MODE_WORK) {
 		g_dlgWork.ShowWindow(SW_SHOW);
 		m_stcMainMode.SetWindowText("Work");
-		m_stcMainOpEng.SetWindowText("Engineer Mode");
+		m_stcMainOpEng.SetWindowText("Operator Mode");
 		m_rdoMainWork.Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
 		if (!m_rdoMainWork.GetCheck()) m_rdoMainWork.SetCheck(TRUE);
 		g_objLogFile.Save_HandlerLog("[Main Dialog] Work Mode start");
@@ -1133,4 +1159,17 @@ void CSingleLensDlg::Set_MarkerTimeout()
 
 	dwMarkBegin = GetTickCount();
 	g_objCommon.Show_Alarm("Need to Change Maker");
+}
+
+void CSingleLensDlg::Set_OperMode()
+{
+	if(GetTickCount() - gData.dwTouched > 10000 )
+	//if(m_dwTouched - GetTickCount() > 10*60*1000 )
+	{
+		int nMode = theApp.Get_MainMode();
+		if(nMode == MODE_PARAM || nMode == MODE_SETUP || nMode == MODE_MANUAL)
+		{
+			Set_CurrentMode(MODE_WORK);
+		}		
+	}
 }

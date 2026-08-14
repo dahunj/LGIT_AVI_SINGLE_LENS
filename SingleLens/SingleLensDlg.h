@@ -104,6 +104,8 @@ private:
 	BOOL	m_bNoWorkPopup;
 	DWORD	m_dwNoWorkTime;
 
+
+
 private:
 	void Initial_Controls();
 	void Hide_ModeWindows(int nMode, int nPreMode);
@@ -111,7 +113,7 @@ private:
 public:
 	void Set_CurrentMode(int nMode);
 	void Set_CurrentState(int nState);
-
+	
 	void Set_InsideLight();
 	void Set_TowerFlicker(BOOL bEnable);
 	void Set_BuzzerFlicker(BOOL bEnable);
@@ -131,17 +133,18 @@ public:
 
 	void Set_EquipRunStart();
 	void Save_EquipRunTime();
-	void Clear_EquipRunTime();
-
-	
+	void Clear_EquipRunTime();	
 
 	void Set_LotErrorLog(CString sEvent, int nErrCode, CString sMessage, int nPNo=0);
 
 	void Set_LotStateTime();
 	void Set_DoorLock();
 	void Set_NoWork();
+	void Set_OperMode();
 
 	void Set_MarkerTimeout();
+
+	
 };
 
 ///////////////////////////////////////////////////////////////////////////////

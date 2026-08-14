@@ -2,6 +2,8 @@
 //
 #pragma once
 
+#include "SingleLensDlg.h"
+
 #include "SetupEquipDlg.h"
 #include "SetupMoveDlg.h"
 #include "SetupMotionDlg.h"
@@ -44,6 +46,8 @@ protected:
 	afx_msg void OnBnClickedBtnSetupCancel();
 
 public:
+	CSingleLensDlg *pMainDlg;
+
 	CSetupEquipDlg	*m_pSetupEquipDlg;
 	CSetupMoveDlg	*m_pSetupMoveDlg;
 	CSetupMotionDlg	*m_pSetupMotionDlg;
