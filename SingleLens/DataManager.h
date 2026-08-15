@@ -7,6 +7,7 @@
 typedef struct tag_EQUIP_DATA {
 	
 	int		nNoWorkTime;
+	int		nSafetySwitchTime;
 
 	double	dElevPitchZ;
 	double	dElevPitchZReady;

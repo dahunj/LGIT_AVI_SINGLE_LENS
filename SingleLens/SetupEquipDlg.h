@@ -18,6 +18,7 @@ public:
 
 	CLabelCS	m_lblMotionCheck;
 	CLabelCS	m_lblNoWorkTime;
+	CLabelCS	m_lblSafetySwitch;
 
 	CLabelCS	m_lblCtZig[4];
 	CLabelCS	m_lblTriggerTop[8];
@@ -32,6 +33,8 @@ public:
 	CComboCS    m_cboModelChange;
 		
 	CStaticCS	m_stcNoWorkTime;
+	CStaticCS	m_stcSafetySwitch;
+
 	CStaticCS	m_stcMotionCheck;
 	CLabelCS	m_lblDoorLock;
 	CRadioCS	m_rdoDoorLock[2];
@@ -128,6 +131,7 @@ public:
 	afx_msg void OnBnClickedChkUseBarcodeCtzig();
 	afx_msg void OnBnClickedChkUseMes();
 
+	afx_msg void OnStnClickedStcSafetySwitch();
 };
 
 ///////////////////////////////////////////////////////////////////////////////

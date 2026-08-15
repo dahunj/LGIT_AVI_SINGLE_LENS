@@ -2,6 +2,8 @@
 //
 #pragma once
 
+#include "ToastMsgDlg.h"
+
 #define TIMER_DATE_TIME		0
 #define TIMER_TOWER_FLKR	1
 #define TIMER_BUZZER_FLKR	2
@@ -104,6 +106,9 @@ private:
 	BOOL	m_bNoWorkPopup;
 	DWORD	m_dwNoWorkTime;
 
+private:
+	CToastMsgDlg m_toast;
+
 
 
 private:
@@ -143,6 +148,8 @@ public:
 	void Set_OperMode();
 
 	void Set_MarkerTimeout();
+
+	void Set_ToastMsg();
 
 	
 };

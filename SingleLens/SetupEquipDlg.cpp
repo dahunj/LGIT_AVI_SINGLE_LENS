@@ -37,7 +37,9 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CBO_MODEL_CHANGE, m_cboModelChange);
 
 	DDX_Control(pDX, IDC_STC_NO_WORK_TIME, m_stcNoWorkTime);
-			
+	DDX_Control(pDX, IDC_STC_SAFETY_SWITCH, m_stcSafetySwitch);
+
+
 	DDX_Control(pDX, IDC_STC_MOTION_CHECK, m_stcMotionCheck);
 	DDX_Control(pDX, IDC_LBL_DOOR_LOCK, m_lblDoorLock);	
 	DDX_Control(pDX, IDC_LBL_DOOR_LOCK2, m_lblDoorLock2);
@@ -93,6 +95,7 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Control(pDX, IDC_LBL_MOTIONCHECK, m_lblMotionCheck);
 	DDX_Control(pDX, IDC_LBL_NO_WORK_TIME, m_lblNoWorkTime);
+	DDX_Control(pDX, IDC_LBL_SAFETY_SWITCH, m_lblSafetySwitch);
 
 	DDX_Control(pDX, IDC_LBL_PITCHZ, m_lblPitchZ);
 	DDX_Control(pDX, IDC_LBL_REPEAT, m_lblRepeat);
@@ -125,6 +128,7 @@ BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHK_USE_BARCODE_CTZIG, &CSetupEquipDlg::OnBnClickedChkUseBarcodeCtzig)
 	ON_BN_CLICKED(IDC_CHK_USE_MES, &CSetupEquipDlg::OnBnClickedChkUseMes)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MARK_TIMEOUT, IDC_STC_MARK_TIMEOUT, OnStnClickedStcMarkTimeout)
+	ON_STN_CLICKED(IDC_STC_SAFETY_SWITCH, &CSetupEquipDlg::OnStnClickedStcSafetySwitch)
 END_MESSAGE_MAP()
 
 // CSetupEquipDlg ¸Þ½ÃÁö Ã³¸®±âÀÔ´Ï´Ù.
@@ -146,6 +150,9 @@ void CSetupEquipDlg::Initial_Controls()
 
 	m_lblNoWorkTime.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x40, 0x80));	
 	m_stcNoWorkTime.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xF0, 0xE0, 0x00));
+	
+	m_lblSafetySwitch.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x40, 0x80));	
+	m_stcSafetySwitch.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xF0, 0xE0, 0x00));
 
 	m_lblMotionCheck.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x40, 0x80));	
 	m_stcMotionCheck.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xF0, 0xE0, 0x00));
@@ -416,6 +423,8 @@ void CSetupEquipDlg::Display_EquipData()
 	
 	strData.Format("%d", pEquipData->nNoWorkTime); m_stcNoWorkTime.SetWindowText(strData);
 
+	strData.Format("%d", pEquipData->nSafetySwitchTime); m_stcSafetySwitch.SetWindowText(strData);
+
 	m_rdoDoorLock[(int)pEquipData->bUseDoorLock].SetCheck(TRUE);
 	strData.Format("%d", gData.nDoorLockTime);	m_stcDoorLockTime.SetWindowText(strData);
 
@@ -513,6 +522,8 @@ void CSetupEquipDlg::Save_EquipData()
 	
 	m_stcDoorLockTime.GetWindowText(strData); gData.nDoorLockTime = atoi(strData);
 	INI.Set_Integer("EQUIPMENT", "DOOR_LOCK_TIME", gData.nDoorLockTime);
+
+	m_stcMotionCheck.GetWindowText(strData); dData = atof(strData); INI.Set_Double("EQUIPMENT", "MOTION_CHECK", dData); gAlm.dMotionChkPos = dData;
 	
 	m_stcZigData[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("COAT_ZIG", "ARRAY_X", nData);pEquipData->nZigArrayX = nData; gData.nLensCntX = pEquipData->nZigArrayX;
 	m_stcZigData[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("COAT_ZIG", "ARRAY_Y", nData);pEquipData->nZigArrayY = nData; gData.nLensCntY = pEquipData->nZigArrayY;
@@ -609,7 +620,9 @@ void CSetupEquipDlg::Save_ModelEquipData(CString sPath)
 	INI.Set_Integer("EQUIPMENT", "DOOR_LOCK_TIME", gData.nDoorLockTime);
 
 	m_stcNoWorkTime.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("EQUIPMENT", "NO_WORK_TIME", nData);
-	
+	m_stcSafetySwitch.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("EQUIPMENT", "SAFETY_SWITCH_TIME", nData);
+	m_stcMotionCheck.GetWindowText(strData); dData = atof(strData); INI.Set_Double("EQUIPMENT", "MOTION_CHECK", dData); gAlm.dMotionChkPos = dData;
+		
 	m_stcZigData[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("COAT_ZIG", "ARRAY_X", nData);pEquipData->nZigArrayX = nData;
 	m_stcZigData[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("COAT_ZIG", "ARRAY_Y", nData);pEquipData->nZigArrayY = nData;
 	m_stcZigData[2].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("COAT_ZIG", "PITCH_X", dData, "%0.2lf");pEquipData->dZigPitchX = dData;
@@ -940,4 +953,13 @@ void CSetupEquipDlg::OnStnClickedStcMarkTimeout(UINT nID)
 
 	m_strLog.Format("[Equip Mode] Mark Timeout Data - %s ", strNew);
 	g_objLogFile.Save_HandlerLog(m_strLog);
+}
+
+
+void CSetupEquipDlg::OnStnClickedStcSafetySwitch()
+{
+	CString strOld, strNew;
+	m_stcSafetySwitch.GetWindowText(strOld);
+	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
+	m_stcSafetySwitch.SetWindowText(strNew);
 }
