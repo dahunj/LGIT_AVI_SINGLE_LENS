@@ -450,6 +450,14 @@ void CSequenceMain::Job_LotEnd(int nMZNo)
 	memset(gData.nInspectInfo[nMNo], 0x00, sizeof(int)*10*ZIG_X*ZIG_Y);
 	memset(gData.byInspectDone[nMNo], 0x00, sizeof(BYTE)*10*ZIG_X*ZIG_Y);
 
+	for(int i = 0; i < 10; i++) for(int j = 0; j < ZIG_X*ZIG_Y; j++)
+	{
+		for(int k = 0; k < 2; k++) gData.cJudgeCode[nMNo][i][j][k] = 0x00;
+		for(int k = 0; k < 3; k++) gData.sJudgeCode[nMNo][i][j][k].Empty(); 
+		for(int k = 0; k < 3; k++) gData.sNGCode[nMNo][i][j][k].Empty();
+		gData.nInspectInfo[nMNo][i][j] = 0;    
+		gData.byInspectDone[nMNo][i][j] = 0x00;	
+	}		
 
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	pMainDlg->Set_LotStateTime();
