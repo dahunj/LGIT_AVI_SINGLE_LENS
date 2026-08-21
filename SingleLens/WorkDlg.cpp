@@ -455,7 +455,7 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 
 			m_pDY03->oDustPowerOn = FALSE; g_objAJinAXL.Write_Output(3);
 
-			g_objSequenceMain.End_MainRunThread();
+			g_objSequenceMain.End_MainRunThread(2000);
 			theApp.uSleep(5);
 
 			if(pEquipData->bUseMES) g_objMesAgent.Set_EquipState(eEquipState::DOWN);	//Down

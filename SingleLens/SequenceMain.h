@@ -52,7 +52,7 @@ protected:
 
 public:
 	void Begin_MainRunThread();
-	void End_MainRunThread();
+	void End_MainRunThread(DWORD dwWait);
 
 	BOOL Is_MainThreadRun() { return m_bThreadMainRun; }
 
