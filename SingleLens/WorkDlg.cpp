@@ -15,8 +15,6 @@
 #include "SequenceMain.h"
 
 #include "OperatorDlg.h"
-#include "SingleLensDlg.h"
-
 #include "NoWorkDlg.h"
 
 // CWorkDlg 대화 상자입니다.
@@ -151,6 +149,8 @@ END_MESSAGE_MAP()
 
 void CWorkDlg::Initial_Controls() 
 {
+	pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
+
 	CString strText;
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
@@ -278,17 +278,33 @@ BOOL CWorkDlg::OnInitDialog()
 
 	 //Example - 0번 셀: 빨간색
 	// m_wndTopGrid.SetCellBackgroundColor( 0, RGB(255, 100, 100));
-
-	
-
-	
-
+	  
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
 }
 
 BOOL CWorkDlg::PreTranslateMessage(MSG* pMsg)
 {
+	switch (pMsg->message)
+	{
+	case WM_KEYDOWN:
+	case WM_KEYUP:
+	case WM_SYSKEYDOWN:
+	case WM_SYSKEYUP:
+		gData.dwTouched = GetTickCount();
+		break;
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONUP:
+	case WM_RBUTTONDOWN:
+	case WM_RBUTTONUP:
+	case WM_MBUTTONDOWN:
+	case WM_MBUTTONUP:
+	case WM_MOUSEMOVE:
+	case WM_MOUSEWHEEL:	
+		gData.dwTouched = GetTickCount();
+		break;
+	}
+
 	if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE))
 		return TRUE;
 
@@ -344,7 +360,6 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	KillTimer(0);
 	 
-	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	
 	DX_DATA_03 *pDX03 = g_objAJinAXL.Get_pDX03();
@@ -440,7 +455,7 @@ void CWorkDlg::OnTimer(UINT_PTR nIDEvent)
 
 			m_pDY03->oDustPowerOn = FALSE; g_objAJinAXL.Write_Output(3);
 
-			g_objSequenceMain.End_MainRunThread();
+			g_objSequenceMain.End_MainRunThread(2000);
 			theApp.uSleep(5);
 
 			if(pEquipData->bUseMES) g_objMesAgent.Set_EquipState(eEquipState::DOWN);	//Down
@@ -777,8 +792,7 @@ void CWorkDlg::OnStnClickedLblLot3()
 void CWorkDlg::OnBnClickedRdoWorkStart()
 {
 	g_objLogFile.Save_HandlerLog("[Work Mode] START button push");
-	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
-
+	
 	pMainDlg->Set_LotErrorLog("START", 903, "Start");
 	g_objLogFile.Save_EfficiencyLog(0, "Run", 903, "Run Start");
 }
@@ -787,8 +801,7 @@ void CWorkDlg::OnBnClickedRdoWorkStop()
 {
 	g_objLogFile.Save_HandlerLog("[Work Mode] STOP button push");
 	MachineStopLog("STOP_BUTTON_PUSH");
-	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
-
+	
 	pMainDlg->Set_LotErrorLog("STOP", 904, "Stop");
 	g_objLogFile.Save_EfficiencyLog(0, "Stop", 903, "Stop Button Push");
 
@@ -974,7 +987,7 @@ void CWorkDlg::Initial_Grid(CGridCS *pGrid, int nRows, int nCols, int nNoDir)
 
 void CWorkDlg::Check_Lamp()
 {
-	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
+	
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	DX_DATA_00 *pDX00 = g_objAJinAXL.Get_pDX00(); DY_DATA_00 *pDY00 = g_objAJinAXL.Get_pDY00();
 	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01(); DY_DATA_01 *pDY01 = g_objAJinAXL.Get_pDY01();
@@ -1487,7 +1500,7 @@ LRESULT CWorkDlg::OnUpdateUph(WPARAM wParam, LPARAM lParam)
 
 LRESULT CWorkDlg::OnLotStartEnd(WPARAM wParam, LPARAM lParam)
 {
-	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
+	
 	int nNo = lParam;
 	if (wParam == 1) {
 		pMainDlg->Set_LotErrorLog("LOT START", 901, "Lot Start", nNo);

@@ -165,6 +165,9 @@ BOOL CSingleLensDlg::OnInitDialog()
 
 	g_objBarcodeLot_Cognex.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
 
+	m_toast.Create(IDD_TOASTMSG_DLG, this);
+	m_toast.SetColors(RGB(20,20,120), RGB(255,220,120), RGB(120,120,120));
+
 	CString strLog;
 	strLog.Format("[Main Dialog] Program Begin [%s]", MAIN_VERSION);
 	g_objLogFile.Save_HandlerLog(strLog);
@@ -238,11 +241,36 @@ HCURSOR CSingleLensDlg::OnQueryDragIcon()
 
 BOOL CSingleLensDlg::PreTranslateMessage(MSG* pMsg)
 {
+	switch (pMsg->message)
+	{
+	case WM_KEYDOWN:
+	case WM_KEYUP:
+	case WM_SYSKEYDOWN:
+	case WM_SYSKEYUP:
+		gData.dwTouched = GetTickCount();
+		break;
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONUP:
+	case WM_RBUTTONDOWN:
+	case WM_RBUTTONUP:
+	case WM_MBUTTONDOWN:
+	case WM_MBUTTONUP:
+	case WM_MOUSEMOVE:
+	case WM_MOUSEWHEEL:	
+		gData.dwTouched = GetTickCount();
+		break;
+	}
+
 	if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE))
 		return TRUE;
 
+
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
+
+
+
+
 
 void CSingleLensDlg::OnDestroy()
 {
@@ -341,6 +369,8 @@ void CSingleLensDlg::OnTimer(UINT_PTR nIDEvent)
 		Set_InsideLight();
 		Set_NoWork();
 		Set_MarkerTimeout();
+		Set_OperMode();
+		Set_ToastMsg();
 		break;
 	case TIMER_TOWER_FLKR:
 		Set_TowerFlicker(TRUE);
@@ -572,13 +602,13 @@ void CSingleLensDlg::Set_CurrentMode(int nMode)
 	} else if (nMode == MODE_INITIAL) {
 		g_dlgInitial.ShowWindow(SW_SHOW);
 		m_stcMainMode.SetWindowText("Initial");
-		m_stcMainOpEng.SetWindowText("Engineer Mode");
+		m_stcMainOpEng.SetWindowText("Operator Mode");
 		g_objLogFile.Save_HandlerLog("[Main Dialog] Initial Mode start");
 
 	} else if (nMode == MODE_WORK) {
 		g_dlgWork.ShowWindow(SW_SHOW);
 		m_stcMainMode.SetWindowText("Work");
-		m_stcMainOpEng.SetWindowText("Engineer Mode");
+		m_stcMainOpEng.SetWindowText("Operator Mode");
 		m_rdoMainWork.Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
 		if (!m_rdoMainWork.GetCheck()) m_rdoMainWork.SetCheck(TRUE);
 		g_objLogFile.Save_HandlerLog("[Main Dialog] Work Mode start");
@@ -1133,4 +1163,43 @@ void CSingleLensDlg::Set_MarkerTimeout()
 
 	dwMarkBegin = GetTickCount();
 	g_objCommon.Show_Alarm("Need to Change Maker");
+}
+
+void CSingleLensDlg::Set_OperMode()
+{
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	int nTerm = pEquipData->nSafetySwitchTime * 1000;
+
+	if(nTerm == 0) return;
+
+	if(nTerm < 10*1000) nTerm = 10*1000;
+
+	if(GetTickCount() - gData.dwTouched > nTerm )
+	//if(m_dwTouched - GetTickCount() > 10*60*1000 )
+	{
+		int nMode = theApp.Get_MainMode();
+		if(nMode == MODE_PARAM || nMode == MODE_SETUP || nMode == MODE_MANUAL)
+		{
+			Set_CurrentMode(MODE_WORK);
+		}		
+	}
+}
+
+void CSingleLensDlg::Set_ToastMsg()
+{
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	if(!pEquipData->bUseDoorLock)
+	{
+		int nMode = theApp.Get_MainMode();
+		if(nMode == MODE_PARAM || nMode == MODE_SETUP || nMode == MODE_MANUAL)
+		{
+			if(!m_toast.IsWindowVisible()) m_toast.ShowToast("Safety Unlocked", 120,0);
+		}
+	}
+	else
+	{
+		if(m_toast.IsWindowVisible()) m_toast.ShowWindow(SW_HIDE);
+	}
 }
