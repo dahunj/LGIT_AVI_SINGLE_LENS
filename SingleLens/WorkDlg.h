@@ -143,8 +143,6 @@ protected:
 	afx_msg LRESULT OnIndexTack(WPARAM wParam, LPARAM lParam);	//AHN
 	afx_msg LRESULT OnShowMsg(WPARAM wParam, LPARAM lParam);
 	
-	
-
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 

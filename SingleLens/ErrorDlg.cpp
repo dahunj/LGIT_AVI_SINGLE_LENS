@@ -133,6 +133,10 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	if (bShow) {
 		BringWindowToTop();	// 화면 위로...
 
+		gLot.dwErrorStart = 0;
+		gLot.dwStopStart = 0;
+		gLot.dwErrorStart = GetTickCount();
+
 		CString strErrNo, strErrCode, strErrMsg, strShow, strLog;
 		CString strMes = "";
 		

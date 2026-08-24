@@ -87,9 +87,8 @@
 
 #define MAIN_VERSION	_T("V 1.1.0.11_S")
 
-
 //---------------------------------
-#define AJIN_BOARD_USE
+//#define AJIN_BOARD_USE
 
 #define SIM_WAITTIMES	 1		//
 #define SIM_WAITTIMEM	 1		//
@@ -173,20 +172,18 @@ typedef struct
 	CString	sZigIDElevLoad[10];
 	CString	sRecipeElevLoad[10];
 
-
+	
 	CString	sLotIDElevRdy[10];
 	CString	sMZIDElevReady[10];
 	CString	sZigIDElevReady[10];
 	CString	sRecipeElevReady[10];
-	
-	
+		
 	CString	sLotIDElevUnload;
 	CString	sMZIDElevUnload;
 	CString	sZigIDElevUnload[10];
 	CString sRecipeElevUnload[10];
 	int		nTablePocketElevUnload[10];
 	
-
 	CString	sLotIDFeeder;
 	CString	sMZIDFeeder;
 	CString	sZigIDFeeder;
@@ -299,6 +296,9 @@ typedef struct
 	
 	DWORD	dwTouched;
 
+	int		nMZNoRunning[3];	// Current running MZ No 1,2,3
+
+
 
 } GLOVAL_DATA;
 
@@ -315,6 +315,9 @@ typedef struct
 	///////////old 	
 	CString sStartTime[7]; // 동시에 7개 매거진 돌 수 있나? 
 	CString sEndTime[7];
+	CString sStartTimeZig[7][10]; // 동시에 7개 매거진 돌 수 있나? 
+	CString sEndTimeZig[7][10];
+	
 	DWORD	dwLotStart[7];
 	DWORD	dwLotEnd[7];	
 	
@@ -330,10 +333,22 @@ typedef struct
 	int		nNgCount[7];
 	int		nEmptyCount[7];
 
+	int		nGoodCountZig[7][10];
+	int		nNgCountZig[7][10];
+	int		nEmptyCountZig[7][10];
+
+
 	int		nErrorCount[7];
+	int		nErrorCountZig[7][10];
+
+	DWORD	dwStopStart;
+	DWORD	dwStopEnd;
+
+	DWORD	dwErrorStart;
+	DWORD	dwErrorEnd;
 
 	DWORD	dwStopTime[7];
-	DWORD	dwErrorTime;
+	DWORD	dwErrorTime[7];
 
 	DWORD	dwTime_StoE[7];
 	DWORD	dwTime_RunTime[7];

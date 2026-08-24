@@ -327,7 +327,12 @@ void CSequenceMain::Set_ClearRunData(BOOL bInit)
 		gLot.nNgCount[i] = 0;
 		gLot.nEmptyCount[i] = 0;
 
+		for(int j = 0; j < 10 ; j++) gLot.nGoodCountZig[i][j] = 0;
+		for(int j = 0; j < 10 ; j++) gLot.nNgCountZig[i][j] = 0;
+		for(int j = 0; j < 10 ; j++) gLot.nEmptyCountZig[i][j] = 0;
+
 		gLot.dwStopTime[i] = 0; 
+		gLot.dwErrorTime[i] = 0; 
 		gLot.nErrorCount[i] = 0;
 
 		gLot.dwTime_StoE[i] = 0; 
@@ -391,10 +396,7 @@ void CSequenceMain::Job_LotEnd(int nMZNo)
 				   gLot.nErrorCount[nMNo], 0,
 				   gLot.nTrayCount[nMNo], gLot.nLensCount[nMNo], gLot.nGoodCount[nMNo], gLot.nNgCount[nMNo]);
 
-	g_objLogFile.Save_JobListLog(m_strLog, nMZNo);
-
-
-	
+	g_objLogFile.Save_JobListLog(m_strLog, nMZNo);	
 
 	if (time.wHour >= 7 && time.wHour < 19) gUph.nLensCount[0] += gLot.nLensCount[nMNo];
 	else gUph.nLensCount[1] += gLot.nLensCount[nMNo];
@@ -430,7 +432,16 @@ void CSequenceMain::Job_LotEnd(int nMZNo)
 	gLot.nNgCount[nMNo] = 0;
 	gLot.nEmptyCount[nMNo] = 0;
 
+	for(int j = 0; j < 10 ; j++) gLot.nGoodCountZig[nMNo][j] = 0;
+	for(int j = 0; j < 10 ; j++) gLot.nNgCountZig[nMNo][j] = 0;
+	for(int j = 0; j < 10 ; j++) gLot.nEmptyCountZig[nMNo][j] = 0;
+
+
+
+
 	gLot.dwStopTime[nMNo] = 0; 
+	gLot.dwErrorTime[nMNo] = 0;
+
 	gLot.nErrorCount[nMNo] = 0;
 
 	gLot.dwTime_StoE[nMNo] = 0; 
@@ -2143,7 +2154,36 @@ BOOL CSequenceMain::FeederRun()
 	case 38:
 		if(g_objCommon.Get_FeederOpen() )
 		{
-			if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::FeederUnGrip])) break;
+			//if(!m_nFeederLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::FeederUnGrip])) break;
+
+			//m_strLog.Format("%s,%s,%s,%s,%d,%d,%0.3lf,%0.3lf,%0.3lf,%0.3lf,%0.3lf,%0.3lf,%d,%d,%d,%d,%d,%d", 
+			//	gData.sLotIDElevUnload, gData.sMZIDElevUnload, gLot.sStartTime[nMNo], gLot.sEndTime[nMNo], 
+			//	dwTime_RunTime, dwTime_Unload,
+			//	gLot.dTactTime_StoETime, gLot.dTactTime_RunTime, gLot.dTackTime_Unload,				
+			//	3600.0/gLot.dTactTime_StoETime, 3600.0/gLot.dTactTime_RunTime, 3600.0/gLot.dTackTime_Unload,
+			//	gLot.nErrorCount[nMNo], 0,
+			//	gLot.nTrayCount[nMNo], gLot.nLensCount[nMNo], gLot.nGoodCount[nMNo], gLot.nNgCount[nMNo]);
+
+			//g_objLogFile.Save_JobListLog(m_strLog, nMZNo);
+
+			int nMNo = gData.nMZNoFeeder-1;
+			int nZNo = gData.nSlotNoFeeder-1;
+
+
+			int nLensCntZig = gLot.nGoodCountZig[nMNo][nZNo]+gLot.nEmptyCountZig[nMNo][nZNo]+gLot.nNgCountZig[nMNo][nZNo];
+			int nNgCntZig = gLot.nEmptyCountZig[nMNo][nZNo]+gLot.nNgCountZig[nMNo][nZNo];
+			double dYield =  ((double)gLot.nGoodCountZig[nMNo][nZNo] * 100.0) / (double)nLensCntZig;
+
+			//m_strLog.Format("%s,%s,%s,%s,%s\
+			//	%s,%s,%s,%s,%d,%d\
+			//	", 
+			//	gData.sComName, m_pEquipData->sEquipName, MAIN_VERSION, gData.sRecipeElevUnload,"", //station,Machine,HSW_Version,Recipe_H,SensorID
+			//	gData.sLotIDFeeder, "", gData.sMZIDFeeder, gData.sZigIDFeeder, gData.nTablePocketFeeder, gData.nSlotNoFeeder,
+			//	nLensCntZig, gLot.nGoodCountZig[nMNo][nZNo], nNgCntZig, dYield
+
+			//	);
+
+
 
 			//Info Processing
 			gData.sLotIDElevUnload = gData.sLotIDFeeder; gData.sLotIDFeeder.Empty();
@@ -2178,6 +2218,9 @@ BOOL CSequenceMain::FeederRun()
 			{
 				m_nMZElevCase = ElvBranch::Unload;
 			}
+
+			
+
 			m_strLog.Format("Back to Branch"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 			m_nFeederCase = 0; m_nFeederLoop.Set_LoopTime(5000);			
 		}		
@@ -3671,18 +3714,21 @@ BOOL CSequenceMain::MarkUnitRun()
 			if(m_pEquipData->bUseMES) g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], g_objCommon.ConvertToMESNo(nLensNo), 
 				"OK", gData.sNGCode[gData.nMZNoMainIndex[eMainIndex::Mark]-1][gData.nSlotNoMainIndex[eMainIndex::Mark]-1][nLensNo-1][eVision::MARKING] );
 			gLot.nGoodCount[gData.nMZNoMainIndex[eMainIndex::Mark]-1]++;
+			gLot.nGoodCountZig[gData.nMZNoMainIndex[eMainIndex::Mark]-1][gData.nSlotNoMainIndex[eMainIndex::Mark]-1]++;
 		}
 		else if( nTempInfo == eLensInfo::Empty)
 		{
 			if(m_pEquipData->bUseMES) g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], g_objCommon.ConvertToMESNo(nLensNo), 
 				"NG", gData.sNGCode[gData.nMZNoMainIndex[eMainIndex::Mark]-1][gData.nSlotNoMainIndex[eMainIndex::Mark]-1][nLensNo-1][eVision::MARKING] );
 			gLot.nEmptyCount[gData.nMZNoMainIndex[eMainIndex::Mark]-1]++;
+			gLot.nEmptyCountZig[gData.nMZNoMainIndex[eMainIndex::Mark]-1][gData.nSlotNoMainIndex[eMainIndex::Mark]-1]++;
 		}
 		else
 		{
 			if(m_pEquipData->bUseMES) g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], g_objCommon.ConvertToMESNo(nLensNo), 
 				"NG", gData.sNGCode[gData.nMZNoMainIndex[eMainIndex::Mark]-1][gData.nSlotNoMainIndex[eMainIndex::Mark]-1][nLensNo-1][eVision::MARKING] );
 			gLot.nNgCount[gData.nMZNoMainIndex[eMainIndex::Mark]-1]++;
+			gLot.nNgCountZig[gData.nMZNoMainIndex[eMainIndex::Mark]-1][gData.nSlotNoMainIndex[eMainIndex::Mark]-1]++;
 		}
 
 		g_objLogFile.Save_TrackingLog(nTempInfo, gData.sZigIDMainIndex[eMainIndex::Mark], gData.nMZNoMainIndex[eMainIndex::Mark], gData.nSlotNoMainIndex[eMainIndex::Mark], g_objCommon.ConvertToMESNo(nLensNo));
@@ -4093,10 +4139,18 @@ void CSequenceMain::Begin_MainRunThread()
 	m_nMarkUnitLoop.Set_LoopTime(5000);
 	m_nIndexTLoop.Set_LoopTime(5000);
 	m_nMarkUnitLoop.Set_LoopTime(5000);
-
-
-
+	
 	if (m_pThreadMainRun) End_MainRunThread(INFINITE);
+	
+	if(gLot.dwErrorStart != 0)
+	{	
+		gLot.dwErrorEnd = GetTickCount() - gLot.dwErrorStart;
+		for(int i = 0; i < 3; i++) gLot.dwErrorTime[i] += gLot.dwErrorEnd;
+
+		gLot.dwErrorStart = 0;
+		gLot.dwErrorEnd = 0;
+	}
+	
 	m_bThreadMainRun = TRUE;
 	m_pThreadMainRun = AfxBeginThread(Thread_MainRun, NULL);
 }

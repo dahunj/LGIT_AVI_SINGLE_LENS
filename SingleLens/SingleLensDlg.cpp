@@ -1086,13 +1086,6 @@ void CSingleLensDlg::Set_LotStateTime()
 	default:
 		if (!gAlm.bBegin)
 		{
-
-			for(int i = 0; i < 7 ; i++)
-			{
-				gLot.dwStopTime[i] += dwTime; 
-			}
-			break;
-
 		}
 	}
 	m_dwSetTimer = GetTickCount();
