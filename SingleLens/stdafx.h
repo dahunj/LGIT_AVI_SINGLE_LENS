@@ -313,10 +313,15 @@ typedef struct
 	int	nLotStatus[7];	//0:Wait, 1, 2:Run, 3:Lot_End
 			
 	///////////old 	
-	CString sStartTime[7]; // 동시에 7개 매거진 돌 수 있나? 
+	CString sStartTime[7]; // 현재 MZ No 1~3, 7은 버퍼용 
 	CString sEndTime[7];
-	CString sStartTimeZig[7][10]; // 동시에 7개 매거진 돌 수 있나? 
+	CString sStartTimeZig[7][10];
 	CString sEndTimeZig[7][10];
+
+	DWORD	dwStartTimeZig[7][10]; 
+	DWORD	dwEndTimeZig[7][10];
+	DWORD	dwInterval[7][10];
+
 	
 	DWORD	dwLotStart[7];
 	DWORD	dwLotEnd[7];	
@@ -341,6 +346,9 @@ typedef struct
 	int		nErrorCount[7];
 	int		nErrorCountZig[7][10];
 
+	int		nStopCount[7];
+	int		nStopCountZig[7][10];
+
 	DWORD	dwStopStart;
 	DWORD	dwStopEnd;
 
@@ -348,7 +356,10 @@ typedef struct
 	DWORD	dwErrorEnd;
 
 	DWORD	dwStopTime[7];
+	DWORD	dwStopTimeZig[7][10];
+
 	DWORD	dwErrorTime[7];
+	DWORD	dwErrorTimeZig[7][10];
 
 	DWORD	dwTime_StoE[7];
 	DWORD	dwTime_RunTime[7];

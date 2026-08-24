@@ -2174,14 +2174,58 @@ BOOL CSequenceMain::FeederRun()
 			int nNgCntZig = gLot.nEmptyCountZig[nMNo][nZNo]+gLot.nNgCountZig[nMNo][nZNo];
 			double dYield =  ((double)gLot.nGoodCountZig[nMNo][nZNo] * 100.0) / (double)nLensCntZig;
 
-			//m_strLog.Format("%s,%s,%s,%s,%s\
-			//	%s,%s,%s,%s,%d,%d\
-			//	", 
-			//	gData.sComName, m_pEquipData->sEquipName, MAIN_VERSION, gData.sRecipeElevUnload,"", //station,Machine,HSW_Version,Recipe_H,SensorID
-			//	gData.sLotIDFeeder, "", gData.sMZIDFeeder, gData.sZigIDFeeder, gData.nTablePocketFeeder, gData.nSlotNoFeeder,
-			//	nLensCntZig, gLot.nGoodCountZig[nMNo][nZNo], nNgCntZig, dYield
+			double dTact1 = 0, dTact2 = 0;
+			double dUPH1 = 0, dUPH2 = 0;
+			double dInterval = 0;
 
-			//	);
+			dInterval = ((double)gLot.dwInterval[nMNo][nZNo])/1000.0;
+			dTact1 = ((double)(gLot.dwEndTimeZig[nMNo][nZNo] - gLot.dwStartTimeZig[nMNo][nZNo])/1000.0) / nLensCntZig;
+			dUPH1 = 3600.0 / dTact1;
+
+			dTact2 = dInterval / (double)nLensCntZig;
+			dUPH2 = 3600.0 / dTact2;
+
+			
+			double	dAlmTime = 0, dStopTime = 0;
+
+			dAlmTime = (double)gLot.dwErrorTimeZig[nMNo][nZNo] / 1000.0;
+			dStopTime = (double)gLot.dwStopTimeZig[nMNo][nZNo] / 1000.0;
+
+			CString sRandom, sMarking, sTC, sBC;
+			if(m_pEquipData->bResultTestUse)
+			{
+				int nOK = 0;
+				sRandom.Format("OK%d%%NG%d%%", nOK-m_pEquipData->nResultTestNg, m_pEquipData->nResultTestNg);
+			}
+			else
+			{
+				sRandom.Format("OFF");
+			}
+
+			if(m_pEquipData->bUseMark) sMarking = "ON";
+			else sMarking = "OFF";
+
+			if(m_pEquipData->bUseTopVision) sTC = "ON";
+			else sTC = "OFF";
+
+			if(m_pEquipData->bUseBtmVision) sBC = "ON";
+			else sBC = "OFF";
+
+			int nGFCnt = 0;
+
+
+			m_strLog.Format("%s,%s,%s,%s,%s\
+				%s,%s,%s,%s,%d,%d\
+				%d,%d,%d,%0.1lf,%s,%s\
+				%0.3lf,%0.1lf,%0.3lf,%0.3lf,%0.1lf\
+				%d,%0.3lf,%d,%0.3lf\
+				%d,%s,%s,%s,%s,%d", 
+				gData.sComName, m_pEquipData->sEquipName, MAIN_VERSION, gData.sRecipeElevUnload,"", //station,Machine,HSW_Version,Recipe_H,SensorID
+				gData.sLotIDFeeder, "", gData.sMZIDFeeder, gData.sZigIDFeeder, gData.nTablePocketFeeder, gData.nSlotNoFeeder, // LotNum,Barcode,MGZ_ID,Tray_ID,Index_No,Tray_No
+				nLensCntZig, gLot.nGoodCountZig[nMNo][nZNo], nNgCntZig, dYield,gLot.sStartTimeZig[nMNo][nZNo], gLot.sEndTimeZig[nMNo][nZNo],  // Cnt,OK,NG,Yield,Start_Time,End_Time
+				dTact1, dUPH1, dInterval, dTact2, dUPH2,
+				gLot.nErrorCountZig[nMNo][nZNo], dAlmTime, gLot.nStopCountZig[nMNo][nZNo], dStopTime,
+				m_pEquipData->nCleanRepeat, sMarking, sRandom, sTC, sBC, nGFCnt);
 
 
 
@@ -4306,6 +4350,8 @@ BOOL CSequenceMain::Check_FeederEmpty()
 
 void CSequenceMain::Set_IndexEnd()
 {
+	static DWORD dwIntervalStart = 0, dwIntervalEnd = 0;
+
 	double dUphTop = gData.dUPHTop[gData.nMZNoMainIndex[eMainIndex::Top]-1][gData.nSlotNoMainIndex[eMainIndex::Top]-1];
 	double dUphBtm = gData.dUPHBtm[gData.nMZNoMainIndex[eMainIndex::Btm]-1][gData.nSlotNoMainIndex[eMainIndex::Btm]-1];
 	double dUphSmaller = 0;
@@ -4359,7 +4405,7 @@ void CSequenceMain::Set_IndexEnd()
 	}
 	
 	g_dlgWork.PostMessage(UM_UPDATE_UPH, 1, 0);
-
+		
 	gData.sLotIDMainIndex[eMainIndex::Unload] = gData.sLotIDMainIndex[eMainIndex::Mark];
 	gData.sLotIDMainIndex[eMainIndex::Mark] = gData.sLotIDMainIndex[eMainIndex::Btm];
 	gData.sLotIDMainIndex[eMainIndex::Btm] = gData.sLotIDMainIndex[eMainIndex::None];
@@ -4441,6 +4487,41 @@ void CSequenceMain::Set_IndexEnd()
 	memset(gData.InfoMainIndex[eMainIndex::Load], 0x00, sizeof(int)*ZIG_X*ZIG_Y);
 	
 	memset(gData.bIndexDone, 0x00, sizeof(BOOL) * 7);
+
+	int nMNo1 = gData.nMZNoMainIndex[eMainIndex::Clean]-1;
+	int nZNo1 = gData.nSlotNoMainIndex[eMainIndex::Clean]-1;
+
+	int nMNo2 = gData.nMZNoMainIndex[eMainIndex::Unload]-1;
+	int nZNo2 = gData.nSlotNoMainIndex[eMainIndex::Unload]-1;
+
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+		
+	if (nMNo1 >= 0 && nZNo1 >= 0) 
+	{
+		gLot.dwStartTimeZig[nMNo1][nZNo1] = GetTickCount();
+		gLot.sStartTimeZig[nMNo1][nZNo1].Format("%04d-%02d-%02d %02d:%02d:%02d.%03d", 
+			time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+	}
+		
+	if (nMNo2 >= 0 && nZNo2 >= 0) 
+	{
+		gLot.dwEndTimeZig[nMNo2][nZNo2] = GetTickCount();
+		gLot.sEndTimeZig[nMNo2][nZNo2].Format("%04d-%02d-%02d %02d:%02d:%02d.%03d", 
+			time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+
+		if(dwIntervalStart != 0 )
+		{
+			dwIntervalEnd = GetTickCount();
+			gLot.dwInterval[nMNo2][nZNo2] = dwIntervalEnd - dwIntervalStart;
+			dwIntervalStart = GetTickCount();
+		}
+		else if(dwIntervalStart == 0)
+		{
+			dwIntervalStart = GetTickCount();
+			gLot.dwInterval[nMNo2][nZNo2] = 0;
+		}
+	}
 }
 
 void CSequenceMain::Init_TopZig()
