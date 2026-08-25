@@ -169,6 +169,7 @@ void CCommon::Show_Error(int nErrNo)
 		for(int i = 0; i < 7; i++)
 		{
 			gLot.nErrorCount[i]++;
+			for(int j = 0; j < 10; j++) gLot.nErrorCountZig[i][j]++;
 		}
 
 		g_dlgError.Set_ErrorNumber(nErrNo);

@@ -31,7 +31,7 @@ public:
 	void Save_TrackingLog(int nInfo, CString sBarcode, int nMZNo, int nZigNo, int nLensNo);
 	void Save_Interlock(int nType);	
 	void Save_PCLog(int nMZNo, CString sLog);
-	void Save_DailyResult(CString sLog, int nMZNo);
+	void Save_DailyResult(CString sLog);
 
 	
 	void Save_MCCLog(const CString& sLog);

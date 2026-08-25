@@ -298,7 +298,7 @@ void CLogFile::Save_JobListLog(CString sLog, int nMZNo)
 
 
 
-void CLogFile::Save_DailyResult(CString sLog, int nMZNo)
+void CLogFile::Save_DailyResult(CString sLog)
 {
 	g_csDailyResultLog.Lock();
 
@@ -310,7 +310,7 @@ void CLogFile::Save_DailyResult(CString sLog, int nMZNo)
 	GetLocalTime(&time);
 
 	CString sTitle, strFile, strSave;
-	sTitle.Format("Time,Station,Machine,HSW_Version,Recipe_H,SensorID,LotNum,Barcode,MGZ_ID,Tray_ID,Index_No,Tray_No,Cnt,OK,NG,Yield,Start_Time,End_Time,Tact1,UPH1,Interval,Tact2,UPH2,Alarm_cnt,Alarm_DownTime,Stop_cnt,Stop_DownTime,BnS,Marking,Random,TC,BC,GF\r\n");
+	sTitle.Format("time,station,Machine,HSW_Version,Recipe_H,SensorID,LotNum,Barcode,MGZ_ID,Tray_ID,Index_No,Tray_No,Cnt,OK,NG,Yield,Start_Time,End_Time,Tact1,UPH1,Interval,Tact2,UPH2,Alarm_cnt,Alarm_DownTime,Stop_cnt,Stop_DownTime,BnS,Marking,Random,TC,BC,GF\r\n");
 	strFile.Format("%s\\%04d%02d%02d%02d_Single_DailyResult.csv", strPath, time.wYear, time.wMonth, time.wDay, time.wHour);
 
 	CFile file;
@@ -1125,7 +1125,7 @@ void CLogFile::Save_LotTime(int nMZNo,const CString& sLog)
 	CString strFile1, strFile2, strFile3, strTitle, strTime, strPcName, strSave;
 	strFile1.Format("%s\\%s_%04d%02d%02d%02d_LOT_TIME.csv", strPath1, gData.sMZIDMainIdex[eMainIndex::Mark], time.wYear, time.wMonth, time.wDay, time.wHour);
 	strFile2.Format("%s\\%s_%04d%02d%02d%02d_LOT_TIME.csv", strPath2, gData.sMZIDMainIdex[eMainIndex::Mark], time.wYear, time.wMonth, time.wDay, time.wHour);
-	strFile3.Format("%s\\%s_%s_LOT_TIME.csv", strPath3, gLot.sStartTime[nMZNo-1], gData.sMZIDMainIdex[eMainIndex::Mark]);
+	strFile3.Format("%s\\%s_%s_%s_LOT_TIME.csv", strPath3, gLot.sStartTime[nMZNo-1], gData.sMZIDMainIdex[eMainIndex::Mark],gData.sLotIDMainIndex[eMainIndex::Mark]);
 
 
 	g_csLotTimeLog.Lock();
@@ -1136,7 +1136,7 @@ void CLogFile::Save_LotTime(int nMZNo,const CString& sLog)
 		g_objLogFile.Save_HandlerLog("LotTime Open Fail");
 		return;
 	}
-	strTitle.Format("Time,Station,Machine,Version,LotID,MZID,Recipe,ZigID,TrayNo,LensNo,LensNo(AVI),Barcode,TC,BC,CODE,Result\r\n");
+	strTitle.Format("time,station,Machine,HSW_Version,Recipe_H,SensorID,LotNum,Barcode,MGZ_ID,Tray_ID,Index_No,Tray_No,MES_No,AVI_No,Marking,TC,BC,Result,Flag,MES_CODE,\r\n");
 
 	try {
 		file.SeekToEnd();
@@ -1167,7 +1167,7 @@ void CLogFile::Save_LotTime(int nMZNo,const CString& sLog)
 		g_objLogFile.Save_HandlerLog("LotTime Open Fail");
 		return;
 	}
-	strTitle.Format("Time,Station,Machine,Version,LotID,MZID,Recipe,ZigID,TrayNo,LensNo,LensNo(AVI),Barcode,TC,BC,CODE,Result\r\n");
+	strTitle.Format("time,station,Machine,HSW_Version,Recipe_H,SensorID,LotNum,Barcode,MGZ_ID,Tray_ID,Index_No,Tray_No,MES_No,AVI_No,Marking,TC,BC,Result,Flag,MES_CODE,\r\n");
 
 	try {
 		file2.SeekToEnd();
@@ -1198,7 +1198,7 @@ void CLogFile::Save_LotTime(int nMZNo,const CString& sLog)
 		g_objLogFile.Save_HandlerLog("LotTime Open Fail");
 		return;
 	}
-	strTitle.Format("Time,Station,Machine,Version,LotID,MZID,Recipe,ZigID,TrayNo,LensNo,LensNo(AVI),Barcode,TC,BC,CODE,Result\r\n");
+	strTitle.Format("time,station,Machine,HSW_Version,Recipe_H,SensorID,LotNum,Barcode,MGZ_ID,Tray_ID,Index_No,Tray_No,MES_No,AVI_No,Marking,TC,BC,Result,Flag,MES_CODE,\r\n");
 
 	try {
 		file3.SeekToEnd();

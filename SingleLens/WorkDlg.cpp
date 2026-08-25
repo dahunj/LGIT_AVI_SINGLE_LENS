@@ -799,8 +799,11 @@ void CWorkDlg::OnBnClickedRdoWorkStart()
 	if(gLot.dwStopStart != 0)
 	{	
 		gLot.dwStopEnd = GetTickCount() - gLot.dwStopStart;
-		for(int i = 0; i < 3; i++) gLot.dwStopTime[i] += gLot.dwStopEnd;
-
+		for(int i = 0; i < 3; i++) 
+		{
+			gLot.dwStopTime[i] += gLot.dwStopEnd;
+			for(int j = 0; j < 10; j++) gLot.dwStopTimeZig[i][j] += gLot.dwStopEnd;
+		}
 		gLot.dwStopStart = 0;
 		gLot.dwStopEnd = 0;
 	}
@@ -814,6 +817,14 @@ void CWorkDlg::OnBnClickedRdoWorkStop()
 	
 	pMainDlg->Set_LotErrorLog("STOP", 904, "Stop");
 	g_objLogFile.Save_EfficiencyLog(0, "Stop", 903, "Stop Button Push");
+
+	for(int i = 0; i < 3; i++) 
+	{
+		gLot.nStopCount[i]++;
+		for(int j = 0; j < 10; j++) gLot.nStopCountZig[i][j]++;
+	}
+
+	
 
 	gLot.dwErrorStart = 0;
 	gLot.dwStopStart = 0;
