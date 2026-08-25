@@ -43,7 +43,7 @@ typedef struct tag_EQUIP_DATA {
 	double	dIndexPitch;
 
 	int		nVacOffDelay[3];	// 0:Load,1:Assy,2:Unload
-	int		nDelayAdd[6];		// 0:LoadPicker Grip, 1:CapPicker VacOn, 2:AssyPicker VacOn, 3:UnloadPicker VacOn, 4:LoadCell, 5:AssyPicker CapPress
+	int		nDelayAdd[8];		// 0:LoadPicker Grip, 1:CapPicker VacOn, 2:AssyPicker VacOn, 3:UnloadPicker VacOn, 4:LoadCell, 5:AssyPicker CapPress
 
 	CString	sAviIp;
 

@@ -41,7 +41,7 @@ void CDataManager::Reset_EquipData()
 	m_EquipData.dIndexPitch = 0.0;
 
 	for (int i = 0; i < 3; i++) m_EquipData.nVacOffDelay[i] = 0;
-	for (int i = 0; i < 6; i++) m_EquipData.nDelayAdd[i] = 0;
+	for (int i = 0; i < 8; i++) m_EquipData.nDelayAdd[i] = 0;
 
 	m_EquipData.sAviIp = "0.0.0.0";
 	
@@ -68,6 +68,10 @@ BOOL CDataManager::Read_EquipData()
 	CString strKey;
 	m_EquipData.sEquipName = INI.Get_String("EQUIPMENT", "NAME", "");
 	m_EquipData.sModelName = INI.Get_String("EQUIPMENT", "MODEL", "");
+
+	m_EquipData.sPasswordOp = INI.Get_String("HIDDEN", "PASSWORD_OP", "");
+	m_EquipData.sPasswordEngr = INI.Get_String("HIDDEN", "PASSWORD_ENGR", "");
+
 
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	pMainDlg->Display_EquipName();
@@ -120,7 +124,7 @@ BOOL CDataManager::Read_ModelEquipData(CString strPath)
 
 
 	for (int i = 0; i < 3; i++) { strKey.Format("%d", i); m_EquipData.nVacOffDelay[i] = INI.Get_Integer("VAC_OFF_DELAY", strKey, 30); }
-	for (int i = 0; i < 6; i++) { strKey.Format("%d", i); m_EquipData.nDelayAdd[i] = INI.Get_Integer("DELAY_ADD", strKey, 100); }
+	for (int i = 0; i < 8; i++) { strKey.Format("%d", i); m_EquipData.nDelayAdd[i] = INI.Get_Integer("DELAY_ADD", strKey, 100); }
 
 	m_EquipData.sAviIp = INI.Get_String("AVI", "AVI_IP", "");
 
@@ -168,11 +172,9 @@ BOOL CDataManager::Read_ModelEquipData(CString strPath)
 	m_EquipData.nDelayAdd[3] = INI.Get_Integer("DELAY_ADD", "TRAY_PICKER_OPEN", 100);
 	m_EquipData.nDelayAdd[4] = INI.Get_Integer("DELAY_ADD", "INDEX_ALIGN_IN", 100);
 	m_EquipData.nDelayAdd[5] = INI.Get_Integer("DELAY_ADD", "INDEX_ALIGN_OUT", 100);
-	
-
-	m_EquipData.sPasswordOp = INI.Get_String("HIDDEN", "PASSWORD_OP", "");
-	m_EquipData.sPasswordEngr = INI.Get_String("HIDDEN", "PASSWORD_ENGR", "");
-
+	m_EquipData.nDelayAdd[6] = INI.Get_Integer("DELAY_ADD", "TOP_START", 100);
+	m_EquipData.nDelayAdd[7] = INI.Get_Integer("DELAY_ADD", "BTM_START", 100);
+		
 	// Gloval Data		
 	m_EquipData.nResultTestNg = INI.Get_Integer("RESULT_TEST", "RESULT_NG", 0);
 	

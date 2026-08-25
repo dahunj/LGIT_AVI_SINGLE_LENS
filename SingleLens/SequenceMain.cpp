@@ -3076,7 +3076,10 @@ BOOL CSequenceMain::TopInspectorRun()
 		m_nTopInspectLoop.Set_LoopTime(5000);
 		return TRUE;
 	case 1:
-		if(!gData.bIndexDone[eMainIndex::Top] && !Check_IndexEmpty(eMainIndex::Top)  )
+		if(!gData.bIndexDone[eMainIndex::Top] && !Check_IndexEmpty(eMainIndex::Top) &&
+			g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Y) &&
+			g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_X) &&
+			g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Z)  )
 		{
 			if(m_pEquipData->bUseAutoRecipeChange && m_pEquipData->bUseTopVision)
 			{
@@ -3107,7 +3110,10 @@ BOOL CSequenceMain::TopInspectorRun()
 				m_strLog.Format("Top Vision Start"); m_nTopInspectLoop.Takt_Save(6, m_nTopInspectCase, m_strLog);
 			}			
 		}
-		else if(!gData.bIndexDone[eMainIndex::Top] && Check_IndexEmpty(eMainIndex::Top)  )
+		else if(!gData.bIndexDone[eMainIndex::Top] && Check_IndexEmpty(eMainIndex::Top) &&
+			g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Y) &&
+			g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_X) &&
+			g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Z) )
 		{
 			gData.nInspectCnt[eVision::TC] = 0;
 			dwStartTop = 0; dwEndTop = 0;
@@ -3216,8 +3222,14 @@ BOOL CSequenceMain::TopInspectorRun()
 			g_objAJinAXL.Is_Done(AX_TOP_INSPECTOR_Z))
 		{
 			if(nTopXPos < 1 || nTopYPos < 1) break;
-			if(gData.bAgingMode) if(!m_nTopInspectLoop.Waiting_Time(250)) break;
+			if(gData.nInspectCnt[eVision::TC] == 0) 
+			{
+				if(!m_nTopInspectLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TopStart])) break;
+			}
 
+
+			if(gData.bAgingMode) if(!m_nTopInspectLoop.Waiting_Time(250)) break;
+			
 			if (!m_pEquipData->bUseTopVision)
 			{
 				if (gData.InfoMainIndex[eMainIndex::Top][nTopXPos-1][nTopYPos-1] == eLensState::TopReady)
@@ -3327,7 +3339,15 @@ BOOL CSequenceMain::TopInspectorRun()
 			double	dTactTime = dwInspect / 1000.0 / gData.nInspectCnt[eVision::TC];
 			gData.dUPHTop[gData.nMZNoMainIndex[eMainIndex::Top]-1][gData.nSlotNoMainIndex[eMainIndex::Top]-1] = 3600 / dTactTime;				
 			
-			g_objCommon.Move_Position(AX_TOP_INSPECTOR_Z, eTopInspect_Z::Ready);
+			//g_objCommon.Move_Position(AX_TOP_INSPECTOR_Z, eTopInspect_Z::Ready);
+			dTopUnitY = gRcp.dStartY[eVision::TC]; 
+			dTopUnitX = gRcp.dStartX[eVision::TC];;
+			dTopUnitZ = gRcp.dStartZ[eVision::TC] - (gRcp.dPeriod[eVision::TC] / 10); 						
+
+			g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Y, dTopUnitY);
+			g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_X, dTopUnitX);
+			g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, dTopUnitZ);
+
 			gData.bIndexDone[eMainIndex::Top] = TRUE;
 			m_nTopInspectCase = 0; m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 			m_strLog.Format("Top Vision Done"); m_nTopInspectLoop.Takt_Save(6, m_nTopInspectCase, m_strLog);
@@ -3370,7 +3390,10 @@ BOOL CSequenceMain::BtmInspectorRun()
 		m_nBtmInspectLoop.Set_LoopTime(5000);
 		return TRUE;
 	case 1:
-		if(!gData.bIndexDone[eMainIndex::Btm] && !Check_IndexEmpty(eMainIndex::Btm) )
+		if(!gData.bIndexDone[eMainIndex::Btm] && !Check_IndexEmpty(eMainIndex::Btm) &&
+			g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Y) &&
+			g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_X) &&
+			g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Z))
 		{
 			if(m_pEquipData->bUseAutoRecipeChange && m_pEquipData->bUseBtmVision)
 			{
@@ -3386,8 +3409,7 @@ BOOL CSequenceMain::BtmInspectorRun()
 
 				gData.sStartTime[eVision::BC].Format("%04d-%02d-%02d %02d:%02d:%02d %03d", 
 					time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
-
-
+				
 				gRcp.dStartZ[eVision::BC]	= m_pEquipData->dBtmStartZ;
 				gRcp.nCount[eVision::BC]	= m_pEquipData->nBtmCount;
 				gRcp.dPeriod[eVision::BC]	= m_pEquipData->dBtmPeriod;
@@ -3402,7 +3424,10 @@ BOOL CSequenceMain::BtmInspectorRun()
 				m_strLog.Format("Btm Vision Start"); m_nBtmInspectLoop.Takt_Save(7, m_nBtmInspectCase, m_strLog);
 			}			
 		}
-		else if(!gData.bIndexDone[eMainIndex::Btm] && Check_IndexEmpty(eMainIndex::Btm) )
+		else if(!gData.bIndexDone[eMainIndex::Btm] && Check_IndexEmpty(eMainIndex::Btm) &&
+			g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Y) &&
+			g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_X) &&
+			g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Z))
 		{
 			gData.nInspectCnt[eVision::BC] = 0;
 			dwStartBtm = 0; dwEndBtm = 0;
@@ -3464,8 +3489,8 @@ BOOL CSequenceMain::BtmInspectorRun()
 		}
 		break;
 	case 3:
-		if(Select_BtmScanPos(nBtmXPos, nBtmYPos, m_pEquipData->nVisionDir))		{
-						
+		if(Select_BtmScanPos(nBtmXPos, nBtmYPos, m_pEquipData->nVisionDir))	
+		{						
 			if(m_pEquipData->nVisionDir == eVDir::fixY)
 			{
 				nLensNo = (gData.nLensCntX * (nBtmYPos-1)) + nBtmXPos;	
@@ -3508,10 +3533,16 @@ BOOL CSequenceMain::BtmInspectorRun()
 		if (g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Y) &&
 			g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_X) &&
 			g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Z))
-		{
-		
+		{		
 			if(nBtmXPos < 1 || nBtmYPos < 1) break;
+
+			if(gData.nInspectCnt[eVision::BC] == 0) 
+			{
+				if(!m_nBtmInspectLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::BtmStart])) break;
+			}
+
 			if(gData.bAgingMode) if(!m_nBtmInspectLoop.Waiting_Time(250)) break;
+
 
 			if (!m_pEquipData->bUseBtmVision)
 			{
@@ -3616,12 +3647,19 @@ BOOL CSequenceMain::BtmInspectorRun()
 			gData.sEndTime[eVision::BC].Format("%04d-%02d-%02d %02d:%02d:%02d %03d", 
 				time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
 
-
 		}
 		if(gData.bIndexDone[eMainIndex::Mark] || m_nMarkUnitCase > 2)
 		{
 			gData.bIndexDone[eMainIndex::Btm] = TRUE;
-			g_objCommon.Move_Position(AX_BTM_INSPECTOR_Z, eBtmInspect_Z::Ready);
+			//g_objCommon.Move_Position(AX_BTM_INSPECTOR_Z, eBtmInspect_Z::Ready);
+			dBtmUnitY = gRcp.dStartY[eVision::BC];
+			dBtmUnitX = gRcp.dStartX[eVision::BC];
+			dBtmUnitZ = gRcp.dStartZ[eVision::BC] - (gRcp.dPeriod[eVision::BC]/10);
+			
+			g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_Y, dBtmUnitY);
+			g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_X, dBtmUnitX);
+			g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_Z, dBtmUnitZ);
+
 			m_nBtmInspectCase = 0; m_nBtmInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 			m_strLog.Format("Btm Vision Done"); m_nBtmInspectLoop.Takt_Save(7, m_nBtmInspectCase, m_strLog);
 		}		

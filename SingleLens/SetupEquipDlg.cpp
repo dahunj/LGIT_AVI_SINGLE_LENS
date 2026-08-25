@@ -47,8 +47,8 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_RDO_DOOR_LOCK_0 + i, m_rdoDoorLock[i]);		
 		
-	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_LBL_DELAY_ADD_0 + i,  m_lblDelayAdd[i]);
-	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_STC_DELAY_ADD_0 + i, m_stcDelayAdd[i]);
+	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_LBL_DELAY_ADD_0 + i,  m_lblDelayAdd[i]);
+	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_STC_DELAY_ADD_0 + i, m_stcDelayAdd[i]);
 
 	DDX_Control(pDX, IDC_LBL_AVI_IP, m_lblAviIp);
 	DDX_Control(pDX, IDC_IPA_AVI_IP, m_ipaAviIp);
@@ -170,8 +170,8 @@ void CSetupEquipDlg::Initial_Controls()
 	m_lblDoorLock2.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60));
 	m_stcDoorLockTime.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xF0, 0xE0, 0x00));
 	
-	for (int i = 0; i < 6; i++) m_lblDelayAdd[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x60, 0x40));
-	for (int i = 0; i < 6; i++) m_stcDelayAdd[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xFF, 0xE0));
+	for (int i = 0; i < 8; i++) m_lblDelayAdd[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x60, 0x40));
+	for (int i = 0; i < 8; i++) m_stcDelayAdd[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xFF, 0xE0));
 
 	m_lblAviIp.Init_Ctrl("¹ÙÅÁ", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60));
 	
@@ -474,7 +474,7 @@ void CSetupEquipDlg::Display_EquipData()
 		
 	m_chkAutoRecipeChange.SetCheck(pEquipData->bUseAutoRecipeChange);
 	
-	for (int i = 0; i < 6; i++) 
+	for (int i = 0; i < 8; i++) 
 	{
 		strData.Format("%d", pEquipData->nDelayAdd[i]);
 		m_stcDelayAdd[i].SetWindowText(strData);
@@ -571,6 +571,8 @@ void CSetupEquipDlg::Save_EquipData()
 	m_stcDelayAdd[3].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "TRAY_PICKER_OPEN", nData);
 	m_stcDelayAdd[4].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "INDEX_ALIGN_IN", nData);
 	m_stcDelayAdd[5].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "INDEX_ALIGN_OUT", nData);
+	m_stcDelayAdd[6].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "TOP_START", nData);
+	m_stcDelayAdd[7].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "BTM_START", nData);
 	
 	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) { strKey.Format("%d%d", i, j); INI.Set_Bool("TOWER", strKey, m_chkTower[i][j].GetCheck()); }
 	for (int i = 0; i < 5; i++) for (int j = 0; j < 6; j++) { strKey.Format("%d%d", i, j); INI.Set_Bool("BUZZER", strKey, m_chkBuzzer[i][j].GetCheck()); }
@@ -668,12 +670,14 @@ void CSetupEquipDlg::Save_ModelEquipData(CString sPath)
 	m_stcDelayAdd[3].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "TRAY_PICKER_OPEN", nData);
 	m_stcDelayAdd[4].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "INDEX_ALIGN_IN", nData);
 	m_stcDelayAdd[5].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "INDEX_ALIGN_OUT", nData);
+	m_stcDelayAdd[6].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "TOP_START", nData);
+	m_stcDelayAdd[7].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("DELAY_ADD", "BTM_START", nData);
 		
 	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) { strKey.Format("%d%d", i, j); INI.Set_Bool("TOWER", strKey, m_chkTower[i][j].GetCheck()); }
 	for (int i = 0; i < 5; i++) for (int j = 0; j < 6; j++) { strKey.Format("%d%d", i, j); INI.Set_Bool("BUZZER", strKey, m_chkBuzzer[i][j].GetCheck()); }
 	
-	m_stcPasswordOp.GetWindowText(strData); INI.Set_String("HIDDEN", "PASSWORD_OP", strData); pEquipData->sPasswordOp = strData;
-	m_edtPasswordEngr.GetWindowText(strData); INI.Set_String("HIDDEN", "PASSWORD_ENGR", strData); pEquipData->sPasswordEngr = strData;
+	//m_stcPasswordOp.GetWindowText(strData); INI.Set_String("HIDDEN", "PASSWORD_OP", strData); pEquipData->sPasswordOp = strData;
+	//m_edtPasswordEngr.GetWindowText(strData); INI.Set_String("HIDDEN", "PASSWORD_ENGR", strData); pEquipData->sPasswordEngr = strData;
 
 	pEquipData->bResultTestUse = m_chkResultTestUse.GetCheck();
 	m_edtResultTest.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("RESULT_TEST", "RESULT_NG", nData);

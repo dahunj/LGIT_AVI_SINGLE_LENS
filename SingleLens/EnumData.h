@@ -196,9 +196,11 @@ struct eDelay
 		FeederGrip = 0,
 		FeederUnGrip = 1,
 		TrayPickGrip = 2,
-		TrayPickUnGrip = 0,
-		IndexAlignIn = 1,
-		IndexAlignOut = 2,
+		TrayPickUnGrip = 3,
+		IndexAlignIn = 4,
+		IndexAlignOut = 5,
+		TopStart = 6,
+		BtmStart = 7,
 	};
 
 };
