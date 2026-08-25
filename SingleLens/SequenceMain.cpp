@@ -3339,14 +3339,15 @@ BOOL CSequenceMain::TopInspectorRun()
 			double	dTactTime = dwInspect / 1000.0 / gData.nInspectCnt[eVision::TC];
 			gData.dUPHTop[gData.nMZNoMainIndex[eMainIndex::Top]-1][gData.nSlotNoMainIndex[eMainIndex::Top]-1] = 3600 / dTactTime;				
 			
-			//g_objCommon.Move_Position(AX_TOP_INSPECTOR_Z, eTopInspect_Z::Ready);
+			
 			dTopUnitY = gRcp.dStartY[eVision::TC]; 
 			dTopUnitX = gRcp.dStartX[eVision::TC];;
-			dTopUnitZ = gRcp.dStartZ[eVision::TC] - (gRcp.dPeriod[eVision::TC] / 10); 						
+			//dTopUnitZ = gRcp.dStartZ[eVision::TC] - (gRcp.dPeriod[eVision::TC] / 10); 						
 
 			g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Y, dTopUnitY);
 			g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_X, dTopUnitX);
-			g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, dTopUnitZ);
+			g_objCommon.Move_Position(AX_TOP_INSPECTOR_Z, eTopInspect_Z::Ready);
+			//g_objAJinAXL.Move_Absolute(AX_TOP_INSPECTOR_Z, dTopUnitZ);
 
 			gData.bIndexDone[eMainIndex::Top] = TRUE;
 			m_nTopInspectCase = 0; m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
@@ -3651,14 +3652,15 @@ BOOL CSequenceMain::BtmInspectorRun()
 		if(gData.bIndexDone[eMainIndex::Mark] || m_nMarkUnitCase > 2)
 		{
 			gData.bIndexDone[eMainIndex::Btm] = TRUE;
-			//g_objCommon.Move_Position(AX_BTM_INSPECTOR_Z, eBtmInspect_Z::Ready);
+			
 			dBtmUnitY = gRcp.dStartY[eVision::BC];
 			dBtmUnitX = gRcp.dStartX[eVision::BC];
-			dBtmUnitZ = gRcp.dStartZ[eVision::BC] - (gRcp.dPeriod[eVision::BC]/10);
+			//dBtmUnitZ = gRcp.dStartZ[eVision::BC] - (gRcp.dPeriod[eVision::BC]/10);
 			
 			g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_Y, dBtmUnitY);
 			g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_X, dBtmUnitX);
-			g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_Z, dBtmUnitZ);
+			g_objCommon.Move_Position(AX_BTM_INSPECTOR_Z, eBtmInspect_Z::Ready);
+			//g_objAJinAXL.Move_Absolute(AX_BTM_INSPECTOR_Z, dBtmUnitZ);
 
 			m_nBtmInspectCase = 0; m_nBtmInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 			m_strLog.Format("Btm Vision Done"); m_nBtmInspectLoop.Takt_Save(7, m_nBtmInspectCase, m_strLog);
