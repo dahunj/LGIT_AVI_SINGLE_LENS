@@ -3338,8 +3338,7 @@ BOOL CSequenceMain::TopInspectorRun()
 			DWORD	dwInspect = gData.dwElapsedTop[gData.nMZNoMainIndex[eMainIndex::Top]-1][gData.nSlotNoMainIndex[eMainIndex::Top]-1] =  dwEndTop - dwStartTop;
 			double	dTactTime = dwInspect / 1000.0 / gData.nInspectCnt[eVision::TC];
 			gData.dUPHTop[gData.nMZNoMainIndex[eMainIndex::Top]-1][gData.nSlotNoMainIndex[eMainIndex::Top]-1] = 3600 / dTactTime;				
-			
-			
+						
 			dTopUnitY = gRcp.dStartY[eVision::TC]; 
 			dTopUnitX = gRcp.dStartX[eVision::TC];;
 			//dTopUnitZ = gRcp.dStartZ[eVision::TC] - (gRcp.dPeriod[eVision::TC] / 10); 						

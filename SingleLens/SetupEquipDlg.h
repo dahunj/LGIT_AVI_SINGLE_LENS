@@ -41,8 +41,8 @@ public:
 	CLabelCS	m_lblDoorLock2;
 	CStaticCS	m_stcDoorLockTime;
 	
-	CLabelCS	m_lblDelayAdd[6];
-	CStaticCS	m_stcDelayAdd[6];
+	CLabelCS	m_lblDelayAdd[8];
+	CStaticCS	m_stcDelayAdd[8];
 
 	CLabelCS	m_lblAviIp;
 	CIPAddressCtrl	m_ipaAviIp;
