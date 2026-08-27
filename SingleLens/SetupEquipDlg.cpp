@@ -511,11 +511,13 @@ void CSetupEquipDlg::Save_EquipData()
 	{
 		pEquipData->bUseDoorLock = FALSE;
 		INI.Set_Bool("EQUIPMENT", "DOOR_LOCK", FALSE);
+		g_objCommon.Locking_MainDoor(FALSE);
 	}
 	else
 	{
 		pEquipData->bUseDoorLock = TRUE;
-		INI.Set_Bool("EQUIPMENT", "DOOR_LOCK", TRUE);		
+		INI.Set_Bool("EQUIPMENT", "DOOR_LOCK", TRUE);
+		g_objCommon.Locking_MainDoor(TRUE);
 	}
 
 	m_stcMotionCheck.GetWindowText(strData); dData = atof(strData); INI.Set_Double("EQUIPMENT", "MOTION_CHECK", dData, "%0.3lf");
@@ -615,11 +617,7 @@ void CSetupEquipDlg::Save_ModelEquipData(CString sPath)
 	m_stcEquipName.GetWindowText(strData); INI.Set_String("EQUIPMENT", "NAME", strData);
 	m_stcEquipModel.GetWindowText(strData); INI.Set_String("EQUIPMENT", "MODEL", strData);
 	pEquipData->sModelName = strData;
-
-	INI.Set_Bool("EQUIPMENT", "DOOR_LOCK", m_rdoDoorLock[1].GetCheck());
-
-	m_stcDoorLockTime.GetWindowText(strData); gData.nDoorLockTime = atoi(strData);
-	INI.Set_Integer("EQUIPMENT", "DOOR_LOCK_TIME", gData.nDoorLockTime);
+		
 
 	m_stcNoWorkTime.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("EQUIPMENT", "NO_WORK_TIME", nData);
 	m_stcSafetySwitch.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("EQUIPMENT", "SAFETY_SWITCH_TIME", nData);
