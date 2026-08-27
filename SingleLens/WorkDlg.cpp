@@ -2381,14 +2381,14 @@ LRESULT CWorkDlg::OnUpdateDailyResult(WPARAM wParam, LPARAM lParam)
 	// Title
 	m_grdLog.Set_ColWidth(0, 30);
 	m_grdLog.Set_CellText(0, 0, "No.");
-	m_grdLog.Set_ColWidth(1, 90);
+	m_grdLog.Set_ColWidth(1, 110);
 	m_grdLog.Set_CellText(0, 1, "LotNum");
-	m_grdLog.Set_ColWidth(2, 110);
-	m_grdLog.Set_CellText(0, 2, "In_MGZ_ID");
-	m_grdLog.Set_ColWidth(3, 110);
-	m_grdLog.Set_CellText(0, 3, "OK_MGZ_ID");
+	m_grdLog.Set_ColWidth(2, 115);
+	m_grdLog.Set_CellText(0, 2, "MGZ_ID");
+	m_grdLog.Set_ColWidth(3, 115);
+	m_grdLog.Set_CellText(0, 3, "Tray_ID");
 	m_grdLog.Set_ColWidth(4, 55);
-	m_grdLog.Set_CellText(0, 4, "Tray_Qty");
+	m_grdLog.Set_CellText(0, 4, "Tray_No");
 	m_grdLog.Set_ColWidth(5, 40);
 	m_grdLog.Set_CellText(0, 5, "Cnt");
 	m_grdLog.Set_ColWidth(6, 40);
@@ -2397,16 +2397,16 @@ LRESULT CWorkDlg::OnUpdateDailyResult(WPARAM wParam, LPARAM lParam)
 	m_grdLog.Set_CellText(0, 7, "NG");
 	m_grdLog.Set_ColWidth(8, 40);
 	m_grdLog.Set_CellText(0, 8, "Yield");
-	m_grdLog.Set_ColWidth(9, 100);
+	m_grdLog.Set_ColWidth(9, 105);
 	m_grdLog.Set_CellText(0, 9, "Start_Time");
-	m_grdLog.Set_ColWidth(10, 100);
+	m_grdLog.Set_ColWidth(10, 105);
 	m_grdLog.Set_CellText(0,10, "End_Time");
-	m_grdLog.Set_ColWidth(11, 40);
+	m_grdLog.Set_ColWidth(11, 50);
 	m_grdLog.Set_CellText(0,11, "Tack1");
 	m_grdLog.Set_CellText(0,12, "UPH1");
 	m_grdLog.Set_ColWidth(13, 60);
 	m_grdLog.Set_CellText(0,13, "Interval");
-	m_grdLog.Set_ColWidth(14, 40);
+	m_grdLog.Set_ColWidth(14, 50);
 	m_grdLog.Set_CellText(0,14, "Tack2");
 	m_grdLog.Set_CellText(0,15, "UPH2");
 	m_grdLog.Set_ColWidth(16, 40);
@@ -2433,11 +2433,19 @@ LRESULT CWorkDlg::OnUpdateDailyResult(WPARAM wParam, LPARAM lParam)
 	BOOL bOver = FALSE;
 	CString strFilePath;
 	CStringArray saDailyResult, saResult;
-	while(bOver)
+	while(TRUE)
 	{
-		g_objCommon.GetLatestFileName(gsCurrentDir+"\\LOG\\DailyResult", bOver, strFilePath);
-		bOver = g_objCommon.Get_Lines(30, strFilePath, saResult);
+		g_objCommon.GetLatestFileName(gsCurrentDir+"\\LOG\\DailyResult", nOrder, strFilePath);
+		g_objCommon.Get_Lines(30, strFilePath, saResult);
+		
 		saDailyResult.Append(saResult);
+		
+		if(saDailyResult.GetSize() > 30)
+		{
+			saDailyResult.RemoveAt(30, saDailyResult.GetSize()-30);
+			break;
+		}
+		nOrder++;
 	}	
 
 	m_grdLog.Set_RowCount(saDailyResult.GetCount()+1);
@@ -2453,45 +2461,71 @@ LRESULT CWorkDlg::OnUpdateDailyResult(WPARAM wParam, LPARAM lParam)
 			if (i % 2 == 0) m_grdLog.Set_CellBackClr(nRow, col, crBack) ;
 		}
 
-		sText.Format("%d", i);
+		sText.Format("%d", i+1);
 		m_grdLog.Set_CellText(nRow, 0, sText);	// No
-		sText = g_objCommon.Get_DataFromLine(saDailyResult[i], 6);
-		m_grdLog.Set_CellText(nRow, 1, sText);	// LotNum
-		sText = g_objCommon.Get_DataFromLine(saDailyResult[i], 8);
-		m_grdLog.Set_CellText(nRow, 2, sText);	// In_MGZ_ID
-		sText = g_objCommon.Get_DataFromLine(saDailyResult[i], 9);
-		m_grdLog.Set_CellText(nRow, 3, sText);	// OK_MGZ_ID
-		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],10);
-		m_grdLog.Set_CellText(nRow, 4, sText);	// Tray_Qty
-		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],11);
-		m_grdLog.Set_CellText(nRow, 5, sText);	// Cnt
-		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],12);
-		m_grdLog.Set_CellText(nRow, 6, sText);	// OK
-		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],13);
-		m_grdLog.Set_CellText(nRow, 7, sText);	// NG
-		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],14);
-		m_grdLog.Set_CellText(nRow, 8, sText);	// Yield
-		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],15);
+
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i], 6);//LotNum
+ 		m_grdLog.Set_CellText(nRow, 1, sText);	
+
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i], 8); // MGZ_ID
+		m_grdLog.Set_CellText(nRow, 2, sText);	
+
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i], 9); // Tray_ID
+		m_grdLog.Set_CellText(nRow, 3, sText);	
+
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],11); // Tray_No
+		m_grdLog.Set_CellText(nRow, 4, sText);	
+
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],12); // Cnt
+		m_grdLog.Set_CellText(nRow, 5, sText);	
+
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],13); // OK
+		m_grdLog.Set_CellText(nRow, 6, sText);	
+
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],14); // NG
+		m_grdLog.Set_CellText(nRow, 7, sText);	
+
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],15); // Yield
+		m_grdLog.Set_CellText(nRow, 8, sText);	
+
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],16); // Start_Time
 		sText.Delete(sText.GetLength()-4, 4);
-		m_grdLog.Set_CellText(nRow, 9, sText);	// Start_Time
-		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],16);
+		m_grdLog.Set_CellText(nRow, 9, sText);	
+
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],17); // End_Time
 		sText.Delete(sText.GetLength()-4, 4);
-		m_grdLog.Set_CellText(nRow,10, sText);	// End_Time
-		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],17);
-		m_grdLog.Set_CellText(nRow,11, sText);	// Tack1
-		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],18);
-		m_grdLog.Set_CellText(nRow,12, sText);	// UPH1
-		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],19);
-		m_grdLog.Set_CellText(nRow,13, sText);	// Interval
+		m_grdLog.Set_CellText(nRow,10, sText);	
+
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],18); // Tack1
+		m_grdLog.Set_CellText(nRow,11, sText);	
+
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],19); // UPH1
+		m_grdLog.Set_CellText(nRow,12, sText);	
+
 		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],20);
-		m_grdLog.Set_CellText(nRow,14, sText);	// Tack2
+		m_grdLog.Set_CellText(nRow,13, sText);	// Interval
 		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],21);
+		m_grdLog.Set_CellText(nRow,14, sText);	// Tack2
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],22);
 		m_grdLog.Set_CellText(nRow,15, sText);	// UPH2
-		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],24);
-		m_grdLog.Set_CellText(nRow,16, sText);	// Stop
+
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],23);
+		int nAlmCnt = atoi(sText);
 		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],25);
-		m_grdLog.Set_CellText(nRow,17, sText);	// DownTime
-		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],33);
+		int nStopCnt = atoi(sText);
+
+		sText.Format("%d", nAlmCnt+nStopCnt);
+		m_grdLog.Set_CellText(nRow,16, sText);	// Stop Cnt + Alm Cnt
+
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],24); // DownTime
+		double dAlmTime = atof(sText);
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],26); // DownTime
+		double dStopTime = atof(sText);
+
+		sText.Format("%0.1lf", dAlmTime+dStopTime);
+		m_grdLog.Set_CellText(nRow,17, sText);	
+
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],32);
 		m_grdLog.Set_CellText(nRow,18, sText);	// GF
 	}
 	return 0;
