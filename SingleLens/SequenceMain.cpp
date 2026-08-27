@@ -951,7 +951,7 @@ BOOL CSequenceMain::MZElevRun()
 		}		
 		break;
 	case 79:		
-		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");
+		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_BarcodeLot");
 		if(nBarcodeIdx > 999) nBarcodeIdx = 0;
 		m_strBarcode[eBarcode::MZ-1] = gData.sTempMZID; gData.sTempMZID.Empty();
 		gMes.sMGZID[eMZ::Load] = m_strBarcode[eBarcode::MZ-1];
@@ -1016,8 +1016,6 @@ BOOL CSequenceMain::MZElevRun()
 		break;
 	case 76:
 		//if(gMes.bPPConfirm || m_pEquipData->bUseBarcodeMGZ)
-		
-
 		{
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "bPPConfirm");
 			
@@ -1033,6 +1031,7 @@ BOOL CSequenceMain::MZElevRun()
 		break;
 	case 78:
 		if(!gMes.bLotStart) break;
+		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Lot Start RCMD Done");
 		m_nMZElevCase = 4; m_nMZElevLoop.Set_LoopTime(10000);
 		break;
 	case 4:
@@ -1272,12 +1271,14 @@ BOOL CSequenceMain::MZElevRun()
 			m_nMZElevCase = 12; m_nMZElevLoop.Set_LoopTime(10000);
 		}
 		break;
-	case 87:		
+	case 87:
+		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");
 		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
 		//if(m_pEquipData->bUseMES) g_objMesAgent.Set_PPUploadCompletedReport(gMes.sHostLotID[eMZ::Ready], gMes.sMGZID[eMZ::Ready], gMes.sHostRecipe[eMZ::Ready]);
 		break;
 	case 88:
 		if(!gMes.bLotStart) break;
+		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Lot Start RCMD Done");
 		m_nMZElevCase = 12; m_nMZElevLoop.Set_LoopTime(10000);
 		break;
 
@@ -1300,10 +1301,11 @@ BOOL CSequenceMain::MZElevRun()
 		if(g_objCommon.Get_ElevLift1Out() && g_objCommon.Get_ElevLift1Up())
 		{
 			if(!m_nMZElevLoop.Waiting_Time(1000)) break;
+
+			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Stopper2 In");
 			g_objCommon.Set_ElevLift1In();			
 
-			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);
-			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elev Stopper2 In");
+			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(10000);			
 		}
 		break;
 	case 15:
@@ -1311,7 +1313,7 @@ BOOL CSequenceMain::MZElevRun()
 		{			
 			if(m_pEquipData->bUseMES)
 			{
-				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");
+				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Init_TempLensMap & Set_LotStartedReport");
 				nMZNo++;if(nMZNo > 3) nMZNo =1;
 				g_dlgWork.Init_TempLensMap(eMZ::Ready);
 				for(int i = 0; i < 10; i++)
@@ -1327,7 +1329,7 @@ BOOL CSequenceMain::MZElevRun()
 			{
 				//Info Processing 
 				//Check MZ ID if Exist Move Infomation to Loading MZ UI
-				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");
+				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "TransferMZInfo & Set_LotStartedReport");
 				int nFrom = g_dlgWork.SearchMZCVInfo();
 				int nTo = g_dlgWork.SearchMZElevInfo(eMZ::Ready);
 
@@ -1368,13 +1370,13 @@ BOOL CSequenceMain::MZElevRun()
 		break;
 	case 16:
 		if(!g_objInspector.Check_LotReady()) break;
-		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");
+		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Lot Ready Done");
 		gData.bElvLoadWait = FALSE;
 		m_nLoadConveyorCase = eLoadCVBr::Check;
 		m_nMZElevCase = 20;	m_nMZElevLoop.Set_LoopTime(5000);	
 		break;
 	case 17:
-		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");
+		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_LotStart");
 		g_objInspector.Set_LotStart(gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready] - 1], nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready],gMes.sHostRecipe[eMZ::Ready]);
 		m_nMZElevCase = 16;	m_nMZElevLoop.Set_LoopTime(5000);	
 		break;
@@ -1393,7 +1395,7 @@ BOOL CSequenceMain::MZElevRun()
 		}
 		else
 		{*/
-			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");
+			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "eElv_Z::ToUldCV");
 			nMZCnt = 0;
 			g_objCommon.Move_Position(AX_MZ_ELEVATOR_Z, eElv_Z::ToUldCV);
 			m_nMZElevCase = 32;m_nMZElevLoop.Set_LoopTime(10000);
@@ -1417,38 +1419,57 @@ BOOL CSequenceMain::MZElevRun()
 		if(m_pDX01->iUldCvMZExist1L)
 		{
 			nMZDetectCnt[0]++;
-			if(nMZDetectCnt[0] > 5){ nMZCnt++; for(int i = 0; i < 5; i++) nMZDetectCnt[i] = 0;}
+			if(nMZDetectCnt[0] > 5)
+			{
+				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "iUldCvMZExist1L");
+				nMZCnt++; for(int i = 0; i < 5; i++) nMZDetectCnt[i] = 0;
+			}
 		}
 		if(m_pDX01->iUldCvMZExist2)
 		{
 			nMZDetectCnt[1]++;
-			if(nMZDetectCnt[1] > 5){ nMZCnt++; for(int i = 0; i < 5; i++) nMZDetectCnt[i] = 0;}
+			if(nMZDetectCnt[1] > 5)
+			{
+				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "iUldCvMZExist2");
+				nMZCnt++; for(int i = 0; i < 5; i++) nMZDetectCnt[i] = 0;
+			}
 		}
 		if(m_pDX01->iUldCvMZExist3)
 		{
 			nMZDetectCnt[2]++;
-			if(nMZDetectCnt[2] > 5){ nMZCnt++; for(int i = 0; i < 5; i++) nMZDetectCnt[i] = 0;}
+			if(nMZDetectCnt[2] > 5)
+			{
+				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "iUldCvMZExist3");
+				nMZCnt++; for(int i = 0; i < 5; i++) nMZDetectCnt[i] = 0;
+			}
 		}
 		if(m_pDX01->iUldCvMZExist4)
 		{
 			nMZDetectCnt[3]++;
-			if(nMZDetectCnt[3] > 5){ nMZCnt++; for(int i = 0; i < 5; i++) nMZDetectCnt[i] = 0;}
+			if(nMZDetectCnt[3] > 5)
+			{
+				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "iUldCvMZExist4");
+				nMZCnt++; for(int i = 0; i < 5; i++) nMZDetectCnt[i] = 0;
+			}
 		}
 		nMZDetectCnt[5]++;
 		if(nMZDetectCnt[5] > 8)
 		{
+			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Detect finished");
 			for(int i = 0; i < 6; i++) nMZDetectCnt[i] = 0;
 			m_nMZElevCase++;m_nMZElevLoop.Set_LoopTime(5000);
 		}		
 		break;
 	case 33:
-		if(nMZCnt >= 4) //If it's full, wait until one becomes available.
+		if(nMZCnt >= 4) //If it's full, wait until some spot becomes available.
 		{
+			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "nMZCnt >= 4");
 			nMZDetectCnt[5] = 0;
 			m_nMZElevCase = ElvBranch::Unload;			
 		}
 		else if(nMZCnt < 4 && m_pDX01->iUldCvMZExist1L)
 		{
+			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "nMZCnt < 4 && m_pDX01->iUldCvMZExist1L");
 			nMZDetectCnt[5] = 0; // Wait 
 			m_nMZElevCase = ElvBranch::Unload;	
 		}
@@ -1457,6 +1478,7 @@ BOOL CSequenceMain::MZElevRun()
 			nMZDetectCnt[5]++;
 			if(nMZDetectCnt[5] > 5) // over 5 times 
 			{
+				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "nMZCnt < 4 && !m_pDX01->iUldCvMZExist1L");
 				m_nMZElevCase++;m_nMZElevLoop.Set_LoopTime(5000);
 			}					
 		}		
@@ -1470,9 +1492,10 @@ BOOL CSequenceMain::MZElevRun()
 		{			
 			//if(m_pDX00->iElvMZExist2)
 			//{
+				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_ElevLift2Down");
 				gData.bElvUnloadWait = TRUE;
 				g_objCommon.Set_ElevLift2Down();
-
+				
 				m_nMZElevCase++;m_nMZElevLoop.Set_LoopTime(5000);
 			//}
 		}
@@ -1480,10 +1503,9 @@ BOOL CSequenceMain::MZElevRun()
 		{
 			if(m_pDX00->iElvMZExist2 && g_objCommon.Get_ElevLift2Up() && g_objCommon.Get_ElevLift2In())
 			{
-				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");
+				m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_ElevLift2Down");
 				gData.bElvUnloadWait = TRUE;
-				g_objCommon.Set_ElevLift2Down();
-
+				g_objCommon.Set_ElevLift2Down();				
 				m_nMZElevCase++;m_nMZElevLoop.Set_LoopTime(5000);
 			}
 		}		
@@ -1493,24 +1515,27 @@ BOOL CSequenceMain::MZElevRun()
 		break;
 	case 36:
 		if(g_objCommon.Get_ElevLift2Down())
-		{
-			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");
-			g_objCommon.Set_ElevLift2Out();
+		{			
+			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_ElevLift2Out");
+			g_objCommon.Set_ElevLift2Out();			
 			m_nMZElevCase++;m_nMZElevLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 37:
+		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");
 		m_nMZElevCase = 91;m_nMZElevLoop.Set_LoopTime(5000);
 		break;
 	case 91:
 		if(m_pEquipData->bLotEndSelect)
 		{
-			g_objCommon.Show_Alarm("Lot End");
+			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Lot End");
+			g_objCommon.Show_Alarm("Lot End");			
 			m_nMZElevCase = 38; m_nMZElevLoop.Set_LoopTime(5000);
 			return FALSE;
 		}
 		else
 		{
+			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Lot End");
 			g_objMesAgent.Set_LotCompleted(gData.sLotIDElevUnload, gData.sMZIDElevUnload, gData.sRecipeElevUnload[Find_UnloadMZNo()]);
 			m_nMZElevCase = 38; m_nMZElevLoop.Set_LoopTime(5000);
 			break;
@@ -1519,7 +1544,7 @@ BOOL CSequenceMain::MZElevRun()
 	case 38:
 		if(g_objCommon.Get_ElevLift2Out())
 		{
-			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");			
+			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Job_LotEnd");			
 			g_objInspector.Set_LotEnd(gData.sMZIDElevUnload, Find_UnloadMZNo());
 			
 			Job_LotEnd(Find_UnloadMZNo());
@@ -1553,16 +1578,14 @@ BOOL CSequenceMain::MZElevRun()
 	
 		if(m_pDX01->iUldCvMZExist1L)
 		{
-			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");
+			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "SlideOver");
 			g_objCommon.Set_ElevCVStop();
 			theApp.uSleep(5);
 			g_objCommon.Set_UnloadCVStop();	
 			gData.bElvUnloadWait = FALSE;
 									
 			m_nUnloadConveyorCase = eUnloadCVBr::start; //Unload CV Start 
-
-
-
+			
 			m_nMZElevCase = ElvBranch::SlideOver; //Check Slide Over
 			m_nMZElevLoop.Set_LoopTime(5000);
 		}
@@ -1573,6 +1596,7 @@ BOOL CSequenceMain::MZElevRun()
 			nMZDetectCnt[0]++; nMZDetectCnt[1] = 0; 
 			if(nMZDetectCnt[0] < 5) return TRUE;
 
+			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elevator Ready detect && Set_ElevLift1Out");
 			g_objCommon.Set_ElevLift1Out();
 			m_nMZElevCase++;m_nMZElevLoop.Set_LoopTime(5000);
 		}
@@ -1581,6 +1605,7 @@ BOOL CSequenceMain::MZElevRun()
 			nMZDetectCnt[1]++; nMZDetectCnt[0] = 0;
 			if(nMZDetectCnt[1] < 5) return TRUE;
 
+			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Elevator Ready empty");
 			m_nMZElevCase = 20; m_nMZElevLoop.Set_LoopTime(5000);
 		}	
 		return TRUE;
@@ -1590,7 +1615,7 @@ BOOL CSequenceMain::MZElevRun()
 	case 53:
 		if(g_objCommon.Get_ElevLift1Out())
 		{
-			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");
+			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_ElevLift1Down");
 			g_objCommon.Set_ElevLift1Down();
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
 		}		
@@ -1602,7 +1627,7 @@ BOOL CSequenceMain::MZElevRun()
 		if(g_objCommon.Get_ElevLift1Down() && g_objCommon.Get_ElevLift1Out()
 			&& g_objCommon.Get_ElevLift2Down() && g_objCommon.Get_ElevLift2Out())
 		{
-			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");
+			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_ElevCVRunCW");
 			g_objCommon.Set_ElevCVRunCW();
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(25000);
 		}	
@@ -1621,7 +1646,7 @@ BOOL CSequenceMain::MZElevRun()
 
 		if(!m_pDX00->iElvMZExist1 && m_pDX00->iElvMZExist2)
 		{
-			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");
+			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_ElevCVStop");
 			g_objCommon.Set_ElevCVStop();
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(25000);
 		}		
@@ -1631,13 +1656,14 @@ BOOL CSequenceMain::MZElevRun()
 		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(25000);
 		break;
 	case 59:
+		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_ElevLift2Up");
 		g_objCommon.Set_ElevLift2Up();
 		m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(25000);
 		break;
 	case 60:
 		if(g_objCommon.Get_ElevLift2Up())
 		{
-			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");
+			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_ElevLift2In");
 			if (!m_nMZElevLoop.Waiting_Time(200)) break;			
 			g_objCommon.Set_ElevLift2In();
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(gData.nLTime[eLT::CV]);
@@ -1648,7 +1674,7 @@ BOOL CSequenceMain::MZElevRun()
 		{
 			if (!m_nMZElevLoop.Waiting_Time(200)) break;
 
-			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "");
+			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "TransferMZInfo");
 
 			//Info Processing 
 			//Check MZ ID if Exist Move Infomation to Loading MZ UI
