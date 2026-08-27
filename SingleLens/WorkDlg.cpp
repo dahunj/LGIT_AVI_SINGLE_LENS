@@ -35,10 +35,11 @@ CWorkDlg::~CWorkDlg()
 void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	/*for (int i = 0; i < 10; i++) DDX_Control(pDX, IDC_GROUP_0 + i, m_Group[i]);
-	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_LABEL_0 + i, m_Label[i]);	
-	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_LBL_LOT_0 + i, m_lblLot[i]);*/
-
+	//for (int i = 0; i < 10; i++) DDX_Control(pDX, IDC_GROUP_0 + i, m_Group[i]);
+	//for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_LABEL_0 + i, m_Label[i]);	
+	//for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_LBL_LOT_0 + i, m_lblLot[i]);
+	for (int i = 0; i <6; i++) DDX_Control(pDX, IDC_GRP_MZ_0 + i, m_grpMZ[i]);
+	for (int i = 0; i <6; i++) DDX_Control(pDX, IDC_RDO_MZ_ID_0 + i, m_rdoMZID[i]);
 	for (int i = 0; i <40; i++) DDX_Control(pDX, IDC_RDO_MZ_SLOT_NO_20 + i, m_rdoSelectNo[i]);
 
 	for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_STC_MZID_0 + i, m_stcMZID[i]);
@@ -92,6 +93,9 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON1, m_Btn1);
 	DDX_Control(pDX, IDC_BUTTON2, m_Btn2);
 	DDX_Control(pDX, IDC_BTN_SIMUL1, m_Btn_Simul);
+
+	for (int i = 0; i < _countof(m_rdoSwitchUI); i++) DDX_Control(pDX, IDC_RDO_SWITCH_UI_0 + i, m_rdoSwitchUI[i]);
+	DDX_Control(pDX, IDC_GRD_LOG, m_grdLog);
 }
 
 BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
@@ -119,6 +123,7 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_MESSAGE(UM_RESET_CYCLE_STOP, &CWorkDlg::OnResetCycleStop)
 	ON_MESSAGE(UM_LOT_START_END, &CWorkDlg::OnLotStartEnd)
 	ON_MESSAGE(UM_UPDATE_UPH, &CWorkDlg::OnUpdateUph)
+	ON_MESSAGE(UM_UPDATE_DAILY_RESULT, &CWorkDlg::OnUpdateDailyResult)
 
 	ON_MESSAGE(UM_INDEX_TACK, &CWorkDlg::OnIndexTack)
 	ON_MESSAGE(UM_SHOW_MSG, &CWorkDlg::OnShowMsg)
@@ -143,6 +148,8 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_IDLE_REPORT, &CWorkDlg::OnBnClickedBtnIdleReport)
 	ON_BN_CLICKED(IDC_CHK_SIMUL, &CWorkDlg::OnBnClickedChkSimul)
 	ON_WM_RBUTTONDOWN()
+	ON_BN_CLICKED(IDC_RDO_SWITCH_UI_0, &CWorkDlg::OnBnClickedRdoSwitchUi0)
+	ON_BN_CLICKED(IDC_RDO_SWITCH_UI_1, &CWorkDlg::OnBnClickedRdoSwitchUi1)
 END_MESSAGE_MAP()
 
 // CWorkDlg 메시지 처리기입니다.
@@ -215,6 +222,8 @@ void CWorkDlg::Initial_Controls()
 	m_lblOperId.Init_Ctrl("바탕", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x20, 0x20, 0x80));
 	m_stcOperId.Init_Ctrl("바탕", 12, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
 
+	for (int i = 0; i < _countof(m_rdoSwitchUI); i++) m_rdoSwitchUI[i].Init_Ctrl("바탕", 11, FALSE, COLOR_DEFAULT, COLOR_DEFAULT/*RGB(0xC0, 0xC0, 0xC0)*/, CRadioCS::emBlue, 0);
+
 }
 
 BOOL CWorkDlg::OnInitDialog()
@@ -275,7 +284,10 @@ BOOL CWorkDlg::OnInitDialog()
 	 {
 		 m_wndMarkGrid.SetCellNumber(i, g_objCommon.ConvertToMESNo(i+1));
 	 }
-
+	 
+	  Set_ChangeRdo(1);
+	  OnUpdateDailyResult(NULL, NULL);
+	 
 	 //Example - 0번 셀: 빨간색
 	// m_wndTopGrid.SetCellBackgroundColor( 0, RGB(255, 100, 100));
 	  
@@ -344,7 +356,9 @@ void CWorkDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		m_bmpBg.DeleteObject();
 
 		if(pEquipData->bUseDoorLock) m_bmpBg.LoadBitmap(IDB_EQUIP_WORK);
-		else m_bmpBg.LoadBitmap(IDB_EQUIP_DOOR);		
+		else m_bmpBg.LoadBitmap(IDB_EQUIP_DOOR);
+
+	
 
 		SetTimer(0, 100, NULL);
 		SetTimer(1, 5000, NULL);
@@ -2309,4 +2323,176 @@ void CWorkDlg::OnRButtonDown(UINT nFlags, CPoint point)
 
 
 	CDialogEx::OnRButtonDown(nFlags, point);
+}
+
+
+void CWorkDlg::OnBnClickedRdoSwitchUi0()
+{
+	Set_ChangeRdo(0);
+}
+
+
+void CWorkDlg::OnBnClickedRdoSwitchUi1()
+{
+	Set_ChangeRdo(1);
+}
+
+
+void CWorkDlg::Set_ChangeRdo(int nSel)
+{
+	int nVisible = nSel == 0 ? SW_SHOW : SW_HIDE;
+	if(nSel == 0)
+	{
+		m_grdLog.ShowWindow(SW_HIDE);
+		for(int i = 2; i < 6; i++) m_grpMZ[i].ShowWindow(nVisible);
+		for(int i = 2; i < 6; i++) m_rdoMZID[i].ShowWindow(nVisible);
+		for(int i = 2; i < _countof(m_stcMZID); i++) m_stcMZID[i].ShowWindow(nVisible);
+		for(int i = 20; i < _countof(m_stcZigID); i++) m_stcZigID[i].ShowWindow(nVisible);
+		for(int i = 20; i < _countof(m_stcLensCnt); i++) m_stcLensCnt[i].ShowWindow(nVisible);
+		for(int i = 0; i < _countof(m_rdoSelectNo); i++) m_rdoSelectNo[i].ShowWindow(nVisible);
+		for(int i = 0; i < _countof(m_rdoSelectNo); i++) m_rdoSelectNo[i].ShowWindow(nVisible);
+	}	
+	
+	if (nSel == 1) 
+	{
+		m_grdLog.ShowWindow(SW_SHOW);
+		for(int i = 2; i < 6; i++) m_grpMZ[i].ShowWindow(nVisible);
+		for(int i = 2; i < 6; i++) m_rdoMZID[i].ShowWindow(nVisible);
+		for(int i = 2; i < _countof(m_stcMZID); i++) m_stcMZID[i].ShowWindow(nVisible);
+		for(int i = 20; i < _countof(m_stcZigID); i++) m_stcZigID[i].ShowWindow(nVisible);
+		for(int i = 20; i < _countof(m_stcLensCnt); i++) m_stcLensCnt[i].ShowWindow(nVisible);
+		for(int i = 0; i < _countof(m_rdoSelectNo); i++) m_rdoSelectNo[i].ShowWindow(nVisible);
+		for(int i = 0; i < _countof(m_rdoSelectNo); i++) m_rdoSelectNo[i].ShowWindow(nVisible);
+		OnUpdateDailyResult(NULL, NULL);
+	}
+}
+
+
+
+LRESULT CWorkDlg::OnUpdateDailyResult(WPARAM wParam, LPARAM lParam)
+{
+	// 그리드 리셋 후 재구성
+	const int nRowMax = 30;
+	const int nColMax = 19;
+	m_grdLog.Set_RowCount(1);
+	m_grdLog.Set_ColCount(nColMax);
+	COLORREF crBack;
+
+	// Title
+	m_grdLog.Set_ColWidth(0, 30);
+	m_grdLog.Set_CellText(0, 0, "No.");
+	m_grdLog.Set_ColWidth(1, 90);
+	m_grdLog.Set_CellText(0, 1, "LotNum");
+	m_grdLog.Set_ColWidth(2, 110);
+	m_grdLog.Set_CellText(0, 2, "In_MGZ_ID");
+	m_grdLog.Set_ColWidth(3, 110);
+	m_grdLog.Set_CellText(0, 3, "OK_MGZ_ID");
+	m_grdLog.Set_ColWidth(4, 55);
+	m_grdLog.Set_CellText(0, 4, "Tray_Qty");
+	m_grdLog.Set_ColWidth(5, 40);
+	m_grdLog.Set_CellText(0, 5, "Cnt");
+	m_grdLog.Set_ColWidth(6, 40);
+	m_grdLog.Set_CellText(0, 6, "OK");
+	m_grdLog.Set_ColWidth(7, 40);
+	m_grdLog.Set_CellText(0, 7, "NG");
+	m_grdLog.Set_ColWidth(8, 40);
+	m_grdLog.Set_CellText(0, 8, "Yield");
+	m_grdLog.Set_ColWidth(9, 100);
+	m_grdLog.Set_CellText(0, 9, "Start_Time");
+	m_grdLog.Set_ColWidth(10, 100);
+	m_grdLog.Set_CellText(0,10, "End_Time");
+	m_grdLog.Set_ColWidth(11, 40);
+	m_grdLog.Set_CellText(0,11, "Tack1");
+	m_grdLog.Set_CellText(0,12, "UPH1");
+	m_grdLog.Set_ColWidth(13, 60);
+	m_grdLog.Set_CellText(0,13, "Interval");
+	m_grdLog.Set_ColWidth(14, 40);
+	m_grdLog.Set_CellText(0,14, "Tack2");
+	m_grdLog.Set_CellText(0,15, "UPH2");
+	m_grdLog.Set_ColWidth(16, 40);
+	m_grdLog.Set_CellText(0,16, "Stop");
+	m_grdLog.Set_ColWidth(17, 80);
+	m_grdLog.Set_CellText(0,17, "DownTime");
+	m_grdLog.Set_ColWidth(18, 40);
+	m_grdLog.Set_CellText(0,18, "GF");
+
+	crBack = RGB(240, 240, 240);
+	for (int col=0; col < nColMax; col++) { 
+		m_grdLog.Set_CellFont(0, col, "Arial", 9, TRUE);
+		m_grdLog.Set_CellBackClr(0, col, crBack) ;
+	}
+
+	/*SYSTEMTIME time;
+	GetLocalTime(&time);
+	CString strPath1 = "D:\\EVMS\\TP\\Log";
+	CString strLastFile;
+	strLastFile.Format("%s\\%04d%02d%02d_Assy_DailyResult.csv", strPath1, time.wYear, time.wMonth, time.wDay);
+*/
+	
+	int  nOrder = 1;
+	BOOL bOver = FALSE;
+	CString strFilePath;
+	CStringArray saDailyResult, saResult;
+	while(bOver)
+	{
+		g_objCommon.GetLatestFileName(gsCurrentDir+"\\LOG\\DailyResult", bOver, strFilePath);
+		bOver = g_objCommon.Get_Lines(30, strFilePath, saResult);
+		saDailyResult.Append(saResult);
+	}	
+
+	m_grdLog.Set_RowCount(saDailyResult.GetCount()+1);
+
+	CString sText;
+	crBack = RGB(204, 236, 255);
+
+	int nCount = saDailyResult.GetCount();
+	for (int i=nCount-1; i >= 0; i--) {
+		int nRow = nCount - i;
+		for (int col=0; col < nColMax; col++) {
+			m_grdLog.Set_CellFont(nRow, col, "Arial", 7, FALSE);
+			if (i % 2 == 0) m_grdLog.Set_CellBackClr(nRow, col, crBack) ;
+		}
+
+		sText.Format("%d", i);
+		m_grdLog.Set_CellText(nRow, 0, sText);	// No
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i], 6);
+		m_grdLog.Set_CellText(nRow, 1, sText);	// LotNum
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i], 8);
+		m_grdLog.Set_CellText(nRow, 2, sText);	// In_MGZ_ID
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i], 9);
+		m_grdLog.Set_CellText(nRow, 3, sText);	// OK_MGZ_ID
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],10);
+		m_grdLog.Set_CellText(nRow, 4, sText);	// Tray_Qty
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],11);
+		m_grdLog.Set_CellText(nRow, 5, sText);	// Cnt
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],12);
+		m_grdLog.Set_CellText(nRow, 6, sText);	// OK
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],13);
+		m_grdLog.Set_CellText(nRow, 7, sText);	// NG
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],14);
+		m_grdLog.Set_CellText(nRow, 8, sText);	// Yield
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],15);
+		sText.Delete(sText.GetLength()-4, 4);
+		m_grdLog.Set_CellText(nRow, 9, sText);	// Start_Time
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],16);
+		sText.Delete(sText.GetLength()-4, 4);
+		m_grdLog.Set_CellText(nRow,10, sText);	// End_Time
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],17);
+		m_grdLog.Set_CellText(nRow,11, sText);	// Tack1
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],18);
+		m_grdLog.Set_CellText(nRow,12, sText);	// UPH1
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],19);
+		m_grdLog.Set_CellText(nRow,13, sText);	// Interval
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],20);
+		m_grdLog.Set_CellText(nRow,14, sText);	// Tack2
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],21);
+		m_grdLog.Set_CellText(nRow,15, sText);	// UPH2
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],24);
+		m_grdLog.Set_CellText(nRow,16, sText);	// Stop
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],25);
+		m_grdLog.Set_CellText(nRow,17, sText);	// DownTime
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],33);
+		m_grdLog.Set_CellText(nRow,18, sText);	// GF
+	}
+	return 0;
 }

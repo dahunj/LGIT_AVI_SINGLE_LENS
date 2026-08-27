@@ -104,6 +104,8 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_LBL_CTZIG_0 + i, m_lblCtZig[i]);
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_LBL_TRIGTOP_0 + i, m_lblTriggerTop[i]);
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_LBL_TRIGBTM_0 + i, m_lblTriggerBtm[i]);
+
+	
 }
 
 BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)

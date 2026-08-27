@@ -2258,6 +2258,7 @@ BOOL CSequenceMain::FeederRun()
 				m_pEquipData->nCleanRepeat, sMarking, sRandom, sTC, sBC, nGFCnt);
 
 			g_objLogFile.Save_DailyResult(m_strLog);
+			g_dlgWork.PostMessage(UM_UPDATE_DAILY_RESULT, NULL, NULL);
 
 			//Info Processing
 			gData.sLotIDElevUnload = gData.sLotIDFeeder; gData.sLotIDFeeder.Empty();

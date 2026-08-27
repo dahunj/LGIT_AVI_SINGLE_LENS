@@ -65,6 +65,9 @@
 #include <dbghelp.h>
 #include <stdio.h>
 #include <time.h>
+#include <stdlib.h>
+
+
 #pragma comment(lib, "Dbghelp.lib")
 
 #ifdef _DEBUG

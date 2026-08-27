@@ -282,17 +282,6 @@ BOOL CCommon::Check_MainDoor(BOOL bAuto)
 }
 
 
-BOOL CCommon::Check_TrayFull()
-{
-#ifdef AJIN_BOARD_USE
-	DX_DATA_01 *pDX01 = g_objAJinAXL.Get_pDX01();
-	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
-	DX_DATA_03 *pDX03 = g_objAJinAXL.Get_pDX03();
-
-	
-#endif
-	return TRUE;
-}
 
 
 
@@ -420,6 +409,142 @@ void CCommon::Backup_File(CString strPath, CString strName)
 }
 ///////////////////////////////////////////////////////////////
 
+BOOL CCommon::Get_Lines(int nLineNo, const CString& sPath, CStringArray& lines)
+{
+	CStdioFile file;
+	lines.RemoveAll();
+
+	int nCnt = 0;
+	BOOL bOver = FALSE; //over 30 lines
+
+	if (file.Open(sPath, CFile::modeRead | CFile::typeText))
+	{
+		CString line;
+		file.ReadString(line); // 헤더 스킵
+
+		while (file.ReadString(line))
+		{
+			lines.Add(line);
+			nCnt++;
+			if(nCnt >= nLineNo)
+			{
+				bOver = TRUE;
+				break;
+			}
+		}
+		file.Close();
+	}
+
+	return bOver;
+}
+
+
+
+CString CCommon::Get_DataFromLine(const CString& line, int index, TCHAR delimiter)
+{
+	int start = 0;
+	int curIndex = 0;
+	int pos = 0;
+
+	while (curIndex <= index)
+	{
+		pos = line.Find(delimiter, start);
+
+		CString token;
+		if (pos == -1)
+		{
+			token = line.Mid(start); // 마지막 토큰
+			if (curIndex == index)
+				return token;
+			return _T(""); // 인덱스 초과
+		}
+
+		token = line.Mid(start, pos - start);
+		if (curIndex == index)
+			return token;
+
+		start = pos + 1;
+		curIndex++;
+	}
+	return _T("");
+}
+
+CString CCommon::Get_LastLine(const CString& path)
+{
+	CStdioFile file;
+	if (!file.Open(path, CFile::modeRead | CFile::typeText))
+		return _T("");
+
+	CString line, lastLine;
+	while (file.ReadString(line))
+	{
+		lastLine = line;
+	}
+	file.Close();
+	return lastLine;
+}
+
+
+BOOL CCommon::GetLatestFileName(const CString& strFolder, int nOrder, CString& strLatestFileName)
+{
+	// 1 = 가장 최신
+	// 2 = 두 번째 최신
+	// 3 = 세 번째 최신
+	if (nOrder <= 0)
+		return FALSE;
+
+	CString strSearchPath;
+	strSearchPath.Format(_T("%s\\*.*"), strFolder);
+
+	CFileFind finder;
+	BOOL bWorking = finder.FindFile(strSearchPath);
+
+	std::vector<FILE_TIME_INFO> vecFiles;
+
+	while (bWorking)
+	{
+		bWorking = finder.FindNextFile();
+
+		// "." / ".." 제외
+		if (finder.IsDots())
+			continue;
+
+		// 폴더 제외
+		if (finder.IsDirectory())
+			continue;
+
+		FILE_TIME_INFO info;
+
+		// ★ 파일명 대신 전체 경로 저장
+		info.strFilePath = finder.GetFilePath();
+
+		finder.GetLastWriteTime(info.timeLastWrite);
+
+		vecFiles.push_back(info);
+	}
+
+	finder.Close();
+
+	// 파일이 없는 경우
+	if (vecFiles.empty())
+		return FALSE;
+
+	// 최신순으로 정렬
+	std::sort(
+		vecFiles.begin(),
+		vecFiles.end(),
+		CompareFileTime
+		);
+
+	// 요청한 순서의 파일이 없는 경우
+	if (nOrder > (int)vecFiles.size())
+		return FALSE;
+
+	// ★ 전체 경로 반환
+	strLatestFileName = vecFiles[nOrder - 1].strFilePath;
+
+	return TRUE;
+}
 
 
 void CCommon::Get_HardInfo(CString &strHardDisk)

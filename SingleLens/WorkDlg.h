@@ -19,7 +19,8 @@
 #define UM_INDEX_TACK			WM_USER+8
 #define UM_SHOW_MSG				WM_USER+9
 #define UM_UPDATE_LOADCELL		WM_USER+10
-#define UM_UPDATE_VISION_INFO		WM_USER+11
+#define UM_UPDATE_VISION_INFO	WM_USER+11
+#define UM_UPDATE_DAILY_RESULT	WM_USER+12
 
 // CWorkDlg 대화 상자입니다.
 
@@ -40,6 +41,8 @@ public:
 	CBitmap			m_bmpBg;
 	CRect			m_rcBgArea;   // IDC_STATIC_BG의 위치/크기 저장
 	
+	CGroupCS		m_grpMZ[6];
+	CRadioCS		m_rdoMZID[6];
 	CRadioCS		m_rdoSelectNo[40]; // 20 ~ 59 
 	CStaticCS		m_stcMZID[6];
 	CStaticCS		m_stcZigID[60];
@@ -91,9 +94,9 @@ public:
 	CStaticCS		m_stcMesConnect;
 	CStaticCS		m_stcMesOnline;
 
-	CButton m_Btn1;
-	CButton m_Btn2;
-	CButton m_Btn_Simul;
+	CButton			m_Btn1;
+	CButton			m_Btn2;
+	CButton			m_Btn_Simul;
 
 	CGridWindow		m_wndTopGrid;
 	CGridWindow		m_wndBtmGrid;
@@ -102,6 +105,9 @@ public:
 	CGridCS			m_grdTopVision;
 	CGridCS			m_grdBtmVision;
 	CGridCS			m_grdMarking;
+
+	CRadioCS		m_rdoSwitchUI[2];
+	CGridCS			m_grdLog;
 
 public:
 	CSingleLensDlg *pMainDlg;
@@ -142,6 +148,8 @@ protected:
 	afx_msg LRESULT OnLotStartEnd(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnIndexTack(WPARAM wParam, LPARAM lParam);	//AHN
 	afx_msg LRESULT OnShowMsg(WPARAM wParam, LPARAM lParam);
+
+	afx_msg LRESULT OnUpdateDailyResult(WPARAM wParam, LPARAM lParam);
 	
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
@@ -182,27 +190,25 @@ private:
 
 public:
 	CString strLog;
-
-
+	
 	void Set_AutoRun(BOOL bAutoRun);
 	void Set_AutoRunStatus(BOOL bAutoRun) { m_bAutoRunning = bAutoRun; }
 	void Set_State(int nState);
 	void Enable_UserInput(int nNo, BOOL bEnable);
 	
-	int		SearchMZElevInfo(int nNo);
-	int		SearchMZCVInfo();
-	void	TransferMZInfo(int nFrom, int nTo, int nDir);
+	int	 SearchMZElevInfo(int nNo);
+	int	 SearchMZCVInfo();
+	void TransferMZInfo(int nFrom, int nTo, int nDir);
 
-	void	Init_TempLensMap(int nPos);
-	void	Set_TempSlot(int nPos, int nSlot, BOOL bExist);
+	void Init_TempLensMap(int nPos);
+	void Set_TempSlot(int nPos, int nSlot, BOOL bExist);
 	
-	void	init_LensMap();
+	void init_LensMap();
 		
-	int 	SearchZigInfo(int nMZNo);
-	int		SearchLensCntInfo(int nMZNo);
+	int SearchZigInfo(int nMZNo);
+	int	SearchLensCntInfo(int nMZNo);
 
-	int		CheckZigExistInMZ(int nMZ, int nSlot);
-	
+	int	CheckZigExistInMZ(int nMZ, int nSlot);	
 	
 	void MachineStopLog(CString sType, CString sMsg="");
 	void Change_Model();
@@ -214,6 +220,7 @@ public:
 
 	void Set_BmpDoorLock(BOOL bLock);
 	
+	void Set_ChangeRdo(int nSel);
 
 
 	afx_msg void OnBnClickedBtnSimul1();	
@@ -234,6 +241,8 @@ public:
 	afx_msg void OnBnClickedChkSimul();
 	
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnBnClickedRdoSwitchUi0();
+	afx_msg void OnBnClickedRdoSwitchUi1();
 };
 
 

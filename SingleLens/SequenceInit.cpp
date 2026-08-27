@@ -139,7 +139,6 @@ UINT CSequenceInit::Thread_Initial(LPVOID lpVoid)
 		if (!g_objSequenceInit.Check_Mode()) break;
 		if (!g_objCommon.Check_MainEmgAir()) break;
 		if (!g_objCommon.Check_MainDoor()) break;
-		if (!g_objCommon.Check_TrayFull()) break;
 		if (!g_objCommon.Check_ServoOn()) break;
 		if (!g_objCommon.Check_DirveAlarm()) break;
 

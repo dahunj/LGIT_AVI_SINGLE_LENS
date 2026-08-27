@@ -22,6 +22,12 @@
 #define INDEX_LOAD_JIG    3   
 #define UNLOAD_PICK        4  
 
+struct FILE_TIME_INFO
+{
+	CString strFilePath;       // 전체 경로
+	CTime   timeLastWrite;
+};
+
 // CCommon
 
 class CCommon : public CWnd
@@ -56,10 +62,6 @@ public:
 	BOOL Check_MainEmgAir();
 	BOOL Check_MainDoor(BOOL bAuto=FALSE);
 
-	BOOL Check_TrayFull();
-
-	
-
 	BOOL Check_ServoOn();
 	BOOL Check_DirveAlarm();
 	BOOL Check_EndLimit();
@@ -73,7 +75,15 @@ public:
 	void Get_CPUInfo(CString &strCPU);
 	void Get_HardInfo(CString &strHardDisk);
 
-
+	BOOL Get_Lines(int nLineNo, const CString& sPath, CStringArray& lines);
+	CString Get_LastLine(const CString& sPath);
+	CString Get_DataFromLine(const CString& line, int index, TCHAR delimiter = _T(','));
+		
+	BOOL GetLatestFileName(const CString& strFolder, int nOrder, CString& strFileName);
+	static bool CompareFileTime(const FILE_TIME_INFO& a,const FILE_TIME_INFO& b)
+	{
+		return a.timeLastWrite > b.timeLastWrite;
+	}
 	///////////////////////////////////////////////////////////////////////////
 	
 	int Get_Random(int nStart, int nEnd);
@@ -173,6 +183,9 @@ public:
 	int ConvertToMESNo(int nAVINo);
 	int ConvertToAVINo(int nMESNo);
 };
+
+
+
 
 extern CCommon g_objCommon;
 
