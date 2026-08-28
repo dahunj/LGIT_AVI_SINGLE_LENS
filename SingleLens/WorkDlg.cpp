@@ -2371,6 +2371,8 @@ void CWorkDlg::Set_ChangeRdo(int nSel)
 
 LRESULT CWorkDlg::OnUpdateDailyResult(WPARAM wParam, LPARAM lParam)
 {
+	m_grdLog.SetRedraw(FALSE);
+
 	// 그리드 리셋 후 재구성
 	const int nRowMax = 30;
 	const int nColMax = 19;
@@ -2535,5 +2537,12 @@ LRESULT CWorkDlg::OnUpdateDailyResult(WPARAM wParam, LPARAM lParam)
 		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],32);
 		m_grdLog.Set_CellText(nRow,18, sText);	// GF
 	}
+
+	// 화면 다시 그리기 허용
+	m_grdLog.SetRedraw(TRUE);
+
+	// 완성된 화면을 한 번에 다시 그림
+	m_grdLog.Invalidate(FALSE);
+	m_grdLog.UpdateWindow();
 	return 0;
 }
