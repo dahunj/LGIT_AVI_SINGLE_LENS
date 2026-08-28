@@ -2437,8 +2437,15 @@ LRESULT CWorkDlg::OnUpdateDailyResult(WPARAM wParam, LPARAM lParam)
 	{
 		g_objCommon.GetLatestFileName(gsCurrentDir+"\\LOG\\DailyResult", nOrder, strFilePath);
 		g_objCommon.Get_Lines(30, strFilePath, saResult);
+
+		for (int i = 0; i < (int)saResult.GetSize() / 2; i++)
+		{
+			CString strTemp = saResult[i];
+			saResult[i] = saResult[(int)saResult.GetSize() - 1 - i];
+			saResult[(int)saResult.GetSize() - 1 - i] = strTemp;
+		}
 		
-		saDailyResult.Append(saResult);
+		saDailyResult.Append(saResult);		
 		
 		if(saDailyResult.GetSize() > 30)
 		{
@@ -2454,8 +2461,8 @@ LRESULT CWorkDlg::OnUpdateDailyResult(WPARAM wParam, LPARAM lParam)
 	crBack = RGB(204, 236, 255);
 
 	int nCount = saDailyResult.GetCount();
-	for (int i=nCount-1; i >= 0; i--) {
-		int nRow = nCount - i;
+	for (int i=0; i < nCount; i++) {
+		int nRow = i+1;
 		for (int col=0; col < nColMax; col++) {
 			m_grdLog.Set_CellFont(nRow, col, "Arial", 7, FALSE);
 			if (i % 2 == 0) m_grdLog.Set_CellBackClr(nRow, col, crBack) ;
