@@ -338,13 +338,14 @@ void CWorkDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	{		
 		EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
+		m_strLog.Format("[Work] OnShowWindow - bShow");
+		g_objLogFile.Save_HandlerLog(m_strLog);
 		// 리소스에 있는 static의 위치/크기 가져오기
 		CWnd* pWndBg = GetDlgItem(IDC_STATIC_WORKIMAGE);
 		if (pWndBg && ::IsWindow(pWndBg->GetSafeHwnd()))
 		{
 			pWndBg->GetWindowRect(&m_rcBgArea);
 			ScreenToClient(&m_rcBgArea);
-
 			// 기준용 static은 숨김
 			pWndBg->ShowWindow(SW_HIDE);
 		}
@@ -618,8 +619,8 @@ void CWorkDlg::OnBnClickedRdoMZID(UINT nID)
 	{	
 		if (g_objCommon.Show_MsgBox(2, "Data를 삭제 하시겠습니까?") != IDOK) return;
 		m_stcMZID[ID].SetWindowText(""); nTotalClick = 0;
-		strLog.Format("[Work Mode]MGZ ID Deleted - %d", ID);
-		g_objLogFile.Save_HandlerLog(strLog);
+		m_strLog.Format("[Work Mode]MGZ ID Deleted - %d", ID);
+		g_objLogFile.Save_HandlerLog(m_strLog);
 
 	}
 
@@ -627,8 +628,8 @@ void CWorkDlg::OnBnClickedRdoMZID(UINT nID)
 	{
 		if (g_objCommon.Show_MsgBox(2, "전체 Data를 삭제 하시겠습니까?") != IDOK) return;
 		
-		strLog.Format("[Work Mode]ALL MGZ ID Deleted - %d", ID);
-		g_objLogFile.Save_HandlerLog(strLog);
+		m_strLog.Format("[Work Mode]ALL MGZ ID Deleted - %d", ID);
+		g_objLogFile.Save_HandlerLog(m_strLog);
 		
 		m_stcMZID[ID].SetWindowText(""); nTotalClick = 0;
 
@@ -837,8 +838,6 @@ void CWorkDlg::OnBnClickedRdoWorkStop()
 		gLot.nStopCount[i]++;
 		for(int j = 0; j < 10; j++) gLot.nStopCountZig[i][j]++;
 	}
-
-	
 
 	gLot.dwErrorStart = 0;
 	gLot.dwStopStart = 0;
@@ -1183,15 +1182,11 @@ void CWorkDlg::Display_Status()
 // 
 // 	if (g_objMesAgent.Is_HostOnline()) { m_stcMesOnline.Set_Text("Online"); m_stcMesOnline.Set_Color(RGB(0x00, 0x00, 0x00), RGB(0x00, 0xFF, 0x00)); }
 // 	else { m_stcMesOnline.Set_Text("Offline"); m_stcMesOnline.Set_Color(RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x00, 0x00)); }
-
 	
-
 	//DX_DATA_11 *pDX11 = g_objAJinAXL.Get_pDX11();
 	//int nIndexPos = pDX11->iIndexPosition0 + (pDX11->iIndexPosition1 << 1);
 	//strText.Format("%d", nIndexPos + 1);
 	//m_stcIndexPos.SetWindowText(strText);
-
-
 
 	m_ledVisionStatus[0].Set_On(g_objInspector.Check_Connect(VISION_PC1));
 	m_ledEquipOption[0].Set_On(pEquipData->bUseTopVision);
@@ -1568,11 +1563,6 @@ LRESULT CWorkDlg::OnShowMsg(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-void CWorkDlg::Change_Model()
-{
-
-
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -2158,6 +2148,9 @@ void CWorkDlg::OnBnClickedBtnIdleReport()
 	g_dlgNoWork.Set_NoWorkAuto(FALSE);
 	g_dlgNoWork.ShowWindow(SW_SHOW);
 
+	m_strLog.Format("[Work Mode] Idle Report btn Click");
+	g_objLogFile.Save_HandlerLog(m_strLog);
+	
 	/*if (g_dlgNoWork.IsWindowVisible()) g_dlgNoWork.ShowWindow(SW_HIDE);
 	else g_dlgNoWork.ShowWindow(SW_SHOW);	*/
 }
@@ -2295,7 +2288,7 @@ void CWorkDlg::OnStnClickedStcHidden()
 
 void CWorkDlg::OnBnClickedChkNoTray()
 {
-	g_objLogFile.Save_HandlerLog("[Work] Aging Mode checked");
+	g_objLogFile.Save_HandlerLog("[Work] Idle Run checked");
 	
 	gData.bAgingMode = m_chkNoTrayMode.GetCheck();
 	InsertMGZTestInfo(144);

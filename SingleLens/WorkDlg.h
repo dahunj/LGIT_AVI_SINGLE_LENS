@@ -189,7 +189,7 @@ private:
 	void Display_Status();
 
 public:
-	CString strLog;
+	CString m_strLog;
 	
 	void Set_AutoRun(BOOL bAutoRun);
 	void Set_AutoRunStatus(BOOL bAutoRun) { m_bAutoRunning = bAutoRun; }
@@ -212,7 +212,6 @@ public:
 	
 	void MachineStopLog(CString sType, CString sMsg="");
 	void Change_Model();
-
 	void InsertMGZTestInfo(int nLensCnt);
 
 	void Set_MZInfo(int nMZPos, CString sID);

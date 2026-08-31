@@ -854,7 +854,7 @@ void CSetupEquipDlg::OnStnClickedStcEquipModel()
 
 	m_stcEquipModel.SetWindowText(strKey);
 
-	m_strLog.Format("[Setup Equip] OnStnClickedStcEquipModel - Data(%s)", strKey);
+	m_strLog.Format("[Setup Equip] Model Input - Data(%s)", strKey);
 	g_objLogFile.Save_HandlerLog(m_strLog);
 }
 
@@ -941,8 +941,11 @@ void CSetupEquipDlg::OnStnClickedStcNoWorkTime()
 {
 	CString strOld, strNew;
 	m_stcNoWorkTime.GetWindowText(strOld);
+
 	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
 	m_stcNoWorkTime.SetWindowText(strNew);
+
+	m_strLog.Format("[Equip Mode] No Work Time Set %s", strNew);
 }
 
 void CSetupEquipDlg::OnStnClickedStcMarkTimeout(UINT nID)
@@ -966,4 +969,7 @@ void CSetupEquipDlg::OnStnClickedStcSafetySwitch()
 	m_stcSafetySwitch.GetWindowText(strOld);
 	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
 	m_stcSafetySwitch.SetWindowText(strNew);
+
+	m_strLog.Format("[Equip Mode] Safety Switch Time - %s ", strNew);
+	g_objLogFile.Save_HandlerLog(m_strLog);
 }

@@ -49,7 +49,6 @@ protected:
 	CWinThread	*m_pThreadMainRun;
 	static UINT	Thread_MainRun(LPVOID lpVoid);
 
-
 public:
 	void Begin_MainRunThread();
 	void End_MainRunThread(DWORD dwWait);

@@ -625,7 +625,7 @@ BOOL CSequenceMain::LoadConveyorRun()
 	static int nDetectCnt[6] = {0, 0, 0, 0, 0, 0}; 
 	static DWORD dwTick = 0;
 
-	if(gData.bLdMZWait   )
+	if(gData.bLdMZWait)
 	{
 		g_objCommon.Set_LoadCVStop();
 		return TRUE;
@@ -1749,20 +1749,22 @@ BOOL CSequenceMain::FeederRun()
 	case 2:
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready) || g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad)  )
 		{
+			m_strLog.Format("Elev Z pitch Move, SlotNo : %d", gData.nTNoPick);
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+
 			gData.bFeederWorkWait = TRUE; // load Start
 
 			dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] + m_pEquipData->dElevPitchZ * (gData.nTNoPick[eMZ::Load] - 1);
 			g_objAJinAXL.Move_Absolute(AX_MZ_ELEVATOR_Z, dPosZ);
-
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZLoad);
-			m_strLog.Format("Elev Z pitch Move, SlotNo : %d", gData.nTNoPick); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);			
 		}		
 		break;
 	case 3:
 		if(g_objAJinAXL.Is_MoveDone(AX_MZ_ELEVATOR_Z, dPosZ) && g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZLoad))
 		{						
-			m_strLog.Format("FeederUnit X Move (MZ2), %d"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+			m_strLog.Format("FeederUnit X Move (MZ2), %d");
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad);
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(15000);			
 		}
@@ -1770,12 +1772,12 @@ BOOL CSequenceMain::FeederRun()
 	case 4:
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad))
 		{
-			m_strLog.Format("Feeder Y Move (Zig Exist) "); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+			m_strLog.Format("Feeder Y Move (Zig Exist) ");
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(60000);			
 		}		
 		break;
-	case 5:
-	
+	case 5:	
 		if(gData.bAgingMode || gData.bSimulMode)
 		{
 			m_pDX01->iFeederZigExist = TRUE;
@@ -1783,8 +1785,6 @@ BOOL CSequenceMain::FeederRun()
 			//if(gData.nTNoPick[eMZ::Load] == 3  ) m_pDX01->iFeederZigExist = TRUE;
 			//else m_pDX01->iFeederZigExist = FALSE;
 		}
-
-
 		if(m_pDX01->iFeederZigExist)
 		{
 			nMZDetectCnt[0]++;
@@ -1796,6 +1796,8 @@ BOOL CSequenceMain::FeederRun()
 
 				if(m_pEquipData->bUseMES)
 				{
+					m_strLog.Format("Feeder Y Move (Grip Zig)"); 
+					m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 					gLot.nTrayCount[gData.nMZNoMZLoad[gData.nTNoPick[eMZ::Load] -1]-1]++;
 					m_nFeederCase = 10; m_nFeederLoop.Set_LoopTime(5000);
 				}
@@ -1806,8 +1808,9 @@ BOOL CSequenceMain::FeederRun()
 
 					if(nExist == gData.nTNoPick[eMZ::Load])	
 					{								
-						gLot.nTrayCount[gData.nMZNoMZLoad[gData.nTNoPick[eMZ::Load] -1]-1]++;
-						m_strLog.Format("Feeder Y Move (Grip Zig)"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+						m_strLog.Format("Feeder Y Move (Grip Zig)"); 
+						m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+						gLot.nTrayCount[gData.nMZNoMZLoad[gData.nTNoPick[eMZ::Load] -1]-1]++;						
 						m_nFeederCase = 10; m_nFeederLoop.Set_LoopTime(5000);						
 					}
 				}				
@@ -1827,22 +1830,23 @@ BOOL CSequenceMain::FeederRun()
 			}
 		}
 		break;
-	case 6:
+	case 6:		
 		gData.nTNoPick[eMZ::Load]++;
+		m_strLog.Format("Tray Number Add & Feeder Back to avoid : %d", gData.nTNoPick[eMZ::Load]);
+		m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 		dPosY = m_pMoveData->dFeederY[eFeeder_Y::MZLoad] - 100;
-		g_objAJinAXL.Move_Absolute(AX_ZIG_FEEDER_Y, dPosY);
-		m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+		g_objAJinAXL.Move_Absolute(AX_ZIG_FEEDER_Y, dPosY);		
 		m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		break;
 	case 7:
 		if(g_objAJinAXL.Is_MoveDone(AX_ZIG_FEEDER_Y, dPosY))
 		{
-
 			if(gData.nTNoPick[eMZ::Load] > 10)
 			{
 				gData.bFeederWorkWait = FALSE;
 				gData.nTNoPick[eMZ::Load] = 1;
-				m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+				m_strLog.Format("Tray Number Init : %d", gData.nTNoPick[eMZ::Load]);
+				m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 				if(Check_TrayAllReturn())
 				{
 					m_nMZElevCase = ElvBranch::Unload;
@@ -1852,16 +1856,21 @@ BOOL CSequenceMain::FeederRun()
 			}
 			dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] + m_pEquipData->dElevPitchZ * (gData.nTNoPick[eMZ::Load] - 1);
 			g_objAJinAXL.Move_Absolute(AX_MZ_ELEVATOR_Z, dPosZ);
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+			m_strLog.Format("Elev Z Pitch Move : %0.3lf", dPosZ);
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 8:
 		if(g_objAJinAXL.Is_MoveDone(AX_MZ_ELEVATOR_Z, dPosZ))
 		{
+			m_strLog.Format("Feeder Move to Load Position");
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZLoad);
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad);
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+			
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		}
 		break;
@@ -1869,7 +1878,9 @@ BOOL CSequenceMain::FeederRun()
 	case 9:		
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZLoad) && g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad))
 		{			
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+			m_strLog.Format("Feeder Move Done Check");
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+
 			m_nFeederCase = 5; m_nFeederLoop.Set_LoopTime(5000);
 		}
 		break;
@@ -1877,8 +1888,10 @@ BOOL CSequenceMain::FeederRun()
 	case 10:
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZLoad))
 		{
+			m_strLog.Format("Feeder Grip Close"); 
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 			g_objCommon.Set_FeederClose();
-			m_strLog.Format("Feeder Grip Close"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+			
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 			
 		}
@@ -1970,8 +1983,11 @@ BOOL CSequenceMain::FeederRun()
 	case 71:
 		if(g_objCommon.Get_RailAlignIn() && g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready) )
 		{
+			m_strLog.Format("Feeder Grip Close"); 
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::Barcode);
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+			
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		}
 		break;
@@ -1979,6 +1995,10 @@ BOOL CSequenceMain::FeederRun()
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::Barcode))
 		{
 			if(!m_nFeederLoop.Waiting_Time(300)) break;
+
+			m_strLog.Format("Tray Barcode Triggered"); 
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+
 			dwTick = GetTickCount();
 			g_objBarcodeLot_Cognex.Set_Trigger(eBarcode::CtZig, TRUE);
 
@@ -1987,8 +2007,7 @@ BOOL CSequenceMain::FeederRun()
 				gData.sTempZigID.Format("Skip-%d", gData.nSlotNoFeeder);
 				m_nFeederCase = 79; m_nFeederLoop.Set_LoopTime(10000);	
 				break;
-			}*/
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+			}*/		
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		}
 		break;
@@ -2002,7 +2021,10 @@ BOOL CSequenceMain::FeederRun()
 
 		g_objBarcodeLot_Cognex.Set_BarcodeLot(eBarcode::CtZig, m_strBarcode[eBarcode::CtZig-1]);
 		m_strBarcode[eBarcode::CtZig-1].Empty();
-		m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+		
+		m_strLog.Format("Barcode : %s", m_strBarcode[eBarcode::CtZig-1]); 
+		m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+
 		m_nFeederCase = 74;m_nFeederLoop.Set_LoopTime(10000);		
 		break;
 	case 73:
@@ -2026,8 +2048,8 @@ BOOL CSequenceMain::FeederRun()
 				gData.sZigID[eMZBuffer::Load][gData.nSlotNoFeeder-1] = gData.sZigIDFeeder;
 				g_dlgWork.Set_CtZigInfo(eMZ::Load, gData.nSlotNoFeeder,gData.sZigIDFeeder);
 
-				m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
-				m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
+				m_strLog.Format("Barcode read Done : %s", m_strBarcode[eBarcode::CtZig-1]); 
+				m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 			}
 		}
 		break;
@@ -2035,7 +2057,7 @@ BOOL CSequenceMain::FeederRun()
 		if(m_pEquipData->bUseMES)
 		{
 			gMes.bTrayIDConfirm = FALSE; //Load : 1
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "Set_TrayIDReport");
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 			if(m_pEquipData->bUseMES) g_objMesAgent.Set_TrayIDReport(1, gData.sZigIDFeeder); 
 			
@@ -2045,23 +2067,23 @@ BOOL CSequenceMain::FeederRun()
 	case 75:
 		if(m_pEquipData->bUseMES && gMes.bTrayIDConfirm)
 		{
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "Tray ID Confirmed");
+
 			gMes.bTrayIDConfirm = FALSE; //Load : 1
-			//g_dlgWork.init_LensMap();	 // Get_TrayID_Confirm 에서 처리하는 걸로 변경 
-			
-			gData.nLensUseCnt[gData.nMZNoFeeder-1][gData.nSlotNoFeeder-1] = gMes.nPocketCnt;
-			
+			//g_dlgWork.init_LensMap();	 // Get_TrayID_Confirm 에서 처리하는 걸로 변경 			
+			gData.nLensUseCnt[gData.nMZNoFeeder-1][gData.nSlotNoFeeder-1] = gMes.nPocketCnt;			
 			gData.nLensTotalCnt[gData.nMZNoFeeder-1] += gData.nLensUseCnt[gData.nMZNoFeeder-1][gData.nSlotNoFeeder-1];
 			gLot.nLensCount[gData.nMZNoFeeder-1] = gData.nLensTotalCnt[gData.nMZNoFeeder-1];
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+			
 			m_nFeederCase = 16; m_nFeederLoop.Set_LoopTime(5000);
 		}
 		else if(m_pEquipData->bUseBarcodeCtZig)
 		{
-			gMes.bTrayIDConfirm = FALSE; //Load : 1		
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "Feeder X Move to Tray-Grip Pos");
 
+			gMes.bTrayIDConfirm = FALSE; //Load : 1		
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
 			m_nFeederCase = 16; m_nFeederLoop.Set_LoopTime(5000);
 		}
 		break;
@@ -2072,8 +2094,9 @@ BOOL CSequenceMain::FeederRun()
 		}
 		if(g_objAJinAXL.Is_Done(AX_ZIG_FEEDER_X) && g_objCommon.Get_RailAlignIn() && m_pDX01->iRailZigExist )
 		{
-			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "Feeder X Move to Tray-Grip Pos");
+
+			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);			
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(35000);
 		}		
 		break;
@@ -2081,8 +2104,10 @@ BOOL CSequenceMain::FeederRun()
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip) )
 		{
 			if(!m_nFeederLoop.Waiting_Time(300)) break;
-			g_objCommon.Set_RailAlignOut();
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "Set_RailAlignOut");
+
+			g_objCommon.Set_RailAlignOut();			
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(35000);
 		}
 		break;
@@ -2280,7 +2305,7 @@ BOOL CSequenceMain::FeederRun()
 
 			g_dlgWork.PostMessage(UM_UPDATE_MZ_INFO,eMZ::Load, NULL);
 
-			m_strLog.Format("Feeder Open"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+			m_strLog.Format("Set_TrayCompleted"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 			m_nFeederCase = 40; m_nFeederLoop.Set_LoopTime(5000);			
 		}
 		break;
@@ -2293,9 +2318,6 @@ BOOL CSequenceMain::FeederRun()
 			{
 				m_nMZElevCase = ElvBranch::Unload;
 			}
-
-			
-
 			m_strLog.Format("Back to Branch"); m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
 			m_nFeederCase = 0; m_nFeederLoop.Set_LoopTime(5000);			
 		}		
@@ -2394,19 +2416,20 @@ BOOL CSequenceMain::FeederRun()
 
 			if(nMZDetectCnt[1] > 5)
 			{
-				nMZDetectCnt[0] = 0; nMZDetectCnt[1] = 0;
+				m_nFeederLoop.Takt_Save(3, m_nFeederCase, "MZ detected");
 
-				g_dlgWork.Set_TempSlot(eMZ::Ready, gData.nTNoPick[eMZ::Ready], FALSE);
-				m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+				nMZDetectCnt[0] = 0; nMZDetectCnt[1] = 0;
+				g_dlgWork.Set_TempSlot(eMZ::Ready, gData.nTNoPick[eMZ::Ready], FALSE);				
 				m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 			}
 		}		
 		break;
 	case 56:
+	
+		m_nFeederLoop.Takt_Save(3, m_nFeederCase, "Feeder Y Back to avoid");
 		gData.nTNoPick[eMZ::Ready]++;
 		dPosY = m_pMoveData->dFeederY[eFeeder_Y::MZReady] - 100;
-		g_objAJinAXL.Move_Absolute(AX_ZIG_FEEDER_Y, dPosY);
-		m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+		g_objAJinAXL.Move_Absolute(AX_ZIG_FEEDER_Y, dPosY);		
 		m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		break;
 	case 57:
@@ -2414,26 +2437,28 @@ BOOL CSequenceMain::FeederRun()
 		{
 			if(gData.nTNoPick[eMZ::Ready] > 10)
 			{
+				m_nFeederLoop.Takt_Save(3, m_nFeederCase, "Tray No Init");
+
 				gData.bFeederWorkWait = FALSE;
 				gData.nTNoPick[eMZ::Ready] = 1;
-				m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+				
 				if(Check_TrayAllReturn())
 				{
+					m_nFeederLoop.Takt_Save(3, m_nFeederCase, "Check_TrayAllReturn");
 					m_nMZElevCase = ElvBranch::Unload;
 				}
 				m_nFeederCase = 0; m_nFeederLoop.Set_LoopTime(5000);
 				break;
 			}
-
 			dPosZ = m_pMoveData->dMZElevZ[eElv_Z::Down] + m_pEquipData->dElevPitchZ * (gData.nTNoPick[eMZ::Ready] - 1);
-			g_objAJinAXL.Move_Absolute(AX_MZ_ELEVATOR_Z, dPosZ);
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+			g_objAJinAXL.Move_Absolute(AX_MZ_ELEVATOR_Z, dPosZ);		
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		}
 		break;
 	case 58:
 		if(g_objAJinAXL.Is_MoveDone(AX_MZ_ELEVATOR_Z, dPosZ))
 		{
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "Feeder X & Y Move to Ready");
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZReady);
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZReady);
 			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
@@ -2444,7 +2469,7 @@ BOOL CSequenceMain::FeederRun()
 	case 59:		
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::MZReady) && g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::MZReady))
 		{			
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "Feeder X&Y Move Done");
 			m_nFeederCase = 55; m_nFeederLoop.Set_LoopTime(5000);
 		}
 		break;
@@ -2536,8 +2561,8 @@ BOOL CSequenceMain::FeederRun()
 	case 81:
 		if(g_objCommon.Get_RailAlignIn() && g_objCommon.Check_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready))
 		{
-			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::Barcode);
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "Feeder X Move to Barcode");
+			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::Barcode);			
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		}
 		break;
@@ -2554,7 +2579,7 @@ BOOL CSequenceMain::FeederRun()
 				m_nFeederCase = 89; m_nFeederLoop.Set_LoopTime(10000);	
 				break;
 			}*/
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "Set_Trigger");
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		}
 		break;
@@ -2567,9 +2592,13 @@ BOOL CSequenceMain::FeederRun()
 		g_dlgWork.Set_CtZigInfo(eMZ::Ready, gData.nSlotNoFeeder,gData.sZigIDFeeder);
 
 		g_objBarcodeLot_Cognex.Set_BarcodeLot(eBarcode::CtZig, m_strBarcode[eBarcode::CtZig-1]);
+		
+		m_strLog.Format("Barcode : %s", m_strBarcode[eBarcode::CtZig-1]);
+		m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+		
 		m_strBarcode[eBarcode::CtZig-1].Empty();
-		m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
-		m_nFeederCase = 84;m_nFeederLoop.Set_LoopTime(10000);		
+		
+		m_nFeederCase = 84; m_nFeederLoop.Set_LoopTime(10000);		
 		break;
 	case 83:
 		if(GetTickCount() - dwTick < 5000)
@@ -2592,7 +2621,9 @@ BOOL CSequenceMain::FeederRun()
 				gData.sZigID[eMZBuffer::Ready][gData.nSlotNoFeeder-1] = gData.sZigIDFeeder;
 				g_dlgWork.Set_CtZigInfo(eMZ::Ready, gData.nSlotNoFeeder,gData.sZigIDFeeder);
 
-				m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+				m_strLog.Format("Barcode : %s", m_strBarcode[eBarcode::CtZig-1]);
+				m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+
 				m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 			}
 		}
@@ -2600,8 +2631,10 @@ BOOL CSequenceMain::FeederRun()
 	case 84:
 		if(m_pEquipData->bUseMES)
 		{			
+			m_strLog.Format("Set_TrayIDReport %s", gData.sZigIDFeeder);
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+
 			gMes.bTrayIDConfirm = FALSE; //Load : 1
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 			g_objMesAgent.Set_TrayIDReport(1, gData.sZigIDFeeder); 
 		}
@@ -2610,20 +2643,23 @@ BOOL CSequenceMain::FeederRun()
 	case 85:
 		if(m_pEquipData->bUseMES && gMes.bTrayIDConfirm)
 		{
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "TrayIDConfirm");
+
 			gMes.bTrayIDConfirm = FALSE; //Load : 1
 			//g_dlgWork.init_LensMap(); // Get_TrayID_Confirm 에서 처리하는 걸로 변경 
 			gData.nLensUseCnt[gData.nMZNoFeeder-1][gData.nSlotNoFeeder-1] = gMes.nPocketCnt;
 			gData.nLensTotalCnt[gData.nMZNoFeeder-1] += gData.nLensUseCnt[gData.nMZNoFeeder-1][gData.nSlotNoFeeder-1];
 			gLot.nLensCount[gData.nMZNoFeeder-1] = gData.nLensTotalCnt[gData.nMZNoFeeder-1];
 			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+			
 			m_nFeederCase = 66; m_nFeederLoop.Set_LoopTime(5000);
 		}
 		else if(m_pEquipData->bUseBarcodeCtZig)
 		{
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "Feeder X Move to TrayGrip");
+
 			gMes.bTrayIDConfirm = FALSE; //Load : 1
-			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);			
 			m_nFeederCase = 66; m_nFeederLoop.Set_LoopTime(5000);
 		}
 		break;
@@ -2634,8 +2670,9 @@ BOOL CSequenceMain::FeederRun()
 		}
 		if(g_objAJinAXL.Is_Done(AX_ZIG_FEEDER_X) && g_objCommon.Get_RailAlignIn() && m_pDX01->iRailZigExist)
 		{
-			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "Feeder X Move to TrayGrip");
+
+			g_objCommon.Move_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip);			
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		}
 		break;
@@ -2643,8 +2680,9 @@ BOOL CSequenceMain::FeederRun()
 		if(g_objCommon.Check_Position(AX_ZIG_FEEDER_X, eFeeder_X::TrayGrip) )
 		{
 			if(!m_nFeederLoop.Waiting_Time(300)) break;
-			g_objCommon.Set_RailAlignOut();
-			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "");
+
+			m_nFeederLoop.Takt_Save(3, m_nFeederCase, "Set_RailAlignOut");
+			g_objCommon.Set_RailAlignOut();			
 			m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		}
 		break;
