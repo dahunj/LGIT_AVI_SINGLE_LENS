@@ -72,6 +72,9 @@ BOOL CDataManager::Read_EquipData()
 	m_EquipData.sPasswordOp = INI.Get_String("HIDDEN", "PASSWORD_OP", "");
 	m_EquipData.sPasswordEngr = INI.Get_String("HIDDEN", "PASSWORD_ENGR", "");
 
+	m_EquipData.bUseDoorLock = INI.Get_Bool("EQUIPMENT", "DOOR_LOCK", TRUE);
+	gData.nDoorLockTime = INI.Get_Integer("EQUIPMENT","DOOR_LOCK_TIME", 0);
+
 
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	pMainDlg->Display_EquipName();
@@ -111,8 +114,7 @@ BOOL CDataManager::Read_ModelEquipData(CString strPath)
 
 	m_EquipData.nLotBarcodePort = INI.Get_Integer("EQUIPMENT", "LOT_BARCODE", 1);
 
-	m_EquipData.bUseDoorLock = INI.Get_Bool("EQUIPMENT", "DOOR_LOCK", TRUE);
-	gData.nDoorLockTime = INI.Get_Integer("EQUIPMENT","DOOR_LOCK_TIME", 0);
+	
 	gAlm.dMotionChkPos		= INI.Get_Double("EQUIPMENT","MOTION_CHECK", 0.0);
 	m_EquipData.nNoWorkTime = INI.Get_Integer("EQUIPMENT", "NO_WORK_TIME", 0);
 	m_EquipData.nSafetySwitchTime = INI.Get_Integer("EQUIPMENT", "SAFETY_SWITCH_TIME", 0);

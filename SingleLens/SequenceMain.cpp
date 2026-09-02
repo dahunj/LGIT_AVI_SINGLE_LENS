@@ -2050,6 +2050,7 @@ BOOL CSequenceMain::FeederRun()
 
 				m_strLog.Format("Barcode read Done : %s", m_strBarcode[eBarcode::CtZig-1]); 
 				m_nFeederLoop.Takt_Save(3, m_nFeederCase, m_strLog);
+				m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 			}
 		}
 		break;

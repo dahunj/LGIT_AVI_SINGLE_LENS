@@ -199,7 +199,10 @@ BOOL CSingleLensDlg::OnInitDialog()
 		gData.nLTime[eLT::CV] = 30000;
 	}
 	
-
+	m_bLampOnLdOpen = FALSE;
+	m_bLampOnLdRun = FALSE;
+	m_bLampOnUldOpen = FALSE;
+	m_bLampOnUldRun = FALSE;
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 

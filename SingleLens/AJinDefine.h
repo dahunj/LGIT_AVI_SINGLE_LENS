@@ -387,10 +387,10 @@ typedef union tag_DY_DATA_03 {
 		DWORD oStopLamp2 : 1;					// Y0315
 		DWORD oResetLamp1 : 1;	// Y0316
 		DWORD oResetLamp2 : 1;	// Y0317
-		DWORD oUldOpenLamp   : 1;					// Y0318
-		DWORD oUldRunLamp    : 1;					// Y0319
-		DWORD oLdOpenLamp  : 1;								// Y0320
-		DWORD oLdRunLamp    : 1;								// Y0321
+		DWORD oLdOpenLamp   : 1;					// Y0318
+		DWORD oLdRunLamp    : 1;					// Y0319
+		DWORD oUldOpenLamp  : 1;								// Y0320
+		DWORD oUldRunLamp    : 1;								// Y0321
 		DWORD oDoor01Unlock : 1;						// Y0322
 		DWORD oDoor02Unlock : 1;						// Y0323
 		DWORD oDoor03Unlock : 1;						// Y0324

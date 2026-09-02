@@ -1038,25 +1038,22 @@ void CWorkDlg::Check_Lamp()
 		{
 			//if (!pEquipData->bUseDoorLock || !pDX03->iDoor08Unlock) // 안전 확인.
 			{
-				if (!gData.bLdMZWait && !m_bLdOpenSwOn) 
+				if (!gData.bLdMZWait && !m_bLdOpenSwOn ) 
 				{
 					pMainDlg->Set_LampFlicker_LdOpen(TRUE);
 					pMainDlg->Set_LampFlicker_LdRun(FALSE);	
 
 					gData.bLdMZWait = TRUE;
-					m_bLdOpenSwOn = TRUE; m_bLdRunSwOn = FALSE;
+					m_bLdOpenSwOn = TRUE;m_bLdRunSwOn = FALSE;
 
 					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = TRUE; g_objAJinAXL.Write_Output(3); }
 
 				}
-				else if (gData.bLdMZWait && m_bLdOpenSwOn)
+				else
 				{
-					pMainDlg->Set_LampFlicker_LdOpen(FALSE);
-					pMainDlg->Set_LampFlicker_LdRun(TRUE);	
-					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = FALSE; g_objAJinAXL.Write_Output(3); }
-					gData.bLdMZWait = FALSE;
-					m_bLdOpenSwOn = FALSE; m_bLdRunSwOn = TRUE;
-				}			
+					m_bLdOpenSwOn = FALSE;
+				}
+			
 			}			
 		} 	
 
@@ -1069,18 +1066,15 @@ void CWorkDlg::Check_Lamp()
 				{
 					pMainDlg->Set_LampFlicker_LdOpen(FALSE);
 					pMainDlg->Set_LampFlicker_LdRun(TRUE);	
-					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = TRUE; g_objAJinAXL.Write_Output(3); }
-					gData.bLdMZWait = FALSE;
-					m_bLdOpenSwOn = FALSE; m_bLdRunSwOn = TRUE;
-				}
-				else if (!gData.bLdMZWait && m_bLdRunSwOn)
-				{
-					pMainDlg->Set_LampFlicker_LdOpen(TRUE);
-					pMainDlg->Set_LampFlicker_LdRun(FALSE);	
 					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = FALSE; g_objAJinAXL.Write_Output(3); }
-					gData.bLdMZWait = TRUE;
-					m_bLdOpenSwOn = TRUE; m_bLdRunSwOn = FALSE;
-				}	
+					gData.bLdMZWait = FALSE;
+				    m_bLdRunSwOn = TRUE;m_bLdOpenSwOn = FALSE;
+				}
+				else
+				{
+					m_bLdRunSwOn = FALSE;
+				}
+			
 			}				
 		} 
 		
@@ -1096,14 +1090,11 @@ void CWorkDlg::Check_Lamp()
 					gData.bUldMZWait = TRUE;
 					m_bUldOpenSwOn = TRUE; m_bUldRunSwOn = FALSE;
 				}
-				else if (gData.bLdMZWait && m_bLdOpenSwOn)
+				else
 				{
-					pMainDlg->Set_LampFlicker_LdOpen(FALSE);
-					pMainDlg->Set_LampFlicker_LdRun(TRUE);	
-					if (pEquipData->bUseDoorLock) { pDY03->oDoor03Unlock = FALSE; g_objAJinAXL.Write_Output(33); }
-					gData.bUldMZWait = FALSE;
-					m_bUldOpenSwOn = FALSE; m_bUldRunSwOn = TRUE;
+					m_bUldOpenSwOn = FALSE;
 				}
+
 			}
 		} 	
 
@@ -1118,16 +1109,13 @@ void CWorkDlg::Check_Lamp()
 					pMainDlg->Set_LampFlicker_UldRun(TRUE);	
 					if (pEquipData->bUseDoorLock) { pDY03->oDoor03Unlock = FALSE; g_objAJinAXL.Write_Output(3); }
 					gData.bUldMZWait = FALSE;
-					m_bUldOpenSwOn = FALSE; m_bUldRunSwOn = TRUE;
+					m_bUldRunSwOn = TRUE;m_bUldOpenSwOn = FALSE;
 				}
-				else if (!gData.bLdMZWait && m_bLdRunSwOn)
+				else
 				{
-					pMainDlg->Set_LampFlicker_LdOpen(TRUE);
-					pMainDlg->Set_LampFlicker_LdRun(FALSE);	
-					if (pEquipData->bUseDoorLock) { pDY03->oDoor03Unlock = FALSE; g_objAJinAXL.Write_Output(3); }
-					gData.bUldMZWait = TRUE;
-					m_bUldOpenSwOn = TRUE; m_bUldRunSwOn = FALSE;
+					m_bUldRunSwOn = FALSE;
 				}
+			
 			}
 		} 	
 
