@@ -360,6 +360,9 @@ void CSequenceMain::Job_LotStart(int nMZNo, int nPos)
 
 	gLot.sStartTime[nMNo].Format("%04d%02d%02d-%02d%02d%02d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
 	gLot.dwLotStart[nMNo] = GetTickCount();
+
+	gLot.dwStopTime[nMNo] = 0;
+	gLot.dwErrorTime[nMNo] = 0;
 	
 	g_objLogFile.Save_EfficiencyLog(0, "Start", 903, "Lot Start");	//Lot Start 
 }
