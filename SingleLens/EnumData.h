@@ -16,7 +16,8 @@ struct eLensState
 		NotMarked = 7,
 		Empty =8,
 		Init = 9,
-
+		Top2Ready = 10,
+		Top2Done = 11,
 	};
 };
 
@@ -45,7 +46,9 @@ struct eMainIndex
 		None= 3,
 		Btm = 4,
 		Mark = 5,
+		Top2 = 5,
 		Unload = 6,
+	
 	};
 
 };
@@ -140,11 +143,12 @@ struct eBtmBr
 };
 
 
-struct MarkerBranch
+struct eTop2Br
 {
 	enum Name
 	{
-		VisionWait = 5,
+		VisionWait = 35,
+		Trigger = 36,
 	};
 };
 
@@ -213,6 +217,7 @@ struct eVision
 		TC = 0,
 		BC = 1,
 		MARKING = 2,
+		TC2 = 3,
 	};
 
 };

@@ -1386,7 +1386,7 @@ LRESULT CWorkDlg::OnUpdateVisionInfo(WPARAM nVision, LPARAM lParam)
 		}
 	}
 
-	if (nVision == eVision::MARKING)
+	if (nVision == eVision::MARKING || nVision == eVision::TC2)
 	{		
 		for (int i = 0; i < gData.nLensCntY; i++)
 		{
@@ -1402,10 +1402,12 @@ LRESULT CWorkDlg::OnUpdateVisionInfo(WPARAM nVision, LPARAM lParam)
 					nLensNo = (gData.nLensCntY * j) + ( i + 1 );
 				}				
 				
-				if		(gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::Marked ) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0x00, 0x00));	// Reserve
-				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::NotMarked) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x05, 0xFF, 0x05));	// Empty
-				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::MarkReady) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0xFF));	// Empty
-				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::Empty) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x10, 0x10, 0x80));	// Error
+				if		(gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::Marked ) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0x00, 0x00));	
+				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::NotMarked) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x05, 0xFF, 0x05));	
+				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::MarkReady) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0xFF));	
+				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::Empty) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x10, 0x10, 0x80));	
+				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::Top2Ready) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x30, 0xA0, 0x30));	
+				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::Top2Done) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0x00));	
 				else				m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x80, 0x80, 0x80));	// Error
 				
 				

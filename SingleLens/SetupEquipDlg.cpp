@@ -73,6 +73,7 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_STC_ZIG_DATA_0 + i, m_stcZigData[i]);
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_STC_TRIGGER_TOP_0 + i, m_stcTriggerTop[i]);
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_STC_TRIGGER_BTM_0 + i, m_stcTriggerBtm[i]);
+	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_STC_TRIGGER_TOP2_0 + i, m_stcTriggerTop2[i]);
 
 	DDX_Control(pDX, IDC_STC_ELV_DATA_0, m_stcElvData[0]);
 	DDX_Control(pDX, IDC_STC_CLEANER_DATA_0, m_stcCleanerData);
@@ -83,6 +84,7 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHK_TOP_VISION, m_chkTopVision);
 	DDX_Control(pDX, IDC_CHK_BTM_VISION, m_chkBtmVision);
 	DDX_Control(pDX, IDC_CHK_MARK_USE, m_chkMarkUse);
+	DDX_Control(pDX, IDC_CHK_TOP_VISION2, m_chkTop2Vision);
 
 	DDX_Control(pDX, IDC_CHK_USE_MES, m_chkUseMES);
 	DDX_Control(pDX, IDC_CHK_MES_LOTEND_SELECT, m_chkUseMESLotEndSelect);
@@ -104,6 +106,7 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_LBL_CTZIG_0 + i, m_lblCtZig[i]);
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_LBL_TRIGTOP_0 + i, m_lblTriggerTop[i]);
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_LBL_TRIGBTM_0 + i, m_lblTriggerBtm[i]);
+	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_LBL_TRIGTOP2_0 + i, m_lblTriggerTop2[i]);
 
 	
 }
@@ -120,6 +123,7 @@ BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_ZIG_DATA_0, IDC_STC_ZIG_DATA_3, OnStcZigDataClick)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_TRIGGER_TOP_0, IDC_STC_TRIGGER_TOP_7, OnStcTriggerTopClick)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_TRIGGER_BTM_0, IDC_STC_TRIGGER_BTM_7, OnStcTriggerBtmClick)
+	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_TRIGGER_TOP2_0, IDC_STC_TRIGGER_TOP2_7, OnStcTriggerTop2Click)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_ELV_DATA_0, IDC_STC_ELV_DATA_0, OnStcElvDataClick)
 	ON_BN_CLICKED(IDC_BTN_MODEL_ADD, &CSetupEquipDlg::OnBnClickedBtnModelAdd)
 	ON_STN_CLICKED(IDC_STC_EQUIP_MODEL, &CSetupEquipDlg::OnStnClickedStcEquipModel)
@@ -166,6 +170,7 @@ void CSetupEquipDlg::Initial_Controls()
 	for (int i = 0; i < 4; i++) m_lblCtZig[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0xC0, 0xAF));
 	for (int i = 0; i < 8; i++) m_lblTriggerTop[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0xB0, 0xBF));
 	for (int i = 0; i < 8; i++) m_lblTriggerBtm[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0xA0, 0xCF));
+	for (int i = 0; i < 8; i++) m_lblTriggerTop2[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0xB0, 0x00, 0xA0));
 
 	m_lblDoorLock.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60));
 	for (int i = 0; i < 2; i++) m_rdoDoorLock[i].Init_Ctrl("¹ÙÅÁ", 11, FALSE, COLOR_DEFAULT, RGB(0xC0, 0xC0, 0xC0), CRadioCS::emRed, 0);
@@ -200,6 +205,7 @@ void CSetupEquipDlg::Initial_Controls()
 
 	for (int i = 0; i < 8; i++) m_stcTriggerTop[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xFF, 0xE0));
 	for (int i = 0; i < 8; i++) m_stcTriggerBtm[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xFF, 0xE0));
+	for (int i = 0; i < 8; i++) m_stcTriggerTop2[i].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xFF, 0xE0));
 
 	m_stcElvData[0].Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
 	m_stcCleanerData.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xD0, 0xD0, 0xD0));
@@ -210,6 +216,7 @@ void CSetupEquipDlg::Initial_Controls()
 	m_chkTopVision.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0x60, 0xF0, 0x80), CCheckCS::emRed, 0);
 	m_chkBtmVision.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0x60, 0xF0, 0x80), CCheckCS::emRed, 0);
 	m_chkMarkUse.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0x60, 0xF0, 0x80), CCheckCS::emRed, 0);
+	m_chkTop2Vision.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0x60, 0xF0, 0x80), CCheckCS::emRed, 0);
 
 	m_chkUseMES.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xC0, 0x20), CCheckCS::emRed, 0);
 	m_chkUseMESLotEndSelect.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xC0, 0x20), CCheckCS::emRed, 0);
@@ -455,6 +462,15 @@ void CSetupEquipDlg::Display_EquipData()
 	strData.Format("%0.2lf",	pEquipData->dBtmPitchX);	m_stcTriggerBtm[6].SetWindowText(strData);
 	strData.Format("%0.2lf",	pEquipData->dBtmPitchY);	m_stcTriggerBtm[7].SetWindowText(strData);
 		
+	strData.Format("%0.2lf",	pEquipData->dTop2StartZ); m_stcTriggerTop2[0].SetWindowText(strData);
+	strData.Format("%02d",		pEquipData->nTop2Count); m_stcTriggerTop2[1].SetWindowText(strData);
+	strData.Format("%0.2lf",	pEquipData->dTop2Period); m_stcTriggerTop2[2].SetWindowText(strData);
+	strData.Format("%0.2lf",	pEquipData->dTop2Velocity); m_stcTriggerTop2[3].SetWindowText(strData);
+	strData.Format("%0.2lf",	pEquipData->dTop2StartX); m_stcTriggerTop2[4].SetWindowText(strData);
+	strData.Format("%0.2lf",	pEquipData->dTop2StartY); m_stcTriggerTop2[5].SetWindowText(strData);
+	strData.Format("%0.2lf",	pEquipData->dTop2PitchX); m_stcTriggerTop2[6].SetWindowText(strData);
+	strData.Format("%0.2lf",	pEquipData->dTop2PitchY); m_stcTriggerTop2[7].SetWindowText(strData);
+
 	strData.Format("%0.2lf", pEquipData->dElevPitchZ); m_stcElvData[0].SetWindowText(strData);
 	strData.Format("%02d", pEquipData->nCleanRepeat); m_stcCleanerData.SetWindowText(strData);
 
@@ -553,6 +569,15 @@ void CSetupEquipDlg::Save_EquipData()
 	m_stcTriggerBtm[6].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_PITCH_X",  dData, "%0.2lf");pEquipData->dBtmPitchX = dData;
 	m_stcTriggerBtm[7].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_PITCH_Y",	 dData, "%0.2lf");pEquipData->dBtmPitchY = dData;
 	
+	m_stcTriggerTop2[0].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP2_START_Z",		dData, "%0.2lf");pEquipData->dTop2StartZ = dData;
+	m_stcTriggerTop2[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("TRIGGER", "TOP2_COUNT",		nData);				 pEquipData->nTop2Count = nData;
+	m_stcTriggerTop2[2].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP2_PERIOD",		dData, "%0.2lf");pEquipData->dTop2Period = dData;
+	m_stcTriggerTop2[3].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP2_VEL",			dData, "%0.2lf");pEquipData->dTop2Velocity = dData;
+	m_stcTriggerTop2[4].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP2_START_X",		dData, "%0.2lf");pEquipData->dTop2StartX = dData;
+	m_stcTriggerTop2[5].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP2_START_Y",		dData, "%0.2lf");pEquipData->dTop2StartY = dData;
+	m_stcTriggerTop2[6].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP2_PITCH_X",		dData, "%0.2lf");pEquipData->dTop2PitchX = dData;
+	m_stcTriggerTop2[7].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP2_PITCH_Y",		dData, "%0.2lf");pEquipData->dTop2PitchY = dData;
+	
 	m_stcElvData[0].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("ELEVATOR", "PITCH_Z", dData, "%0.2lf"); pEquipData->dElevPitchZ = dData;
 	
 	m_stcCleanerData.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("CLEAN", "REPEAT", nData); pEquipData->nCleanRepeat = nData;
@@ -561,6 +586,7 @@ void CSetupEquipDlg::Save_EquipData()
 	pEquipData->bUseTopVision = m_chkTopVision.GetCheck();INI.Set_Bool("OPTION", "TOP_VISION", pEquipData->bUseTopVision);	 
 	pEquipData->bUseBtmVision = m_chkBtmVision.GetCheck();INI.Set_Bool("OPTION", "BTM_VISION", pEquipData->bUseBtmVision);
 	pEquipData->bUseMark = m_chkMarkUse.GetCheck(); INI.Set_Bool("OPTION", "MARK_USE", pEquipData->bUseMark);
+	pEquipData->bUseTop2Vision = m_chkTop2Vision.GetCheck();INI.Set_Bool("OPTION", "TOP2_VISION", pEquipData->bUseTop2Vision);	 
 
 	pEquipData->bUseAutoRecipeChange = m_chkAutoRecipeChange.GetCheck();INI.Set_Bool("OPTION", "AUTO_RECIPE_CHANGE", pEquipData->bUseAutoRecipeChange);	 
 
@@ -648,14 +674,22 @@ void CSetupEquipDlg::Save_ModelEquipData(CString sPath)
 	m_stcTriggerBtm[6].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_PITCH_X",  dData, "%0.2lf");pEquipData->dBtmPitchX = dData;
 	m_stcTriggerBtm[7].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "BTM_PITCH_Y",	 dData, "%0.2lf");pEquipData->dBtmPitchY = dData;
 	
+	m_stcTriggerTop2[0].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP2_START_Z",		dData, "%0.2lf");pEquipData->dTop2StartZ = dData;
+	m_stcTriggerTop2[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("TRIGGER", "TOP2_COUNT",		nData);				 pEquipData->nTop2Count = nData;
+	m_stcTriggerTop2[2].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP2_PERIOD",		dData, "%0.2lf");pEquipData->dTop2Period = dData;
+	m_stcTriggerTop2[3].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP2_VEL",			dData, "%0.2lf");pEquipData->dTop2Velocity = dData;
+	m_stcTriggerTop2[4].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP2_START_X",		dData, "%0.2lf");pEquipData->dTop2StartX = dData;
+	m_stcTriggerTop2[5].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP2_START_Y",		dData, "%0.2lf");pEquipData->dTop2StartY = dData;
+	m_stcTriggerTop2[6].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP2_PITCH_X",		dData, "%0.2lf");pEquipData->dTop2PitchX = dData;
+	m_stcTriggerTop2[7].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("TRIGGER", "TOP2_PITCH_Y",		dData, "%0.2lf");pEquipData->dTop2PitchY = dData;
+	
 	m_stcElvData[0].GetWindowText(strData); dData = atof(strData); INI.Set_Double ("ELEVATOR", "PITCH_Z", dData, "%0.2lf"); pEquipData->dElevPitchZ = dData;
 	m_stcCleanerData.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("CLEAN", "REPEAT", nData); pEquipData->nCleanRepeat = nData;
-
-
-
+	
 	pEquipData->bUseTopVision = m_chkTopVision.GetCheck();INI.Set_Bool("OPTION", "TOP_VISION", pEquipData->bUseTopVision);	 
 	pEquipData->bUseBtmVision = m_chkBtmVision.GetCheck();INI.Set_Bool("OPTION", "BTM_VISION", pEquipData->bUseBtmVision);
 	pEquipData->bUseMark = m_chkMarkUse.GetCheck(); INI.Set_Bool("OPTION", "MARK_USE", pEquipData->bUseMark);
+	pEquipData->bUseTop2Vision = m_chkTop2Vision.GetCheck();INI.Set_Bool("OPTION", "TOP2_VISION", pEquipData->bUseTop2Vision);
 
 	pEquipData->bUseMES = m_chkUseMES.GetCheck();INI.Set_Bool("OPTION", "MES_USE", pEquipData->bUseMES);	 
 	pEquipData->bLotEndSelect = m_chkUseMESLotEndSelect.GetCheck();INI.Set_Bool("OPTION", "LOT_END_SELECT", pEquipData->bLotEndSelect);
@@ -737,6 +771,20 @@ void CSetupEquipDlg::OnStcTriggerTopClick(UINT nID)
 	g_objLogFile.Save_HandlerLog(m_strLog);
 }
 
+
+void CSetupEquipDlg::OnStcTriggerTop2Click(UINT nID)
+{
+	int ID = nID - IDC_STC_TRIGGER_TOP2_0;
+
+	CString strOld, strNew;
+	m_stcTriggerTop2[ID].GetWindowText(strOld);
+	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
+
+	m_stcTriggerTop2[ID].SetWindowText(strNew);
+
+	m_strLog.Format("[Equip Mode] Trigger Top 2 Data : %d - %s ", ID, strNew);
+	g_objLogFile.Save_HandlerLog(m_strLog);
+}
 
 
 void CSetupEquipDlg::OnStcTriggerBtmClick(UINT nID)

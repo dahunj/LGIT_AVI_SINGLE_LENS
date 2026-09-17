@@ -157,9 +157,19 @@ BOOL CDataManager::Read_ModelEquipData(CString strPath)
 	m_EquipData.dBtmStartY   = INI.Get_Double("TRIGGER",  "BTM_START_Y", 0.00);
 	m_EquipData.dBtmPitchX   = INI.Get_Double("TRIGGER",  "BTM_PITCH_X", 0.00);
 	m_EquipData.dBtmPitchY	 = INI.Get_Double("TRIGGER",  "BTM_PITCH_Y", 0.00);
+
+	m_EquipData.dTop2StartZ	 = INI.Get_Double("TRIGGER",  "TOP2_START_Z", 0.00);
+	m_EquipData.nTop2Count    = INI.Get_Integer("TRIGGER", "TOP2_COUNT",	 0);
+	m_EquipData.dTop2Period   = INI.Get_Double("TRIGGER",  "TOP2_PERIOD",  0.00);
+	m_EquipData.dTop2Velocity = INI.Get_Double("TRIGGER",  "TOP2_VEL",	 0.00);
+	m_EquipData.dTop2StartX	 = INI.Get_Double("TRIGGER",  "TOP2_START_X", 0.00);
+	m_EquipData.dTop2StartY   = INI.Get_Double("TRIGGER",  "TOP2_START_Y", 0.00);
+	m_EquipData.dTop2PitchX   = INI.Get_Double("TRIGGER",  "TOP2_PITCH_X", 0.00);
+	m_EquipData.dTop2PitchY	 = INI.Get_Double("TRIGGER",  "TOP2_PITCH_Y", 0.00);
 	
 	m_EquipData.bUseTopVision = INI.Get_Bool("OPTION", "TOP_VISION", FALSE);	
 	m_EquipData.bUseBtmVision = INI.Get_Bool("OPTION", "BTM_VISION", FALSE);
+	m_EquipData.bUseTop2Vision = INI.Get_Bool("OPTION", "TOP2_VISION", FALSE);
 	m_EquipData.bUseMark = INI.Get_Bool("OPTION", "MARK_USE", FALSE);
 
 	m_EquipData.bUseAutoRecipeChange = INI.Get_Bool("OPTION", "AUTO_RECIPE_CHANGE", FALSE);	

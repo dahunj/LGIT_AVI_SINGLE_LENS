@@ -415,6 +415,22 @@ void CInspector::Get_ReloadRequest(int nVPc, CString sMZID, CString sGbn)
 		}
 	}
 
+
+	if(sGbn == "TC2" && pEquipData->bUseTop2Vision && !gData.bScanDone[eVision::TC2] && !gData.bReload[eVision::TC2])
+	{
+		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_MARKER);
+		if(nCase >= 35 && nCase < 40)
+		{
+			Set_ReloadComplete(VISION_PC1, "TC2");
+			g_objSequenceMain.Set_MainRunCase(AUTO_MARKER, 33);
+			gData.bReload[eVision::TC2] = TRUE;
+		}
+		else
+		{
+			g_objLogFile.Save_InspectorLog("[Reload Fail]- TC2");
+		}
+	}
+
 }
 
 void CInspector::Get_ErrorRequest(int nVPc, CString sErrNo, CString sErrMsg)

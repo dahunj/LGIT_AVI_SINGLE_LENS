@@ -151,17 +151,20 @@ void FifoTaskProcessor::Run()
 		LeaveCriticalSection(&m_cs);
 
 
-		if (t.nAxis < 0 || t.nAxis >= AXIS_COUNT)
-		{
-			ASSERT(FALSE);
-			return;
-		}
-
+		
 		if (haveTask)
 		{
 			// 2) 실제 작업 처리(순차)
 			EnterCriticalSection(&s_csCounter);			
 			g_objAJinAXL.Get_pStatus(t.nAxis)->bRun = TRUE;
+
+
+			if (t.nAxis < 0 || t.nAxis >= AXIS_COUNT)
+			{
+				ASSERT(FALSE);
+				return;
+			}
+
 			int id = g_objAJinAXL.StartThread(t.nType, t.nAxis, t.dPos);
 			if (id == 0)
 			{

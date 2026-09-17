@@ -109,7 +109,7 @@ BOOL CAJinAXL::Initialize()
 
 	if (AxcTriggerSetEnable(1, DISABLE) != AXT_RT_SUCCESS) return FALSE;
 
-	if (AxmMotGetMoveUnitPerPulse(AX_BTM_INSPECTOR_Z, &dUnits, &lPulse) != AXT_RT_SUCCESS) return FALSE;
+	if (AxmMotGetMoveUnitPerPulse(AX_MARK_UNIT_Z, &dUnits, &lPulse) != AXT_RT_SUCCESS) return FALSE;
 	if (AxcMotSetMoveUnitPerPulse(1, dUnits / lPulse) != AXT_RT_SUCCESS) return FALSE;
 
 	if (AxcSignalSetEncInputMethod(1, ObverseSqr4Mode) != AXT_RT_SUCCESS) return FALSE;
@@ -119,11 +119,25 @@ BOOL CAJinAXL::Initialize()
 
 	if (AxcTriggerSetBlockLowerPos(1, 0.0) != AXT_RT_SUCCESS) return FALSE;
 	if (AxcTriggerSetBlockUpperPos(1, 1000.0) != AXT_RT_SUCCESS) return FALSE;
+
+	if (AxcTriggerSetEnable(2, DISABLE) != AXT_RT_SUCCESS) return FALSE;
+
+	if (AxmMotGetMoveUnitPerPulse(AX_MARK_UNIT_Z, &dUnits, &lPulse) != AXT_RT_SUCCESS) return FALSE;
+	if (AxcMotSetMoveUnitPerPulse(2, dUnits / lPulse) != AXT_RT_SUCCESS) return FALSE;
+
+	if (AxcSignalSetEncInputMethod(2, ObverseSqr4Mode) != AXT_RT_SUCCESS) return FALSE;
+	if (AxcSignalSetEncReverse(2, 0) != AXT_RT_SUCCESS) return FALSE;	// 엔코더 입력 카운터 (0:반전없음, 1:반전)
+	if (AxcTriggerSetLevel(2, HIGH) != AXT_RT_SUCCESS) return FALSE;	// 트리거 펄스 출력 레벨 (0:Low, 1:High)
+	if (AxcTriggerSetFunction(2, 1) != AXT_RT_SUCCESS) return FALSE;	// 0:절대위치 트리거, 1:주기위치 트리거
+
+	if (AxcTriggerSetBlockLowerPos(2, 0.0) != AXT_RT_SUCCESS) return FALSE;
+	if (AxcTriggerSetBlockUpperPos(2, 1000.0) != AXT_RT_SUCCESS) return FALSE;
 #endif
 	
 	//Init Trigger 
 	Start_Scan(eVision::TC, AX_TOP_INSPECTOR_Z, 0, 0, 500, 10, 10, 1);
 	Start_Scan(eVision::BC, AX_BTM_INSPECTOR_Z, 0, 0, 500, 10, 10, 1);
+	Start_Scan(eVision::TC2, AX_MARK_UNIT_Z, 0, 0, 500, 10, 10, 1);
 
 	m_DY02.oMainIndexZigAlignIn = TRUE;
 	m_DY02.oMainIndexZigAlignOut = FALSE;

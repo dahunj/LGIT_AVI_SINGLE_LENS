@@ -17,6 +17,8 @@ typedef struct tag_EQUIP_DATA {
 	BOOL	bUseCleaner;
 	BOOL	bUseTopVision;
 	BOOL	bUseBtmVision;
+	BOOL	bUseTop2Vision;
+
 	BOOL	bUseMark;
 
 	BOOL	bUseAutoRecipeChange;
@@ -74,6 +76,15 @@ typedef struct tag_EQUIP_DATA {
 	double  dBtmStartY;
 	double	dBtmPitchX;
 	double	dBtmPitchY;
+
+	double	dTop2StartZ;
+	int		nTop2Count;
+	double	dTop2Period;
+	double	dTop2Velocity;
+	double	dTop2StartX;
+	double  dTop2StartY;
+	double	dTop2PitchX;
+	double	dTop2PitchY;
 
 	int		nVisionDir;
 

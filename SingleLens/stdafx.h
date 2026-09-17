@@ -219,10 +219,10 @@ typedef struct
 	int		nScanReqTop;
 	int		nScanReqBtm;
 	
-	BOOL    bScanDone[2];            // 0:Top 1: Btm
-	BOOL	bReload[2];
+	BOOL    bScanDone[4];            // 0:Top 1: Btm
+	BOOL	bReload[4];
 
-	BOOL	bRcpChange[2];
+	BOOL	bRcpChange[4];
 
 	char	cJudgeCode[7][10][ZIG_X*ZIG_Y][2];
 	CString	sJudgeCode[7][10][ZIG_X*ZIG_Y][3]; // 0:Top 1: Btm , 2: Top Priority  
@@ -292,10 +292,10 @@ typedef struct
 	double	dUPHBtm[3][10];	
 	double	dUPHTray;	//MZ No.
 
-	int		nInspectCnt[2]; //vision Pos 
+	int		nInspectCnt[4]; //vision Pos 
 
-	CString	sStartTime[2]; // vision Pos;
-	CString sEndTime[2];
+	CString	sStartTime[4]; // vision Pos;
+	CString sEndTime[4];
 	
 	DWORD	dwTouched;
 
@@ -437,14 +437,14 @@ typedef struct {
 
 typedef struct{
 	//Recipe Auto Select 
-	double	dStartZ[2];
-	int		nCount[2];
-	double	dPeriod[2];
-	double	dVelocity[2];
-	double	dStartX[2];
-	double  dStartY[2];
-	double	dPitchX[2];
-	double	dPitchY[2];
+	double	dStartZ[4];
+	int		nCount[4];
+	double	dPeriod[4];
+	double	dVelocity[4];
+	double	dStartX[4];
+	double  dStartY[4];
+	double	dPitchX[4];
+	double	dPitchY[4];
 }GLOBAL_RECIPE;
 
 

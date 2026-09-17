@@ -150,11 +150,13 @@ public:
 	void Init_BtmZig();
 	BOOL Select_BtmScanPos(int &nBtmPosX, int &nBtmPosY, int nDir);
 
+	void Init_Top2Zig();
+	BOOL Select_Top2ScanPos(int &nTopPosX, int &nTopPosY, int nDir);
+
 	void Init_MarkZig();
 	BOOL Select_MarkScanPos(int &nMarkPosX, int &nMarkPosY, int nDir);
 	void Init_InspectInfo(int nMZNo, int nTNo, int nLensNo);
-
-
+	
 	BOOL Check_InspectDone(const CString& sZigID,int nMZNo, int sSlotNo, int sLensNo, int& nInfo);
 	
 	void Init_MZSlot(int nSlotNo, int nX, int nY);
