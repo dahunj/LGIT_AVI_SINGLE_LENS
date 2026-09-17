@@ -150,62 +150,87 @@ void FifoTaskProcessor::Run()
 		
 		LeaveCriticalSection(&m_cs);
 
+
+		if (t.nAxis < 0 || t.nAxis >= AXIS_COUNT)
+		{
+			ASSERT(FALSE);
+			return;
+		}
+
 		if (haveTask)
 		{
-			// 실행 카운트 +1
-			EnterCriticalSection(&m_csRunning);
-			++m_runningCount;
-			LeaveCriticalSection(&m_csRunning);
-
 			// 2) 실제 작업 처리(순차)
 			EnterCriticalSection(&s_csCounter);			
 			g_objAJinAXL.Get_pStatus(t.nAxis)->bRun = TRUE;
-			g_objAJinAXL.StartThread(t.nType, t.nAxis, t.dPos);	
-
+			int id = g_objAJinAXL.StartThread(t.nType, t.nAxis, t.dPos);
+			if (id == 0)
+			{
+				g_objAJinAXL.Get_pStatus(t.nAxis)->bRun = FALSE;
+				// 오류 로그 및 작업 실패 처리
+			}
 			LeaveCriticalSection(&s_csCounter);
 
 			//// 완료 큐에 적재
 			//EnterCriticalSection(&m_csCompleted);
 			//m_completedIds.push_back(t.id);
-			//LeaveCriticalSection(&m_csCompleted);
-
-			// 실행 카운트 -1
-			EnterCriticalSection(&m_csRunning);
-			if (m_runningCount > 0) --m_runningCount;
-			LeaveCriticalSection(&m_csRunning);
+			//LeaveCriticalSection(&m_csCompleted;	
 
 			continue; // 다음 루프
 		}
 
 		// 3) 대기: 새 작업 또는 주기적 타임아웃으로 정지 플래그 재확인
 		WaitForSingleObject(m_evtNewTask, 1);
-
 	}
 	//Final End
 }
 
 bool FifoTaskProcessor::TryDequeue_NoLock(Task& out)
 {
+	if (m_head >= m_tasks.size())
+		return false;
 
-	if (m_head < m_tasks.size())
+	// 대기 중인 작업 중 실행 가능한 첫 번째 작업 검색
+	for (size_t i = m_head; i < m_tasks.size(); ++i)
 	{
-		int nHeadNo = m_head;
-		int nAxis = m_tasks[m_head].nAxis;
-		if(g_objAJinAXL.Get_pStatus(nAxis)->bRun) 
+		const int nAxis = m_tasks[i].nAxis;
+		// 축 번호 방어
+		if (nAxis < 0 || nAxis >= AXIS_COUNT)
 		{
-			return FALSE;
+			// 잘못된 작업 제거 또는 오류 로그 기록
+			m_tasks.erase(m_tasks.begin() + i);
+			--i;
+			continue;
 		}
 
+		// 현재 움직이는 축의 작업은 건너뜀
+		if (g_objAJinAXL.Get_pStatus(nAxis)->bRun)
+			continue;
 
-		out = m_tasks[m_head++]; // head가 많이 전진했으면 압축(잔여만 앞으로)
-		
+		out = m_tasks[i];
+
+		if (i == m_head)
+		{
+			++m_head;
+		}
+		else
+		{
+			// 중간 작업을 꺼냈으므로 해당 원소만 제거
+			m_tasks.erase(m_tasks.begin() + i);
+		}
+
+		// 이미 처리한 앞부분 정리
 		if (m_head > 1024 && m_head * 2 > m_tasks.size())
 		{
-			std::vector<Task> tmp(m_tasks.begin() + m_head, m_tasks.end());
-			m_tasks.swap(tmp);
+			m_tasks.erase(
+				m_tasks.begin(),
+				m_tasks.begin() + m_head);
+
 			m_head = 0;
 		}
+
 		return true;
-	}	
+	}
+
+	// 모든 대기 작업의 축이 현재 실행 중
 	return false;
 }

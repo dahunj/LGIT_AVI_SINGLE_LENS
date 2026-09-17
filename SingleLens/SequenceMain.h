@@ -132,9 +132,7 @@ public:
 	void Set_ClearLotData(BOOL bInit, int nLotNo);
 	
 	//Conveyor 
-	int Check_CVMZSensors();
 	BOOL Check_IndexDone();
-
 	BOOL Check_ZigPickerEmpty();
 	BOOL Check_FeederEmpty();
 	BOOL Check_IndexEmpty(int nPos);

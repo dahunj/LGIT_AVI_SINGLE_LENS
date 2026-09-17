@@ -784,6 +784,7 @@ UINT __cdecl CAJinAXL::WorkerProc(LPVOID pParam)
 	double dPos = pArgs->dPosTarget;
 	double dPosCur = g_objAJinAXL.m_Status[nAxis].dPos;
 
+	double dTravelPos = 0;
 
 	g_objAJinAXL.Get_pStatus(nAxis)->bRun = TRUE;
 
@@ -829,7 +830,7 @@ UINT __cdecl CAJinAXL::WorkerProc(LPVOID pParam)
 	}
 	else if(nType == 2)
 	{
-		double target = g_objAJinAXL.m_Status[nAxis].dPos + dPos;
+		
 
 		while(TRUE)
 		{
@@ -841,12 +842,14 @@ UINT __cdecl CAJinAXL::WorkerProc(LPVOID pParam)
 				if(dPos >= dPosCur)
 				{
 					g_objAJinAXL.m_Status[nAxis].dPos += (dSpeed/1000)*VELOCITY_WEIGHT*7200;
-					if(g_objAJinAXL.m_Status[nAxis].dPos > target) break;
+					dTravelPos += g_objAJinAXL.m_Status[nAxis].dPos;
+					if(dTravelPos > dPos) break;
 				}
 				else if(dPos < dPosCur)
 				{
 					g_objAJinAXL.m_Status[nAxis].dPos -= (dSpeed/1000)*VELOCITY_WEIGHT*7200;
-					if(g_objAJinAXL.m_Status[nAxis].dPos < target) break;
+					dTravelPos += g_objAJinAXL.m_Status[nAxis].dPos;
+					if(dTravelPos < dPos) break;
 				}		
 			}
 			else
@@ -854,18 +857,18 @@ UINT __cdecl CAJinAXL::WorkerProc(LPVOID pParam)
 				if(dPos >= dPosCur)
 				{
 					g_objAJinAXL.m_Status[nAxis].dPos += (dSpeed/1000)*VELOCITY_WEIGHT;
-					if(g_objAJinAXL.m_Status[nAxis].dPos > target) break;
+					if(g_objAJinAXL.m_Status[nAxis].dPos > dPos) break;
 				}
 				else if(dPos < dPosCur)
 				{
 					g_objAJinAXL.m_Status[nAxis].dPos -= (dSpeed/1000)*VELOCITY_WEIGHT;
-					if(g_objAJinAXL.m_Status[nAxis].dPos < target) break;
+					if(g_objAJinAXL.m_Status[nAxis].dPos < dPos) break;
 				}			
 			}
 		}
 
 		g_objAJinAXL.Get_pStatus(nAxis)->bRun = FALSE;
-		g_objAJinAXL.m_Status[nAxis].dPos = target;	
+		g_objAJinAXL.m_Status[nAxis].dPos = dPos;	
 
 	}
 

@@ -42,6 +42,10 @@ CSequenceMain::CSequenceMain(void)
 	m_bThreadMainRun = FALSE;
 	m_pThreadMainRun = NULL;
 
+	m_pThreadBeep = NULL;
+	m_pThreadUnloadCV = NULL;
+	m_pThreadMainRun = NULL;
+
 	Reset_MainRunCase();
 }
 
@@ -138,7 +142,6 @@ BOOL CSequenceMain::Get_IsAutoRun()
 	if (Check_CtZigInMZ(eMZ::Load)) return TRUE;
 	if (!Check_ZigPickerEmpty()) return TRUE;
 	if (!Check_FeederEmpty()) return TRUE;
-	//if (Check_CVMZSensors() > 0) return TRUE;
 
 	if(gData.bCycleStop) return FALSE;
 
@@ -4063,11 +4066,6 @@ BOOL CSequenceMain::MainIndexRun()
 			m_nMainIndexCase = 10;			
 		}
 
-		//if(Check_IndexEmpty(-1) && !Check_CtZigInMZ(eMZ::Load) && Check_CVMZSensors() <= 0 )
-		//{
-		//	Job_LotEnd(0);
-		//	//Lot End;
-		//}
 		return TRUE;
 	case 10:
 		if(Check_IndexDone()) // && g_objCommon.Get_IndexLoadAlignIn()
@@ -4350,71 +4348,6 @@ void CSequenceMain::End_MainRunThread(DWORD dwWait)
 }
 
 
-int CSequenceMain::Check_CVMZSensors()
-{
-	int nMZCnt = 0;
-	
-	int nSensingCnt[6] = {0,0,0,0,0,0};
-
-	while (TRUE)
-	{
-		theApp.DoEvents();
-		if (m_pDX00->iLdCVMZExist1R )
-		{
-			nSensingCnt[0]++;
-			if(nSensingCnt[0] > 5)
-			{
-				nMZCnt++;for(int i = 0; i < 6; i++) nSensingCnt[i] = 0;
-				break;
-			}			
-		}
-		else if (m_pDX00->iLdCVMZExist2)
-		{
-			nSensingCnt[1]++;
-			if(nSensingCnt[1] > 5)
-			{
-				nMZCnt++;for(int i = 0; i < 6; i++) nSensingCnt[i] = 0;
-				break;
-			}			
-		}
-		else if (m_pDX00->iLdCVMZExist3 )
-		{
-			nSensingCnt[2]++;
-			if(nSensingCnt[2] > 5)
-			{
-				nMZCnt++;for(int i = 0; i < 6; i++) nSensingCnt[i] = 0;
-				break;
-			}			
-		}
-		else if (m_pDX00->iLdCVMZExist4 )
-		{
-			nSensingCnt[3]++;
-			if(nSensingCnt[3] > 5)
-			{
-				nMZCnt++;for(int i = 0; i < 6; i++) nSensingCnt[i] = 0;
-				break;
-			}			
-		}
-		else if (m_pDX00->iLdCVMZExist5 )
-		{
-			nSensingCnt[4]++;
-			if(nSensingCnt[4] > 5)
-			{
-				nMZCnt++;for(int i = 0; i < 6; i++) nSensingCnt[i] = 0;
-				break;
-			}			
-		}
-		else
-		{
-			nSensingCnt[5]++;
-			if(nSensingCnt[5] < 8) continue;
-			for(int i = 0; i < 6; i++) nSensingCnt[i] = 0;
-			break;
-		}		
-	}
-	
-	return nMZCnt;	
-}
 
 BOOL CSequenceMain::Check_IndexDone()
 {

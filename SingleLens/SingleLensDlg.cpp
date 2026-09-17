@@ -32,6 +32,8 @@
 #include "SequenceInit.h"
 #include "SequenceMain.h"
 
+#include "FifoTaskProcessor.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -997,6 +999,12 @@ void CSingleLensDlg::Exit_System(int nExitNo)
 	DY_DATA_03 *pDY03 = g_objAJinAXL.Get_pDY03();
 	pDY03->oInsideLight = FALSE;
 	g_objAJinAXL.Write_Output(3);
+
+	g_objSequenceMain.End_MainRunThread(2000);
+
+#ifndef AJIN_BOARD_USE
+	proc.Stop();
+#endif
 		
 	g_objInspector.Terminate();
 	g_objAJinAXL.Terminate();
