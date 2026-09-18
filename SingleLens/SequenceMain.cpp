@@ -218,7 +218,7 @@ void CSequenceMain::Set_ClearRunData(BOOL bInit)
 	memset(gData.InfoCtZigRdy, 0x00, sizeof(int)*10);
 	memset(gData.InfoCtZigUnload, 0x00, sizeof(int)*10);
 
-	memset(gData.cJudgeCode, 0x00, sizeof(char)*7*10*ZIG_X*ZIG_Y*2);
+	memset(gData.cJudgeCode, 0x00, sizeof(char)*7*10*ZIG_X*ZIG_Y*4);
 	memset(gData.nInspectInfo, 0x00, sizeof(int)*7*10*ZIG_X*ZIG_Y);
 	memset(gData.byInspectDone, 0x00, sizeof(BYTE)*7*10*ZIG_X*ZIG_Y);
 
@@ -468,7 +468,7 @@ void CSequenceMain::Job_LotEnd(int nMZNo)
 	memset(gData.dUPHBtm[nMNo], 0x00, sizeof(double)*10);
 	memset(gData.dUPHTop[nMNo], 0x00, sizeof(double)*10);
 
-	memset(gData.cJudgeCode[nMNo], 0x00, sizeof(char)*10*ZIG_X*ZIG_Y*2);
+	memset(gData.cJudgeCode[nMNo], 0x00, sizeof(char)*10*ZIG_X*ZIG_Y*4);
 	memset(gData.nInspectInfo[nMNo], 0x00, sizeof(int)*10*ZIG_X*ZIG_Y);
 	memset(gData.byInspectDone[nMNo], 0x00, sizeof(BYTE)*10*ZIG_X*ZIG_Y);
 
@@ -485,9 +485,9 @@ void CSequenceMain::Job_LotEnd(int nMZNo)
 
 	for(int i = 0; i < 10; i++) for(int j = 0; j < ZIG_X*ZIG_Y; j++)
 	{
-		for(int k = 0; k < 2; k++) gData.cJudgeCode[nMNo][i][j][k] = 0x00;
-		for(int k = 0; k < 3; k++) gData.sJudgeCode[nMNo][i][j][k].Empty(); 
-		for(int k = 0; k < 3; k++) gData.sNGCode[nMNo][i][j][k].Empty();
+		for(int k = 0; k < 4; k++) gData.cJudgeCode[nMNo][i][j][k] = 0x00;
+		for(int k = 0; k < 4; k++) gData.sJudgeCode[nMNo][i][j][k].Empty(); 
+		for(int k = 0; k < 4; k++) gData.sNGCode[nMNo][i][j][k].Empty();
 		gData.nInspectInfo[nMNo][i][j] = 0;    
 		gData.byInspectDone[nMNo][i][j] = 0x00;	
 	}		
@@ -4049,7 +4049,7 @@ BOOL CSequenceMain::MarkUnitRun()
 		} 	*/
 		 if(!gData.bIndexDone[eMainIndex::Top2] && !Check_IndexEmpty(eMainIndex::Top2))
 		{			
-			m_nMarkUnitCase = 1; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
+			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 			m_strLog.Format("Marking Start"); m_nMarkUnitLoop.Takt_Save(8, m_nMarkUnitCase, m_strLog);
 		}
 		else if(!gData.bIndexDone[eMainIndex::Top2] && Check_IndexEmpty(eMainIndex::Top2))
@@ -5390,10 +5390,10 @@ void CSequenceMain::Write_LotJudge(int nMZNo, int nTrayNo, int nLensNo, int nInf
 		return;
 	}
 
-	char chCode[2];	// 판정코드 (0:AG, 1:B1SP, 2:T1, 3:T2, 4:B2 5:B1AG 6:B13D)
-	memcpy(chCode, gData.cJudgeCode[nMx][nTx][nLx], sizeof(char) *2);
+	char chCode[4];	// 판정코드 (0:AG, 1:B1SP, 2:T1, 3:T2, 4:B2 5:B1AG 6:B13D)
+	memcpy(chCode, gData.cJudgeCode[nMx][nTx][nLx], sizeof(char) *4);
 	
-	for (int i = 0; i < 2; i++) 
+	for (int i = 0; i < 4; i++) 
 	{
 		if(i == 0 && m_pEquipData->bUseTopVision && chCode[i] == 0)
 		{
@@ -5416,7 +5416,7 @@ void CSequenceMain::Write_LotJudge(int nMZNo, int nTrayNo, int nLensNo, int nInf
 
 	
 	CString strResult = (nInfo == 1 ? "Pass" : nInfo == 8 ? "Empty" : "Fail");
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		if(chCode[i] == 0x6E) strResult = "Empty";
 	}
@@ -5435,11 +5435,11 @@ void CSequenceMain::Write_LotJudge(int nMZNo, int nTrayNo, int nLensNo, int nInf
 	m_strLog.Format("%s,%s,%s,%s,\
 					%s,%s,%s,%s,\
 					%d,%d,%d,%d,\
-					%d,%c,%c,%s,%01d,%s",
+					%d,%c,%c,%c,%s,%01d,%s",
 					m_pEquipData->sEquipName, MAIN_VERSION, gData.sRecipeMainIndex[eMainIndex::Mark],"",
 					gData.sLotIDMainIndex[eMainIndex::Mark],"", gData.sMZIDMainIdex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark],
 					gData.nTablePocketMainIndex[eMainIndex::Mark], nTrayNo, g_objCommon.ConvertToMESNo(nLensNo), nLensNo,
-					nMarking, chCode[0], chCode[1], strResult, nFlag, gData.sNGCode[nMx][nTx][nLx][eVision::MARKING]);
+					nMarking, chCode[0], chCode[1], chCode[3], strResult, nFlag, gData.sNGCode[nMx][nTx][nLx][eVision::MARKING]);
 	g_objLogFile.Save_LotTime(nMZNo, m_strLog);
 }
 

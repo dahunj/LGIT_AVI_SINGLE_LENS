@@ -1136,7 +1136,7 @@ void CLogFile::Save_LotTime(int nMZNo,const CString& sLog)
 		g_objLogFile.Save_HandlerLog("LotTime Open Fail");
 		return;
 	}
-	strTitle.Format("time,station,Machine,HSW_Version,Recipe_H,SensorID,LotNum,Barcode,MGZ_ID,Tray_ID,Index_No,Tray_No,MES_No,AVI_No,Marking,TC,BC,Result,Flag,MES_CODE,\r\n");
+	strTitle.Format("time,station,Machine,HSW_Version,Recipe_H,SensorID,LotNum,Barcode,MGZ_ID,Tray_ID,Index_No,Tray_No,MES_No,AVI_No,Marking,TC,BC,TC2,Result,Flag,MES_CODE,\r\n");
 
 	try {
 		file.SeekToEnd();

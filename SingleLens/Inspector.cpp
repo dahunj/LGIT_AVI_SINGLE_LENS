@@ -192,7 +192,7 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 
 	if (nTNo < 0 || nTNo > 99 || nLNo < 0 || nLNo > 200) { g_objCommon.Show_Error(6101); return; }
 
-	int nV = (sGbn == "TC" ? eVision::TC : (sGbn == "BC" ? eVision::BC : -1));
+	int nV = (sGbn == "TC" ? eVision::TC : (sGbn == "BC" ? eVision::BC : (sGbn == "TC2" ? eVision::TC2 : -1)));
 	if (nV == -1) { g_objCommon.Show_Error(6102); return; }
 		
 	if(nV == eVision::TC) //Tc
@@ -228,6 +228,21 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 		gData.InfoMainIndex[eMainIndex::Btm][nXPos][nYPos] = eLensState::BtmDone;
 		//g_objSequenceMain.Set_MainRunCase(AUTO_BTM_INSPECT, 10);
 	}
+	else if(nV == eVision::TC2) 
+	{
+		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_MARKER);
+		DWORD dwTick = GetTickCount();
+		while (nCase != 35) 
+		{ 
+			if(GetTickCount() - dwTick > 0) break;
+			else if(nCase == 35) break;
+			//Exception_Log("Scan Complete", sGbn, nCase); 
+			//return;
+		}
+
+		gData.bScanDone[eVision::TC2] = TRUE;
+		gData.InfoMainIndex[eMainIndex::Top2][nXPos][nYPos] = eLensState::Top2Done;		
+	}
 }
 
 void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CString sMZNo, CString sTrayNo, CString sLensNo, CString sJudge, CString sNgCode)
@@ -241,7 +256,7 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 
 	if (nMNo < 0 || nMNo > 3 ||nTNo < 0 || nTNo > 10 || nLNo < 0 || nLNo > ZIG_X*ZIG_Y) { g_objCommon.Show_Error(6101); return; }
 
-	int nV = (sGbn == "TC" ? eVision::TC : (sGbn == "BC" ? eVision::BC : -1));
+	int nV = (sGbn == "TC" ? eVision::TC : (sGbn == "BC" ? eVision::BC : (sGbn == "TC2" ? eVision::TC2 : -1)));
 	if (nV == -1) { g_objCommon.Show_Error(6102); return; }
 
 
@@ -279,6 +294,7 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 
 	if (pEquipData->bUseTopVision && ((gData.byInspectDone[nMNo][nTNo][nLAVINo-1] >> 0) & 1) == 0) return;	// TC
 	if (pEquipData->bUseBtmVision  && ((gData.byInspectDone[nMNo][nTNo][nLAVINo-1] >> 1) & 1) == 0) return;	// BC
+	if (pEquipData->bUseTop2Vision  && ((gData.byInspectDone[nMNo][nTNo][nLAVINo-1] >> 1) & 1) == 0) return;	// TC2
 
 }
 
@@ -337,6 +353,11 @@ void CInspector::Get_TriggerRequest(int nVPc, CString sGbn, CString sMZNo, CStri
 	if(sGbn == "BC")
 	{
 		g_objSequenceMain.Set_MainRunCase(AUTO_BTM_INSPECT, eBtmBr::Trigger);
+	}
+
+	if(sGbn == "TC2")
+	{
+		g_objSequenceMain.Set_MainRunCase(AUTO_MARKER, eTop2Br::Trigger);
 	}
 }
 
@@ -446,6 +467,7 @@ void CInspector::Get_RecipeComplete(int nVPc, CString sGbn, CString sTrayID, CSt
 {
 	if(sGbn == "TC") gData.bRcpChange[eVision::TC] = TRUE;
 	if(sGbn == "BC") gData.bRcpChange[eVision::BC] = TRUE;
+	if(sGbn == "TC2") gData.bRcpChange[eVision::TC2] = TRUE;
 }
 
 void CInspector::Set_StatusUpdate(int nStatus)

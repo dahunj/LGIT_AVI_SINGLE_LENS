@@ -88,7 +88,7 @@
 	#pragma comment(lib, "CSGridR.lib")
 #endif
 
-#define MAIN_VERSION	_T("V 1.1.0.17_S")
+#define MAIN_VERSION	_T("V 1.2.0.0_S")
 
 //---------------------------------
 //#define AJIN_BOARD_USE
@@ -224,9 +224,9 @@ typedef struct
 
 	BOOL	bRcpChange[4];
 
-	char	cJudgeCode[7][10][ZIG_X*ZIG_Y][2];
-	CString	sJudgeCode[7][10][ZIG_X*ZIG_Y][3]; // 0:Top 1: Btm , 2: Top Priority  
-	CString sNGCode[7][10][ZIG_X*ZIG_Y][3];
+	char	cJudgeCode[7][10][ZIG_X*ZIG_Y][4];
+	CString	sJudgeCode[7][10][ZIG_X*ZIG_Y][4]; // 0:Top 1: Btm , 2: Top Priority  
+	CString sNGCode[7][10][ZIG_X*ZIG_Y][4];
 	int     nInspectInfo[7][10][ZIG_X*ZIG_Y];    // ????? (0:Empty, 1:Good, 2:NG, 3:NoResult, 7:Request, 8:NG, 9:Init)
 	BYTE	byInspectDone[7][10][ZIG_X*ZIG_Y];	// 검사완료 (2bit 사용 ==> 0:T1, 1:Btm1)
 
