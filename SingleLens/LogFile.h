@@ -37,6 +37,7 @@ public:
 	void Save_MCCLog(const CString& sLog);
 	void Save_BarcodeLog(const CString& sLog);
 	void Save_LotTime(int nPNo, const CString& sLog);
+	void Save_PositionLog(const CString& sLog);
 	
 	void Save_TerminalLog(const CString& sLog);
 	

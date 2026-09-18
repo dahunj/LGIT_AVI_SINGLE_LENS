@@ -127,8 +127,11 @@ BOOL CCommon::Check_Position(int nAxis, int nMoveIdx, double dRange)
 		if (nAxis == AX_MARK_UNIT_Z)			dCheckPos = pMoveData->dMarkUnitZ[nMoveIdx];		// AXIS 14
 		if (nAxis == AX_MAIN_INDEX_R)			dCheckPos = pMoveData->dMainIndexR[nMoveIdx];		// AXIS 15
 		
-
-		if (fabs(dCurrentPos - dCheckPos) < dRange) return TRUE;
+		if (fabs(dCurrentPos - dCheckPos) < dRange)
+		{
+			m_sLog.Format("AxisNo,%d, Current,%0.3lf", nAxis, dCurrentPos);	g_objLogFile.Save_PositionLog(m_sLog);
+			return TRUE;
+		}
 
 	} else return FALSE;
 

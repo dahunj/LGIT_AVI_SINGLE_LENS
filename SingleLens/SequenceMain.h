@@ -3,7 +3,7 @@
 #include "AJinAXL.h"
 #include "DataManager.h"
 #include "LoopTimer.h"
-
+#include <queue>
 
 
 class CSequenceMain
@@ -37,6 +37,12 @@ private:
 
 	CString		m_sRecipe;
 	CString		m_sVisionModel;
+	
+	std::queue<int> m_qLensNoDone;
+	std::queue<int> m_qLensNoNG;
+	void ClearQueueDone(){	while (!m_qLensNoDone.empty()) m_qLensNoDone.pop();}
+	void ClearQueueNG(){	while (!m_qLensNoNG.empty()) m_qLensNoNG.pop();}
+	BOOL isDoneLens(int nNo);
 
 protected:
 	CWinThread	*m_pThreadBeep;

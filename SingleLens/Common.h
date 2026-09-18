@@ -42,6 +42,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+	CString		m_sLog;
 	LONGLONG	m_nFreq;		// Frequence
 
 public:

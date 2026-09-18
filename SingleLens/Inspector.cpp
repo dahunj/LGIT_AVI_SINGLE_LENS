@@ -287,14 +287,16 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 	{ 
 		if (nPreInfo < 2 || nPreInfo > 8) gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = eLensInfo::Good;  
 	}	
-
+		
 	gData.byInspectDone[nMNo][nTNo][nLAVINo-1] |= (1 << nV);
-	
+
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
-	if (pEquipData->bUseTopVision && ((gData.byInspectDone[nMNo][nTNo][nLAVINo-1] >> 0) & 1) == 0) return;	// TC
-	if (pEquipData->bUseBtmVision  && ((gData.byInspectDone[nMNo][nTNo][nLAVINo-1] >> 1) & 1) == 0) return;	// BC
-	if (pEquipData->bUseTop2Vision  && ((gData.byInspectDone[nMNo][nTNo][nLAVINo-1] >> 1) & 1) == 0) return;	// TC2
+	if (pEquipData->bUseTopVision && ((gData.byInspectDone[nMNo][nTNo][nLAVINo-1] >> (int)eVision::TC) & 1) == 0) return;	// TC
+	if (pEquipData->bUseBtmVision  && ((gData.byInspectDone[nMNo][nTNo][nLAVINo-1] >> (int)eVision::BC) & 1) == 0) return;	// BC
+	if (pEquipData->bUseTop2Vision  && ((gData.byInspectDone[nMNo][nTNo][nLAVINo-1] >> (int)eVision::TC2) & 1) == 0) return;	// TC2
+
+	
 
 }
 
@@ -555,6 +557,7 @@ void CInspector::Set_LoadComplete(CString sGbn, CString sMZID, int nMZNo, CStrin
 	strSendCmd.Format("LOAD,COMPLETE,%s,%s,%d,%s,%d,%d", sGbn, sMZID, nMZNo, sTrayID, nTrayNo, nLensNo);
 	if(sGbn == "TC") gData.bScanDone[eVision::TC] = FALSE;
 	if(sGbn == "BC") gData.bScanDone[eVision::BC] = FALSE;
+	if(sGbn == "TC2") gData.bScanDone[eVision::TC2] = FALSE;
 	Send_Command(VISION_PC1, strSendCmd);
 }
 
@@ -564,6 +567,7 @@ void CInspector::Set_RecipeLoad(CString sGbn, CString sMZID, CString sTrayID, CS
 	strSendCmd.Format("RECIPE,LOAD,%s,%s,%s,%s,%d", sGbn, sMZID, sTrayID, sRecipe, nMZNo);
 	if(sGbn == "TC") gData.bRcpChange[eVision::TC] = FALSE;
 	if(sGbn == "BC") gData.bRcpChange[eVision::BC] = FALSE;
+	if(sGbn == "TC2") gData.bRcpChange[eVision::TC2] = FALSE;
 	Send_Command(VISION_PC1, strSendCmd);
 }
 

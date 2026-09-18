@@ -445,6 +445,7 @@ BOOL CAJinAXL::Is_Done(int nAxis)
 	if (m_Status[nAxis].bRun) return FALSE;
 	if (!m_Status[nAxis].bInP) return FALSE;
 #endif
+	
 	return TRUE;
 }
 

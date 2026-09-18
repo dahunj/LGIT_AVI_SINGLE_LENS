@@ -166,6 +166,39 @@ void CLogFile::Save_HandlerLog(CString sLog)
 }
 
 
+void CLogFile::Save_PositionLog(const CString& sLog)
+{
+	g_csHandlerLog.Lock();
+
+	CString strPath = gsCurrentDir + "\\LOG\\Position";
+
+	Create_Folder(strPath);
+
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+
+	CString strFile, strSave;
+	strFile.Format("%s\\%04d%02d%02d_Position.txt", strPath, time.wYear, time.wMonth, time.wDay);
+
+	CFile file;
+	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
+		try {
+			file.SeekToEnd();
+
+			strSave.Format("[%02d:%02d:%02d.%03d],%s\r\n", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, sLog);
+
+			file.Write(strSave, strSave.GetLength());
+			file.Close();
+
+		} catch (CFileException *pEx) {
+			pEx->Delete();
+		}
+	}
+	g_csHandlerLog.Unlock();
+}
+
+
+
 void CLogFile::Save_TerminalLog(const CString& sLog)
 {
 	
