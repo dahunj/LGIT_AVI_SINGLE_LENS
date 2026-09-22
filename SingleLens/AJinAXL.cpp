@@ -508,12 +508,11 @@ void CAJinAXL::Start_Scan(int nCh, int nAxis, double dPos, double dTrigS, double
 #endif
 }
 
-void CAJinAXL::Stop_Scan(int nAxis)
+void CAJinAXL::Stop_Scan(int nCh, int nAxis)
 {
 #if defined(AJIN_BOARD_USE)
-	AxcTriggerSetEnable(0, DISABLE);
-	theApp.uSleep(5);
-	AxcTriggerSetEnable(1, DISABLE);
+	theApp.uSleep(1);
+	AxcTriggerSetEnable(nCh, DISABLE);	
 #endif
 }
 

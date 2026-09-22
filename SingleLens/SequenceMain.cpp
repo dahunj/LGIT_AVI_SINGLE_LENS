@@ -3383,7 +3383,7 @@ BOOL CSequenceMain::TopInspectorRun()
 			m_strLog.Format("AxisNo,%d, Current,%0.3lf", AX_TOP_INSPECTOR_Z, g_objAJinAXL.Get_Position(AX_TOP_INSPECTOR_Z));	g_objLogFile.Save_PositionLog(m_strLog);
 
 			g_objLogFile.Save_HandlerLog("Stop Scan");
-			g_objAJinAXL.Stop_Scan(AX_TOP_INSPECTOR_Z);
+			g_objAJinAXL.Stop_Scan(eVision::TC, AX_TOP_INSPECTOR_Z);
 			//gData.InfoMainIndex[eMainIndex::Top][nTopXPos-1][nTopYPos-1] = eLensState::TopDone;	//Scan Done
 			//m_nTopInspectCase = eTopBr::VisionWait;//
 			m_nTopInspectCase = 10;
@@ -3694,7 +3694,7 @@ BOOL CSequenceMain::BtmInspectorRun()
 		if (g_objAJinAXL.Is_MoveDone(AX_BTM_INSPECTOR_Z,dBtmZ) && gData.bScanDone[eVision::BC]) 
 		{
 			g_objLogFile.Save_HandlerLog("Stop Scan");
-			g_objAJinAXL.Stop_Scan(AX_BTM_INSPECTOR_Z);
+			g_objAJinAXL.Stop_Scan(eVision::BC, AX_BTM_INSPECTOR_Z);
 
 			//gData.InfoMainIndex[eMainIndex::Btm][nBtmXPos-1][nBtmYPos-1] = eLensState::BtmDone;	//Scan Done
 			m_nBtmInspectCase = 10;//eBtmBr::VisionWait; 
@@ -4084,7 +4084,7 @@ BOOL CSequenceMain::MarkUnitRun()
 		{			
 			m_strLog.Format("AxisNo,%d, Current,%0.3lf", AX_MARK_UNIT_Z, g_objAJinAXL.Get_Position(AX_MARK_UNIT_Z)); g_objLogFile.Save_PositionLog(m_strLog);
 			g_objLogFile.Save_HandlerLog("Stop Scan");
-			g_objAJinAXL.Stop_Scan(AX_MARK_UNIT_Z);
+			g_objAJinAXL.Stop_Scan(eVision::TC2, AX_MARK_UNIT_Z);
 			m_nMarkUnitCase = 40;
 			m_nMarkUnitLoop.Set_LoopTime(30000);		
 

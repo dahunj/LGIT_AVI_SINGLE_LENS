@@ -107,7 +107,7 @@ public:
 	void Stop_Trigger(int nAxis);
 
 	void Start_Scan(int nCh, int nAxis, double dPos, double dTrigS, double dTrigE, double dTrigP, double dTrigW, double dVel);
-	void Stop_Scan(int nAxis);
+	void Stop_Scan(int nCh, int nAxis);
 	void Clear_Scan(int nCh);
 
 

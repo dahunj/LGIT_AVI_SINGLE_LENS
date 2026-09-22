@@ -361,8 +361,8 @@ BOOL CManualCleanDlg::TopScan_Run()
 	case 3:		// Scan End
 		if (g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_Z, dTopZ) && g_objAJinAXL.Is_MoveDone(AX_BTM_INSPECTOR_Z, dBtmZ)) 
 		{
-			g_objAJinAXL.Stop_Scan(AX_TOP_INSPECTOR_Z);
-			g_objAJinAXL.Stop_Scan(AX_BTM_INSPECTOR_Z);
+			g_objAJinAXL.Stop_Scan(eVision::TC, AX_TOP_INSPECTOR_Z);
+			g_objAJinAXL.Stop_Scan(eVision::BC, AX_BTM_INSPECTOR_Z);
 			m_nScanCase = 0;			
 			return FALSE;
 		}

@@ -157,6 +157,7 @@ struct eMark_X
 		MarkStart = 1,
 		PitchP = 2,
 		PitchM = 3,
+		ScanStart = 4,
 	};
 };
 
@@ -170,6 +171,7 @@ struct eMark_Y
 		MarkStart = 1,
 		PitchP = 2,
 		PitchM = 3,
+		ScanStart = 4, 
 
 	};
 };
@@ -182,7 +184,9 @@ struct eMark_Z
 	{
 		Ready = 0,
 		MarkStart = 1,
-		MarkDown = 2,	
+		MarkDown = 2,
+		ScanStart = 4,
+		Scan = 5,
 	};
 };
 

@@ -62,9 +62,17 @@ protected:
 	int	 m_nScanCase;
 	BOOL BtmScan_Run();
 
+	int	 m_nTop2ScanCase;
+	BOOL Top2Scan_Run();
+
 	BOOL		m_bThreadBtmScan;
 	CWinThread *m_pThreadBtmScan;
 	static UINT	Thread_BtmScan(LPVOID lpVoid);
+
+
+	BOOL		m_bThreadTop2Scan;
+	CWinThread *m_pThreadTop2Scan;
+	static UINT	Thread_Top2Scan(LPVOID lpVoid);
 public:
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();
