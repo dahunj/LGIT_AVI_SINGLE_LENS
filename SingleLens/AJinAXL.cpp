@@ -504,8 +504,10 @@ void CAJinAXL::Start_Scan(int nCh, int nAxis, double dPos, double dTrigS, double
 	AxcTriggerSetTime(nCh, dWidth);
 	AxcTriggerSetEnable(nCh, ENABLE);
 
-	Move_AbsVel(nAxis, dPos, dVel, 500);
+	
 #endif
+	Move_AbsVel(nAxis, dPos, dVel, 500);
+
 }
 
 void CAJinAXL::Stop_Scan(int nCh, int nAxis)
@@ -519,9 +521,9 @@ void CAJinAXL::Stop_Scan(int nCh, int nAxis)
 void CAJinAXL::Clear_Scan(int nCh)
 {
 #if defined(AJIN_BOARD_USE)
-	if(nCh == 0) AxcStatusSetActPos(0,0.0);
-	theApp.uSleep(5);
-	if(nCh == 1 ) AxcStatusSetActPos(1,0.0);
+	theApp.uSleep(1);
+	AxcStatusSetActPos(nCh,0.0);
+
 #endif
 }
 

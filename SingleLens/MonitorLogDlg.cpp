@@ -231,7 +231,7 @@ void CMonitorLogDlg::Read_LogFile()
 	if (file.Read(pBuff, nSize) > 0) m_redtLogDisplay.SetWindowText(pBuff);
 
 	file.Close();
-	delete pBuff;
+	delete[] pBuff;
 
 	int nMaxLine = 31;	// 화면에 보이는 Line Count
 	int nLineCount = m_redtLogDisplay.GetLineCount();

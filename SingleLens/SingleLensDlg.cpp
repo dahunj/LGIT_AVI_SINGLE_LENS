@@ -589,6 +589,9 @@ void CSingleLensDlg::Set_CurrentMode(int nMode)
 	int nPreMode = theApp.Get_MainMode();
 	gData.nStatus = nPreMode;
 
+	//Safety Switch 조작 시점 갱신 
+	gData.dwTouched = GetTickCount();
+
 	if (nMode == nPreMode) return;
 
 	Hide_ModeWindows(nMode, nPreMode);

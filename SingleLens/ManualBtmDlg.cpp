@@ -48,9 +48,9 @@ BEGIN_MESSAGE_MAP(CManualBtmDlg, CDialogEx)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_BTM_INSPECT_X_0, IDC_BTN_BTM_INSPECT_X_3, OnBtnBtmInspectXClick)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_BTM_INSPECT_Y_0, IDC_BTN_BTM_INSPECT_Y_3, OnBtnBtmInspectYClick)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_BTM_INSPECT_Z_0, IDC_BTN_BTM_INSPECT_Z_3, OnBtnBtmInspectZClick)
-	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_MARK_UNIT_X_0, IDC_BTN_MARK_UNIT_X_3, OnBtnMarkUnitXClick)
-	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_MARK_UNIT_Y_0, IDC_BTN_MARK_UNIT_Y_3, OnBtnMarkUnitYClick)
-	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_MARK_UNIT_Z_0, IDC_BTN_MARK_UNIT_Z_3, OnBtnMarkUnitZClick)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_MARK_UNIT_X_0, IDC_BTN_MARK_UNIT_X_4, OnBtnMarkUnitXClick)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_MARK_UNIT_Y_0, IDC_BTN_MARK_UNIT_Y_4, OnBtnMarkUnitYClick)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_MARK_UNIT_Z_0, IDC_BTN_MARK_UNIT_Z_5, OnBtnMarkUnitZClick)
 	ON_BN_CLICKED(IDC_BUTTON1, &CManualBtmDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CManualBtmDlg::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON4, &CManualBtmDlg::OnBnClickedButton4)
@@ -75,6 +75,7 @@ BOOL CManualBtmDlg::OnInitDialog()
 	Initial_Controls();
 
 	m_nScanCase = 0;
+	m_nTop2ScanCase = 0;	
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
 }
@@ -272,14 +273,20 @@ void CManualBtmDlg::OnBtnMarkUnitXClick(UINT nID)
 	}
 	if(nIndex == eMark_X::PitchP)
 	{		
-		double dPitch = g_objDataManager.Get_pMoveData()->dBtmInspectorZ[eMark_X::PitchP];
+		double dPitch = g_objDataManager.Get_pMoveData()->dBtmInspectorX[eMark_X::PitchP];
 		g_objAJinAXL.Move_Relative(AX_MARK_UNIT_X, dPitch);
 	}
 	if(nIndex == eMark_X::PitchM)
 	{
-		double dPitch = g_objDataManager.Get_pMoveData()->dBtmInspectorZ[eMark_X::PitchP];
+		double dPitch = g_objDataManager.Get_pMoveData()->dBtmInspectorX[eMark_X::PitchP];
 		g_objAJinAXL.Move_Relative(AX_MARK_UNIT_X, -dPitch);
 	}
+	if(nIndex == eMark_X::ScanStart)
+	{
+		double dPos = g_objDataManager.Get_pMoveData()->dBtmInspectorX[eMark_X::ScanStart];
+		g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_X, dPos);
+	}
+
 	m_strLog.Format("[Manual Mark Unit X] X (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);
 }
@@ -310,6 +317,12 @@ void CManualBtmDlg::OnBtnMarkUnitYClick(UINT nID)
 		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorY[eMark_Y::PitchP];
 		g_objAJinAXL.Move_Relative(AX_MARK_UNIT_Y, -dPitch);
 	}
+	if(nIndex == eMark_Y::ScanStart)
+	{
+		double dPos = g_objDataManager.Get_pMoveData()->dTopInspectorY[eMark_Y::ScanStart];
+		g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_Y, dPos);
+	}
+
 	m_strLog.Format("[Manual Mark Unit Y] Y (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);
 }

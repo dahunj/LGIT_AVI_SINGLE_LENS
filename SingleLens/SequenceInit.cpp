@@ -809,6 +809,7 @@ BOOL CSequenceInit::Initial_MarkUnit()
 		{			
 			g_objAJinAXL.Set_EncoderType(AX_MARK_UNIT_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_MARK_UNIT_Z, 1);	// Abs
+			g_objAJinAXL.Clear_Scan(eVision::TC2);
 			m_niMarkUnitCase++; m_tiMarkUnitLoop.Set_LoopTime(5000);
 		}
 		break;
