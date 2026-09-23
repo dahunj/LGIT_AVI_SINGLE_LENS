@@ -49,8 +49,8 @@ private:
 	void Get_RecipeLoad(CString sGbn, CString sMZID, CString sTrayID, CString sRecipe);
 public:
 
-	CString m_sJudge[10][30][30];
-	CString m_sCode[10][30][30];
+	CString m_sJudge[10][30][200];
+	CString m_sCode[10][30][200];
 
 
 
@@ -77,12 +77,16 @@ public:
 private:
 	enum { MIN_LENS_NO = 1, MAX_LENS_NO = 141 };
 
-	CCriticalSection m_csInspectComplete;
+	CSemaphore m_csInspectComplete;
 
 	struct ThreadParam
 	{
 		CInspector* pWnd;
-		int nLensNo;
+		CString sGbn;
+		CString	sMZID;
+		CString sMZNo;
+		CString sTNo;
+		CString sLensNo;
 	};
 
 	BOOL m_bRunning[MAX_LENS_NO];
@@ -90,7 +94,7 @@ private:
 	static UINT __cdecl InspectThreadProc(LPVOID pParam);
 
 public:
-	BOOL StrartInspect(int nLensNo);
+	BOOL StrartInspect(int nInspector, CString sGbn, CString sMZID, CString sMZNo, CString sTNo, CString sLensNo);
 
 
 };

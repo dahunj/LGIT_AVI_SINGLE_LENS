@@ -231,7 +231,7 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 	}
 	else if(nV == eVision::TC2) 
 	{
-		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_MARKER);
+		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_MARK_UNIT);
 		DWORD dwTick = GetTickCount();
 		while (nCase != 35) 
 		{ 
@@ -296,9 +296,6 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 	if (pEquipData->bUseTopVision && ((gData.byInspectDone[nMNo][nTNo][nLAVINo-1] >> (int)eVision::TC) & 1) == 0) return;	// TC
 	if (pEquipData->bUseBtmVision  && ((gData.byInspectDone[nMNo][nTNo][nLAVINo-1] >> (int)eVision::BC) & 1) == 0) return;	// BC
 	if (pEquipData->bUseTop2Vision  && ((gData.byInspectDone[nMNo][nTNo][nLAVINo-1] >> (int)eVision::TC2) & 1) == 0) return;	// TC2
-
-	
-
 }
 
 void CInspector::Get_AMoveRequest(int nVPc, CString sGbn, CString sZ1)
@@ -360,7 +357,7 @@ void CInspector::Get_TriggerRequest(int nVPc, CString sGbn, CString sMZNo, CStri
 
 	if(sGbn == "TC2")
 	{
-		g_objSequenceMain.Set_MainRunCase(AUTO_MARKER, eTop2Br::Trigger);
+		g_objSequenceMain.Set_MainRunCase(AUTO_MARK_UNIT, eTop2Br::Trigger);
 	}
 }
 
@@ -442,11 +439,11 @@ void CInspector::Get_ReloadRequest(int nVPc, CString sMZID, CString sGbn)
 
 	if(sGbn == "TC2" && pEquipData->bUseTop2Vision && !gData.bScanDone[eVision::TC2] && !gData.bReload[eVision::TC2])
 	{
-		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_MARKER);
+		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_MARK_UNIT);
 		if(nCase >= 35 && nCase < 40)
 		{
 			Set_ReloadComplete(VISION_PC1, "TC2");
-			g_objSequenceMain.Set_MainRunCase(AUTO_MARKER, 33);
+			g_objSequenceMain.Set_MainRunCase(AUTO_MARK_UNIT, 33);
 			gData.bReload[eVision::TC2] = TRUE;
 		}
 		else

@@ -17,7 +17,7 @@ CCriticalSection g_csInspectRecv;	// Receive_Command 문제 해결하기 위함
 
 CInspector::CInspector()
 {
-	
+	for(int i = 0; i < MAX_LENS_NO; i++) m_bRunning[i] = FALSE;
 	//m_nStatusPC1 = 0;		// Vision PC1 상태 (0:Stop, 1:Run)
 	//m_nStatusPC2 = 0;		// Vision PC2 상태 (0:Stop, 1:Run)
 	//m_nStatusPC3 = 0;		// Vision PC3 상태 (0:Stop, 1:Run)
@@ -206,28 +206,21 @@ void CInspector::Terminate()
 void CInspector::Get_LoadComplete(CString sGbn, CString sMZID, CString sMZNo, CString sTrayID, CString sTNo, CString sLensNo)
 {
 	int nTNo1 = 0;
-	int nCNo1 = 0;
+	int nLNo = 0;
 
 	nTNo1 = atoi(sTNo);
-	nCNo1 = atoi(sLensNo);
+	nLNo = atoi(sLensNo);
 	
-	if (nTNo1 != -1 && nCNo1 != -1) Set_TriggerRequest(VISION_PC1, sGbn, sMZID, sMZNo, sTNo, sLensNo);
+	if (nTNo1 != -1 && nLNo != -1) Set_TriggerRequest(VISION_PC1, sGbn, sMZID, sMZNo, sTNo, sLensNo);
 	Sleep(10);
 
-	if (nTNo1 != -1 && nCNo1 != -1) Set_ScanComplete(VISION_PC1, sGbn, sMZID, sMZNo, sTNo, sLensNo);
-	Sleep(10);
-		
+	if (nTNo1 != -1 && nLNo != -1) Set_ScanComplete(VISION_PC1, sGbn, sMZID, sMZNo, sTNo, sLensNo);
+	Sleep(10);		
 
 	if(sGbn == "TC2")
 	{
-
-	}
-
-
-
-	if (nTNo1 != -1 && nCNo1 != -1) Set_InspectComplete(VISION_PC1, sGbn, sMZID, sMZNo, sTNo, sLensNo);
-	Sleep(10);
-	
+		if (nTNo1 != -1 && nLNo != -1) StrartInspect(VISION_PC1, sGbn, sMZID, sMZNo, sTNo, sLensNo);
+	}	
 }
 
 void CInspector::Set_RecipeComplete(int nInspector, CString sGbn)
@@ -302,6 +295,11 @@ void CInspector::Set_InspectComplete(int nInspector, CString sGbn, CString sMZID
 		m_sCode[nPortNo - 1][nTNo - 1][nCNo - 1] = "G";
 	}
 		
+	if(sLNo == "126")
+	{
+		sLNo = "126";
+	}
+
 	strSendCmd.Format("INSPECT,COMPLETE,%s,%s,%s,%s,%s,%s,%s", sGbn, sMZID, sMZNo, sTNo, sLNo, m_sJudge[nPortNo - 1][nTNo - 1][nCNo - 1], m_sCode[nPortNo - 1][nTNo - 1][nCNo - 1]);
 	Send_Command(nInspector, strSendCmd);
 }
@@ -340,8 +338,10 @@ void CInspector::Set_LotReady(int nInspector, CString sMZID, int nMZNo)
 
 
 
-BOOL CInspector::StrartInspect(int nLensNo)
+BOOL CInspector::StrartInspect(int nInspector, CString sGbn, CString sMZID, CString sMZNo, CString sTNo, CString sLensNo)
 {
+	int nLensNo = atoi(sLensNo);
+
 	if (nLensNo < MIN_LENS_NO || nLensNo > MAX_LENS_NO)
 		return FALSE;
 
@@ -349,15 +349,19 @@ BOOL CInspector::StrartInspect(int nLensNo)
 	{
 		CSingleLock lock(&m_csInspectComplete, TRUE);
 
-		if (m_bRunning[nLensNo])
+		if (m_bRunning[nLensNo-1])
 			return FALSE;
 
-		m_bRunning[nLensNo] = TRUE;
+		m_bRunning[nLensNo-1] = TRUE;
 	}
 
 	ThreadParam* pParam = new ThreadParam;
 	pParam->pWnd = this;
-	pParam->nLensNo = nLensNo;
+	pParam->sGbn = sGbn;
+	pParam->sMZID = sMZID;
+	pParam->sMZNo = sMZNo;
+	pParam->sTNo = sTNo;
+	pParam->sLensNo = sLensNo;
 
 	CWinThread* pThread = AfxBeginThread(
 		InspectThreadProc,
@@ -370,8 +374,8 @@ BOOL CInspector::StrartInspect(int nLensNo)
 	{
 		delete pParam;
 
-		CSingleLock lock(&g_csInspectComplete, TRUE);
-		m_bRunning[nLensNo] = FALSE;
+		CSingleLock lock(&m_csInspectComplete, TRUE);
+		m_bRunning[nLensNo-1] = FALSE;
 		return FALSE;
 	}
 
@@ -379,23 +383,31 @@ BOOL CInspector::StrartInspect(int nLensNo)
 }
 
 
-UINT __cdecl CInspector::WorkThreadProc(LPVOID pParam)
+UINT __cdecl CInspector::InspectThreadProc(LPVOID pParam)
 {
 	ThreadParam* pThreadParam =
 		static_cast<ThreadParam*>(pParam);
 
 	CInspector* pWnd = pThreadParam->pWnd;
-	const int nLensNo = pThreadParam->nLensNo;
+	CString sGbn = pThreadParam->sGbn;
+	CString sMZID = pThreadParam->sMZID;
+	CString sMZNo = pThreadParam->sMZNo;
+	CString sTNo = pThreadParam->sTNo;
+	CString sLensNo = pThreadParam->sLensNo;
+	
 	delete pThreadParam;
 
-	// 여기서 nWorkNo에 해당하는 실제 작업을 실행
-	// 예: pDlg->RunWork(nWorkNo);
-	// 테스트용:
-	Sleep(1000);
+
+	int nLensNo = atoi(sLensNo);
+	int nDelayMs = pWnd->Get_Random(1000, 4000);
+
+	::Sleep(nDelayMs);
+	
+	pWnd->Set_InspectComplete(VISION_PC1, sGbn, sMZID, sMZNo, sTNo, sLensNo);
 
 	{
-		CSingleLock lock(&pWnd->m_csWork, TRUE);
-		pDlg->m_bRunning[nWorkNo] = FALSE;
+		CSingleLock lock(&pWnd->m_csInspectComplete, TRUE);		
+		pWnd->m_bRunning[nLensNo-1] = FALSE;
 	}
 
 	return 0;

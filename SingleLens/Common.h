@@ -11,7 +11,7 @@
 #define AUTO_LENS_CLEANER		4
 #define AUTO_TOP_INSPECT		5
 #define AUTO_BTM_INSPECT		6
-#define AUTO_MARKER				7
+#define AUTO_MARK_UNIT				7
 #define AUTO_INDEX_TABLE		8
 #define AUTO_UL_CONVEYOR		9
 

@@ -96,7 +96,7 @@ int CSequenceMain::Get_MainRunCase(int nRun)
 	else if (nRun == AUTO_LENS_CLEANER)		return m_nLensCleanerCase;	
 	else if (nRun == AUTO_TOP_INSPECT)		return m_nTopInspectCase;	
 	else if (nRun == AUTO_BTM_INSPECT)		return m_nBtmInspectCase;		
-	else if (nRun == AUTO_MARKER)			return m_nMarkUnitCase;		
+	else if (nRun == AUTO_MARK_UNIT)			return m_nMarkUnitCase;		
 	else if (nRun == AUTO_INDEX_TABLE)		return m_nMainIndexCase;	
 	else if (nRun == AUTO_UL_CONVEYOR)		return m_nUnloadConveyorCase;
 
@@ -112,7 +112,7 @@ void CSequenceMain::Set_MainRunCase(int nRun, int nCase)
 	else if (nRun == AUTO_LENS_CLEANER)		m_nLensCleanerCase	= nCase;	
 	else if (nRun == AUTO_TOP_INSPECT)		m_nTopInspectCase	= nCase;	
 	else if (nRun == AUTO_BTM_INSPECT)		m_nBtmInspectCase		= nCase;	
-	else if (nRun == AUTO_MARKER)			m_nMarkUnitCase		= nCase;	
+	else if (nRun == AUTO_MARK_UNIT)			m_nMarkUnitCase		= nCase;	
 	else if (nRun == AUTO_INDEX_TABLE)		m_nMainIndexCase	= nCase;
 	else if (nRun == AUTO_UL_CONVEYOR)		m_nUnloadConveyorCase	= nCase;	
 }
@@ -126,7 +126,7 @@ void CSequenceMain::Set_MainRunLoop(int nRun, int nLoop)
 	else if (nRun == AUTO_LENS_CLEANER)		m_nLensCleanerLoop.Set_LoopTime(nLoop);	
 	else if (nRun == AUTO_TOP_INSPECT)		m_nTopInspectLoop.Set_LoopTime(nLoop);	
 	else if (nRun == AUTO_BTM_INSPECT)		m_nBtmInspectLoop.Set_LoopTime(nLoop);		
-	else if (nRun == AUTO_MARKER)			m_nMarkUnitLoop.Set_LoopTime(nLoop);		
+	else if (nRun == AUTO_MARK_UNIT)			m_nMarkUnitLoop.Set_LoopTime(nLoop);		
 	else if (nRun == AUTO_INDEX_TABLE)		m_nIndexTLoop.Set_LoopTime(nLoop);
 	else if (nRun == AUTO_UL_CONVEYOR)		m_nUnloadConveyorLoop.Set_LoopTime(nLoop);
 }
@@ -3809,14 +3809,16 @@ BOOL CSequenceMain::MarkUnitRun()
 	{
 		for(int nLNo = 1; nLNo <= 144; nLNo++)
 		{	
-			if(GetTickCount() - dwDoneTime < 0.3 *1000) break; // 300ms 간격 
+			if(GetTickCount() - dwDoneTime < 0.05 *1000) break; // 300ms 간격 
+
+			if(!isDoneLens(1) && nLNo > 70 ) continue; //1번만 늦게 되니까 보기가 안좋아서... 절반 지나기 전에 1번 결과부터 무조건 확인 
 
 			if(isDoneLens(nLNo)) continue;
 
-			if(nLNo == 32 || nLNo== 68 || nLNo == 113)
+			/*if(nLNo == 32 || nLNo== 68 || nLNo == 113)
 			{
-				continue;
-			}
+			continue;
+			}*/
 			
 			if(Check_InspectDone(gData.sZigIDMainIndex[eMainIndex::Mark], gData.nMZNoMainIndex[eMainIndex::Mark],
 				gData.nSlotNoMainIndex[eMainIndex::Mark], nLNo, nTempInfo)) 
@@ -3824,7 +3826,7 @@ BOOL CSequenceMain::MarkUnitRun()
 				dwDoneTime = GetTickCount();
 				m_qLensNoDone.push(nLNo);
 				
-				m_strLog.Format("Inspect Done, %d, %d", nLNo, nTempInfo); g_objLogFile.Save_TestLog(m_strLog);
+				m_strLog.Format("Inspect Done, %d, %d", g_objCommon.ConvertToMESNo(nLNo), nTempInfo); g_objLogFile.Save_TestLog(m_strLog);
 				
 				if(nTempInfo == eLensInfo::Init || nTempInfo == eLensInfo::Good)
 				{
@@ -4221,7 +4223,7 @@ BOOL CSequenceMain::MarkUnitRun()
 			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);	
 
 		}					
-		break;
+		return TRUE;
 
 	case 4:
 		if (g_objAJinAXL.Is_Done(AX_MARK_UNIT_Y) &&
@@ -5337,11 +5339,13 @@ BOOL CSequenceMain::Check_InspectDone(const CString& sZigID, int nMZNo, int nTNo
 	}		
 
 	nInfo = gData.nInspectInfo[nMNo][nSlot][nLens];
+
 	if(nInfo == eLensInfo::Init) 
 	{	
 		nInfo = eLensInfo::Good;
 	}
-	gData.byInspectDone[nMZNo-1][nSlot][nLens] |= (1 << 7);
+
+	gData.byInspectDone[nMNo][nSlot][nLens] |= (1 << 7);
 	return TRUE;	// All Inspect Done
 }
 
@@ -5455,11 +5459,17 @@ void CSequenceMain::Write_LotJudge(int nMZNo, int nTrayNo, int nLensNo, int nInf
 			strTemp.Format("Exception Write Judge(2) : %d,%d,%d,%d,%d", nMx+1, nTx+1, nLx+1, nInfo, i);
 			g_objLogFile.Save_TestLog(strTemp);
 		}		
-		else if (chCode[i] == 0) {
-			chCode[i] = 0x45; //  비전 결과가 안오면 공란으로 두지말고 E으로 기록해 달라. (From kjw request)
+		else if(i == 3 && m_pEquipData->bUseTop2Vision && chCode[i] == 0)
+		{
+			chCode[i] = 0x6E; //  비전 결과가 안오면 공란으로 두지말고 E으로 기록해 달라. (From kjw request)
 			strTemp.Format("Exception Write Judge(2) : %d,%d,%d,%d,%d", nMx+1, nTx+1, nLx+1, nInfo, i);
 			g_objLogFile.Save_TestLog(strTemp);
-		}
+		}		
+		//else if (chCode[i] == 0) {
+		//	chCode[i] = 0x45; //  비전 결과가 안오면 공란으로 두지말고 E으로 기록해 달라. (From kjw request)
+		//	strTemp.Format("Exception Write Judge(2) : %d,%d,%d,%d,%d", nMx+1, nTx+1, nLx+1, nInfo, i);
+		//	g_objLogFile.Save_TestLog(strTemp);
+		//}
 	}
 
 	

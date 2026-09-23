@@ -479,6 +479,7 @@ void CSetupEquipDlg::Display_EquipData()
 	
 	m_chkTopVision.SetCheck(pEquipData->bUseTopVision);
 	m_chkBtmVision.SetCheck(pEquipData->bUseBtmVision);
+	m_chkTop2Vision.SetCheck(pEquipData->bUseTop2Vision);
 	m_chkMarkUse.SetCheck(pEquipData->bUseMark);
 	
 	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) m_chkTower[i][j].SetCheck(pEquipData->bTower[i][j]);
