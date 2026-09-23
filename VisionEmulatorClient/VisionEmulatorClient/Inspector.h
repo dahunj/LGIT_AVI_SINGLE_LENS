@@ -74,6 +74,25 @@ public:
 
 	int Get_Random(int nStart, int nEnd);
 
+private:
+	enum { MIN_LENS_NO = 1, MAX_LENS_NO = 141 };
+
+	CCriticalSection m_csInspectComplete;
+
+	struct ThreadParam
+	{
+		CInspector* pWnd;
+		int nLensNo;
+	};
+
+	BOOL m_bRunning[MAX_LENS_NO];
+	
+	static UINT __cdecl InspectThreadProc(LPVOID pParam);
+
+public:
+	BOOL StrartInspect(int nLensNo);
+
+
 };
 
 

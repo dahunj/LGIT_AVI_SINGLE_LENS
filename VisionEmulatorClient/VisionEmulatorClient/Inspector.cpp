@@ -217,6 +217,14 @@ void CInspector::Get_LoadComplete(CString sGbn, CString sMZID, CString sMZNo, CS
 	if (nTNo1 != -1 && nCNo1 != -1) Set_ScanComplete(VISION_PC1, sGbn, sMZID, sMZNo, sTNo, sLensNo);
 	Sleep(10);
 		
+
+	if(sGbn == "TC2")
+	{
+
+	}
+
+
+
 	if (nTNo1 != -1 && nCNo1 != -1) Set_InspectComplete(VISION_PC1, sGbn, sMZID, sMZNo, sTNo, sLensNo);
 	Sleep(10);
 	
@@ -290,12 +298,10 @@ void CInspector::Set_InspectComplete(int nInspector, CString sGbn, CString sMZID
 	}*/
 	else 
 	{
-
 		m_sJudge[nPortNo - 1][nTNo - 1][nCNo - 1] = "G";
 		m_sCode[nPortNo - 1][nTNo - 1][nCNo - 1] = "G";
 	}
-	
-	
+		
 	strSendCmd.Format("INSPECT,COMPLETE,%s,%s,%s,%s,%s,%s,%s", sGbn, sMZID, sMZNo, sTNo, sLNo, m_sJudge[nPortNo - 1][nTNo - 1][nCNo - 1], m_sCode[nPortNo - 1][nTNo - 1][nCNo - 1]);
 	Send_Command(nInspector, strSendCmd);
 }
@@ -332,3 +338,65 @@ void CInspector::Set_LotReady(int nInspector, CString sMZID, int nMZNo)
 	Send_Command(nInspector, strSendCmd);
 }
 
+
+
+BOOL CInspector::StrartInspect(int nLensNo)
+{
+	if (nLensNo < MIN_LENS_NO || nLensNo > MAX_LENS_NO)
+		return FALSE;
+
+	// 번호별 중복 실행 방지
+	{
+		CSingleLock lock(&m_csInspectComplete, TRUE);
+
+		if (m_bRunning[nLensNo])
+			return FALSE;
+
+		m_bRunning[nLensNo] = TRUE;
+	}
+
+	ThreadParam* pParam = new ThreadParam;
+	pParam->pWnd = this;
+	pParam->nLensNo = nLensNo;
+
+	CWinThread* pThread = AfxBeginThread(
+		InspectThreadProc,
+		pParam,
+		THREAD_PRIORITY_NORMAL,
+		0,
+		0);
+
+	if (pThread == NULL)
+	{
+		delete pParam;
+
+		CSingleLock lock(&g_csInspectComplete, TRUE);
+		m_bRunning[nLensNo] = FALSE;
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+
+UINT __cdecl CInspector::WorkThreadProc(LPVOID pParam)
+{
+	ThreadParam* pThreadParam =
+		static_cast<ThreadParam*>(pParam);
+
+	CInspector* pWnd = pThreadParam->pWnd;
+	const int nLensNo = pThreadParam->nLensNo;
+	delete pThreadParam;
+
+	// 여기서 nWorkNo에 해당하는 실제 작업을 실행
+	// 예: pDlg->RunWork(nWorkNo);
+	// 테스트용:
+	Sleep(1000);
+
+	{
+		CSingleLock lock(&pWnd->m_csWork, TRUE);
+		pDlg->m_bRunning[nWorkNo] = FALSE;
+	}
+
+	return 0;
+}

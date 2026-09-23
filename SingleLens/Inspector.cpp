@@ -72,6 +72,7 @@ void CInspector::Receive_Command(int nVPc, CString sCommand)
 	// Inspector Log ////////////////////////////////////////
 	strLog.Format("[H<-V%d] : %s", nVPc, sCommand);
 	g_objLogFile.Save_InspectorLog(strLog);
+	
 	/////////////////////////////////////////////////////////
 	CString strA[7];
 	for (int i = 0; i < 7; i++) AfxExtractSubString(strA[i], sCommand, i + 2, chSep);
@@ -92,8 +93,8 @@ void CInspector::Receive_Command(int nVPc, CString sCommand)
 	}
 	else if (strCmd == "INSPECT") 
 	{
+		g_objLogFile.Save_TestLog(strLog);
 		if (strOp == "COMPLETE") Get_InspectComplete(nVPc, strA[0], strA[1], strA[2], strA[3], strA[4], strA[5], strA[6]);
-
 	}
 	else if (strCmd == "AMOVE")
 	{
