@@ -2253,7 +2253,7 @@ BOOL CSequenceMain::FeederRun()
 			dAlmTime = (double)gLot.dwErrorTimeZig[nMNo][nZNo] / 1000.0;
 			dStopTime = (double)gLot.dwStopTimeZig[nMNo][nZNo] / 1000.0;
 
-			CString sRandom, sMarking, sTC, sBC;
+			CString sRandom, sMarking, sTC, sBC, sTC2;
 			if(m_pEquipData->bResultTestUse)
 			{
 				int nOK = 0;
@@ -2273,6 +2273,9 @@ BOOL CSequenceMain::FeederRun()
 			if(m_pEquipData->bUseBtmVision) sBC = "ON";
 			else sBC = "OFF";
 
+			if(m_pEquipData->bUseTop2Vision) sTC2 = "ON";
+			else sTC2 = "OFF";
+
 			int nGFCnt = 0;
 
 
@@ -2281,13 +2284,13 @@ BOOL CSequenceMain::FeederRun()
 				%d,%d,%d,%0.1lf,%s,%s,\
 				%0.3lf,%0.1lf,%0.3lf,%0.3lf,%0.1lf,\
 				%d,%0.3lf,%d,%0.3lf,\
-				%d,%s,%s,%s,%s,%d", 
+				%d,%s,%s,%s,%s,%s,%d", 
 				gData.sComName, m_pEquipData->sEquipName, MAIN_VERSION, gData.sRecipeFeeder,"", //station,Machine,HSW_Version,Recipe_H,SensorID
 				gData.sLotIDFeeder, "", gData.sMZIDFeeder, gData.sZigIDFeeder, gData.nTablePocketFeeder, gData.nSlotNoFeeder, // LotNum,Barcode,MGZ_ID,Tray_ID,Index_No,Tray_No
 				nLensCntZig, gLot.nGoodCountZig[nMNo][nZNo], nNgCntZig, dYield,gLot.sStartTimeZig[nMNo][nZNo], gLot.sEndTimeZig[nMNo][nZNo],  // Cnt,OK,NG,Yield,Start_Time,End_Time
 				dTact1, dUPH1, dInterval, dTact2, dUPH2,
 				gLot.nErrorCountZig[nMNo][nZNo], dAlmTime, gLot.nStopCountZig[nMNo][nZNo], dStopTime,
-				m_pEquipData->nCleanRepeat, sMarking, sRandom, sTC, sBC, nGFCnt);
+				m_pEquipData->nCleanRepeat, sMarking, sRandom, sTC, sBC, sTC2, nGFCnt);
 
 			g_objLogFile.Save_DailyResult(m_strLog);
 			g_dlgWork.PostMessage(UM_UPDATE_DAILY_RESULT, NULL, NULL);
