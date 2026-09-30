@@ -503,14 +503,14 @@ BOOL CManualBtmDlg::Top2Scan_Run()
 			double dTrigE = dTrigS + dPeriod * pEquipData->nTop2Count;	// Trigger End
 			dTop2Z = dTrigE + (dPeriod/4);								// Motion End (°¡°¨¼Ó)
 			double dVelocity = pEquipData->dTop2Velocity;
-			g_objAJinAXL.Start_Scan(eVision::TC2, AX_MARK_UNIT_Z, dTop2Z, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
+			g_objAJinAXL.Start_Scan(eVision::T2, AX_MARK_UNIT_Z, dTop2Z, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
 			m_nTop2ScanCase++;
 		}
 		break;
 	case 3:		// Scan End
 		if (g_objAJinAXL.Is_Done(AX_MARK_UNIT_Z)) 
 		{
-			g_objAJinAXL.Stop_Scan(eVision::TC2, AX_MARK_UNIT_Z);
+			g_objAJinAXL.Stop_Scan(eVision::T2, AX_MARK_UNIT_Z);
 			m_nTop2ScanCase = 0;			
 			return FALSE;
 		}

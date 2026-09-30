@@ -217,7 +217,7 @@ struct eVision
 		TC = 0,
 		BC = 1,
 		MARKING = 2,
-		TC2 = 3,
+		T2 = 3,
 	};
 
 };

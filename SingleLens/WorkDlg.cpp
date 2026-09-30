@@ -1386,7 +1386,7 @@ LRESULT CWorkDlg::OnUpdateVisionInfo(WPARAM nVision, LPARAM lParam)
 		}
 	}
 
-	if (nVision == eVision::MARKING || nVision == eVision::TC2)
+	if (nVision == eVision::MARKING || nVision == eVision::T2)
 	{		
 		for (int i = 0; i < gData.nLensCntY; i++)
 		{
