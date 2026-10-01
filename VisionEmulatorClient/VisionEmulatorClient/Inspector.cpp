@@ -217,10 +217,14 @@ void CInspector::Get_LoadComplete(CString sGbn, CString sMZID, CString sMZNo, CS
 	if (nTNo1 != -1 && nLNo != -1) Set_ScanComplete(VISION_PC1, sGbn, sMZID, sMZNo, sTNo, sLensNo);
 	Sleep(10);		
 
-	if(sGbn == "TC2")
+	if(sGbn == "T2")
 	{
 		if (nTNo1 != -1 && nLNo != -1) StrartInspect(VISION_PC1, sGbn, sMZID, sMZNo, sTNo, sLensNo);
 	}	
+	else
+	{
+		if (nTNo1 != -1 && nLNo != -1) Set_InspectComplete(VISION_PC1, sGbn, sMZID, sMZNo, sTNo, sLensNo);
+	}
 }
 
 void CInspector::Set_RecipeComplete(int nInspector, CString sGbn)

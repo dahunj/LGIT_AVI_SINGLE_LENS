@@ -171,7 +171,7 @@ public:
 	
 	void Write_LotJudge(int nMZNo, int nTrayNo, int nLensNo, int nInfo);
 
-	void Get_RecipeData(int nVision, CString sRcp);
+	BOOL Get_RecipeData(int nVision, CString sRcp);
 
 };
 

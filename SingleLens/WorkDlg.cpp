@@ -2420,6 +2420,8 @@ LRESULT CWorkDlg::OnUpdateDailyResult(WPARAM wParam, LPARAM lParam)
 	CStringArray saDailyResult, saResult;
 	while(TRUE)
 	{
+		if(nOrder > 30) break;
+
 		g_objCommon.GetLatestFileName(gsCurrentDir+"\\LOG\\DailyResult", nOrder, strFilePath);
 		g_objCommon.Get_Lines(30, strFilePath, saResult);
 
@@ -2517,7 +2519,7 @@ LRESULT CWorkDlg::OnUpdateDailyResult(WPARAM wParam, LPARAM lParam)
 		sText.Format("%0.1lf", dAlmTime+dStopTime);
 		m_grdLog.Set_CellText(nRow,17, sText);	
 
-		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],32);
+		sText = g_objCommon.Get_DataFromLine(saDailyResult[i],33);
 		m_grdLog.Set_CellText(nRow,18, sText);	// GF
 	}
 

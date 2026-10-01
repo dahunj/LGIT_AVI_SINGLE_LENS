@@ -301,7 +301,8 @@ typedef struct
 
 	int		nMZNoRunning[3];	// Current running MZ No 1,2,3
 
-
+	BOOL	bTop2Done; 
+	int		nCurTop2YPos; // for interlock with Btm vision 
 
 } GLOVAL_DATA;
 
