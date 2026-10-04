@@ -56,6 +56,7 @@ BEGIN_MESSAGE_MAP(CManualBtmDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON4, &CManualBtmDlg::OnBnClickedButton4)
 	ON_BN_CLICKED(IDC_BTN_LENS_MOVE_BTM, &CManualBtmDlg::OnBnClickedBtnLensMoveBtm)
 	ON_BN_CLICKED(IDC_BTN_LENS_MOVE_MARK, &CManualBtmDlg::OnBnClickedBtnLensMoveMark)
+	ON_BN_CLICKED(IDC_BTN_CLEAR, &CManualBtmDlg::OnBnClickedBtnClear)
 END_MESSAGE_MAP()
 
 // CManualBtmDlg 메시지 처리기입니다.
@@ -168,7 +169,7 @@ void CManualBtmDlg::OnBtnBtmInspectXClick(UINT nID)
 	
 	if(nIndex == eBtmInspect_X::Ready)
 	{
-		g_objCommon.Move_Position(AX_BTM_INSPECTOR_X, eTopInspect_X::Ready);
+		g_objCommon.Move_Position(AX_BTM_INSPECTOR_X, eBtmInspect_X::Ready);
 	}
 	if(nIndex == eBtmInspect_X::ScanStart)
 	{
@@ -503,14 +504,14 @@ BOOL CManualBtmDlg::Top2Scan_Run()
 			double dTrigE = dTrigS + dPeriod * pEquipData->nTop2Count;	// Trigger End
 			dTop2Z = dTrigE + (dPeriod/4);								// Motion End (가감속)
 			double dVelocity = pEquipData->dTop2Velocity;
-			g_objAJinAXL.Start_Scan(eVision::T2, AX_MARK_UNIT_Z, dTop2Z, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
+			g_objAJinAXL.Start_Scan(eVision::T2Ch, AX_MARK_UNIT_Z, dTop2Z, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
 			m_nTop2ScanCase++;
 		}
 		break;
 	case 3:		// Scan End
 		if (g_objAJinAXL.Is_Done(AX_MARK_UNIT_Z)) 
 		{
-			g_objAJinAXL.Stop_Scan(eVision::T2, AX_MARK_UNIT_Z);
+			g_objAJinAXL.Stop_Scan(eVision::T2Ch, AX_MARK_UNIT_Z);
 			m_nTop2ScanCase = 0;			
 			return FALSE;
 		}
@@ -612,4 +613,10 @@ void CManualBtmDlg::OnBnClickedBtnLensMoveMark()
 
 	g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_Y, dPosY);	
 	g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_X, dPosX);
+}
+
+
+void CManualBtmDlg::OnBnClickedBtnClear()
+{
+	g_objAJinAXL.Clear_Scan(eVision::T2Ch);
 }

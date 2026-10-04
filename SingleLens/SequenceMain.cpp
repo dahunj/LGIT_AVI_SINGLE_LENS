@@ -556,7 +556,7 @@ BOOL CSequenceMain::LotEnd_Run()
 	gData.bFirstLotStart = FALSE;
 
 	g_objCommon.Set_LoadCVStop();
-	g_objCommon.Set_UnloadCVStop();
+	//g_objCommon.Set_UnloadCVStop();
 		
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	//pMainDlg->Set_LampFlicker_UldRun(FALSE);
@@ -2347,6 +2347,7 @@ BOOL CSequenceMain::FeederRun()
 			m_nFeederCase = 0; return TRUE; 
 		}
 		if(gData.bElvLoadWait || gData.bElvSlideOverWait || gData.bElvUnloadWait) return TRUE;
+		g_objCommon.Move_Position(AX_ZIG_FEEDER_Y, eFeeder_Y::Ready);
 		m_nFeederCase++; m_nFeederLoop.Set_LoopTime(5000);
 		return TRUE;
 	case 52:
@@ -3514,7 +3515,16 @@ BOOL CSequenceMain::BtmInspectorRun()
 			g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_X) &&
 			g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Z))
 		{
-			if(m_pEquipData->bUseAutoRecipeChange && m_pEquipData->bUseBtmVision)
+			if(!m_pEquipData->bUseBtmVision)
+			{
+				gData.nInspectCnt[eVision::BC] = 0;
+				dwStartBtm = 0; dwEndBtm = 0;
+				
+				gData.bIndexDone[eMainIndex::Btm] = TRUE;
+				m_nBtmInspectCase = 0; m_nBtmInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);	
+				m_strLog.Format("Btm Vision Done"); m_nBtmInspectLoop.Takt_Save(5, m_nBtmInspectCase, m_strLog);
+			}
+			else if(m_pEquipData->bUseAutoRecipeChange && m_pEquipData->bUseBtmVision)
 			{
 				m_nBtmInspectCase = 31; m_nBtmInspectLoop.Set_LoopTime(10000);
 			}
@@ -3936,7 +3946,7 @@ BOOL CSequenceMain::MarkUnitRun()
 			}
 			else
 			{
-				gData.bTop2Done = FALSE;
+				gData.bTop2Done = FALSE; gData.nCurTop2YPos = 0;
 				gData.nInspectCnt[eVision::T2] = 0;
 				dwStartTop = GetTickCount(); dwEndTop = 0;
 
@@ -4049,7 +4059,7 @@ BOOL CSequenceMain::MarkUnitRun()
 			if(nLensNo == 32 || nLensNo== 68 || nLensNo == 113)
 			{
 				gData.InfoMainIndex[eMainIndex::Top2][nTop2XPos-1][nTop2YPos-1] = eLensState::Top2Done;	//Scan Done
-				m_nMarkUnitCase = 10; m_nMarkUnitLoop.Set_LoopTime(10000);
+				m_nMarkUnitCase = 40; m_nMarkUnitLoop.Set_LoopTime(10000);
 				break;
 			}
 			
@@ -4121,14 +4131,15 @@ BOOL CSequenceMain::MarkUnitRun()
 		}
 		break;
 	case 37:		// Scan Move
+		
 		if (g_objAJinAXL.Is_Done(AX_MARK_UNIT_Z)) 
 		{
 			double dPeriod = gRcp.dPeriod[eVision::T2];//m_pEquipData->dTopPeriod;	
-			double dTrigS =  gRcp.dStartZ[eVision::T2];//m_pEquipData->dTopStartZ;				
+			double dTrigS =  gRcp.dStartZ[eVision::T2];//m_pEquipData->dTopStartZ;
 			double dTrigE = dTrigS + (dPeriod) * (gRcp.nCount[eVision::T2]-1);	// Trigger End
 			dTop2Z = dTrigE + (dPeriod/10);								// Motion End (가감속)
 			double dVelocity = gRcp.dVelocity[eVision::T2];
-			g_objAJinAXL.Start_Scan(eVision::T2, AX_MARK_UNIT_Z, dTop2Z, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
+			g_objAJinAXL.Start_Scan(eVision::T2Ch, AX_MARK_UNIT_Z, dTop2Z, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
 			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(10000);
 		}
 		break;
@@ -4137,7 +4148,7 @@ BOOL CSequenceMain::MarkUnitRun()
 		{			
 			m_strLog.Format("AxisNo,%d, Current,%0.3lf", AX_MARK_UNIT_Z, g_objAJinAXL.Get_Position(AX_MARK_UNIT_Z)); g_objLogFile.Save_PositionLog(m_strLog);
 			g_objLogFile.Save_HandlerLog("Stop Scan");
-			g_objAJinAXL.Stop_Scan(eVision::T2, AX_MARK_UNIT_Z);
+			g_objAJinAXL.Stop_Scan(eVision::T2Ch, AX_MARK_UNIT_Z);
 			m_nMarkUnitCase = 40;
 			m_nMarkUnitLoop.Set_LoopTime(30000);		
 
@@ -4186,16 +4197,29 @@ BOOL CSequenceMain::MarkUnitRun()
 		}		
 		break;
 
-	case 1:
-		/*if (!m_pEquipData->bUseMark)
-		{
-			g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::Ready);
-			m_nMarkUnitCase = 15; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
-		} 	*/
-		
+	case 1:		
 		if(!gData.bIndexDone[eMainIndex::Btm]) return TRUE; // 바텀 검사가 다 끝나고 안전위치로 이동 후 마킹 시작. 
-
-		if(!gData.bIndexDone[eMainIndex::Top2] && !Check_IndexEmpty(eMainIndex::Top2))
+		
+		if (!m_pEquipData->bUseMark)
+		{
+				g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::Ready);
+				m_nMarkUnitCase = 15; m_nMarkUnitLoop.Set_LoopTime(10000);
+				
+			//nQSize = static_cast<int>(m_qLensNoDone.size());
+			//if(nQSize >= gData.nLensUseCnt[nMNo-1][nTNo-1] && m_qLensNoNG.empty()) //if(nQSize >= 141 && m_qLensNoNG.empty()) //done 
+			//{
+			//	ClearQueueDone();
+			//	g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::Ready);
+			//	m_nMarkUnitCase = 15; m_nMarkUnitLoop.Set_LoopTime(10000);
+			//	break;
+			//}
+			//else
+			//{
+			//	m_nMarkUnitLoop.Set_LoopTime(10000);
+			//	return TRUE;
+			//}			
+		} 	
+		else if(!gData.bIndexDone[eMainIndex::Top2] && !Check_IndexEmpty(eMainIndex::Top2))
 		{			
 			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 			m_strLog.Format("Marking Start"); m_nMarkUnitLoop.Takt_Save(8, m_nMarkUnitCase, m_strLog);
@@ -4311,7 +4335,7 @@ BOOL CSequenceMain::MarkUnitRun()
 		}
 		break;
 	case 7:
-		if(m_pDX02->IMarkPenExist 
+		if((m_pDX02->IMarkPenExist || !m_pEquipData->bUseMark)  
 			&& m_pDX02->IMarkPenDown && !m_pDX02->IMarkPenUp)
 		{
 			g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::MarkDown);

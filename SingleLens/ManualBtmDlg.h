@@ -80,4 +80,5 @@ public:
 	CEdit m_Edit_LensNo;
 	afx_msg void OnBnClickedBtnLensMoveBtm();
 	afx_msg void OnBnClickedBtnLensMoveMark();
+	afx_msg void OnBnClickedBtnClear();
 };

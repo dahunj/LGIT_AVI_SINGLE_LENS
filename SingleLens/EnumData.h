@@ -218,6 +218,7 @@ struct eVision
 		BC = 1,
 		MARKING = 2,
 		T2 = 3,
+		T2Ch = 2,
 	};
 
 };
