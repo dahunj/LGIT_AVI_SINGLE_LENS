@@ -53,6 +53,7 @@
 #include "CSClientSocket.h"
 #include "CSGrid.h"
 #include "CSServerSocket.h"
+#include "CSUdpClient.h"
 
 #include "EnumData.h"
 #include "EnumMoveData.h"
@@ -78,6 +79,7 @@
 	#pragma comment(lib, "CSClientSocketD.lib")
 	#pragma comment(lib, "CSServerSocketD.lib")
 	#pragma comment(lib, "CSGridD.lib")
+	#pragma comment(lib, "CSUdpClientD.lib")
 #else
 	#pragma comment(lib, "CSControlsR.lib")
 	#pragma comment(lib, "CSIniFileR.lib")
@@ -86,6 +88,7 @@
 	#pragma comment(lib, "CSClientSocketR.lib")
 	#pragma comment(lib, "CSServerSocketR.lib")
 	#pragma comment(lib, "CSGridR.lib")
+	#pragma comment(lib, "CSUdpClientR.lib")
 #endif
 
 #define MAIN_VERSION	_T("V 1.2.0.2_S")

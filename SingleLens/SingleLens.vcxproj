@@ -147,6 +147,7 @@
     <ClInclude Include="AJinDefine.h" />
     <ClInclude Include="AlarmDlg.h" />
     <ClInclude Include="BarcodeLot_Cognex.h" />
+    <ClInclude Include="Dispatcher.h" />
     <ClInclude Include="EnumData.h" />
     <ClInclude Include="EnumIO.h" />
     <ClInclude Include="EnumMoveData.h" />
@@ -207,6 +208,7 @@
     <ClCompile Include="AJinAXL.cpp" />
     <ClCompile Include="AlarmDlg.cpp" />
     <ClCompile Include="BarcodeLot_Cognex.cpp" />
+    <ClCompile Include="Dispatcher.cpp" />
     <ClCompile Include="GridWindow.cpp" />
     <ClCompile Include="InspectV1.cpp" />
     <ClCompile Include="MesAgent.cpp" />

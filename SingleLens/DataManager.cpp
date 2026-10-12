@@ -260,3 +260,46 @@ BOOL CDataManager::Read_MarkData()
 	return TRUE;
 }
 ///////////////////////////////////////////////////////////////////////////////
+
+
+void CDataManager::Reset_RosData()
+{
+	m_RosData.sHandlerIp = "0.0.0.0";
+	m_RosData.nJudgeTimeOver = 10000;
+	m_RosData.lstMdjIp.RemoveAll();
+}
+
+
+BOOL CDataManager::Read_RosData()
+{
+	CIniFileCS INI(gsCurrentDir + "\\System\\RosData.ini");
+	if (!INI.Check_File()) { AfxMessageBox("RosData.ini File Not Found!!!"); return FALSE; }
+
+	m_RosData.sHandlerIp = INI.Get_String("DISPATCHER", "HANDLER_IP", "0.0.0.0");
+	m_RosData.nJudgeTimeOver = INI.Get_Integer("DISPATCHER", "TIME_OVER", 10000);
+
+	CString strKey, strIp;
+	for (int i = 0; i < 50; i++) {
+		strKey.Format("%02d", i);
+		strIp = INI.Get_String("MDJ_LIST", strKey, "");
+		if (strIp == "") break;
+		m_RosData.lstMdjIp.AddTail(strIp);
+	}
+
+	return TRUE;
+}
+
+
+void CDataManager::Save_RosData()
+{
+	CIniFileCS INI(gsCurrentDir + "\\System\\RosData.ini");
+	if (!INI.Check_File()) { AfxMessageBox("RosData.ini File Not Found!!!"); return; }
+
+	CString strKey, strIp;
+	for (int i = 0; i < 50; i++) {
+		strKey.Format("%02d", i);
+		POSITION pos = m_RosData.lstMdjIp.FindIndex(i);
+		strIp = (pos ? m_RosData.lstMdjIp.GetAt(pos) : "");
+		INI.Set_String("MDJ_LIST", strKey, strIp);
+	}
+}

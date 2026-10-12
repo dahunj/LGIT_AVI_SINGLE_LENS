@@ -211,11 +211,11 @@ void CMonitorLogDlg::Read_LogFile()
 	CString strDate, strFile;
 	strDate.Format("%04d%02d%02d", sysTime.wYear, sysTime.wMonth, sysTime.wDay);
 
-	if		(m_rdoLogAlarm.GetCheck()) strFile.Format(gsCurrentDir + "\\LOG\\Alarm\\%s_Alarm.txt", strDate);
-	else if (m_rdoLogHandler.GetCheck()) strFile.Format(gsCurrentDir + "\\LOG\\Handler\\%s_Handler.txt", strDate);
-	else if (m_rdoLogInspector.GetCheck()) strFile.Format(gsCurrentDir + "\\LOG\\Inspector\\%s_Inspector.txt", strDate);
-	else if (m_rdoLogJobList.GetCheck()) strFile.Format(gsCurrentDir + "\\LOG\\JobList\\%s_JobList.txt", strDate);
-	else if (m_rdoLogTerminal.GetCheck()) strFile.Format(gsCurrentDir + "\\LOG\\Terminal\\%s_Terminal.txt", strDate);
+	if		(m_rdoLogAlarm.GetCheck()) strFile.Format(gsCurrentDir + "\\LOG\\Alarm\\%04d\\%02d\\%s_Alarm.txt", sysTime.wYear, sysTime.wMonth, strDate);
+	else if (m_rdoLogHandler.GetCheck()) strFile.Format(gsCurrentDir + "\\LOG\\Handler\\%04d\\%02d\\%s_Handler.txt",sysTime.wYear, sysTime.wMonth, strDate);
+	else if (m_rdoLogInspector.GetCheck()) strFile.Format(gsCurrentDir + "\\LOG\\Inspector\\%04d\\%02d\\%s_Inspector.txt",sysTime.wYear, sysTime.wMonth, strDate);
+	else if (m_rdoLogJobList.GetCheck()) strFile.Format(gsCurrentDir + "\\LOG\\JobList\\%04d\\%02d\\%s_JobList.txt",sysTime.wYear, sysTime.wMonth, strDate);
+	else if (m_rdoLogTerminal.GetCheck()) strFile.Format(gsCurrentDir + "\\LOG\\Terminal\\%s_Terminal.txt",sysTime.wYear, sysTime.wMonth, strDate);
 	else return;
 
 	CFileFind Finder;

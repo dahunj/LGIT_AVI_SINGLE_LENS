@@ -2282,12 +2282,7 @@ BOOL CSequenceMain::FeederRun()
 			int nGFCnt = 0;
 
 
-			m_strLog.Format("%s,%s,%s,%s,%s,\
-				%s,%s,%s,%s,%d,%d,\
-				%d,%d,%d,%0.1lf,%s,%s,\
-				%0.3lf,%0.1lf,%0.3lf,%0.3lf,%0.1lf,\
-				%d,%0.3lf,%d,%0.3lf,\
-				%d,%s,%s,%s,%s,%s,%d", 
+			m_strLog.Format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%d,%d,%d,%d,%d,%0.1lf,%s,%s,%0.3lf,%0.1lf,%0.3lf,%0.3lf,%0.1lf,%d,%0.3lf,%d,%0.3lf,%d,%s,%s,%s,%s,%s,%d", 
 				gData.sComName, m_pEquipData->sEquipName, MAIN_VERSION, gData.sRecipeFeeder,"", //station,Machine,HSW_Version,Recipe_H,SensorID
 				gData.sLotIDFeeder, "", gData.sMZIDFeeder, gData.sZigIDFeeder, gData.nTablePocketFeeder, gData.nSlotNoFeeder, // LotNum,Barcode,MGZ_ID,Tray_ID,Index_No,Tray_No
 				nLensCntZig, gLot.nGoodCountZig[nMNo][nZNo], nNgCntZig, dYield,gLot.sStartTimeZig[nMNo][nZNo], gLot.sEndTimeZig[nMNo][nZNo],  // Cnt,OK,NG,Yield,Start_Time,End_Time

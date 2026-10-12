@@ -31,6 +31,7 @@ CCriticalSection g_csEfficiencyLog;
 CCriticalSection g_csLotTimeLog;
 CCriticalSection g_csTerminalLog;
 CCriticalSection g_csDailyResultLog;
+CCriticalSection g_csDispatcherLog;
 
 CLogFile::CLogFile()
 {
@@ -74,16 +75,18 @@ void CLogFile::Save_AlarmLog(CString sLog)
 {
 	g_csAlarmLog.Lock();
 
-	CString strPath = gsCurrentDir + "\\LOG\\Alarm";
-
-	Create_Folder(strPath);
-
 	SYSTEMTIME time;
 	GetLocalTime(&time);
+
+	CString strPath;
+	strPath.Format("%s\\LOG\\Alarm\\%04d\\%02d", gsCurrentDir, time.wYear, time.wMonth);
+
+	Create_Folder(strPath);
 
 	CString strFile, strSave;
 	strFile.Format("%s\\%04d%02d%02d_Alarm.txt", strPath, time.wYear, time.wMonth, time.wDay);
 
+	
 	CFile file;
 	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
 		try {
@@ -136,15 +139,17 @@ void CLogFile::Save_HandlerLog(CString sLog)
 {
 	g_csHandlerLog.Lock();
 
-	CString strPath = gsCurrentDir + "\\LOG\\Handler";
-
-	Create_Folder(strPath);
-
 	SYSTEMTIME time;
 	GetLocalTime(&time);
 
+	CString strPath;
+	strPath.Format("%s\\LOG\\Handler\\%04d\\%02d", gsCurrentDir, time.wYear, time.wMonth);
+
+	Create_Folder(strPath);
+
 	CString strFile, strSave;
 	strFile.Format("%s\\%04d%02d%02d_Handler.txt", strPath, time.wYear, time.wMonth, time.wDay);
+	
 
 	CFile file;
 	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
@@ -201,17 +206,17 @@ void CLogFile::Save_PositionLog(const CString& sLog)
 
 void CLogFile::Save_TerminalLog(const CString& sLog)
 {
-	
-
-	CString strPath = gsCurrentDir + "\\LOG\\Terminal";
-
-	Create_Folder(strPath);
-
 	SYSTEMTIME time;
 	GetLocalTime(&time);
 
+	CString strPath;
+	strPath.Format("%s\\LOG\\Terminal\\%04d\\%02d", gsCurrentDir, time.wYear, time.wMonth);
+
+	Create_Folder(strPath);
+
 	CString strFile, strSave;
 	strFile.Format("%s\\%04d%02d%02d_Terminal.txt", strPath, time.wYear, time.wMonth, time.wDay);
+
 
 	g_csTerminalLog.Lock();
 	CFile file;
@@ -266,14 +271,15 @@ void CLogFile::Save_SaveRunTimeLog(CString sLog)
 void CLogFile::Save_InspectorLog(CString sLog)
 {
 	g_csInspectorLog.Lock();
-
-	CString strPath = gsCurrentDir + "\\LOG\\Inspector";
-
-	Create_Folder(strPath);
-
+	
 	SYSTEMTIME time;
 	GetLocalTime(&time);
 
+	CString strPath;
+	strPath.Format("%s\\LOG\\Inspector\\%04d\\%02d", gsCurrentDir, time.wYear, time.wMonth);
+	
+	Create_Folder(strPath);
+	
 	CString strFile, strSave;
 	strFile.Format("%s\\%04d%02d%02d_Inspector.txt", strPath, time.wYear, time.wMonth, time.wDay);
 
@@ -294,20 +300,58 @@ void CLogFile::Save_InspectorLog(CString sLog)
 	g_csInspectorLog.Unlock();
 }
 
-void CLogFile::Save_JobListLog(CString sLog, int nMZNo)
+
+void CLogFile::Save_DispatcherLog(CString sLog)
 {
-	g_csJobListLog.Lock();
-
-	CString strPath = gsCurrentDir + "\\LOG\\JobList";
-
-	Create_Folder(strPath);
+	g_csDispatcherLog.Lock();
 
 	SYSTEMTIME time;
 	GetLocalTime(&time);
 
-	CString sTitle, strFile, strSave;
+	CString strPath;
+	strPath.Format("%s\\LOG\\Dispatcher\\%04d\\%02d", gsCurrentDir, time.wYear, time.wMonth);
+
+	Create_Folder(strPath);
+	
+	CString strFile, strSave;
+	strFile.Format("%s\\%04d%02d%02d_Dispatcher.txt", strPath, time.wYear, time.wMonth, time.wDay);
+
+	CFile file;
+	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyNone)) {
+		try {
+			file.SeekToEnd();
+
+			strSave.Format("[%02d:%02d:%02d %03d] %s\r\n", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, sLog);
+
+			file.Write(strSave, strSave.GetLength());
+			file.Close();
+
+		} catch (CFileException *pEx) {
+			pEx->Delete();
+		}
+	}
+	g_csDispatcherLog.Unlock();
+}
+
+
+void CLogFile::Save_JobListLog(CString sLog, int nMZNo)
+{
+	g_csJobListLog.Lock();
+	
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+
+	CString strPath;
+	strPath.Format("%s\\LOG\\JobList\\%04d\\%02d", gsCurrentDir, time.wYear, time.wMonth);
+
+	Create_Folder(strPath);
+
+	CString strFile, strSave;
+	strFile.Format("%s\\%04d%02d%02d_JobList.txt", strPath, time.wYear, time.wMonth, time.wDay);
+	
+	CString sTitle;
 	sTitle.Format("Time,LotID,MGZ_ID,Start_Time,End_Time,Run_Time,Unload_Time,Tact(S-E),Tact(RunTime),Tact(Unload_Time),UPH(S-E),UPH(RunTime),UPH(Unload_Time),Alarm_Count,Stop_Time,Zig_Count,Lens_Count,Good_Count,NG_Count\r\n");
-	strFile.Format("%s\\%04d%02d%02d_JobList.csv", strPath, time.wYear, time.wMonth, time.wDay);
+	
 
 	CFile file;
 	if (file.Open(strFile, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite)) {
@@ -1090,15 +1134,18 @@ void CLogFile::Save_BarcodeLog(const CString& sLog)
 void CLogFile::Save_MCCLog(const CString& sLog)
 {
 	g_csMCCLog.Lock();
-	
-	CString strPath = gsCurrentDir + "\\LOG\\MCC";
-	CString strPath2 = "D:\\Dump\\MCC";
-
-	Create_Folder(strPath);
-	Create_Folder(strPath2);
 
 	SYSTEMTIME time;
 	GetLocalTime(&time);
+	
+	CString strPath;
+	strPath.Format("%s\\LOG\\MCC\\%04d\\%02d", gsCurrentDir, time.wYear, time.wMonth);
+
+	CString strPath2;
+	strPath2.Format("D:\\Dump\\MCC\\LOG\\MCC\\%04d\\%02d", time.wYear, time.wMonth);
+			
+	Create_Folder(strPath);
+	Create_Folder(strPath2);
 
 	CString strFile,strFile2, strSave;
 	strFile.Format("%s\\%04d%02d%02d_MCC.txt", strPath, time.wYear, time.wMonth, time.wDay);

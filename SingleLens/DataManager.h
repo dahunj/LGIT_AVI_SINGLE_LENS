@@ -37,6 +37,8 @@ typedef struct tag_EQUIP_DATA {
 
 	BOOL	bUseDoorLock;
 	
+	BOOL	bUseROS;
+
 	BOOL	bUseMES;	
 	BOOL	bLotEndSelect;
 	BOOL	bUseBarcodeMGZ;
@@ -121,6 +123,16 @@ typedef struct tag_MOVE_DATA
 
 ///////////////////////////////////////////////////////////////////////////////
 
+// ROS Data
+typedef struct tag_ROS_DATA {
+	CString sHandlerIp;
+	int		nJudgeTimeOver;
+	CList<CString, CString&> lstMdjIp;
+} ROS_DATA;
+
+///////////////////////////////////////////////////////////////////////////////
+
+
 class CDataManager
 {
 public:
@@ -130,7 +142,7 @@ public:
 private:
 	EQUIP_DATA	m_EquipData;
 	MOVE_DATA	m_MoveData;
-
+	ROS_DATA	m_RosData;
 public:	
 	void Reset_EquipData();
 	void Reset_MoveData();
@@ -140,8 +152,13 @@ public:
 
 	BOOL Read_MoveData();
 
+	void Reset_RosData();
+	BOOL Read_RosData();
+	void Save_RosData();
+
 	EQUIP_DATA *Get_pEquipData() { return &m_EquipData; }
 	MOVE_DATA *Get_pMoveData() { return &m_MoveData; }
+	ROS_DATA *Get_pRosData() { return &m_RosData; }
 
 	BOOL Save_MarkData();
 	BOOL Read_MarkData();
