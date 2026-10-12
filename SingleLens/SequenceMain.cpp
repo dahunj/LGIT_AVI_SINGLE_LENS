@@ -3340,7 +3340,7 @@ BOOL CSequenceMain::TopInspectorRun()
 			m_strLog.Format("AxisNo,%d, Current,%0.3lf", AX_TOP_INSPECTOR_Z, g_objAJinAXL.Get_Position(AX_TOP_INSPECTOR_Z));	g_objLogFile.Save_PositionLog(m_strLog);
 
 			if(nTopXPos < 1 || nTopYPos < 1) break;
-			if(gData.nInspectCnt[eVision::TC] == 0) 
+			if(gData.nInspectCnt[eVision::TC] == 0 || m_pEquipData->bDelayTop_All) 
 			{
 				if(!m_nTopInspectLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TopStart])) break;
 			}
@@ -3671,7 +3671,7 @@ BOOL CSequenceMain::BtmInspectorRun()
 		{		
 			if(nBtmXPos < 1 || nBtmYPos < 1) break;
 
-			if(gData.nInspectCnt[eVision::BC] == 0) 
+			if(gData.nInspectCnt[eVision::BC] == 0 || m_pEquipData->bDelayBtm_All) 
 			{
 				if(!m_nBtmInspectLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::BtmStart])) break;
 			}
@@ -4094,7 +4094,7 @@ BOOL CSequenceMain::MarkUnitRun()
 			m_strLog.Format("AxisNo,%d, Current,%0.3lf", AX_MARK_UNIT_Z, g_objAJinAXL.Get_Position(AX_MARK_UNIT_Z)); g_objLogFile.Save_PositionLog(m_strLog);
 
 			if(nTop2XPos < 1 || nTop2YPos < 1) break;
-			if(gData.nInspectCnt[eVision::T2] == 0) 
+			if(gData.nInspectCnt[eVision::T2] == 0 || m_pEquipData->bDelayTop2_All) 
 			{
 				if(!m_nMarkUnitLoop.Waiting_Time(m_pEquipData->nDelayAdd[eDelay::TopStart])) break;
 			}

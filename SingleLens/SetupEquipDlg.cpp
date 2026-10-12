@@ -31,7 +31,7 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	/*for (int i = 0; i < 12; i++) DDX_Control(pDX, IDC_GROUP_0 + i, m_Group[i]);
 	for (int i = 0; i < 7; i++) DDX_Control(pDX, IDC_LABEL_0 + i,  m_Label[i]);
-*/
+	*/
 	DDX_Control(pDX, IDC_STC_EQUIP_NAME, m_stcEquipName);
 	DDX_Control(pDX, IDC_STC_EQUIP_MODEL, m_stcEquipModel);
 	DDX_Control(pDX, IDC_CBO_MODEL_CHANGE, m_cboModelChange);
@@ -46,7 +46,7 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STC_DOORLOCK_TIME, m_stcDoorLockTime);
 
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_RDO_DOOR_LOCK_0 + i, m_rdoDoorLock[i]);		
-		
+
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_LBL_DELAY_ADD_0 + i,  m_lblDelayAdd[i]);
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_STC_DELAY_ADD_0 + i, m_stcDelayAdd[i]);
 
@@ -64,7 +64,7 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STC_PASSWORD_MT, m_stcPasswordOp);
 	DDX_Control(pDX, IDC_LBL_PASSWORD_ENGR, m_lblPasswordEngr);
 	DDX_Control(pDX, IDC_EDT_PASSWORD_ENGR, m_edtPasswordEngr);
-		
+
 	DDX_Control(pDX, IDC_GRP_RESULT_TEST, m_grpResultTest);
 	DDX_Control(pDX, IDC_LBL_RESULT_TEST, m_lblResultTest);
 	DDX_Control(pDX, IDC_CHK_RESULT_TEST_USE, m_chkResultTestUse);
@@ -80,7 +80,7 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Control(pDX, IDC_STC_MARK_COUNT, m_stcMarkCount);
 	DDX_Control(pDX, IDC_STC_MARK_TIMEOUT, m_stcMarkTimeout);
-	
+
 	DDX_Control(pDX, IDC_CHK_TOP_VISION, m_chkTopVision);
 	DDX_Control(pDX, IDC_CHK_BTM_VISION, m_chkBtmVision);
 	DDX_Control(pDX, IDC_CHK_MARK_USE, m_chkMarkUse);
@@ -108,7 +108,10 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_LBL_TRIGBTM_0 + i, m_lblTriggerBtm[i]);
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_LBL_TRIGTOP2_0 + i, m_lblTriggerTop2[i]);
 
-	
+
+	DDX_Control(pDX, IDC_CHK_DELAY_BETWEEN_TOP, m_chkDelayAllTop);
+	DDX_Control(pDX, IDC_CHK_DELAY_BETWEEN_TOP2, m_chkDelayAllTop2);
+	DDX_Control(pDX, IDC_CHK_DELAY_BETWEEN_BTM, m_chkDelayAllBtm);
 }
 
 BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
@@ -135,6 +138,9 @@ BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHK_USE_MES, &CSetupEquipDlg::OnBnClickedChkUseMes)
 	ON_CONTROL_RANGE(STN_CLICKED, IDC_STC_MARK_TIMEOUT, IDC_STC_MARK_TIMEOUT, OnStnClickedStcMarkTimeout)
 	ON_STN_CLICKED(IDC_STC_SAFETY_SWITCH, &CSetupEquipDlg::OnStnClickedStcSafetySwitch)
+	ON_BN_CLICKED(IDC_CHK_DELAY_BETWEEN_TOP2, &CSetupEquipDlg::OnBnClickedChkDelayBetweenTop2)
+	ON_BN_CLICKED(IDC_CHK_DELAY_BETWEEN_BTM, &CSetupEquipDlg::OnBnClickedChkDelayBetweenBtm)
+	ON_BN_CLICKED(IDC_CHK_DELAY_BETWEEN_TOP, &CSetupEquipDlg::OnBnClickedChkDelayBetweenTop)
 END_MESSAGE_MAP()
 
 // CSetupEquipDlg 메시지 처리기입니다.
@@ -426,6 +432,10 @@ void CSetupEquipDlg::Display_EquipData()
 {
 	CString strData;
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	m_chkDelayAllTop.SetCheck(pEquipData->bDelayTop_All);
+	m_chkDelayAllTop2.SetCheck(pEquipData->bDelayTop2_All);
+	m_chkDelayAllBtm.SetCheck(pEquipData->bDelayBtm_All);
 
 	m_stcEquipName.SetWindowText(pEquipData->sEquipName);
 	m_stcEquipModel.SetWindowText(pEquipData->sModelName);
@@ -1021,4 +1031,26 @@ void CSetupEquipDlg::OnStnClickedStcSafetySwitch()
 
 	m_strLog.Format("[Equip Mode] Safety Switch Time - %s ", strNew);
 	g_objLogFile.Save_HandlerLog(m_strLog);
+}
+
+
+void CSetupEquipDlg::OnBnClickedChkDelayBetweenTop2()
+{
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	pEquipData->bDelayTop2_All = m_chkDelayAllTop2.GetCheck();
+}
+
+
+void CSetupEquipDlg::OnBnClickedChkDelayBetweenBtm()
+{
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	pEquipData->bDelayBtm_All = m_chkDelayAllBtm.GetCheck();
+	
+}
+
+
+void CSetupEquipDlg::OnBnClickedChkDelayBetweenTop()
+{
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	pEquipData->bDelayTop_All = m_chkDelayAllTop.GetCheck();
 }

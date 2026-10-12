@@ -1,6 +1,7 @@
 // SetupEquipDlg.h : 헤더 파일
 //
 #pragma once
+#include "afxwin.h"
 
 // CSetupEquipDlg 대화 상자입니다.
 
@@ -136,6 +137,12 @@ public:
 	afx_msg void OnBnClickedChkUseMes();
 
 	afx_msg void OnStnClickedStcSafetySwitch();
+	afx_msg void OnBnClickedChkDelayBetweenTop2();
+	afx_msg void OnBnClickedChkDelayBetweenBtm();
+	CButton m_chkDelayAllTop;
+	CButton m_chkDelayAllTop2;
+	CButton m_chkDelayAllBtm;
+	afx_msg void OnBnClickedChkDelayBetweenTop();
 };
 
 ///////////////////////////////////////////////////////////////////////////////
