@@ -233,6 +233,8 @@ typedef struct
 	int     nInspectInfo[7][10][ZIG_X*ZIG_Y];    // ????? (0:Empty, 1:Good, 2:NG, 3:NoResult, 7:Request, 8:NG, 9:Init)
 	BYTE	byInspectDone[7][10][ZIG_X*ZIG_Y];	// 검사완료 (2bit 사용 ==> 0:T1, 1:Btm1)
 
+	int		nROSInfo[7][10][ZIG_X*ZIG_Y];
+
 	//0: Rignt, 1 : Left,  판정코드 (0:Top, 1:Btm)
 	
 	BOOL    bCycleStop;                // Run 
@@ -307,6 +309,8 @@ typedef struct
 	BOOL	bTop2Done; 
 	int		nCurTop2YPos; // for interlock with Btm vision 
 
+	int		nROSReqCount;
+
 } GLOVAL_DATA;
 
 
@@ -334,7 +338,10 @@ typedef struct
 	DWORD	dwLotEnd[7];	
 	
 	int		nTrayCount[7];
+	int		nTotalTrayCnt[7];
+
 	int		nLensCount[7];
+	int		nTotalLensCnt[7];
 	DWORD	dwFirstUnloadTray[7];
 	
 	double  dTackTime_Unload;
@@ -355,6 +362,8 @@ typedef struct
 
 	int		nStopCount[7];
 	int		nStopCountZig[7][10];
+
+	int		nRosJugCount[7][4]; 
 
 	DWORD	dwStopStart;
 	DWORD	dwStopEnd;

@@ -163,8 +163,6 @@ public:
 	BOOL Select_MarkScanPos(int &nMarkPosX, int &nMarkPosY, int nDir);
 	void Init_InspectInfo(int nMZNo, int nTNo, int nLensNo);
 	
-	BOOL Check_InspectDone(const CString& sZigID,int nMZNo, int sSlotNo, int sLensNo, int& nInfo);
-	
 	void Init_MZSlot(int nSlotNo, int nX, int nY);
 
 	int Find_UnloadMZNo();
@@ -173,6 +171,14 @@ public:
 
 	BOOL Get_RecipeData(int nVision, CString sRcp);
 
+
+	BOOL Check_InspectDone(const CString& sZigID,int nMZNo, int sSlotNo, int sLensNo, int& nInfo);
+
+	void Set_ROSDone(int nPNo, int nPortNo, int nTrayNo);
+	void Set_ROSTime(int nPNo, int nPortNo, int nTrayNo);
+
+	BOOL Check_ROSDone(int nPNo, int nPortNo, int nTrayNo);
+	BOOL Check_JudgeDone(int nPNo, int nPortNo, int nTrayNo);
 };
 
 extern CSequenceMain g_objSequenceMain;

@@ -9,6 +9,8 @@
 #include "Common.h"
 
 #include "Inspector.h"
+#include "Dispatcher.h"
+
 #include "SequenceInit.h"
 
 #include "OperatorDlg.h"
@@ -207,6 +209,8 @@ void CInitialDlg::OnTimer(UINT_PTR nIDEvent)
 				pMainDlg->Set_CurrentState(STATE_STOP);
 				pMainDlg->Enable_ModeButton(TRUE);
 				pMainDlg->Set_CurrentMode(MODE_OPERATOR);
+
+				g_objDispatcher.Set_StatusUpdate(0);	// 0:Stop, 1:Run, 2:Error
 
 				g_dlgOperator.ShowWindow(SW_SHOW);
 				return;

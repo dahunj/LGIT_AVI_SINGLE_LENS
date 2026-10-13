@@ -24,10 +24,10 @@ private:
 	BOOL	m_bConnected;
 	int		m_nMdjIndex;
 
-	BOOL	m_bJudgeReq[30][10][40];		// 판정 요청
-	BOOL	m_bJudgeDone[30][10][40];	// 판정 완료
-	DWORD	m_dwReqStart[30][10][40];	// 요청 시작
-	DWORD	m_dwTimeStart[30][10][40];	// TimeOver Check시작
+	BOOL	m_bJudgeReq[3][10][200];		// 판정 요청
+	BOOL	m_bJudgeDone[3][10][200];	// 판정 완료
+	DWORD	m_dwReqStart[3][10][200];	// 요청 시작
+	DWORD	m_dwTimeStart[3][10][200];	// TimeOver Check시작
 	int		m_nPortNo;
 
 	void Get_ConnectRequest(CString sIp);
@@ -52,10 +52,10 @@ public:
 	void Set_StatusRequest();
 	void Set_StatusReply(CString sIp, int nStatus);
 	void Set_StatusUpdate(int nStatus);
-	void Set_LotStart(int nPortNo);
+	void Set_LotStart(int nMZNo, int nTotalTrayCnt, int nTotalLensCnt);
 	void Set_LotEnd(int nPortNo);
 	void Set_InfoReply(CString sIp);
-	void Set_JudgeRequest(int nPortNo, int nTrayNo, int nCmNo);
+	void Set_JudgeRequest(int nMZNo, int nTrayNo, int nLensNo);
 	void Set_TimeUpdate();
 	void Set_TimeOver(int nPortNo, int nTrayNo, int nCmNo);
 

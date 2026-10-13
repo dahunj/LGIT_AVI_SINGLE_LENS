@@ -8,6 +8,7 @@
 #include "LogFile.h"
 #include "Common.h"
 #include "MesAgent.h"
+#include "Dispatcher.h"
 
 #include "SequenceInit.h"
 #include "SequenceMain.h"
@@ -276,6 +277,8 @@ void CErrorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		int nCategory = 33;	// 11:비가동중 알람, 21:경알람, 31:품질관련, 32:생산관련, 33:설비문제
 		g_objMesAgent.Set_AlarmLog(m_nErrNo, m_strErrMsg, nCategory);
 
+
+		g_objDispatcher.Set_StatusUpdate(2);	// 0:Stop, 1:Run, 2:Error
 		//////////////////////////
 		int nZoneNo = 0;
 
@@ -596,3 +599,52 @@ void CErrorDlg::Set_AlarmLog(int nErrNo, CString sErrMsg)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+
+
+//
+//void CSequenceMain::Set_ROSTime(int nPNo, int nPortNo, int nTrayNo)
+//{
+//	if (nPNo < 1 || nPNo > 7 || nPortNo < 1 || nPortNo > 30 || nTrayNo < 1 || nTrayNo > 10) return;
+//	if (gData.bUseDryRun || gData.bCycleStop || !m_pEquipData->bUseROS) return;
+//
+//	int nCNo = gData.InfoUnloadPick[nPNo-1][9];
+//	for(int i = 0; i < 8; i++) {
+//		if (gData.InfoUnloadPick[nPNo-1][i] > 0) {
+//			g_objDispatcher.Set_TimeOver(nPortNo, nTrayNo, i + nCNo);
+//		}
+//	}
+//}
+//
+//BOOL CSequenceMain::Check_ROSDone(int nPNo, int nPortNo, int nTrayNo)
+//{
+//	if (nPNo < 1 || nPNo > 2 || nPortNo < 1 || nPortNo > 30 || nTrayNo < 1 || nTrayNo > 10) return FALSE;
+//	if (gData.bUseDryRun || gData.bCycleStop || !m_pEquipData->bUseROS || m_pEquipData->bUsePassGood) return TRUE;
+//
+//	int nCNo = gData.InfoUnloadPick[nPNo-1][9];
+//	for(int i = 0; i < 8; i++) {
+//		if (gData.InfoUnloadPick[nPNo-1][i] > 0) {
+//			if (!g_objDispatcher.Is_JudgeDone(nPortNo, nTrayNo, i + nCNo)) return FALSE;
+//		}
+//	}
+//	Set_ROSDone(nPNo, nPortNo, nTrayNo);
+//
+//	return TRUE;
+//}
+//
+//void CSequenceMain::Set_ROSDone(int nPNo, int nPortNo, int nTrayNo)
+//{
+//	if (nPNo < 1 || nPNo > 2 || nPortNo < 1 || nPortNo > 30 || nTrayNo < 1 || nTrayNo > 10 ) return;
+//
+//	int nCno = gData.InfoUnloadPick[nPNo-1][9] - 1;
+//	for(int i=0; i<8; i++) {
+//		if ((i+nCno) >= 40) break;
+//
+//		if (gData.InfoUnloadPick[nPNo-1][i] > 0) {
+//			if (gLot.nJudge_R[nPortNo-1][nTrayNo-1][i+nCno] > 0) {
+//				if (gLot.nJudge_R[nPortNo-1][nTrayNo-1][i+nCno] == 2) gData.InfoUnloadPick[nPNo-1][i] = 2;	//ROS_OK
+//				else												  gData.InfoUnloadPick[nPNo-1][i] = 4;	//ROS_Marginal
+//			}
+//		}
+//	}
+//}

@@ -258,3 +258,16 @@ struct eMZBuffer
 		LoadCV4 = 5, 
 	};
 };
+
+
+struct eROSInfo
+{
+	enum name
+	{
+		Requested = 0,
+		Good = 1,
+		ROS_NG = 2,
+		ROS_Repair = 3,
+	};
+};
+

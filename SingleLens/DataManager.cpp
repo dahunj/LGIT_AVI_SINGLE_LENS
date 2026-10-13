@@ -24,6 +24,8 @@ CDataManager::~CDataManager()
 
 void CDataManager::Reset_EquipData()
 {
+	m_EquipData.nROSTimeOut = 10000;
+
 	m_EquipData.bDelayTop_All = TRUE;
 	m_EquipData.bDelayBtm_All = TRUE;
 	m_EquipData.bDelayTop2_All = TRUE;

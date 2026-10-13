@@ -7,6 +7,7 @@
 #include "LogFile.h"
 #include "Common.h"
 #include "DataManager.h"
+#include "Dispatcher.h"
 
 #include "SequenceInit.h"
 #include "SequenceMain.h"
@@ -252,6 +253,8 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 	int nTNo = atoi(sTrayNo) - 1;	// Tray Index
 	int	nLNo = atoi(sLensNo);	// CM Index
 
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
 	m_sMZID = sMZID;
 	int nLAVINo = g_objCommon.ConvertToAVINo(nLNo);
 
@@ -278,11 +281,17 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 			gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = eLensInfo::NG;
 			gData.sJudgeCode[nMNo][nTNo][nLAVINo-1][eVision::MARKING] = sJudge;
 			gData.sNGCode[nMNo][nTNo][nLAVINo-1][eVision::MARKING] = sNgCode;
+
+			if(pEquipData->bUseROS) g_objDispatcher.Set_JudgeRequest(nMNo + 1, nTNo + 1, nLNo); //Ros판정
 		}		
 	}		
-	else if (sJudge != "G")  // Good
-	{ 
-		if (nPreInfo < 2 || nPreInfo > 8) gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = eLensInfo::NG;  
+	else if (sJudge != "G")  // NG
+	{ 		
+		if (nPreInfo < 2 || nPreInfo > 8)
+		{
+			gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = eLensInfo::NG;  
+			if(pEquipData->bUseROS) g_objDispatcher.Set_JudgeRequest(nMNo + 1, nTNo + 1, nLNo); //Ros판정
+		}		
 	}	
 	else if (sJudge == "G")  // Good
 	{ 
@@ -291,7 +300,7 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 		
 	gData.byInspectDone[nMNo][nTNo][nLAVINo-1] |= (1 << nV);
 
-	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	
 
 	if (pEquipData->bUseTopVision && ((gData.byInspectDone[nMNo][nTNo][nLAVINo-1] >> (int)eVision::TC) & 1) == 0) return;	// TC
 	if (pEquipData->bUseBtmVision  && ((gData.byInspectDone[nMNo][nTNo][nLAVINo-1] >> (int)eVision::BC) & 1) == 0) return;	// BC

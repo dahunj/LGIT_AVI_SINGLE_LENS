@@ -8,6 +8,7 @@
 #include "LogFile.h"
 #include "BarcodeLot_Cognex.h"
 #include "MesAgent.h"
+#include "Dispatcher.h"
 
 #include "WorkDlg.h"
 
@@ -329,6 +330,9 @@ void CSequenceMain::Set_ClearRunData(BOOL bInit)
 		gLot.nTrayCount[i] = 0;
 		gLot.nLensCount[i] = 0;
 
+		gLot.nTotalTrayCnt[i] = 0;
+		gLot.nTotalLensCnt[i] = 0;
+
 		gLot.nGoodCount[i] = 0;
 		gLot.nNgCount[i] = 0;
 		gLot.nEmptyCount[i] = 0;
@@ -369,6 +373,8 @@ void CSequenceMain::Job_LotStart(int nMZNo, int nPos)
 
 	gLot.dwStopTime[nMNo] = 0;
 	gLot.dwErrorTime[nMNo] = 0;
+
+	g_objDispatcher.Reset(nMZNo);
 	
 	g_objLogFile.Save_EfficiencyLog(0, "Start", 903, "Lot Start");	//Lot Start 
 }
@@ -436,6 +442,9 @@ void CSequenceMain::Job_LotEnd(int nMZNo)
 
 	gLot.nTrayCount[nMNo] = 0;
 	gLot.nLensCount[nMNo] = 0;
+
+	gLot.nTotalTrayCnt[nMNo] = 0;
+	gLot.nTotalLensCnt[nMNo] = 0;
 
 	gLot.nGoodCount[nMNo] = 0;
 	gLot.nNgCount[nMNo] = 0;
@@ -1126,13 +1135,16 @@ BOOL CSequenceMain::MZElevRun()
 			{
 				gData.nCtZigTotalCnt[eMZ::Load] = 0;
 				gData.nLensTotalCnt[eMZ::Load] = 0;
+								
 				g_objMesAgent.Set_LotStartedReport(gMes.sHostLotID[eMZ::Load], gMes.sHostMGZID[eMZ::Load], gMes.sHostRecipe[eMZ::Load]);
 				g_objInspector.Set_LotStart(gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load], gMes.sHostRecipe[eMZ::Load]);
+				g_objDispatcher.Set_LotStart(nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load]); // 이떄 Total Cnt 들 집계가 안될텐데
 			}
 			else
 			{			
 				gLot.nLensCount[nMZNo-1] = gData.nLensTotalCnt[eMZ::Load];
 				g_objInspector.Set_LotStart(gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load], m_pEquipData->sModelName);
+				g_objDispatcher.Set_LotStart(nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load]); // 이떄 Total Cnt 들 집계가 안될텐데
 			}
 
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
@@ -1151,6 +1163,7 @@ BOOL CSequenceMain::MZElevRun()
 	case 9:
 		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_LotStart");
 		g_objInspector.Set_LotStart(gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load],"Model");
+		g_objDispatcher.Set_LotStart(nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load]); // 이떄 Total Cnt 들 집계가 안될텐데
 		m_nMZElevCase = 8;	m_nMZElevLoop.Set_LoopTime(5000);	
 		break;
 	
@@ -1365,11 +1378,13 @@ BOOL CSequenceMain::MZElevRun()
 				gData.nLensTotalCnt[eMZ::Ready] = 0;
 				g_objMesAgent.Set_LotStartedReport(gMes.sHostLotID[eMZ::Ready], gMes.sHostMGZID[eMZ::Ready], gMes.sHostRecipe[eMZ::Ready]);
 				g_objInspector.Set_LotStart(gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready] - 1], nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready],gMes.sHostRecipe[eMZ::Ready]);
+				g_objDispatcher.Set_LotStart(nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready]); // 이떄 Total Cnt 들 집계가 안될텐데
 			}
 			else
 			{				
 				gLot.nLensCount[nMZNo-1] = gData.nLensTotalCnt[eMZ::Ready];
 				g_objInspector.Set_LotStart(gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready] - 1], nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready], m_pEquipData->sModelName);
+				g_objDispatcher.Set_LotStart(nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready]); // 이떄 Total Cnt 들 집계가 안될텐데
 			}			
 
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
@@ -1387,6 +1402,7 @@ BOOL CSequenceMain::MZElevRun()
 	case 17:
 		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_LotStart");
 		g_objInspector.Set_LotStart(gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready] - 1], nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready],gMes.sHostRecipe[eMZ::Ready]);
+		g_objDispatcher.Set_LotStart(nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready]); // 이떄 Total Cnt 들 집계가 안될텐데
 		m_nMZElevCase = 16;	m_nMZElevLoop.Set_LoopTime(5000);	
 		break;
 

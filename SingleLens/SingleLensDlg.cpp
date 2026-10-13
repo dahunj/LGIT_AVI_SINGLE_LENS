@@ -24,6 +24,7 @@
 #include "VersionDlg.h"
 
 #include "MesAgent.h"
+#include "Dispatcher.h"
 #include "Inspector.h"
 #include "BarcodeLot_Cognex.h"
 #include "NoWorkDlg.h"
@@ -164,6 +165,7 @@ BOOL CSingleLensDlg::OnInitDialog()
 	g_dlgVersion.Create(CVersionDlg::IDD, this);
 	g_objMesAgent.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
 	g_dlgNoWork.Create(CNoWorkDlg::IDD, this);
+	g_objDispatcher.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
 
 	g_objBarcodeLot_Cognex.Create(NULL, NULL, WS_CHILD, CRect(0,0,0,0), this, 0);
 
@@ -280,6 +282,8 @@ BOOL CSingleLensDlg::PreTranslateMessage(MSG* pMsg)
 void CSingleLensDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
+
+	g_objDispatcher.Set_StatusUpdate(0);	// 0:Stop, 1:Run, 2:Error
 	
 	g_dlgVersion.DestroyWindow();
 	g_dlgAlarm.DestroyWindow();
@@ -297,6 +301,8 @@ void CSingleLensDlg::OnDestroy()
 	
 	g_objCommon.DestroyWindow();
 	g_dlgNoWork.DestroyWindow();
+	g_objDispatcher.DestroyWindow();
+	
 		
 }
 
@@ -338,7 +344,8 @@ void CSingleLensDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 
 	g_objInspector.Initialize();
 	g_objMesAgent.Initialize();
-	
+	g_objDispatcher.Initialize();
+
 	gData.sOperID = "";	
 
 
@@ -348,6 +355,8 @@ void CSingleLensDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 
 	//g_objInspector.Set_StatusUpdate(0);
 	//g_objInspector.Set_LightOff();
+
+	g_objDispatcher.Set_StatusUpdate(0);	// 0:Stop, 1:Run, 2:Error
 
 	if (!g_objBarcodeLot_Cognex.Initialize()) {
 		g_objCommon.Show_MsgBox(1, "Fail to barcode(Cognex) initialization.");
@@ -360,6 +369,8 @@ void CSingleLensDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 
 	Set_CurrentMode(MODE_INITIAL);
 	Set_CurrentState(STATE_NONE);
+
+	
 
 	m_dwEquipProcTime = GetTickCount();
 	Set_LotErrorLog("PROGRAM BEGIN", 900, "Program Begin");
@@ -1013,6 +1024,7 @@ void CSingleLensDlg::Exit_System(int nExitNo)
 	g_objAJinAXL.Terminate();
 	g_objBarcodeLot_Cognex.Terminate();
 	g_objMesAgent.Terminate();
+	g_objDispatcher.Terminate();
 
 	EndDialog(IDOK);
 }
