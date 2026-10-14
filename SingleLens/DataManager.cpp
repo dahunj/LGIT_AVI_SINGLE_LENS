@@ -24,8 +24,6 @@ CDataManager::~CDataManager()
 
 void CDataManager::Reset_EquipData()
 {
-	m_EquipData.nROSTimeOut = 10000;
-
 	m_EquipData.bDelayTop_All = TRUE;
 	m_EquipData.bDelayBtm_All = TRUE;
 	m_EquipData.bDelayTop2_All = TRUE;
@@ -128,6 +126,7 @@ BOOL CDataManager::Read_ModelEquipData(CString strPath)
 	m_EquipData.nInspectTimeOut = INI.Get_Integer("EQUIPMENT", "INSPECT_TIMEOUT", 0);
 	m_EquipData.nRosTimeOut = INI.Get_Integer("EQUIPMENT", "ROS_TIMEOUT", 0);
 
+	m_EquipData.bUseROS = INI.Get_Bool("OPTION", "ROS_USE", FALSE);
 	m_EquipData.bUseMES = INI.Get_Bool("OPTION", "MES_USE", FALSE);
 	m_EquipData.bLotEndSelect = INI.Get_Bool("OPTION", "LOT_END_SELECT", FALSE);
 	m_EquipData.bUseBarcodeMGZ = INI.Get_Bool("OPTION", "BARCODE_MGZ_USE", FALSE);

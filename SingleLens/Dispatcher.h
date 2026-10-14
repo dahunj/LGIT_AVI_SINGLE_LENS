@@ -20,6 +20,8 @@ private:
 	CUdpRecvCS	m_UdpRecv;
 	CUdpSendCS	m_UdpSend;
 
+	CString	m_strLog;
+
 	CString	m_strRecvCmd;
 	BOOL	m_bConnected;
 	int		m_nMdjIndex;

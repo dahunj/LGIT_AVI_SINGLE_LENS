@@ -194,6 +194,8 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 
 	if (nTNo < 0 || nTNo > 99 || nLNo < 0 || nLNo > 200) { g_objCommon.Show_Error(6101); return; }
 
+	gData.dwInspectWait[nMNo-1][nTNo-1][nLAVINo-1] = GetTickCount();
+
 	int nV = (sGbn == "TC" ? eVision::TC : (sGbn == "BC" ? eVision::BC : (sGbn == "T2" ? eVision::T2 : -1)));
 	if (nV == -1) { g_objCommon.Show_Error(6102); return; }
 		

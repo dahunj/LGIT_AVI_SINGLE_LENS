@@ -157,7 +157,7 @@ typedef struct
 	int nStateMainIndex[7][ZIG_X][ZIG_Y]; //0: Load , 1: Clean, 2: Top, 3:empty, 4:btm, 5: Mark, 6: Unload 
 	int nStateMZUnload[10][ZIG_X][ZIG_Y];
 
-	int nInfoMainIndex[7][ZIG_X][ZIG_Y]; //0: Load , 1: Clean, 2: Top, 3:empty, 4:btm, 5: Mark, 6: Unload 
+	int nInfoMainIndex[3][10][ZIG_X*ZIG_Y]; //0: Load , 1: Clean, 2: Top, 3:empty, 4:btm, 5: Mark, 6: Unload 
 	
 	int nMZNoMZLoad[10];
 	int nMZNoMZRdy[10];

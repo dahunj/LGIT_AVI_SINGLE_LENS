@@ -1186,22 +1186,31 @@ void CSingleLensDlg::Set_MarkerTimeout()
 
 void CSingleLensDlg::Set_OperMode()
 {
-	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	EQUIP_DATA* pEquipData = g_objDataManager.Get_pEquipData();
 
-	int nTerm = pEquipData->nSafetySwitchTime * 1000;
+	int nSafetySwitchTime = pEquipData->nSafetySwitchTime;
 
-	if(nTerm == 0) return;
+	
+	if (nSafetySwitchTime <= 0)
+		return;
+		
+	DWORD dwTerm = static_cast<DWORD>(nSafetySwitchTime) * 1000UL;
 
-	if(nTerm < 10*1000) nTerm = 10*1000;
+	if (dwTerm < 10UL * 1000UL)
+		dwTerm = 10UL * 1000UL;
 
-	if(GetTickCount() - gData.dwTouched > nTerm )
-	//if(m_dwTouched - GetTickCount() > 10*60*1000 )
+	DWORD dwElapsed = GetTickCount() - gData.dwTouched;
+
+	if (dwElapsed > dwTerm)
 	{
 		int nMode = theApp.Get_MainMode();
-		if(nMode == MODE_PARAM || nMode == MODE_SETUP || nMode == MODE_MANUAL)
+
+		if (nMode == MODE_PARAM ||
+			nMode == MODE_SETUP ||
+			nMode == MODE_MANUAL)
 		{
 			Set_CurrentMode(MODE_WORK);
-		}		
+		}
 	}
 }
 

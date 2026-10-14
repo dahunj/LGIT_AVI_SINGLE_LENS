@@ -99,7 +99,7 @@ typedef struct tag_EQUIP_DATA {
 	int		nMarkCount;
 	int		nMarkTimeout;
 
-	int		nROSTimeOut;
+	
 
 } EQUIP_DATA;
 

@@ -688,8 +688,7 @@ void CSetupEquipDlg::Save_ModelEquipData(CString sPath)
 
 	m_stcEquipName.GetWindowText(strData); INI.Set_String("EQUIPMENT", "NAME", strData);
 	m_stcEquipModel.GetWindowText(strData); INI.Set_String("EQUIPMENT", "MODEL", strData);
-	pEquipData->sModelName = strData;
-		
+	pEquipData->sModelName = strData;		
 
 	m_stcNoWorkTime.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("EQUIPMENT", "NO_WORK_TIME", nData);
 	m_stcSafetySwitch.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("EQUIPMENT", "SAFETY_SWITCH_TIME", nData);

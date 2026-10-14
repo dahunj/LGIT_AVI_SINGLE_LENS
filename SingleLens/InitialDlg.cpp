@@ -277,7 +277,7 @@ void CInitialDlg::Display_Status()
 
 	for (int i = 0; i < 8; i++)
 	{
-		m_ledDoorOpen[i].Set_On((pDX03->nValue >> i + 22) & 1);
+		m_ledDoorOpen[i].Set_On((pDX03->nValue >> (i + 22)) & 1);
 	}
 	CString strTemp;
 	int *pCase = g_objSequenceInit.Get_InitialCase();

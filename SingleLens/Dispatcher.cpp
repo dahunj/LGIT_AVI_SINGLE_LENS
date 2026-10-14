@@ -91,6 +91,7 @@ void CDispatcher::Reset(int nMzNo)
 		memset(m_dwTimeStart, 0x00, sizeof(DWORD) * 3 * 10 * 200);
 
 		memset(gData.nROSInfo, 0x00, sizeof(int)*7*10*800); 
+		memset( gData.nInfoMainIndex, 0x00, sizeof(int)*3*10*ZIG_X*ZIG_Y);
 	} 
 	else
 	{
@@ -100,6 +101,7 @@ void CDispatcher::Reset(int nMzNo)
 		memset(m_dwTimeStart[nMzNo-1], 0x00, sizeof(DWORD) * 10 * 200);
 
 		memset(gData.nROSInfo[nMzNo-1], 0x00, sizeof(int)*10*800); 
+		memset( gData.nInfoMainIndex[nMzNo-1], 0x00, sizeof(int)*10*ZIG_X*ZIG_Y);
 	}
 }
 
@@ -284,11 +286,11 @@ void CDispatcher::Get_JudgeReply(CString sModel, CString sLotId, CString sMzNo, 
 		gData.nROSInfo[nMx][nTx][nLx] = eROSInfo::Empty;
 		gLot.nRosJugCnt_Repair[nMx]++;
 	}	
-
+	
 	m_bJudgeDone[nMx][nTx][nLx] = TRUE;
 
 	DWORD dwTerm = GetTickCount() - m_dwReqStart[nMx][nTx][nLx];
-	strLog.Format("[Get_JudgeReply] Judge Result MzNo(%s) TrayNo(%s) LensNo(%s) Time,%d", sMzNo, sTrayNo, sLensNo, dwTerm);
+	strLog.Format("[Get_JudgeReply] Judge Result, MzNo(%s), TrayNo(%s), LensNo(%d), Info(%d)", sMzNo, sTrayNo, g_objCommon.ConvertToAVINo(nMESNo), gData.nROSInfo[nMx][nTx][nLx]);
 	g_objLogFile.Save_DispatcherLog(strLog);
 }
 
@@ -421,8 +423,7 @@ void CDispatcher::Set_JudgeRequest(int nMZNo, int nTrayNo, int nLensNo)
 	if (nMZNo < 1 || nMZNo > 3 || nTrayNo < 1 || nTrayNo > 10 || nLensNo < 1 || nLensNo > 200) return;
 	// Do not overwrite an outstanding request for the same position.
 	if (m_bJudgeReq[nMZNo-1][nTrayNo-1][nLensNo-1] && !m_bJudgeDone[nMZNo-1][nTrayNo-1][nLensNo-1]) return;
-
-
+	
 	ROS_DATA *pRosData = g_objDataManager.Get_pRosData();
 	if (pRosData->lstMdjIp.GetCount() < 1) { g_objCommon.Show_Error(9310); return; }
 
@@ -431,7 +432,6 @@ void CDispatcher::Set_JudgeRequest(int nMZNo, int nTrayNo, int nLensNo)
 	//CString strBarcode = gLot.sBarCode[nMZNo-1][nTrayNo-1][nCmNo-1];
 	CString strNgCode  = gData.sNGCode[nMZNo-1][nTrayNo-1][nLensNo-1][eVision::MARKING];
 	gLot.nRosJugCnt_Req[nMZNo-1]++;
-
 
 	gData.nROSInfo[nMZNo-1][nTrayNo-1][nLensNo-1] = eROSInfo::Requested;
 
@@ -443,7 +443,7 @@ void CDispatcher::Set_JudgeRequest(int nMZNo, int nTrayNo, int nLensNo)
 
 	CString	strSendCmd, strIp;
 	strSendCmd.Format("JUDGE,REQUEST,%s,%s,%s,%d,%d,%d,%s,%s",
-		pRosData->sHandlerIp, pEquipData->sModelName, strLotId, nMZNo, nTrayNo, nLensNo, "", strNgCode);
+		pRosData->sHandlerIp, pEquipData->sModelName, strLotId, nMZNo, nTrayNo, g_objCommon.ConvertToMESNo(nLensNo), "", strNgCode);
 		//pRosData->sHandlerIp, pEquipData->sModelName, strLotId, nMZNo, nTrayNo, nCmNo, "", strNgCode, gLot.nImageCnt[nPortNo-1][nTrayNo-1][nCmNo-1][0]);
 
 	if (m_nMdjIndex >= pRosData->lstMdjIp.GetCount()) m_nMdjIndex = 0;	// 다시 첫번째 부터...
@@ -509,21 +509,28 @@ BOOL CDispatcher::Is_JudgeDone(int nMNo, int nTrayNo, int nLensNo, int &nInfo)
 {
 	if (nMNo < 1 || nMNo > 3 || nTrayNo < 1 || nTrayNo > 10 || nLensNo < 1 || nLensNo > 200 || gData.bCycleStop) return TRUE;
 
-	if (!m_bJudgeReq[nMNo-1][nTrayNo-1][nLensNo-1]) return TRUE;
-	if (m_bJudgeDone[nMNo-1][nTrayNo-1][nLensNo-1])
+	/*if (!m_bJudgeReq[nMNo-1][nTrayNo-1][nLensNo-1]) 
+	{	
+		return TRUE;
+	}*/
+	if (m_bJudgeDone[nMNo-1][nTrayNo-1][nLensNo-1] && m_bJudgeReq[nMNo-1][nTrayNo-1][nLensNo-1])
 	{
 		//Final ROS Result OverWrite 
 		nInfo = gData.nROSInfo[nMNo-1][nTrayNo-1][nLensNo-1];
 		gData.nInfoMainIndex[nMNo-1][nTrayNo-1][nLensNo-1] = nInfo;
+
+		m_strLog.Format("Judge Done, MzNo(%d),TrayNo(%d),LensNo(%d),Info(%d)", nMNo, nTrayNo, nLensNo, nInfo);
+		g_objLogFile.Save_DispatcherLog(m_strLog);
+
 		return TRUE;
 	}
 
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-	int nTerm = (int)(GetTickCount() - m_dwTimeStart[nMNo-1][nTrayNo-1][nLensNo-1]);
+	int nTerm = ((int)(GetTickCount() - m_dwTimeStart[nMNo-1][nTrayNo-1][nLensNo-1]));
 
-	if (nTerm > pEquipData->nROSTimeOut) {		// Time Over
+	if (nTerm > (pEquipData->nRosTimeOut*1000)) {		// Time Over
 		CString strLog;
-		strLog.Format("Judge Time Over (%d msec),Bar(None),PortNo(%d),TrayNo(%d),CmNo(%d)", pEquipData->nROSTimeOut, nMNo, nTrayNo, nLensNo);
+		strLog.Format("Judge Time Over (%d msec),Bar(None),PortNo(%d),TrayNo(%d),CmNo(%d)", pEquipData->nRosTimeOut, nMNo, nTrayNo, nLensNo);
 		g_objLogFile.Save_DispatcherLog(strLog);
 		m_bJudgeDone[nMNo-1][nTrayNo-1][nLensNo-1] = TRUE;
 		

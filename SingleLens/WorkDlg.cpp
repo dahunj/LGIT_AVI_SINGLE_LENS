@@ -1403,7 +1403,7 @@ LRESULT CWorkDlg::OnUpdateVisionInfo(WPARAM nVision, LPARAM lParam)
 				}				
 				
 				if		(gData.nStateMainIndex[eMainIndex::Mark][j][i] == eLensState::Marked ) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0x00, 0x00));	
-				else if (gData.nStateMainIndex[eMainIndex::Mark][j][i] == eLensState::NotMarked) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x05, 0xFF, 0x05));	
+				else if (gData.nStateMainIndex[eMainIndex::Mark][j][i] == eLensState::NotMarked) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x05, 0x11, 0x05));	
 				else if (gData.nStateMainIndex[eMainIndex::Mark][j][i] == eLensState::MarkReady) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0xFF));	
 				else if (gData.nStateMainIndex[eMainIndex::Mark][j][i] == eLensState::Empty) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x10, 0x10, 0x80));	
 				else if (gData.nStateMainIndex[eMainIndex::Mark][j][i] == eLensState::Top2Ready) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x30, 0xA0, 0x30));	
