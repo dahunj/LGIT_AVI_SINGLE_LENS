@@ -268,28 +268,20 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 	
 	int nPreInfo = gData.nInspectInfo[nMNo][nTNo][nLAVINo-1];
 
-	if (sJudge == "N") 
-	{  
+	
+	if (sJudge != "G")  // NG
+	{ 		
 		if(sNgCode == "EM")
 		{
 			gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = eLensInfo::Empty;
 			gData.sJudgeCode[nMNo][nTNo][nLAVINo-1][eVision::MARKING] = sJudge;
 			gData.sNGCode[nMNo][nTNo][nLAVINo-1][eVision::MARKING] = sNgCode;
 		}
-		else
+		else if (nPreInfo < 2 || nPreInfo > 8)
 		{
-			gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = eLensInfo::NG;
+			gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = eLensInfo::NG; 
 			gData.sJudgeCode[nMNo][nTNo][nLAVINo-1][eVision::MARKING] = sJudge;
-			gData.sNGCode[nMNo][nTNo][nLAVINo-1][eVision::MARKING] = sNgCode;			
-		}
-		if(pEquipData->bUseROS) g_objDispatcher.Set_JudgeRequest(nMNo + 1, nTNo + 1, nLNo); //Ros판정
-	}		
-	else if (sJudge != "G")  // NG
-	{ 		
-		if (nPreInfo < 2 || nPreInfo > 8)
-		{
-			gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = eLensInfo::NG;  
-			if(pEquipData->bUseROS) g_objDispatcher.Set_JudgeRequest(nMNo + 1, nTNo + 1, nLNo); //Ros판정
+			gData.sNGCode[nMNo][nTNo][nLAVINo-1][eVision::MARKING] = sNgCode;
 		}		
 	}	
 	else if (sJudge == "G")  // Good
@@ -297,9 +289,7 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 		if (nPreInfo < 2 || nPreInfo > 8) gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = eLensInfo::Good;  
 	}	
 		
-	gData.byInspectDone[nMNo][nTNo][nLAVINo-1] |= (1 << nV);
-
-	
+	gData.byInspectDone[nMNo][nTNo][nLAVINo-1] |= (1 << nV);	
 
 	if (pEquipData->bUseTopVision && ((gData.byInspectDone[nMNo][nTNo][nLAVINo-1] >> (int)eVision::TC) & 1) == 0) return;	// TC
 	if (pEquipData->bUseBtmVision  && ((gData.byInspectDone[nMNo][nTNo][nLAVINo-1] >> (int)eVision::BC) & 1) == 0) return;	// BC

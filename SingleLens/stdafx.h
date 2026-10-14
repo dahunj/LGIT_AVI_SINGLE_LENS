@@ -281,7 +281,8 @@ typedef struct
 	double  dDeltaX[7];
 	double  dDeltaY[7];
 
-	DWORD	dwInspectWait;
+	DWORD	dwInspectWait[3][10][ZIG_X*ZIG_Y];
+	DWORD	dwRosWait[3][10][ZIG_X*ZIG_Y];
 
 	int		nTowerState;
 

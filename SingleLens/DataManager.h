@@ -30,6 +30,8 @@ typedef struct tag_EQUIP_DATA {
 	
 	BOOL	bUseInspectSkip;
 
+	int		nInspectTimeOut;
+	int		nRosTimeOut;
 
 	CString sEquipName;
 	CString sModelName;

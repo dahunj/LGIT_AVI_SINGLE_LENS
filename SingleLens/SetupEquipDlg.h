@@ -21,6 +21,9 @@ public:
 	CLabelCS	m_lblNoWorkTime;
 	CLabelCS	m_lblSafetySwitch;
 
+	CLabelCS	m_lblInspectTimeOut;
+	CLabelCS	m_lblRosTimeOut;
+
 	CLabelCS	m_lblCtZig[4];
 	CLabelCS	m_lblTriggerTop[8];
 	CLabelCS	m_lblTriggerBtm[8];
@@ -36,6 +39,9 @@ public:
 		
 	CStaticCS	m_stcNoWorkTime;
 	CStaticCS	m_stcSafetySwitch;
+
+	CStaticCS	m_stcInspectWait;;
+	CStaticCS	m_stcRosWait;
 
 	CStaticCS	m_stcMotionCheck;
 	CLabelCS	m_lblDoorLock;
@@ -145,6 +151,8 @@ public:
 	CButton m_chkDelayAllBtm;
 	afx_msg void OnBnClickedChkDelayBetweenTop();
 	afx_msg void OnBnClickedChkUseRos();
+	afx_msg void OnStnClickedStcInspectWait();
+	afx_msg void OnStnClickedStcRosWait();
 };
 
 ///////////////////////////////////////////////////////////////////////////////

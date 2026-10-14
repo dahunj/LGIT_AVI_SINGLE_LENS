@@ -80,7 +80,9 @@ BOOL CDataManager::Read_EquipData()
 
 	m_EquipData.bUseDoorLock = INI.Get_Bool("EQUIPMENT", "DOOR_LOCK", TRUE);
 	gData.nDoorLockTime = INI.Get_Integer("EQUIPMENT","DOOR_LOCK_TIME", 0);
-
+	
+	m_EquipData.nInspectTimeOut = INI.Get_Integer("EQUIPMENT", "INSPECT_TIMEOUT", 0);
+	m_EquipData.nRosTimeOut = INI.Get_Integer("EQUIPMENT", "ROS_TIMEOUT", 0);
 
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	pMainDlg->Display_EquipName();
@@ -117,13 +119,14 @@ BOOL CDataManager::Read_ModelEquipData(CString strPath)
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 	pMainDlg->Display_EquipName();
 
-
 	m_EquipData.nLotBarcodePort = INI.Get_Integer("EQUIPMENT", "LOT_BARCODE", 1);
-
 	
 	gAlm.dMotionChkPos		= INI.Get_Double("EQUIPMENT","MOTION_CHECK", 0.0);
 	m_EquipData.nNoWorkTime = INI.Get_Integer("EQUIPMENT", "NO_WORK_TIME", 0);
 	m_EquipData.nSafetySwitchTime = INI.Get_Integer("EQUIPMENT", "SAFETY_SWITCH_TIME", 0);
+
+	m_EquipData.nInspectTimeOut = INI.Get_Integer("EQUIPMENT", "INSPECT_TIMEOUT", 0);
+	m_EquipData.nRosTimeOut = INI.Get_Integer("EQUIPMENT", "ROS_TIMEOUT", 0);
 
 	m_EquipData.bUseMES = INI.Get_Bool("OPTION", "MES_USE", FALSE);
 	m_EquipData.bLotEndSelect = INI.Get_Bool("OPTION", "LOT_END_SELECT", FALSE);
@@ -135,7 +138,6 @@ BOOL CDataManager::Read_ModelEquipData(CString strPath)
 	for (int i = 0; i < 8; i++) { strKey.Format("%d", i); m_EquipData.nDelayAdd[i] = INI.Get_Integer("DELAY_ADD", strKey, 100); }
 
 	m_EquipData.sAviIp = INI.Get_String("AVI", "AVI_IP", "");
-
 	
 
 	m_EquipData.nZigArrayX =  INI.Get_Integer("COAT_ZIG", "ARRAY_X", 0); gData.nLensCntX = m_EquipData.nZigArrayX;

@@ -45,6 +45,9 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LBL_DOOR_LOCK2, m_lblDoorLock2);
 	DDX_Control(pDX, IDC_STC_DOORLOCK_TIME, m_stcDoorLockTime);
 
+	DDX_Control(pDX, IDC_STC_INSPECT_WAIT, m_stcInspectWait);
+	DDX_Control(pDX, IDC_STC_ROS_WAIT, m_stcRosWait);
+
 	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_RDO_DOOR_LOCK_0 + i, m_rdoDoorLock[i]);		
 
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_LBL_DELAY_ADD_0 + i,  m_lblDelayAdd[i]);
@@ -97,6 +100,9 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Control(pDX, IDC_CHK_RECIPE_CHANGE, m_chkAutoRecipeChange);
 
+	DDX_Control(pDX, IDC_LBL_INSPECT_WAIT, m_lblInspectTimeOut);
+	DDX_Control(pDX, IDC_LBL_ROS_WAIT, m_lblRosTimeOut);
+
 	DDX_Control(pDX, IDC_LBL_MOTIONCHECK, m_lblMotionCheck);
 	DDX_Control(pDX, IDC_LBL_NO_WORK_TIME, m_lblNoWorkTime);
 	DDX_Control(pDX, IDC_LBL_SAFETY_SWITCH, m_lblSafetySwitch);
@@ -144,6 +150,8 @@ BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHK_DELAY_BETWEEN_BTM, &CSetupEquipDlg::OnBnClickedChkDelayBetweenBtm)
 	ON_BN_CLICKED(IDC_CHK_DELAY_BETWEEN_TOP, &CSetupEquipDlg::OnBnClickedChkDelayBetweenTop)
 	ON_BN_CLICKED(IDC_CHK_USE_ROS, &CSetupEquipDlg::OnBnClickedChkUseRos)
+	ON_STN_CLICKED(IDC_STC_INSPECT_WAIT, &CSetupEquipDlg::OnStnClickedStcInspectWait)
+	ON_STN_CLICKED(IDC_STC_ROS_WAIT, &CSetupEquipDlg::OnStnClickedStcRosWait)
 END_MESSAGE_MAP()
 
 // CSetupEquipDlg ¸Þ½ÃÁö Ã³¸®±âÀÔ´Ï´Ù.
@@ -171,6 +179,12 @@ void CSetupEquipDlg::Initial_Controls()
 
 	m_lblMotionCheck.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x40, 0x80));	
 	m_stcMotionCheck.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xF0, 0xE0, 0x00));
+
+	m_lblInspectTimeOut.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x40, 0x80));	
+	m_lblRosTimeOut.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x40, 0x80));	
+
+	m_stcInspectWait.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xF0, 0xE0, 0x00));
+	m_stcRosWait.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0x00, 0x00, 0x00), RGB(0xF0, 0xE0, 0x00));
 
 	m_lblPitchZ.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0xDF, 0x00, 0xC0));	
 	m_lblRepeat.Init_Ctrl("¹ÙÅÁ", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x9F, 0x00, 0xB0));
@@ -452,6 +466,10 @@ void CSetupEquipDlg::Display_EquipData()
 	strData.Format("%d", gData.nDoorLockTime);	m_stcDoorLockTime.SetWindowText(strData);
 
 	strData.Format("%0.3lf", gAlm.dMotionChkPos);	 m_stcMotionCheck.SetWindowText(strData);
+
+	strData.Format("%d", pEquipData->nInspectTimeOut);	 m_stcInspectWait.SetWindowText(strData);
+	strData.Format("%d", pEquipData->nRosTimeOut);	 m_stcRosWait.SetWindowText(strData);
+
 	
 	strData.Format("%d", pEquipData->nZigArrayX); m_stcZigData[0].SetWindowText(strData);
 	strData.Format("%d", pEquipData->nZigArrayY); m_stcZigData[1].SetWindowText(strData);
@@ -555,11 +573,18 @@ void CSetupEquipDlg::Save_EquipData()
 	}
 
 	m_stcMotionCheck.GetWindowText(strData); dData = atof(strData); INI.Set_Double("EQUIPMENT", "MOTION_CHECK", dData, "%0.3lf");
+
+	m_stcInspectWait.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("EQUIPMENT", "INSPECT_TIMEOUT", nData); pEquipData->nInspectTimeOut = nData;
+	m_stcRosWait.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("EQUIPMENT", "ROS_TIMEOUT", nData); pEquipData->nRosTimeOut = nData;
 	
 	m_stcDoorLockTime.GetWindowText(strData); gData.nDoorLockTime = atoi(strData);
 	INI.Set_Integer("EQUIPMENT", "DOOR_LOCK_TIME", gData.nDoorLockTime);
 
 	m_stcMotionCheck.GetWindowText(strData); dData = atof(strData); INI.Set_Double("EQUIPMENT", "MOTION_CHECK", dData); gAlm.dMotionChkPos = dData;
+
+	m_stcInspectWait.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("EQUIPMENT", "INSPECT_TIMEOUT", nData); pEquipData->nInspectTimeOut = nData;
+	m_stcRosWait.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("EQUIPMENT", "ROS_TIMEOUT", nData); pEquipData->nRosTimeOut = nData;
+
 	
 	m_stcZigData[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("COAT_ZIG", "ARRAY_X", nData);pEquipData->nZigArrayX = nData; gData.nLensCntX = pEquipData->nZigArrayX;
 	m_stcZigData[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("COAT_ZIG", "ARRAY_Y", nData);pEquipData->nZigArrayY = nData; gData.nLensCntY = pEquipData->nZigArrayY;
@@ -669,6 +694,9 @@ void CSetupEquipDlg::Save_ModelEquipData(CString sPath)
 	m_stcNoWorkTime.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("EQUIPMENT", "NO_WORK_TIME", nData);
 	m_stcSafetySwitch.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("EQUIPMENT", "SAFETY_SWITCH_TIME", nData);
 	m_stcMotionCheck.GetWindowText(strData); dData = atof(strData); INI.Set_Double("EQUIPMENT", "MOTION_CHECK", dData); gAlm.dMotionChkPos = dData;
+
+	m_stcInspectWait.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("EQUIPMENT", "INSPECT_TIMEOUT", nData); pEquipData->nInspectTimeOut = nData;
+	m_stcRosWait.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("EQUIPMENT", "ROS_TIMEOUT", nData); pEquipData->nRosTimeOut = nData;
 		
 	m_stcZigData[0].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("COAT_ZIG", "ARRAY_X", nData);pEquipData->nZigArrayX = nData;
 	m_stcZigData[1].GetWindowText(strData); nData = atoi(strData); INI.Set_Integer ("COAT_ZIG", "ARRAY_Y", nData);pEquipData->nZigArrayY = nData;
@@ -1070,4 +1098,30 @@ void CSetupEquipDlg::OnBnClickedChkUseRos()
 	m_strLog.Format("[Equip Mode] Use ROS Checked, %d", m_chkUseROS.GetCheck());
 	g_objLogFile.Save_HandlerLog(m_strLog);
 
+}
+
+
+void CSetupEquipDlg::OnStnClickedStcInspectWait()
+{
+	CString strOld, strNew;
+	m_stcInspectWait.GetWindowText(strOld);
+	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
+
+	m_stcInspectWait.SetWindowText(strNew);
+
+	m_strLog.Format("[Equip Mode] InspectWait Changed - %s ", strNew);
+	g_objLogFile.Save_HandlerLog(m_strLog);
+}
+
+
+void CSetupEquipDlg::OnStnClickedStcRosWait()
+{
+	CString strOld, strNew;
+	m_stcRosWait.GetWindowText(strOld);
+	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
+
+	m_stcRosWait.SetWindowText(strNew);
+
+	m_strLog.Format("[Equip Mode] Ros Wait Changed - %s ", strNew);
+	g_objLogFile.Save_HandlerLog(m_strLog);
 }

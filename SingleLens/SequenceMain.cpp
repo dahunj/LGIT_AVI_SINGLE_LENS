@@ -3889,37 +3889,53 @@ BOOL CSequenceMain::MarkUnitRun()
 				m_strLog.Format("Inspect Done, %d, %d", g_objCommon.ConvertToMESNo(nLNo), nTempInfo); g_objLogFile.Save_TestLog(m_strLog);	
 
 				// 양품은 바로 보고, NG 전수 ROS 의뢰
-				if(nTempInfo == eLensInfo::Init || nTempInfo == eLensInfo::Good)
+				if(nTempInfo == eLensInfo::Good)
 				{
 					if(m_pEquipData->bUseMES) g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], g_objCommon.ConvertToMESNo(nLNo), 
 						"OK", gData.sNGCode[nMNo-1][nTNo-1][nLNo-1][eVision::MARKING] );
 					gLot.nGoodCount[nMNo-1]++;
 					gLot.nGoodCountZig[nMNo-1][nTNo-1]++;
 
-				}
-				else if((nTempInfo == eLensInfo::NG ) && !m_pEquipData->bUseROS)
-				{
-					m_qLensNoNG.push(nLNo);
-
-					if(m_pEquipData->bUseMES) g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], g_objCommon.ConvertToMESNo(nLNo), 
-						"NG", gData.sNGCode[nMNo-1][nTNo-1][nLNo-1][eVision::MARKING] );
-					gLot.nNgCount[nMNo-1]++;
-					gLot.nNgCountZig[nMNo-1][nTNo-1]++;				
-				}
-				else if(nTempInfo == eLensInfo::Empty && !m_pEquipData->bUseROS)
-				{					
-					if(m_pEquipData->bUseMES) g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], g_objCommon.ConvertToMESNo(nLNo), 
-						"NG", gData.sNGCode[nMNo-1][nTNo-1][nLNo-1][eVision::MARKING] );
-					gLot.nEmptyCount[nMNo-1]++;
-					gLot.nEmptyCountZig[nMNo-1][nTNo-1]++;				
-				}
-
-				if(!m_pEquipData->bUseROS)
-				{
 					g_objLogFile.Save_TrackingLog(nTempInfo, gData.sZigIDMainIndex[eMainIndex::Mark], nMNo, nTNo, g_objCommon.ConvertToMESNo(nLNo));
 					Write_LotJudge(nMNo, gData.nSlotNoMainIndex[eMainIndex::Mark],nLNo, nTempInfo);
-				}
 
+				}
+				else if((nTempInfo == eLensInfo::NG ))
+				{
+					if(m_pEquipData->bUseROS) 
+					{
+						g_objDispatcher.Set_JudgeRequest(nMNo, nTNo, g_objCommon.ConvertToMESNo(nLNo)); //Ros판정						
+					}
+					else 
+					{
+						m_qLensNoNG.push(nLNo);
+
+						if(m_pEquipData->bUseMES) g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], g_objCommon.ConvertToMESNo(nLNo), 
+							"NG", gData.sNGCode[nMNo-1][nTNo-1][nLNo-1][eVision::MARKING] );
+						gLot.nNgCount[nMNo-1]++;
+						gLot.nNgCountZig[nMNo-1][nTNo-1]++;	
+
+						g_objLogFile.Save_TrackingLog(nTempInfo, gData.sZigIDMainIndex[eMainIndex::Mark], nMNo, nTNo, g_objCommon.ConvertToMESNo(nLNo));
+						Write_LotJudge(nMNo, gData.nSlotNoMainIndex[eMainIndex::Mark],nLNo, nTempInfo);
+					}					
+				}
+				else if(nTempInfo == eLensInfo::Empty )
+				{					
+					if(m_pEquipData->bUseROS)
+					{
+						g_objDispatcher.Set_JudgeRequest(nMNo, nTNo, g_objCommon.ConvertToMESNo(nLNo)); //Ros판정
+					}						
+					else
+					{
+						if(m_pEquipData->bUseMES) g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], g_objCommon.ConvertToMESNo(nLNo), 
+							"NG", gData.sNGCode[nMNo-1][nTNo-1][nLNo-1][eVision::MARKING] );
+						gLot.nEmptyCount[nMNo-1]++;
+						gLot.nEmptyCountZig[nMNo-1][nTNo-1]++;		
+
+						g_objLogFile.Save_TrackingLog(nTempInfo, gData.sZigIDMainIndex[eMainIndex::Mark], nMNo, nTNo, g_objCommon.ConvertToMESNo(nLNo));
+						Write_LotJudge(nMNo, gData.nSlotNoMainIndex[eMainIndex::Mark],nLNo, nTempInfo);
+					}					
+				}
 			}
 		}
 	}
@@ -3978,9 +3994,7 @@ BOOL CSequenceMain::MarkUnitRun()
 			}
 		}
 	}
-
-
-
+	
 
 	switch(m_nMarkUnitCase)
 	{
@@ -4183,10 +4197,12 @@ BOOL CSequenceMain::MarkUnitRun()
 			} 
 			else 
 			{							
-				m_nMarkUnitCase = (int)eTop2Br::VisionWait;
+				m_nMarkUnitCase = (int)eTop2Br::VisionWait; m_nMarkUnitLoop.Set_LoopTime(30000);	
+
+				gData.dwInspectWait[gData.nMZNoMainIndex[eMainIndex::Top2]-1][gData.nSlotNoMainIndex[eMainIndex::Top2]-1][nLensNo-1] = GetTickCount();
+
 				g_objInspector.Set_LoadComplete("T2", gData.sMZIDMainIdex[eMainIndex::Top2], gData.nMZNoMainIndex[eMainIndex::Top2]
-				, gData.sZigIDMainIndex[eMainIndex::Top2], gData.nSlotNoMainIndex[eMainIndex::Top2], g_objCommon.ConvertToMESNo(nLensNo));				
-				m_nMarkUnitLoop.Set_LoopTime(30000);			
+				, gData.sZigIDMainIndex[eMainIndex::Top2], gData.nSlotNoMainIndex[eMainIndex::Top2], g_objCommon.ConvertToMESNo(nLensNo));						
 			}
 		}
 		break;
@@ -4389,7 +4405,7 @@ BOOL CSequenceMain::MarkUnitRun()
 			m_strLog.Format("AxisNo,%d, Current,%0.3lf", AX_MARK_UNIT_Y, g_objAJinAXL.Get_Position(AX_MARK_UNIT_Y)); g_objLogFile.Save_PositionLog(m_strLog);
 			m_strLog.Format("AxisNo,%d, Current,%0.3lf", AX_MARK_UNIT_Z, g_objAJinAXL.Get_Position(AX_MARK_UNIT_Z)); g_objLogFile.Save_PositionLog(m_strLog);
 
-			gData.dwInspectWait = GetTickCount();
+			
 			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 		}		
 		break;
@@ -5513,13 +5529,11 @@ BOOL CSequenceMain::Check_InspectDone(const CString& sZigID, int nMZNo, int nTNo
 	DWORD dwTick = GetTickCount();
 	if (!bDone) 
 	{
-		if (m_pEquipData->bUseInspectSkip )//if (m_pEquipData->bUseInspectSkip || ((dwTick - gData.dwInspectWait)  > 5500)) 
+		if (m_pEquipData->bUseInspectSkip || ((dwTick - gData.dwInspectWait[nMNo][nSlot][nLens]) > m_pEquipData->nInspectTimeOut*1000)) 
 		{
-			gData.nInspectInfo[nMNo][nSlot][nLens] = eLensInfo::NG;
-			nInfo = gData.nInspectInfo[nMNo][nSlot][nLens];
-			
+			gData.nInspectInfo[nMNo][nSlot][nLens] = eLensInfo::NG;			
 			m_strLog.Format("Judge Time Over, SlotNo(%d), LensNo(%d)", nSlot+1, nLens+1);
-			g_objLogFile.Save_HandlerLog(m_strLog);
+			g_objLogFile.Save_HandlerLog(m_strLog);						
 		}
 		else
 		{

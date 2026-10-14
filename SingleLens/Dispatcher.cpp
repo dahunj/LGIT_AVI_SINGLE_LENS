@@ -232,8 +232,9 @@ void CDispatcher::Get_JudgeReply(CString sModel, CString sLotId, CString sMzNo, 
 	CString strLog;
 	int	nMx = atoi(sMzNo) - 1;	// Port Number Index (1 ~ 50)
 	int	nTx = atoi(sTrayNo) - 1;					// Tray Number Index (0)
-	int	nLx = atoi(sLensNo) - 1;		// Module Number Index (1 ~ 40)
-
+	int	nMESNo = atoi(sLensNo);		// Module Number Index (1 ~ 40)
+	
+	int nLx = g_objCommon.ConvertToAVINo(nMESNo) - 1;
 	
 	if (nMx < 0 || nMx >= 3 || nTx < 0 || nTx >= 10 || nLx < 0 || nLx >= 200) {
 		strLog.Format("[Get_JudgeReply] Receive Data Error1 ==> LotId(%s),JudgeReq(%d),TrayNo(%d),LensNo(%d),Judge(%s)", sLotId, (int)m_bJudgeReq, nTx+1, nLx+1, sJudge);
@@ -270,12 +271,12 @@ void CDispatcher::Get_JudgeReply(CString sModel, CString sLotId, CString sMzNo, 
 	}	
 	if (sJudge == "N") // ROS NG
 	{ 
-		gData.nROSInfo[nMx][nTx][nLx] = eROSInfo::ROS_NG;
+		gData.nROSInfo[nMx][nTx][nLx] = eROSInfo::NG;
 		gLot.nRosJugCnt_NG[nMx]++;
 	}	
 	if (sJudge == "R") // ROS Repair 
 	{ 
-		gData.nROSInfo[nMx][nTx][nLx] = eROSInfo::ROS_Repair;
+		gData.nROSInfo[nMx][nTx][nLx] = eROSInfo::Repair;
 		gLot.nRosJugCnt_Repair[nMx]++;
 	}	
 	if (sJudge == "E") // ROS Repair 
@@ -527,7 +528,7 @@ BOOL CDispatcher::Is_JudgeDone(int nMNo, int nTrayNo, int nLensNo, int &nInfo)
 		m_bJudgeDone[nMNo-1][nTrayNo-1][nLensNo-1] = TRUE;
 		
 		if (gData.nROSReqCount > 0) gData.nROSReqCount--;
-		nInfo = eROSInfo::ROS_Repair;
+		nInfo = eROSInfo::Repair;
 		gData.nROSInfo[nMNo-1][nTrayNo-1][nLensNo-1] = nInfo;
 		gData.nInfoMainIndex[nMNo-1][nTrayNo-1][nLensNo-1] = nInfo;
 

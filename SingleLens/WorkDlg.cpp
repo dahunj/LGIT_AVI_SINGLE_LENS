@@ -1291,7 +1291,7 @@ LRESULT CWorkDlg::OnUpdateMZInfo(WPARAM nTray, LPARAM lParam)
 				else if (g_objSequenceMain.Search_ZigSlotNo(eMZ::Load, i+1) < 0) m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
 				else									m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
 
-				if (g_objSequenceMain.Search_ZigSlotNo(eMZ::Unload, i+1) > 0 ) m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0x00, 0xFF, 0xFF));	// Empty
+				if (g_objSequenceMain.Search_ZigSlotNo(eMZ::Unload, i+1) > 0 ) m_grdLoadMZ.Set_CellBackClr(i, j, RGB(0x00, 0xFF, 0xFF));	
 
 			}
 		}
