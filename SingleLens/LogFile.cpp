@@ -396,7 +396,7 @@ void CLogFile::Save_DailyResult(CString sLog)
 			file.SeekToEnd();
 			if (file.GetLength() < 1) file.Write(sTitle, sTitle.GetLength());
 
-			strSave.Format("%04d-%02d-%02d %02d:%02d:%02d:%03d,%s\r\n",time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, sLog);
+			strSave.Format("'%04d-%02d-%02d %02d:%02d:%02d.%03d,%s\r\n",time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, sLog);
 
 			file.Write(strSave, strSave.GetLength());
 			file.Close();

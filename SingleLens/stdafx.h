@@ -310,6 +310,8 @@ typedef struct
 
 	int		nROSReqCount;
 
+	int		nGrapFailCnt[3][10];
+
 } GLOVAL_DATA;
 
 

@@ -370,7 +370,7 @@ void CSequenceMain::Job_LotStart(int nMZNo, int nPos)
 	gLot.dwStopTime[nMNo] = 0;
 	gLot.dwErrorTime[nMNo] = 0;
 
-
+	memset(gData.nGrapFailCnt[nMNo], 0x00, sizeof(int)*10);
 	memset(gData.byInspectDone[nMNo], 0x00, sizeof(BYTE)*10*ZIG_X*ZIG_Y);
 
 	//ROS Clear 
@@ -2294,7 +2294,7 @@ BOOL CSequenceMain::FeederRun()
 			if(m_pEquipData->bUseTop2Vision) sTC2 = "ON";
 			else sTC2 = "OFF";
 
-			int nGFCnt = 0;
+			int nGFCnt = gData.nGrapFailCnt[nMNo][nZNo];
 
 
 			m_strLog.Format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%d,%d,%d,%d,%d,%0.1lf,%s,%s,%0.3lf,%0.1lf,%0.3lf,%0.3lf,%0.1lf,%d,%0.3lf,%d,%0.3lf,%d,%s,%s,%s,%s,%s,%d", 
@@ -3075,7 +3075,7 @@ BOOL CSequenceMain::LensCleanerRun()
 	switch(m_nLensCleanerCase)
 	{
 	case 0:
-		nRepeat = 0;
+		nRepeat = 1;
 		m_nLensCleanerLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 		return TRUE;
 	case 1:
@@ -3135,7 +3135,7 @@ BOOL CSequenceMain::LensCleanerRun()
 		{
 			//
 			m_strLog.Format("Lens Cleanner Done"); m_nLensCleanerLoop.Takt_Save(5, m_nLensCleanerCase, m_strLog);
-			nRepeat = 0; gData.bIndexDone[eMainIndex::Clean] = TRUE;			
+			nRepeat = 1; gData.bIndexDone[eMainIndex::Clean] = TRUE;			
 			m_nLensCleanerCase = 0; m_nLensCleanerLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);	
 		}
 		else

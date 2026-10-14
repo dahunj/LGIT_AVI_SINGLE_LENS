@@ -284,7 +284,11 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 			gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = eLensInfo::NG; 
 			gData.sJudgeCode[nMNo][nTNo][nLAVINo-1][eVision::MARKING] = sJudge;
 			gData.sNGCode[nMNo][nTNo][nLAVINo-1][eVision::MARKING] = sNgCode;
-		}		
+		}
+		if(sNgCode == "GF")
+		{
+			gData.nGrapFailCnt[nMNo][nTNo]++;
+		}
 	}	
 	else if (sJudge == "G")  // Good
 	{ 
