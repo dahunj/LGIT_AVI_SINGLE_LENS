@@ -87,6 +87,8 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHK_TOP_VISION2, m_chkTop2Vision);
 
 	DDX_Control(pDX, IDC_CHK_USE_MES, m_chkUseMES);
+	DDX_Control(pDX, IDC_CHK_USE_ROS, m_chkUseROS);
+
 	DDX_Control(pDX, IDC_CHK_MES_LOTEND_SELECT, m_chkUseMESLotEndSelect);
 
 
@@ -141,6 +143,7 @@ BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHK_DELAY_BETWEEN_TOP2, &CSetupEquipDlg::OnBnClickedChkDelayBetweenTop2)
 	ON_BN_CLICKED(IDC_CHK_DELAY_BETWEEN_BTM, &CSetupEquipDlg::OnBnClickedChkDelayBetweenBtm)
 	ON_BN_CLICKED(IDC_CHK_DELAY_BETWEEN_TOP, &CSetupEquipDlg::OnBnClickedChkDelayBetweenTop)
+	ON_BN_CLICKED(IDC_CHK_USE_ROS, &CSetupEquipDlg::OnBnClickedChkUseRos)
 END_MESSAGE_MAP()
 
 // CSetupEquipDlg ¸Þ½ÃÁö Ã³¸®±âÀÔ´Ï´Ù.
@@ -225,6 +228,7 @@ void CSetupEquipDlg::Initial_Controls()
 	m_chkTop2Vision.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0x60, 0xF0, 0x80), CCheckCS::emRed, 0);
 
 	m_chkUseMES.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xC0, 0x20), CCheckCS::emRed, 0);
+	m_chkUseROS.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xC0, 0x20), CCheckCS::emRed, 0);
 	m_chkUseMESLotEndSelect.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xC0, 0x20), CCheckCS::emRed, 0);
 	
 	m_chkUseBarcodeMGZ.Init_Ctrl("¹ÙÅÁ", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xC0, 0x20), CCheckCS::emRed, 0);
@@ -497,6 +501,7 @@ void CSetupEquipDlg::Display_EquipData()
 		
 	
 	m_chkUseMES.SetCheck(pEquipData->bUseMES);
+	m_chkUseROS.SetCheck(pEquipData->bUseROS);
 	m_chkUseMESLotEndSelect.SetCheck(pEquipData->bLotEndSelect);
 	m_chkUseBarcodeMGZ.SetCheck(pEquipData->bUseBarcodeMGZ);
 	m_chkUseBarcodeCtZig.SetCheck(pEquipData->bUseBarcodeCtZig);
@@ -601,7 +606,10 @@ void CSetupEquipDlg::Save_EquipData()
 
 	pEquipData->bUseAutoRecipeChange = m_chkAutoRecipeChange.GetCheck();INI.Set_Bool("OPTION", "AUTO_RECIPE_CHANGE", pEquipData->bUseAutoRecipeChange);	 
 
-	pEquipData->bUseMES = m_chkUseMES.GetCheck();INI.Set_Bool("OPTION", "MES_USE", pEquipData->bUseMES);	
+	pEquipData->bUseMES = m_chkUseMES.GetCheck();INI.Set_Bool("OPTION", "MES_USE", pEquipData->bUseMES);
+	pEquipData->bUseROS = m_chkUseROS.GetCheck();INI.Set_Bool("OPTION", "ROS_USE", pEquipData->bUseROS);
+
+
 	pEquipData->bLotEndSelect = m_chkUseMESLotEndSelect.GetCheck();INI.Set_Bool("OPTION", "LOT_END_SELECT", pEquipData->bLotEndSelect);
 	pEquipData->bUseBarcodeMGZ = m_chkUseBarcodeMGZ.GetCheck();INI.Set_Bool("OPTION", "BARCODE_MGZ_USE", pEquipData->bUseBarcodeMGZ);
 	pEquipData->bUseBarcodeCtZig = m_chkUseBarcodeCtZig.GetCheck(); INI.Set_Bool("OPTION", "BARCODE_ZIG_USE", pEquipData->bUseBarcodeCtZig);
@@ -702,7 +710,8 @@ void CSetupEquipDlg::Save_ModelEquipData(CString sPath)
 	pEquipData->bUseMark = m_chkMarkUse.GetCheck(); INI.Set_Bool("OPTION", "MARK_USE", pEquipData->bUseMark);
 	pEquipData->bUseTop2Vision = m_chkTop2Vision.GetCheck();INI.Set_Bool("OPTION", "TOP2_VISION", pEquipData->bUseTop2Vision);
 
-	pEquipData->bUseMES = m_chkUseMES.GetCheck();INI.Set_Bool("OPTION", "MES_USE", pEquipData->bUseMES);	 
+	pEquipData->bUseMES = m_chkUseMES.GetCheck();INI.Set_Bool("OPTION", "MES_USE", pEquipData->bUseMES);
+	pEquipData->bUseROS = m_chkUseROS.GetCheck();INI.Set_Bool("OPTION", "ROS_USE", pEquipData->bUseROS);
 	pEquipData->bLotEndSelect = m_chkUseMESLotEndSelect.GetCheck();INI.Set_Bool("OPTION", "LOT_END_SELECT", pEquipData->bLotEndSelect);
 	pEquipData->bUseBarcodeMGZ = m_chkUseBarcodeMGZ.GetCheck();INI.Set_Bool("OPTION", "BARCODE_MGZ_USE", pEquipData->bUseBarcodeMGZ);
 	pEquipData->bUseBarcodeCtZig = m_chkUseBarcodeCtZig.GetCheck(); INI.Set_Bool("OPTION", "BARCODE_ZIG_USE", pEquipData->bUseBarcodeCtZig);
@@ -1053,4 +1062,12 @@ void CSetupEquipDlg::OnBnClickedChkDelayBetweenTop()
 {
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	pEquipData->bDelayTop_All = m_chkDelayAllTop.GetCheck();
+}
+
+
+void CSetupEquipDlg::OnBnClickedChkUseRos()
+{
+	m_strLog.Format("[Equip Mode] Use ROS Checked, %d", m_chkUseROS.GetCheck());
+	g_objLogFile.Save_HandlerLog(m_strLog);
+
 }

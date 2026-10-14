@@ -22,19 +22,6 @@ struct eLensState
 };
 
 
-struct eLensInfo
-{
-	enum eName
-	{
-		// 0:Empty,1:Good, 2:NG, 3:Top Ready, 4: Top Done, 5: Btm Ready, 6 : Btm Done,  9:Init 
-		None = 0,
-		Good = 1,
-		NG = 2,
-		Empty = 8,
-		Init = 9,
-	};
-};
-
 
 struct eMainIndex
 {
@@ -260,14 +247,30 @@ struct eMZBuffer
 };
 
 
+
+struct eLensInfo
+{
+	enum eName
+	{
+		// 0:Empty,1:Good, 2:NG, 3:Top Ready, 4: Top Done, 5: Btm Ready, 6 : Btm Done,  9:Init 
+		None = 0,
+		Good = 1,
+		NG = 2,
+		Empty = 8,
+		Init = 9,
+	};
+};
+
+
+
 struct eROSInfo
 {
 	enum name
 	{
 		None = 0,
 		Good = 1,
-		ROS_NG = 2,
-		ROS_Repair = 3,
+		NG = 2,
+		Repair = 3,
 		Empty = 4,
 		Requested = 9,
 	};

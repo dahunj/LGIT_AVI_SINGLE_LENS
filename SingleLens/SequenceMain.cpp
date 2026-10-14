@@ -3897,12 +3897,34 @@ BOOL CSequenceMain::MarkUnitRun()
 					gLot.nGoodCountZig[nMNo-1][nTNo-1]++;
 
 				}
+				else if((nTempInfo == eLensInfo::NG ) && !m_pEquipData->bUseROS)
+				{
+					m_qLensNoNG.push(nLNo);
+
+					if(m_pEquipData->bUseMES) g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], g_objCommon.ConvertToMESNo(nLNo), 
+						"NG", gData.sNGCode[nMNo-1][nTNo-1][nLNo-1][eVision::MARKING] );
+					gLot.nNgCount[nMNo-1]++;
+					gLot.nNgCountZig[nMNo-1][nTNo-1]++;				
+				}
+				else if(nTempInfo == eLensInfo::Empty && !m_pEquipData->bUseROS)
+				{					
+					if(m_pEquipData->bUseMES) g_objMesAgent.Set_ProductCompletedReport(gData.sLotIDMainIndex[eMainIndex::Mark], gData.sZigIDMainIndex[eMainIndex::Mark], gData.sRecipeMainIndex[eMainIndex::Mark], g_objCommon.ConvertToMESNo(nLNo), 
+						"NG", gData.sNGCode[nMNo-1][nTNo-1][nLNo-1][eVision::MARKING] );
+					gLot.nEmptyCount[nMNo-1]++;
+					gLot.nEmptyCountZig[nMNo-1][nTNo-1]++;				
+				}
+
+				if(!m_pEquipData->bUseROS)
+				{
+					g_objLogFile.Save_TrackingLog(nTempInfo, gData.sZigIDMainIndex[eMainIndex::Mark], nMNo, nTNo, g_objCommon.ConvertToMESNo(nLNo));
+					Write_LotJudge(nMNo, gData.nSlotNoMainIndex[eMainIndex::Mark],nLNo, nTempInfo);
+				}
 
 			}
 		}
 	}
 	//Continuous ROS Done Check 
-	if(m_nMarkUnitCase != 0)
+	if(m_nMarkUnitCase != 0 && m_pEquipData->bUseROS)
 	{
 		nMNo = gData.nMZNoMainIndex[eMainIndex::Mark];
 		nTNo = gData.nSlotNoMainIndex[eMainIndex::Mark];
@@ -3935,7 +3957,7 @@ BOOL CSequenceMain::MarkUnitRun()
 					gLot.nGoodCountZig[nMNo-1][nTNo-1]++;
 
 				}
-				else if(nTempInfo == eROSInfo::ROS_NG || nTempInfo == eROSInfo::ROS_Repair)
+				else if(nTempInfo == eROSInfo::NG || nTempInfo == eROSInfo::Repair)
 				{
 					m_qLensNoNG.push(nLNo);
 
@@ -4298,11 +4320,19 @@ BOOL CSequenceMain::MarkUnitRun()
 		}
 		break;
 	case 3:
+		if(m_pEquipData->bUseROS)
+		{
+			nQSize = static_cast<int>(m_qLensNoROSDone.size());
+		}
+		else
+		{
+			nQSize = static_cast<int>(m_qLensNoInspectDone.size());
+		}
 		
-		nQSize = static_cast<int>(m_qLensNoROSDone.size());
 		if(nQSize >= gData.nLensUseCnt[nMNo-1][nTNo-1] && m_qLensNoNG.empty()) //if(nQSize >= 141 && m_qLensNoNG.empty()) //done 
 		{
 			ClearQROSDone();
+			ClearQInspectDone();
 			g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::Ready);
 			m_nMarkUnitCase = 15; m_nMarkUnitLoop.Set_LoopTime(10000);
 			break;
@@ -4368,22 +4398,46 @@ BOOL CSequenceMain::MarkUnitRun()
 		break;
 
 	case 6:
-		m_strLog.Format("NG Mark, %d, %d", nLensNo, gData.nInspectInfo[nMNo-1][nTNo-1][nLensNo-1]); g_objLogFile.Save_TestLog(m_strLog);
-		if(gData.nInspectInfo[nMNo-1][nTNo-1][nLensNo-1] == eLensInfo::NG)
-		{
-			m_pDY02->oMarkPenDown = TRUE;m_pDY02->oMarkPenUp = FALSE;
-			g_objAJinAXL.Write_Output(2);
+		m_strLog.Format("NG Mark, %d, %d", nLensNo, gData.nInfoMainIndex[nMNo-1][nTNo-1][nLensNo-1]); 
+		g_objLogFile.Save_TestLog(m_strLog);
 
-			m_pEquipData->nMarkCount++; g_objDataManager.Save_MarkData();
-
-			gData.nStateMainIndex[eMainIndex::Mark][nMarkXPos][nMarkYPos] = eLensState::Marked;	//Scan Done
-			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(10000);
-		}			
-		else
+		if(m_pEquipData->bUseROS)
 		{
-			gData.nStateMainIndex[eMainIndex::Mark][nMarkXPos][nMarkYPos] = eLensState::NotMarked;	//Scan Done
-			m_nMarkUnitCase = 10; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
+			if(gData.nInfoMainIndex[nMNo-1][nTNo-1][nLensNo-1] == eROSInfo::NG 
+				|| gData.nInfoMainIndex[nMNo-1][nTNo-1][nLensNo-1] == eROSInfo::Repair)
+			{
+				m_pDY02->oMarkPenDown = TRUE;m_pDY02->oMarkPenUp = FALSE;
+				g_objAJinAXL.Write_Output(2);
+
+				m_pEquipData->nMarkCount++; g_objDataManager.Save_MarkData();
+
+				gData.nStateMainIndex[eMainIndex::Mark][nMarkXPos][nMarkYPos] = eLensState::Marked;	//Scan Done
+				m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(10000);
+			}			
+			else
+			{
+				gData.nStateMainIndex[eMainIndex::Mark][nMarkXPos][nMarkYPos] = eLensState::NotMarked;	//Scan Done
+				m_nMarkUnitCase = 10; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
+			}
 		}
+		else //Only Vision 
+		{
+			if(gData.nInfoMainIndex[nMNo-1][nTNo-1][nLensNo-1] == eLensInfo::NG)
+			{
+				m_pDY02->oMarkPenDown = TRUE;m_pDY02->oMarkPenUp = FALSE;
+				g_objAJinAXL.Write_Output(2);
+
+				m_pEquipData->nMarkCount++; g_objDataManager.Save_MarkData();
+
+				gData.nStateMainIndex[eMainIndex::Mark][nMarkXPos][nMarkYPos] = eLensState::Marked;	//Scan Done
+				m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(10000);
+			}			
+			else
+			{
+				gData.nStateMainIndex[eMainIndex::Mark][nMarkXPos][nMarkYPos] = eLensState::NotMarked;	//Scan Done
+				m_nMarkUnitCase = 10; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
+			}
+		}		
 		break;
 	case 7:
 		if((m_pDX02->IMarkPenExist || !m_pEquipData->bUseMark)  

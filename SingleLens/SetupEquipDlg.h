@@ -84,6 +84,7 @@ public:
 	CCheckCS	m_chkTop2Vision;
 
 	CCheckCS	m_chkUseMES;
+	CCheckCS	m_chkUseROS;
 	CCheckCS	m_chkUseMESLotEndSelect;
 
 	CCheckCS	m_chkUseBarcodeMGZ;
@@ -143,6 +144,7 @@ public:
 	CButton m_chkDelayAllTop2;
 	CButton m_chkDelayAllBtm;
 	afx_msg void OnBnClickedChkDelayBetweenTop();
+	afx_msg void OnBnClickedChkUseRos();
 };
 
 ///////////////////////////////////////////////////////////////////////////////

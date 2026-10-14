@@ -231,11 +231,11 @@ void CDispatcher::Get_JudgeReply(CString sModel, CString sLotId, CString sMzNo, 
 {
 	CString strLog;
 	int	nMx = atoi(sMzNo) - 1;	// Port Number Index (1 ~ 50)
-	int	nTx = 0;					// Tray Number Index (0)
+	int	nTx = atoi(sTrayNo) - 1;					// Tray Number Index (0)
 	int	nLx = atoi(sLensNo) - 1;		// Module Number Index (1 ~ 40)
 
-	gData.nROSReqCount--; if (gData.nROSReqCount < 0) gData.nROSReqCount = 0;
-	if (nMx < 0 || nMx > 7 || nLx < 0 || nLx > 800) {
+	
+	if (nMx < 0 || nMx >= 3 || nTx < 0 || nTx >= 10 || nLx < 0 || nLx >= 200) {
 		strLog.Format("[Get_JudgeReply] Receive Data Error1 ==> LotId(%s),JudgeReq(%d),TrayNo(%d),LensNo(%d),Judge(%s)", sLotId, (int)m_bJudgeReq, nTx+1, nLx+1, sJudge);
 		g_objLogFile.Save_DispatcherLog(strLog);
 		return;
@@ -254,15 +254,17 @@ void CDispatcher::Get_JudgeReply(CString sModel, CString sLotId, CString sMzNo, 
 		return;
 	}
 
-	if (m_bJudgeDone[nMx][nTx][nLx] || gData.nROSInfo[nMx][nTx][nLx] > 0) {
+	if (m_bJudgeDone[nMx][nTx][nLx] || (gData.nROSInfo[nMx][nTx][nLx] > 0 && gData.nROSInfo[nMx][nTx][nLx] != eROSInfo::Requested))
+	{
 		strLog.Format("[Get_JudgeReply] Already been judged,LotId(%s),TrayNo(%d),LensNo(%d),Judge(%s),PreJudge(%d)", sLotId, nTx+1, nLx+1, sJudge, gData.nROSInfo[nMx][nTx][nLx]);
 		g_objLogFile.Save_DispatcherLog(strLog);
 		return;
 	}
 
+	if (gData.nROSReqCount > 0) gData.nROSReqCount--;
+
 	if (sJudge == "G") // Good
-	{
-		
+	{		
 		gData.nROSInfo[nMx][nTx][nLx] = eROSInfo::Good;
 		gLot.nRosJugCnt_Good[nMx]++;
 	}	
@@ -274,6 +276,11 @@ void CDispatcher::Get_JudgeReply(CString sModel, CString sLotId, CString sMzNo, 
 	if (sJudge == "R") // ROS Repair 
 	{ 
 		gData.nROSInfo[nMx][nTx][nLx] = eROSInfo::ROS_Repair;
+		gLot.nRosJugCnt_Repair[nMx]++;
+	}	
+	if (sJudge == "E") // ROS Repair 
+	{ 
+		gData.nROSInfo[nMx][nTx][nLx] = eROSInfo::Empty;
 		gLot.nRosJugCnt_Repair[nMx]++;
 	}	
 
@@ -409,6 +416,12 @@ void CDispatcher::Set_InfoReply(CString sIp)
 
 void CDispatcher::Set_JudgeRequest(int nMZNo, int nTrayNo, int nLensNo)
 {
+
+	if (nMZNo < 1 || nMZNo > 3 || nTrayNo < 1 || nTrayNo > 10 || nLensNo < 1 || nLensNo > 200) return;
+	// Do not overwrite an outstanding request for the same position.
+	if (m_bJudgeReq[nMZNo-1][nTrayNo-1][nLensNo-1] && !m_bJudgeDone[nMZNo-1][nTrayNo-1][nLensNo-1]) return;
+
+
 	ROS_DATA *pRosData = g_objDataManager.Get_pRosData();
 	if (pRosData->lstMdjIp.GetCount() < 1) { g_objCommon.Show_Error(9310); return; }
 
@@ -421,8 +434,10 @@ void CDispatcher::Set_JudgeRequest(int nMZNo, int nTrayNo, int nLensNo)
 
 	gData.nROSInfo[nMZNo-1][nTrayNo-1][nLensNo-1] = eROSInfo::Requested;
 
+	m_bJudgeDone[nMZNo-1][nTrayNo-1][nLensNo-1] = FALSE;
 	m_bJudgeReq[nMZNo-1][nTrayNo-1][nLensNo-1] = TRUE;
 	m_dwReqStart[nMZNo-1][nTrayNo-1][nLensNo-1] = GetTickCount();
+	m_dwTimeStart[nMZNo-1][nTrayNo-1][nLensNo-1] = m_dwReqStart[nMZNo-1][nTrayNo-1][nLensNo-1];
 	gData.nROSReqCount++;	
 
 	CString	strSendCmd, strIp;
@@ -477,7 +492,13 @@ void CDispatcher::Send_Command(CString sIp, CString sSend)
 	memcpy(chSend, (LPSTR)(LPCSTR)strSendSocket, nLength);
 
 	g_csDispatcher.Lock();		// Critical Section
+
+#ifndef AJIN_BOARD_USE
+	m_UdpSend.Write_Socket(sIp, 8021, (BYTE*)chSend, nLength);
+#else 
 	m_UdpSend.Write_Socket(sIp, UDP_DISPATCHER_HPORT, (BYTE*)chSend, nLength);
+#endif
+		
 	g_csDispatcher.Unlock();	// Critical Section
 }
 
@@ -485,7 +506,7 @@ void CDispatcher::Send_Command(CString sIp, CString sSend)
 
 BOOL CDispatcher::Is_JudgeDone(int nMNo, int nTrayNo, int nLensNo, int &nInfo)
 {
-	if (nMNo == 0 || nTrayNo == 0 || nLensNo == 0 || gData.bCycleStop) return TRUE;
+	if (nMNo < 1 || nMNo > 3 || nTrayNo < 1 || nTrayNo > 10 || nLensNo < 1 || nLensNo > 200 || gData.bCycleStop) return TRUE;
 
 	if (!m_bJudgeReq[nMNo-1][nTrayNo-1][nLensNo-1]) return TRUE;
 	if (m_bJudgeDone[nMNo-1][nTrayNo-1][nLensNo-1])
@@ -504,8 +525,12 @@ BOOL CDispatcher::Is_JudgeDone(int nMNo, int nTrayNo, int nLensNo, int &nInfo)
 		strLog.Format("Judge Time Over (%d msec),Bar(None),PortNo(%d),TrayNo(%d),CmNo(%d)", pEquipData->nROSTimeOut, nMNo, nTrayNo, nLensNo);
 		g_objLogFile.Save_DispatcherLog(strLog);
 		m_bJudgeDone[nMNo-1][nTrayNo-1][nLensNo-1] = TRUE;
-		gData.nInspectInfo[nMNo-1][nTrayNo-1][nLensNo-1] = eLensInfo::NG; 
-		gData.nROSInfo[nMNo-1][nTrayNo-1][nLensNo-1] = eROSInfo::ROS_Repair;
+		
+		if (gData.nROSReqCount > 0) gData.nROSReqCount--;
+		nInfo = eROSInfo::ROS_Repair;
+		gData.nROSInfo[nMNo-1][nTrayNo-1][nLensNo-1] = nInfo;
+		gData.nInfoMainIndex[nMNo-1][nTrayNo-1][nLensNo-1] = nInfo;
+
 		gLot.nRosJugCnt_Repair[nMNo-1]++;	//ROS TimeOver -> ROS-Repair
 		return TRUE;
 	}
