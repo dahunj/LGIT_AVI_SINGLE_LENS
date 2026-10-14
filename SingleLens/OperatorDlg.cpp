@@ -453,54 +453,6 @@ void COperatorDlg::Display_Status()
 	}	
 }
 
-void COperatorDlg::Update_TrayInfo(int nTray, int nNo)
-{
-	CString strText;
-
-	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-	if (nTray == 0 || nTray == 1)  // Load Tray
-	{		
-		
-		for (int j = 0; j < SLOT_NO_MAX; j++)
-		{
-			if		(gData.InfoCtZigLoad[j] == 9) m_grdOperMZLoad.Set_CellBackClr(0, j, RGB(0x00, 0xFF, 0xFF));	// Reserve
-			else if (gData.InfoCtZigLoad[j] == 0) m_grdOperMZLoad.Set_CellBackClr(0, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
-			else if (gData.InfoCtZigUnload[j] == 9) m_grdOperMZLoad.Set_CellBackClr(0, j, RGB(0xFF, 0xFF, 0x00));	// Empty
-			else									m_grdOperMZLoad.Set_CellBackClr(0, j, RGB(0x80, 0x80, 0x80));	// Error
-		}
-
-		for (int j = 0; j < SLOT_NO_MAX; j++)
-		{
-			if		(gData.InfoCtZigRdy[j] == 9) m_grdOperMZUnload.Set_CellBackClr(0, j, RGB(0x00, 0xFF, 0xFF));	// Reserve
-			else if (gData.InfoCtZigRdy[j] == 0) m_grdOperMZUnload.Set_CellBackClr(0, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
-			else									m_grdOperMZUnload.Set_CellBackClr(0, j, RGB(0x80, 0x80, 0x80));	// Error
-		}
-
-	}
-
-	//if (nTray == 0 || nTray == 2) {		// Cap Tray
-	//	for (int i = 0; i < CT_Y; i++) {
-	//		for (int j = 0; j < CT_X; j++) {
-	//			if		(gData.InfoCapTray[i][j] == 9) m_grdOperCapTray.Set_CellBackClr(i, j, RGB(0x00, 0xFF, 0xFF));	// Reserve
-	//			else if (gData.InfoCapTray[i][j] == 0) m_grdOperCapTray.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
-	//			else								   m_grdOperCapTray.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
-	//		}
-	//	}
-	//}
-
-	//if (nTray == 0 || nTray == 3) {		// Ship Tray
-	//	for (int i = 0; i < gData.STY; i++) {
-	//		for (int j = 0; j < ST_X; j++) {
-	//			if		(gData.InfoShipTray[i][j] >  1) m_grdOperShipTray.Set_CellBackClr(i, j, RGB(0x70, 0x70, 0x70));	// Not Use
-	//			else if	(gData.InfoShipTray[i][j] == 1) m_grdOperShipTray.Set_CellBackClr(i, j, RGB(0x00, 0xFF, 0x00));	// Good
-	//			else if (gData.InfoShipTray[i][j] == 0) m_grdOperShipTray.Set_CellBackClr(i, j, RGB(0xFF, 0xFF, 0xFF));	// Empty
-	//			else									m_grdOperShipTray.Set_CellBackClr(i, j, RGB(0x80, 0x80, 0x80));	// Error
-	//		}
-	//	}
-	//}
-
-	
-}
 
 void COperatorDlg::Change_Model()
 {

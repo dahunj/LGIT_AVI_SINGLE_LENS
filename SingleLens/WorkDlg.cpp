@@ -1355,8 +1355,8 @@ LRESULT CWorkDlg::OnUpdateVisionInfo(WPARAM nVision, LPARAM lParam)
 					nLensNo = (gData.nLensCntY * j) + ( i+1 );
 				}				
 
-				if		(gData.InfoMainIndex[eMainIndex::Top][j][i] == eLensState::TopDone ) m_wndTopGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0x00));	// Reserve
-				else if (gData.InfoMainIndex[eMainIndex::Top][j][i] == eLensState::TopReady) m_wndTopGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0xFF));	// Empty
+				if		(gData.nStateMainIndex[eMainIndex::Top][j][i] == eLensState::TopDone ) m_wndTopGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0x00));	// Reserve
+				else if (gData.nStateMainIndex[eMainIndex::Top][j][i] == eLensState::TopReady) m_wndTopGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0xFF));	// Empty
 				else				m_wndTopGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x80, 0x80, 0x80));	// Error
 
 			}
@@ -1378,8 +1378,8 @@ LRESULT CWorkDlg::OnUpdateVisionInfo(WPARAM nVision, LPARAM lParam)
 					nLensNo = (gData.nLensCntY * j) + ( i + 1 );
 				}				
 				
-				if		(gData.InfoMainIndex[eMainIndex::Btm][j][i] == eLensState::BtmDone ) m_wndBtmGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0x00));	// Reserve
-				else if (gData.InfoMainIndex[eMainIndex::Btm][j][i] == eLensState::BtmReady) m_wndBtmGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0xFF));	// Empty
+				if		(gData.nStateMainIndex[eMainIndex::Btm][j][i] == eLensState::BtmDone ) m_wndBtmGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0x00));	// Reserve
+				else if (gData.nStateMainIndex[eMainIndex::Btm][j][i] == eLensState::BtmReady) m_wndBtmGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0xFF));	// Empty
 				else				m_wndBtmGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x80, 0x80, 0x80));	// Error
 
 			}
@@ -1402,12 +1402,12 @@ LRESULT CWorkDlg::OnUpdateVisionInfo(WPARAM nVision, LPARAM lParam)
 					nLensNo = (gData.nLensCntY * j) + ( i + 1 );
 				}				
 				
-				if		(gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::Marked ) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0x00, 0x00));	
-				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::NotMarked) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x05, 0xFF, 0x05));	
-				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::MarkReady) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0xFF));	
-				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::Empty) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x10, 0x10, 0x80));	
-				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::Top2Ready) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x30, 0xA0, 0x30));	
-				else if (gData.InfoMainIndex[eMainIndex::Mark][j][i] == eLensState::Top2Done) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0x00));	
+				if		(gData.nStateMainIndex[eMainIndex::Mark][j][i] == eLensState::Marked ) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0x00, 0x00));	
+				else if (gData.nStateMainIndex[eMainIndex::Mark][j][i] == eLensState::NotMarked) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x05, 0xFF, 0x05));	
+				else if (gData.nStateMainIndex[eMainIndex::Mark][j][i] == eLensState::MarkReady) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0xFF));	
+				else if (gData.nStateMainIndex[eMainIndex::Mark][j][i] == eLensState::Empty) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x10, 0x10, 0x80));	
+				else if (gData.nStateMainIndex[eMainIndex::Mark][j][i] == eLensState::Top2Ready) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x30, 0xA0, 0x30));	
+				else if (gData.nStateMainIndex[eMainIndex::Mark][j][i] == eLensState::Top2Done) m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0xFF, 0xFF, 0x00));	
 				else				m_wndMarkGrid.SetCellBackgroundColor(nLensNo-1, RGB(0x80, 0x80, 0x80));	// Error
 				
 				
@@ -1751,12 +1751,12 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo, int nDir)
 						{
 							gData.ZigMap[eMZ::Load][i] = TRUE; // Zig 존재함 
 
-							gData.InfoMZLoad[i][k][j] = (int)eLensState::Init;
+							gData.nStateMZLoad[i][k][j] = (int)eLensState::Init;
 							gData.LensMap[eMZ::Load][i][k][j] = eLensState::Init;
 						}
 						else
 						{
-							gData.InfoMZLoad[i][k][j] = eLensState::None;
+							gData.nStateMZLoad[i][k][j] = eLensState::None;
 							gData.LensMap[eMZ::Load][i][k][j] = eLensState::None;
 						}
 					}			
@@ -1773,12 +1773,12 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo, int nDir)
 						{
 							gData.ZigMap[eMZ::Load][i] = TRUE; // Zig 존재함 
 
-							gData.InfoMZLoad[i][j][k] = (int)eLensState::Init;
+							gData.nStateMZLoad[i][j][k] = (int)eLensState::Init;
 							gData.LensMap[eMZ::Load][i][j][k] = eLensState::Init;
 						}
 						else
 						{
-							gData.InfoMZLoad[i][j][k] = eLensState::None;
+							gData.nStateMZLoad[i][j][k] = eLensState::None;
 							gData.LensMap[eMZ::Load][i][j][k] = eLensState::None;
 						}
 					}			
@@ -1801,12 +1801,12 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo, int nDir)
 						{
 							gData.ZigMap[eMZ::Ready][i] = TRUE; // Zig 존재함 
 
-							gData.InfoMZReady[i][k][j] = (int)eLensState::Init;
+							gData.nStateMZReady[i][k][j] = (int)eLensState::Init;
 							gData.LensMap[eMZ::Ready][i][k][j] = eLensState::Init;
 						}
 						else
 						{
-							gData.InfoMZReady[i][k][j] = eLensState::None;
+							gData.nStateMZReady[i][k][j] = eLensState::None;
 							gData.LensMap[eMZ::Ready][i][k][j] = eLensState::None;
 						}
 					}			
@@ -1823,12 +1823,12 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo, int nDir)
 						{
 							gData.ZigMap[eMZ::Ready][i] = TRUE; // Zig 존재함 
 
-							gData.InfoMZReady[i][j][k] = (int)eLensState::Init;
+							gData.nStateMZReady[i][j][k] = (int)eLensState::Init;
 							gData.LensMap[eMZ::Ready][i][j][k] = eLensState::Init;
 						}
 						else
 						{
-							gData.InfoMZReady[i][j][k] = eLensState::None;
+							gData.nStateMZReady[i][j][k] = eLensState::None;
 							gData.LensMap[eMZ::Ready][i][j][k] = eLensState::None;
 						}
 					}			
@@ -1840,8 +1840,8 @@ void CWorkDlg::TransferMZInfo(int nFrom, int nTo, int nDir)
 			gData.nTNoPick[eMZ::Load] = gData.nTNoPick[eMZ::Ready];
 			gData.ZigMap[eMZ::Load][i] = gData.ZigMap[eMZ::Ready][i];
 			
-			memcpy(gData.InfoMZLoad[i], gData.InfoMZReady[i], sizeof(int)*ZIG_X*ZIG_Y);
-			memset(gData.InfoMZReady[i], 0x00, sizeof(int)*ZIG_X*ZIG_Y);
+			memcpy(gData.nStateMZLoad[i], gData.nStateMZReady[i], sizeof(int)*ZIG_X*ZIG_Y);
+			memset(gData.nStateMZReady[i], 0x00, sizeof(int)*ZIG_X*ZIG_Y);
 			memcpy(gData.LensMap[eMZ::Load][i], gData.LensMap[eMZ::Ready][i], sizeof(int)*ZIG_X*ZIG_Y);
 			memset(gData.LensMap[eMZ::Ready][i], 0x00, sizeof(int)*ZIG_X*ZIG_Y);
 		}		
@@ -1877,13 +1877,13 @@ void CWorkDlg::Set_TempSlot(int nPos, int nSlot, BOOL bExist)
 		if(bExist)
 		{
 			gData.ZigMap[nPos][nSlot-1] = TRUE; // Zig 존재함 
-			gData.InfoMZLoad[nSlot-1][0][0] = (int)eLensState::Init;
+			gData.nStateMZLoad[nSlot-1][0][0] = (int)eLensState::Init;
 			gData.LensMap[nPos][nSlot-1][0][0] = eLensState::Init;
 		}
 		else
 		{
 			gData.ZigMap[nPos][nSlot-1] = FALSE; // Zig 존재함 
-			gData.InfoMZLoad[nSlot-1][0][0] = (int)eLensState::None;
+			gData.nStateMZLoad[nSlot-1][0][0] = (int)eLensState::None;
 			gData.LensMap[nPos][nSlot-1][0][0] = eLensState::None;
 		}
 
@@ -1893,13 +1893,13 @@ void CWorkDlg::Set_TempSlot(int nPos, int nSlot, BOOL bExist)
 		if(bExist)
 		{
 			gData.ZigMap[nPos][nSlot-1] = TRUE; // Zig 존재함 
-			gData.InfoMZReady[nSlot-1][0][0] = (int)eLensState::Init;
+			gData.nStateMZReady[nSlot-1][0][0] = (int)eLensState::Init;
 			gData.LensMap[nPos][nSlot-1][0][0] = eLensState::Init;
 		}
 		else
 		{
 			gData.ZigMap[nPos][nSlot-1] = FALSE; // Zig 존재함 
-			gData.InfoMZReady[nSlot-1][0][0] = (int)eLensState::None;
+			gData.nStateMZReady[nSlot-1][0][0] = (int)eLensState::None;
 			gData.LensMap[nPos][nSlot-1][0][0] = eLensState::None;
 		}
 	}	
@@ -1937,12 +1937,12 @@ void CWorkDlg::init_LensMap()
 
 		if(nLNo == 32 || nLNo == 68 || nLNo == 113)
 		{
-			gData.InfoFeeder[nXPos][nYPos] = eLensState::None;
+			gData.nStateFeeder[nXPos][nYPos] = eLensState::None;
 			continue;
 		}
-		//if(gMes.sResult[i] == "OK") gData.InfoFeeder[nXPos][nYPos] = eLensState::Init;
+		//if(gMes.sResult[i] == "OK") gData.nStateFeeder[nXPos][nYPos] = eLensState::Init;
 				
-		gData.InfoFeeder[nXPos][nYPos] = eLensState::Init;
+		gData.nStateFeeder[nXPos][nYPos] = eLensState::Init;
 	}
 	*/
 
@@ -1965,15 +1965,15 @@ void CWorkDlg::init_LensMap()
 
 		if(nLNo == 32 || nLNo == 68 || nLNo == 113)
 		{
-			gData.InfoFeeder[nXPos][nYPos] = eLensState::None;			
+			gData.nStateFeeder[nXPos][nYPos] = eLensState::None;			
 		}
 		else if(nMESNo > gMes.nPocketCnt) 
 		{
-			gData.InfoFeeder[nXPos][nYPos] = eLensState::None;
+			gData.nStateFeeder[nXPos][nYPos] = eLensState::None;
 		}
 		else if(nMESNo <= gMes.nPocketCnt)
 		{
-			gData.InfoFeeder[nXPos][nYPos] = eLensState::Init;
+			gData.nStateFeeder[nXPos][nYPos] = eLensState::Init;
 		}			
 	}
 }

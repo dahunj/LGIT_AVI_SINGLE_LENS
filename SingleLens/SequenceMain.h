@@ -38,11 +38,18 @@ private:
 	CString		m_sRecipe;
 	CString		m_sVisionModel;
 	
-	std::queue<int> m_qLensNoDone;
+	std::queue<int> m_qLensNoInspectDone;
+	void ClearQInspectDone(){	while (!m_qLensNoInspectDone.empty()) m_qLensNoInspectDone.pop();}
+	BOOL isInspectDone(int nNo);
+
+
+	std::queue<int> m_qLensNoROSDone;
+	void ClearQROSDone(){	while (!m_qLensNoROSDone.empty()) m_qLensNoROSDone.pop();}
+	BOOL isROSDone(int nNo);
+
 	std::queue<int> m_qLensNoNG;
-	void ClearQueueDone(){	while (!m_qLensNoDone.empty()) m_qLensNoDone.pop();}
 	void ClearQueueNG(){	while (!m_qLensNoNG.empty()) m_qLensNoNG.pop();}
-	BOOL isDoneLens(int nNo);
+
 
 protected:
 	CWinThread	*m_pThreadBeep;
@@ -172,13 +179,9 @@ public:
 	BOOL Get_RecipeData(int nVision, CString sRcp);
 
 
-	BOOL Check_InspectDone(const CString& sZigID,int nMZNo, int sSlotNo, int sLensNo, int& nInfo);
-
-	void Set_ROSDone(int nPNo, int nPortNo, int nTrayNo);
-	void Set_ROSTime(int nPNo, int nPortNo, int nTrayNo);
-
-	BOOL Check_ROSDone(int nPNo, int nPortNo, int nTrayNo);
-	BOOL Check_JudgeDone(int nPNo, int nPortNo, int nTrayNo);
+	BOOL Check_InspectDone(const CString& sZigID,int nMZNo, int nTNo, int nLNo, int& nInfo);
+	BOOL Check_ROSDone(int nMzNo, int nTNo, int nLNo, int& nInfo );
+		
 };
 
 extern CSequenceMain g_objSequenceMain;

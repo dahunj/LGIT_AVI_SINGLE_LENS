@@ -210,7 +210,7 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 		}
 	
 		gData.bScanDone[eVision::TC] = TRUE;
-		gData.InfoMainIndex[eMainIndex::Top][nXPos][nYPos] = eLensState::TopDone;
+		gData.nStateMainIndex[eMainIndex::Top][nXPos][nYPos] = eLensState::TopDone;
 		//g_objSequenceMain.Set_MainRunCase(AUTO_TOP_INSPECT, 10);
 
 	}
@@ -227,7 +227,7 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 		}
 				
 		gData.bScanDone[eVision::BC] = TRUE;
-		gData.InfoMainIndex[eMainIndex::Btm][nXPos][nYPos] = eLensState::BtmDone;
+		gData.nStateMainIndex[eMainIndex::Btm][nXPos][nYPos] = eLensState::BtmDone;
 		//g_objSequenceMain.Set_MainRunCase(AUTO_BTM_INSPECT, 10);
 	}
 	else if(nV == eVision::T2) 
@@ -243,7 +243,7 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 		}
 
 		gData.bScanDone[eVision::T2] = TRUE;
-		gData.InfoMainIndex[eMainIndex::Top2][nXPos][nYPos] = eLensState::Top2Done;		
+		gData.nStateMainIndex[eMainIndex::Top2][nXPos][nYPos] = eLensState::Top2Done;		
 	}
 }
 
@@ -280,10 +280,9 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 		{
 			gData.nInspectInfo[nMNo][nTNo][nLAVINo-1] = eLensInfo::NG;
 			gData.sJudgeCode[nMNo][nTNo][nLAVINo-1][eVision::MARKING] = sJudge;
-			gData.sNGCode[nMNo][nTNo][nLAVINo-1][eVision::MARKING] = sNgCode;
-
-			if(pEquipData->bUseROS) g_objDispatcher.Set_JudgeRequest(nMNo + 1, nTNo + 1, nLNo); //Ros판정
-		}		
+			gData.sNGCode[nMNo][nTNo][nLAVINo-1][eVision::MARKING] = sNgCode;			
+		}
+		if(pEquipData->bUseROS) g_objDispatcher.Set_JudgeRequest(nMNo + 1, nTNo + 1, nLNo); //Ros판정
 	}		
 	else if (sJudge != "G")  // NG
 	{ 		

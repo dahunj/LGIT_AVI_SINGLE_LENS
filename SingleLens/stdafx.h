@@ -149,18 +149,16 @@ typedef struct
 
 	// Lens State 
 	// 0:Empty,1:Good, 2:NG, 3:Top Ready, 4: Top Done, 5: Btm Ready, 6 : Btm Done,  9:Init
-	int InfoMZLoad[10][ZIG_X][ZIG_Y];
-	int InfoMZReady[10][ZIG_X][ZIG_Y];
-	int InfoFeeder[ZIG_X][ZIG_Y];
-	int InfoRail[ZIG_X][ZIG_Y];			//if needed 
-	int	InfoZigPick[ZIG_X][ZIG_Y];
-	int InfoMainIndex[7][ZIG_X][ZIG_Y]; //0: Load , 1: Clean, 2: Top, 3:empty, 4:btm, 5: Mark, 6: Unload 
-	int InfoMZUnload[10][ZIG_X][ZIG_Y];
+	int nStateMZLoad[10][ZIG_X][ZIG_Y];
+	int nStateMZReady[10][ZIG_X][ZIG_Y];
+	int nStateFeeder[ZIG_X][ZIG_Y];
+	int nStateRail[ZIG_X][ZIG_Y];			//if needed 
+	int	nStateZigPick[ZIG_X][ZIG_Y];
+	int nStateMainIndex[7][ZIG_X][ZIG_Y]; //0: Load , 1: Clean, 2: Top, 3:empty, 4:btm, 5: Mark, 6: Unload 
+	int nStateMZUnload[10][ZIG_X][ZIG_Y];
 
-	int	InfoCtZigLoad[10];
-	int	InfoCtZigRdy[10];
-	int	InfoCtZigUnload[10];
-
+	int nInfoMainIndex[7][ZIG_X][ZIG_Y]; //0: Load , 1: Clean, 2: Top, 3:empty, 4:btm, 5: Mark, 6: Unload 
+	
 	int nMZNoMZLoad[10];
 	int nMZNoMZRdy[10];
 	int nMZNoFeeder;
@@ -363,7 +361,10 @@ typedef struct
 	int		nStopCount[7];
 	int		nStopCountZig[7][10];
 
-	int		nRosJugCount[7][4]; 
+	int		nRosJugCnt_Req[7];
+	int		nRosJugCnt_Good[7];
+	int		nRosJugCnt_NG[7];
+	int		nRosJugCnt_Repair[7];
 
 	DWORD	dwStopStart;
 	DWORD	dwStopEnd;

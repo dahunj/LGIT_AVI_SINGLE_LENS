@@ -329,15 +329,15 @@ void CMesAgent::Get_TrayID_Confirm(CString sStrings)
 
 		if(nLensNoAVI == 32 || nLensNoAVI == 68 || nLensNoAVI == 113)
 		{
-			gData.InfoFeeder[nXPos][nYPos] = eLensState::None;			
+			gData.nStateFeeder[nXPos][nYPos] = eLensState::None;			
 		}
 		else if(gMes.sResult[i] == "OK")
 		{
-			gData.InfoFeeder[nXPos][nYPos] = eLensState::Init;
+			gData.nStateFeeder[nXPos][nYPos] = eLensState::Init;
 		}
 		else
 		{
-			gData.InfoFeeder[nXPos][nYPos] = eLensState::None;
+			gData.nStateFeeder[nXPos][nYPos] = eLensState::None;
 		}
 
 	}

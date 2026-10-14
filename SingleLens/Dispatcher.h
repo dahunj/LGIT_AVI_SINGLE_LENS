@@ -44,7 +44,7 @@ private:
 public:
 	BOOL Initialize();
 	void Terminate();
-	void Reset(int nPortNo);
+	void Reset(int nMzNo);
 
 	void Set_ConnectRequest();
 	void Set_ConnectReply(CString sIp);
@@ -59,7 +59,7 @@ public:
 	void Set_TimeUpdate();
 	void Set_TimeOver(int nPortNo, int nTrayNo, int nCmNo);
 
-	BOOL Is_JudgeDone(int nPortNo, int nTrayNo, int nCmNo);
+	BOOL Is_JudgeDone(int nPortNo, int nTrayNo, int nCmNo, int &nInfo);
 	BOOL Is_Connected() { return m_bConnected; }
 	void Set_Connected(BOOL bOn) { m_bConnected = bOn; }
 

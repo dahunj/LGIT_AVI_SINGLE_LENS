@@ -75,7 +75,7 @@ private:
 	void Display_Status();
 
 public:
-	void Update_TrayInfo(int nTray, int nNo=0);
+	
 	void Change_Model();
 };
 
