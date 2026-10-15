@@ -91,7 +91,7 @@
 	#pragma comment(lib, "CSUdpClientR.lib")
 #endif
 
-#define MAIN_VERSION	_T("V 1.2.0.2_S")
+#define MAIN_VERSION	_T("V 1.3.0.0_S")
 
 //---------------------------------
 //#define AJIN_BOARD_USE
