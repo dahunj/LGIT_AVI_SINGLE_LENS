@@ -10,8 +10,7 @@
 #include "DataManager.h"
 #include "Common.h"
 #include "SetupDlg.h"
-
-
+#include "Dispatcher.h"
 
 // CSetupEquipDlg ¥Î»≠ ªÛ¿⁄¿‘¥œ¥Ÿ.
 
@@ -53,8 +52,7 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_LBL_DELAY_ADD_0 + i,  m_lblDelayAdd[i]);
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_STC_DELAY_ADD_0 + i, m_stcDelayAdd[i]);
 
-	DDX_Control(pDX, IDC_LBL_AVI_IP, m_lblAviIp);
-	DDX_Control(pDX, IDC_IPA_AVI_IP, m_ipaAviIp);
+
 	DDX_Control(pDX, IDC_GRP_TOWER, m_grpTower);
 	for (int i = 0; i < 10; i++) DDX_Control(pDX, IDC_LBL_TOWER_0 + i,  m_lblTower[i]);
 	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) DDX_Control(pDX, IDC_CHK_TOWER_0_0 + i * 4 + j,  m_chkTower[i][j]);
@@ -115,11 +113,15 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_LBL_TRIGTOP_0 + i, m_lblTriggerTop[i]);
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_LBL_TRIGBTM_0 + i, m_lblTriggerBtm[i]);
 	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_LBL_TRIGTOP2_0 + i, m_lblTriggerTop2[i]);
-
-
+	
 	DDX_Control(pDX, IDC_CHK_DELAY_BETWEEN_TOP, m_chkDelayAllTop);
 	DDX_Control(pDX, IDC_CHK_DELAY_BETWEEN_TOP2, m_chkDelayAllTop2);
 	DDX_Control(pDX, IDC_CHK_DELAY_BETWEEN_BTM, m_chkDelayAllBtm);
+
+	DDX_Control(pDX, IDC_LST_MDJ_IP, m_lstMdjIp);
+	DDX_Control(pDX, IDC_BTN_MDJ_DELETE, m_btnMdjDelete);
+	DDX_Control(pDX, IDC_BTN_MDJ_REFRESH, m_btnMdjRefresh);
+
 }
 
 BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
@@ -152,6 +154,8 @@ BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHK_USE_ROS, &CSetupEquipDlg::OnBnClickedChkUseRos)
 	ON_STN_CLICKED(IDC_STC_INSPECT_WAIT, &CSetupEquipDlg::OnStnClickedStcInspectWait)
 	ON_STN_CLICKED(IDC_STC_ROS_WAIT, &CSetupEquipDlg::OnStnClickedStcRosWait)
+	ON_BN_CLICKED(IDC_BTN_MDJ_DELETE, &CSetupEquipDlg::OnBnClickedBtnMdjDelete)
+	ON_BN_CLICKED(IDC_BTN_MDJ_REFRESH, &CSetupEquipDlg::OnBnClickedBtnMdjRefresh)
 END_MESSAGE_MAP()
 
 // CSetupEquipDlg ∏ﬁΩ√¡ˆ √≥∏Æ±‚¿‘¥œ¥Ÿ.
@@ -202,9 +206,7 @@ void CSetupEquipDlg::Initial_Controls()
 	
 	for (int i = 0; i < 8; i++) m_lblDelayAdd[i].Init_Ctrl("πŸ≈¡", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x60, 0x40));
 	for (int i = 0; i < 8; i++) m_stcDelayAdd[i].Init_Ctrl("πŸ≈¡", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xFF, 0xE0));
-
-	m_lblAviIp.Init_Ctrl("πŸ≈¡", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x60, 0x60, 0x60));
-	
+		
 	m_grpTower.Init_Ctrl("πŸ≈¡", 12, TRUE, COLOR_DEFAULT, COLOR_DEFAULT);
 	for (int i = 0; i < 10; i++) m_lblTower[i].Init_Ctrl("πŸ≈¡", 11, FALSE, RGB(0xFF, 0xFF, 0xFF), RGB(0x40, 0x40, 0x40));
 	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) m_chkTower[i][j].Init_Ctrl("πŸ≈¡", 11, FALSE, COLOR_DEFAULT, RGB(0x00, 0xF0, 0x00), CCheckCS::emRed, 0);
@@ -249,6 +251,10 @@ void CSetupEquipDlg::Initial_Controls()
 	m_chkUseBarcodeCtZig.Init_Ctrl("πŸ≈¡", 11, TRUE, COLOR_DEFAULT, RGB(0xFF, 0xC0, 0x20), CCheckCS::emRed, 0);
 
 	m_chkAutoRecipeChange.Init_Ctrl("πŸ≈¡", 11, TRUE, COLOR_DEFAULT, RGB(0x90, 0x90, 0xF0), CCheckCS::emRed, 0);
+
+	m_lstMdjIp.Init_Ctrl("πŸ≈¡", 11, TRUE, COLOR_DEFAULT, COLOR_DEFAULT);
+	m_btnMdjDelete.Init_Ctrl("πŸ≈¡", 11, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, 0, 0);
+	m_btnMdjRefresh.Init_Ctrl("πŸ≈¡", 11, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, 0, 0);
 }
 
 
@@ -351,6 +357,10 @@ void CSetupEquipDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	m_lblResultTest.ShowWindow(SW_HIDE);
 	m_chkResultTestUse.ShowWindow(SW_HIDE);
 	m_edtResultTest.ShowWindow(SW_HIDE);
+
+	m_chkDelayAllTop.ShowWindow(SW_HIDE);
+	m_chkDelayAllTop2.ShowWindow(SW_HIDE);
+	m_chkDelayAllBtm.ShowWindow(SW_HIDE);
 }
 
 void CSetupEquipDlg::OnStnClickedStcEquipName()
@@ -425,6 +435,10 @@ void CSetupEquipDlg::OnStnClickedStcShowHidden()
 		if (g_dlgSetup.Get_LoginUser() != 2) return;
 		m_lblPasswordEngr.ShowWindow(SW_HIDE);
 		m_edtPasswordEngr.ShowWindow(SW_HIDE);
+
+		m_chkDelayAllTop.ShowWindow(SW_HIDE);
+		m_chkDelayAllTop2.ShowWindow(SW_HIDE);
+		m_chkDelayAllBtm.ShowWindow(SW_HIDE);
 	} 
 	else 
 	{
@@ -432,14 +446,17 @@ void CSetupEquipDlg::OnStnClickedStcShowHidden()
 		m_lblResultTest.ShowWindow(SW_SHOW);
 		m_chkResultTestUse.ShowWindow(SW_SHOW);
 		m_edtResultTest.ShowWindow(SW_SHOW);
-
-
+		
 		m_grpHidden.ShowWindow(SW_SHOW);
 		m_lblPasswordOp.ShowWindow(SW_SHOW);
 		m_stcPasswordOp.ShowWindow(SW_SHOW);
 		if (g_dlgSetup.Get_LoginUser() != 2) return;
 		m_lblPasswordEngr.ShowWindow(SW_SHOW);
 		m_edtPasswordEngr.ShowWindow(SW_SHOW);
+
+		m_chkDelayAllTop.ShowWindow(SW_SHOW);
+		m_chkDelayAllTop2.ShowWindow(SW_SHOW);
+		m_chkDelayAllBtm.ShowWindow(SW_SHOW);
 	}
 }
 
@@ -1123,4 +1140,33 @@ void CSetupEquipDlg::OnStnClickedStcRosWait()
 
 	m_strLog.Format("[Equip Mode] Ros Wait Changed - %s ", strNew);
 	g_objLogFile.Save_HandlerLog(m_strLog);
+}
+
+
+void CSetupEquipDlg::OnBnClickedBtnMdjDelete()
+{
+	CString strIp;
+	int nIdx = m_lstMdjIp.GetCurSel();
+	m_lstMdjIp.GetText(nIdx, strIp);
+
+	ROS_DATA *pRosData = g_objDataManager.Get_pRosData();
+	POSITION pos = pRosData->lstMdjIp.Find(strIp);
+	if (pos) pRosData->lstMdjIp.RemoveAt(pos);
+
+	if (pRosData->lstMdjIp.GetCount() < 1) g_objDispatcher.Set_Connected(FALSE);
+
+	OnBnClickedBtnMdjRefresh();
+}
+
+
+void CSetupEquipDlg::OnBnClickedBtnMdjRefresh()
+{
+	m_lstMdjIp.ResetContent();
+
+	ROS_DATA *pRosData = g_objDataManager.Get_pRosData();
+	POSITION pos = pRosData->lstMdjIp.GetHeadPosition();
+	while (pos) {
+		CString strIp = pRosData->lstMdjIp.GetNext(pos);
+		m_lstMdjIp.AddString(strIp);
+	}
 }

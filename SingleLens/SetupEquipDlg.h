@@ -52,9 +52,6 @@ public:
 	CLabelCS	m_lblDelayAdd[8];
 	CStaticCS	m_stcDelayAdd[8];
 
-	CLabelCS	m_lblAviIp;
-	CIPAddressCtrl	m_ipaAviIp;
-
 	CStaticCS	m_stcZigData[4];
 	CStaticCS	m_stcTriggerTop[8];
 	CStaticCS	m_stcTriggerBtm[8];
@@ -97,6 +94,10 @@ public:
 	CCheckCS	m_chkUseBarcodeCtZig;
 
 	CCheckCS	m_chkAutoRecipeChange;
+
+	CListCS		m_lstMdjIp;
+	CButtonCS	m_btnMdjDelete;
+	CButtonCS	m_btnMdjRefresh;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
@@ -153,6 +154,8 @@ public:
 	afx_msg void OnBnClickedChkUseRos();
 	afx_msg void OnStnClickedStcInspectWait();
 	afx_msg void OnStnClickedStcRosWait();
+	afx_msg void OnBnClickedBtnMdjDelete();
+	afx_msg void OnBnClickedBtnMdjRefresh();
 };
 
 ///////////////////////////////////////////////////////////////////////////////
