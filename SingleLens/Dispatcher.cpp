@@ -90,7 +90,7 @@ void CDispatcher::Reset(int nMzNo)
 		memset(m_bJudgeDone, 0x00, sizeof(BOOL) * 3 * 10 * 200);
 		memset(m_dwTimeStart, 0x00, sizeof(DWORD) * 3 * 10 * 200);
 
-		memset(gData.nROSInfo, 0x00, sizeof(int)*7*10*800); 
+		memset(gData.nROSInfo, 0x00, sizeof(int)*7*10*ZIG_X*ZIG_Y); 
 		memset( gData.nInfoMainIndex, 0x00, sizeof(int)*3*10*ZIG_X*ZIG_Y);
 	} 
 	else
@@ -100,7 +100,7 @@ void CDispatcher::Reset(int nMzNo)
 		memset(m_bJudgeDone[nMzNo-1], 0x00, sizeof(BOOL) * 10 * 200);
 		memset(m_dwTimeStart[nMzNo-1], 0x00, sizeof(DWORD) * 10 * 200);
 
-		memset(gData.nROSInfo[nMzNo-1], 0x00, sizeof(int)*10*800); 
+		memset(gData.nROSInfo[nMzNo-1], 0x00, sizeof(int)*10*ZIG_X*ZIG_Y); 
 		memset( gData.nInfoMainIndex[nMzNo-1], 0x00, sizeof(int)*10*ZIG_X*ZIG_Y);
 	}
 }
@@ -441,9 +441,14 @@ void CDispatcher::Set_JudgeRequest(int nMZNo, int nTrayNo, int nLensNo)
 	m_dwTimeStart[nMZNo-1][nTrayNo-1][nLensNo-1] = m_dwReqStart[nMZNo-1][nTrayNo-1][nLensNo-1];
 	gData.nROSReqCount++;	
 
+
+	int ImgCntTotal = gData.nImageCnt[nMZNo-1][nTrayNo-1][nLensNo-1][eVision::TC]
+		+ gData.nImageCnt[nMZNo-1][nTrayNo-1][nLensNo-1][eVision::BC]
+		+ gData.nImageCnt[nMZNo-1][nTrayNo-1][nLensNo-1][eVision::T2];
+
 	CString	strSendCmd, strIp;
-	strSendCmd.Format("JUDGE,REQUEST,%s,%s,%s,%d,%d,%d,%s,%s",
-		pRosData->sHandlerIp, pEquipData->sModelName, strLotId, nMZNo, nTrayNo, g_objCommon.ConvertToMESNo(nLensNo), "", strNgCode);
+	strSendCmd.Format("JUDGE,REQUEST,%s,%s,%s,%d,%d,%d,%s,%s,%d",
+		pRosData->sHandlerIp, pEquipData->sModelName, strLotId, nMZNo, nTrayNo, g_objCommon.ConvertToMESNo(nLensNo), "", strNgCode, ImgCntTotal);
 		//pRosData->sHandlerIp, pEquipData->sModelName, strLotId, nMZNo, nTrayNo, nCmNo, "", strNgCode, gLot.nImageCnt[nPortNo-1][nTrayNo-1][nCmNo-1][0]);
 
 	if (m_nMdjIndex >= pRosData->lstMdjIp.GetCount()) m_nMdjIndex = 0;	// 다시 첫번째 부터...

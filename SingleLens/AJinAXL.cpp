@@ -135,9 +135,9 @@ BOOL CAJinAXL::Initialize()
 #endif
 	
 	//Init Trigger 
-	Start_Scan(eVision::TC, AX_TOP_INSPECTOR_Z, 0, 0, 500, 10, 10, 1);
-	Start_Scan(eVision::BC, AX_BTM_INSPECTOR_Z, 0, 0, 500, 10, 10, 1);
-	Start_Scan(eVision::T2Ch, AX_MARK_UNIT_Z, 0, 0, 500, 10, 10, 1);
+	Start_Scan(eTrigCh::TC, AX_TOP_INSPECTOR_Z, 0, 0, 500, 10, 10, 1);
+	Start_Scan(eTrigCh::BC, AX_BTM_INSPECTOR_Z, 0, 0, 500, 10, 10, 1);
+	Start_Scan(eTrigCh::T2, AX_MARK_UNIT_Z, 0, 0, 500, 10, 10, 1);
 
 	m_DY02.oMainIndexZigAlignIn = TRUE;
 	m_DY02.oMainIndexZigAlignOut = FALSE;

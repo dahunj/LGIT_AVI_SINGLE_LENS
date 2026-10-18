@@ -204,11 +204,22 @@ struct eVision
 		TC = 0,
 		BC = 1,
 		MARKING = 2,
-		T2 = 3,
-		T2Ch = 2,
+		T2 = 3,	
+		Total = 4, 
 	};
 
 };
+
+struct eTrigCh
+{
+	enum Name
+	{
+		TC = 0,
+		BC = 1,
+		T2 = 2,
+	};
+};
+
 
 
 struct eVDir

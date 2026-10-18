@@ -75,7 +75,7 @@ void CInspector::Receive_Command(int nVPc, CString sCommand)
 	g_objLogFile.Save_InspectorLog(strLog);
 	
 	/////////////////////////////////////////////////////////
-	CString strA[7];
+	CString strA[8];
 	for (int i = 0; i < 7; i++) AfxExtractSubString(strA[i], sCommand, i + 2, chSep);
 
 	if (strCmd == "STATUS") {
@@ -95,7 +95,7 @@ void CInspector::Receive_Command(int nVPc, CString sCommand)
 	else if (strCmd == "INSPECT") 
 	{
 		g_objLogFile.Save_TestLog(strLog);
-		if (strOp == "COMPLETE") Get_InspectComplete(nVPc, strA[0], strA[1], strA[2], strA[3], strA[4], strA[5], strA[6]);
+		if (strOp == "COMPLETE") Get_InspectComplete(nVPc, strA[0], strA[1], strA[2], strA[3], strA[4], strA[5], strA[6], strA[7]);
 	}
 	else if (strCmd == "AMOVE")
 	{
@@ -249,11 +249,13 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 	}
 }
 
-void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CString sMZNo, CString sTrayNo, CString sLensNo, CString sJudge, CString sNgCode)
+void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CString sMZNo, CString sTrayNo, CString sLensNo, CString sJudge, CString sNgCode, CString sImageCnt)
 {
 	int nMNo = atoi(sMZNo) - 1;
 	int nTNo = atoi(sTrayNo) - 1;	// Tray Index
 	int	nLNo = atoi(sLensNo);	// CM Index
+
+	int nImgCnt = atoi(sImageCnt);
 
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
@@ -268,6 +270,8 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 
 	gData.cJudgeCode[nMNo][nTNo][nLAVINo-1][nV] = *(LPSTR)(LPCTSTR)sJudge;
 	
+	gData.nImageCnt[nMNo][nTNo][nLAVINo-1][nV] = nImgCnt;
+
 	int nPreInfo = gData.nInspectInfo[nMNo][nTNo][nLAVINo-1];
 
 	

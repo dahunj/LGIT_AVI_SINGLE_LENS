@@ -443,14 +443,14 @@ BOOL CManualBtmDlg::BtmScan_Run()
 			double dTrigE = dTrigS + dPeriod * pEquipData->nBtmCount;	// Trigger End
 			dTopZ = dTrigE + (dPeriod/4);								// Motion End (가감속)
 			double dVelocity = pEquipData->dBtmVelocity;
-			g_objAJinAXL.Start_Scan(eVision::BC, AX_BTM_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
+			g_objAJinAXL.Start_Scan(eTrigCh::BC, AX_BTM_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
 			m_nScanCase++;
 		}
 		break;
 	case 3:		// Scan End
 		if (g_objAJinAXL.Is_Done(AX_BTM_INSPECTOR_Z)) 
 		{
-			g_objAJinAXL.Stop_Scan(eVision::BC, AX_BTM_INSPECTOR_Z);
+			g_objAJinAXL.Stop_Scan(eTrigCh::BC, AX_BTM_INSPECTOR_Z);
 			m_nScanCase = 0;			
 			return FALSE;
 		}
@@ -504,14 +504,14 @@ BOOL CManualBtmDlg::Top2Scan_Run()
 			double dTrigE = dTrigS + dPeriod * pEquipData->nTop2Count;	// Trigger End
 			dTop2Z = dTrigE + (dPeriod/4);								// Motion End (가감속)
 			double dVelocity = pEquipData->dTop2Velocity;
-			g_objAJinAXL.Start_Scan(eVision::T2Ch, AX_MARK_UNIT_Z, dTop2Z, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
+			g_objAJinAXL.Start_Scan(eTrigCh::T2, AX_MARK_UNIT_Z, dTop2Z, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
 			m_nTop2ScanCase++;
 		}
 		break;
 	case 3:		// Scan End
 		if (g_objAJinAXL.Is_Done(AX_MARK_UNIT_Z)) 
 		{
-			g_objAJinAXL.Stop_Scan(eVision::T2Ch, AX_MARK_UNIT_Z);
+			g_objAJinAXL.Stop_Scan(eTrigCh::T2, AX_MARK_UNIT_Z);
 			m_nTop2ScanCase = 0;			
 			return FALSE;
 		}
@@ -541,7 +541,7 @@ void CManualBtmDlg::OnBnClickedButton2()
 
 void CManualBtmDlg::OnBnClickedButton4()
 {
-	g_objAJinAXL.Clear_Scan(eVision::BC);
+	g_objAJinAXL.Clear_Scan(eTrigCh::BC);
 }
 
 
@@ -618,5 +618,5 @@ void CManualBtmDlg::OnBnClickedBtnLensMoveMark()
 
 void CManualBtmDlg::OnBnClickedBtnClear()
 {
-	g_objAJinAXL.Clear_Scan(eVision::T2Ch);
+	g_objAJinAXL.Clear_Scan(eTrigCh::T2);
 }

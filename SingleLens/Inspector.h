@@ -45,7 +45,7 @@ private:
 
 	void Get_LotReady(int nVPc, CString sMZID, CString sMZNo);
 	void Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString sMZNo, CString sTrayNo, CString sLensNo);
-	void Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CString sMZNo, CString sTrayNo, CString sLensNo, CString sJudge, CString sNgCode);
+	void Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CString sMZNo, CString sTrayNo, CString sLensNo, CString sJudge, CString sNgCode, CString sImageCnt);
 	
 	void Get_AMoveRequest(int nVPc, CString sGbn, CString sZ1);
 	void Get_PositionRequest(int nVPc, CString sGbn);

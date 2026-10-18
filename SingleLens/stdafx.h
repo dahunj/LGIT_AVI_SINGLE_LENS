@@ -108,7 +108,7 @@
 const int SLOT_NO_MAX = 10;
 
 //Zig X-Y
-const int ZIG_X = 40, ZIG_Y = 20; // MAX
+const int ZIG_X = 20, ZIG_Y = 20; // MAX
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -232,6 +232,9 @@ typedef struct
 	BYTE	byInspectDone[7][10][ZIG_X*ZIG_Y];	// 검사완료 (2bit 사용 ==> 0:T1, 1:Btm1)
 
 	int		nROSInfo[7][10][ZIG_X*ZIG_Y];
+
+	int		nImageCnt[7][10][ZIG_X*ZIG_Y][5]; // 0:Top 1: Btm , 2: Marking, 3: T2, 4:Total 
+
 
 	//0: Rignt, 1 : Left,  판정코드 (0:Top, 1:Btm)
 	

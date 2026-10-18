@@ -616,7 +616,7 @@ BOOL CSequenceInit::Initial_TopInspector()
 		{			
 			g_objAJinAXL.Set_EncoderType(AX_TOP_INSPECTOR_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_TOP_INSPECTOR_Z, 1);	// Abs
-			g_objAJinAXL.Clear_Scan(eVision::TC);
+			g_objAJinAXL.Clear_Scan(eTrigCh::TC);
 			m_niTopInspectorCase++; m_tiTopInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		}
 		break;
@@ -717,7 +717,7 @@ BOOL CSequenceInit::Initial_BtmInspector()
 		{			
 			g_objAJinAXL.Set_EncoderType(AX_BTM_INSPECTOR_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_BTM_INSPECTOR_Z, 1);	// Abs
-			g_objAJinAXL.Clear_Scan(eVision::BC);
+			g_objAJinAXL.Clear_Scan(eTrigCh::BC);
 			m_niBtmInspectorCase++; m_tiBtmInspectorLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		}
 		break;
@@ -809,7 +809,7 @@ BOOL CSequenceInit::Initial_MarkUnit()
 		{			
 			g_objAJinAXL.Set_EncoderType(AX_MARK_UNIT_Z, 0);	// Inc
 			g_objAJinAXL.Set_EncoderType(AX_MARK_UNIT_Z, 1);	// Abs
-			g_objAJinAXL.Clear_Scan(eVision::T2Ch);
+			g_objAJinAXL.Clear_Scan(eTrigCh::T2);
 			m_niMarkUnitCase++; m_tiMarkUnitLoop.Set_LoopTime(5000);
 		}
 		break;

@@ -3400,7 +3400,7 @@ BOOL CSequenceMain::TopInspectorRun()
 			double dTrigE = dTrigS + (dPeriod) * (gRcp.nCount[eVision::TC]-1);	// Trigger End
 			dTopZ = dTrigE + (dPeriod/10);								// Motion End (가감속)
 			double dVelocity = gRcp.dVelocity[eVision::TC];
-			g_objAJinAXL.Start_Scan(eVision::TC, AX_TOP_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
+			g_objAJinAXL.Start_Scan(eTrigCh::TC, AX_TOP_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
 			m_nTopInspectCase++; m_nTopInspectLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 		}
 		break;
@@ -3410,7 +3410,7 @@ BOOL CSequenceMain::TopInspectorRun()
 			m_strLog.Format("AxisNo,%d, Current,%0.3lf", AX_TOP_INSPECTOR_Z, g_objAJinAXL.Get_Position(AX_TOP_INSPECTOR_Z));	g_objLogFile.Save_PositionLog(m_strLog);
 
 			g_objLogFile.Save_HandlerLog("Stop Scan");
-			g_objAJinAXL.Stop_Scan(eVision::TC, AX_TOP_INSPECTOR_Z);
+			g_objAJinAXL.Stop_Scan(eTrigCh::TC, AX_TOP_INSPECTOR_Z);
 			//gData.nStateMainIndex[eMainIndex::Top][nTopXPos-1][nTopYPos-1] = eLensState::TopDone;	//Scan Done
 			//m_nTopInspectCase = eTopBr::VisionWait;//
 			m_nTopInspectCase = 10;
@@ -3728,7 +3728,7 @@ BOOL CSequenceMain::BtmInspectorRun()
 			double dTrigE = dTrigS + dPeriod * (gRcp.nCount[eVision::BC] - 1) ;	// Trigger End
 			dBtmZ = dTrigE + (dPeriod/10);								// Motion End (가감속)
 			double dVelocity = gRcp.dVelocity[eVision::BC];
-			g_objAJinAXL.Start_Scan(eVision::BC, AX_BTM_INSPECTOR_Z, dBtmZ, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
+			g_objAJinAXL.Start_Scan(eTrigCh::BC, AX_BTM_INSPECTOR_Z, dBtmZ, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
 			m_nBtmInspectCase++; m_nBtmInspectLoop.Set_LoopTime(gData.nLTime[eLT::Scan]);
 		}
 		break;
@@ -3736,7 +3736,7 @@ BOOL CSequenceMain::BtmInspectorRun()
 		if (g_objAJinAXL.Is_MoveDone(AX_BTM_INSPECTOR_Z,dBtmZ) && gData.bScanDone[eVision::BC]) 
 		{
 			g_objLogFile.Save_HandlerLog("Stop Scan");
-			g_objAJinAXL.Stop_Scan(eVision::BC, AX_BTM_INSPECTOR_Z);
+			g_objAJinAXL.Stop_Scan(eTrigCh::BC, AX_BTM_INSPECTOR_Z);
 
 			//gData.nStateMainIndex[eMainIndex::Btm][nBtmXPos-1][nBtmYPos-1] = eLensState::BtmDone;	//Scan Done
 			m_nBtmInspectCase = 10;//eBtmBr::VisionWait; 
@@ -4223,7 +4223,7 @@ BOOL CSequenceMain::MarkUnitRun()
 			double dTrigE = dTrigS + (dPeriod) * (gRcp.nCount[eVision::T2]-1);	// Trigger End
 			dTop2Z = dTrigE + (dPeriod/10);								// Motion End (가감속)
 			double dVelocity = gRcp.dVelocity[eVision::T2];
-			g_objAJinAXL.Start_Scan(eVision::T2Ch, AX_MARK_UNIT_Z, dTop2Z, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
+			g_objAJinAXL.Start_Scan(eTrigCh::T2, AX_MARK_UNIT_Z, dTop2Z, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
 			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(10000);
 		}
 		break;
@@ -4232,7 +4232,7 @@ BOOL CSequenceMain::MarkUnitRun()
 		{			
 			m_strLog.Format("AxisNo,%d, Current,%0.3lf", AX_MARK_UNIT_Z, g_objAJinAXL.Get_Position(AX_MARK_UNIT_Z)); g_objLogFile.Save_PositionLog(m_strLog);
 			g_objLogFile.Save_HandlerLog("Stop Scan");
-			g_objAJinAXL.Stop_Scan(eVision::T2Ch, AX_MARK_UNIT_Z);
+			g_objAJinAXL.Stop_Scan(eTrigCh::T2, AX_MARK_UNIT_Z);
 			m_nMarkUnitCase = 40;
 			m_nMarkUnitLoop.Set_LoopTime(30000);		
 

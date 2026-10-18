@@ -351,8 +351,8 @@ BOOL CManualCleanDlg::TopScan_Run()
 			dBtmZ = dTrigE_Btm + (dPeriod/10);								// Motion End (°¡°¨¼Ó)
 			double dVelocity_Btm = pEquipData->dBtmVelocity;
 			
-			g_objAJinAXL.Start_Scan(eVision::TC, AX_TOP_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
-			g_objAJinAXL.Start_Scan(eVision::BC, AX_BTM_INSPECTOR_Z, dBtmZ, dTrigS_Btm, dTrigE_Btm, dPeriod_Btm, dPeriod_Btm/2, dVelocity_Btm);
+			g_objAJinAXL.Start_Scan(eTrigCh::TC, AX_TOP_INSPECTOR_Z, dTopZ, dTrigS, dTrigE, dPeriod, dPeriod/2, dVelocity);
+			g_objAJinAXL.Start_Scan(eTrigCh::BC, AX_BTM_INSPECTOR_Z, dBtmZ, dTrigS_Btm, dTrigE_Btm, dPeriod_Btm, dPeriod_Btm/2, dVelocity_Btm);
 
 			m_nScanCase = 3;
 			
@@ -361,7 +361,7 @@ BOOL CManualCleanDlg::TopScan_Run()
 	case 3:		// Scan End
 		if (g_objAJinAXL.Is_MoveDone(AX_TOP_INSPECTOR_Z, dTopZ) && g_objAJinAXL.Is_MoveDone(AX_BTM_INSPECTOR_Z, dBtmZ)) 
 		{
-			g_objAJinAXL.Stop_Scan(eVision::TC, AX_TOP_INSPECTOR_Z);			
+			g_objAJinAXL.Stop_Scan(eTrigCh::TC, AX_TOP_INSPECTOR_Z);			
 			m_nScanCase = 0;			
 			return FALSE;
 		}
@@ -412,7 +412,7 @@ void CManualCleanDlg::OnBnClickedBtnCasereset2()
 
 void CManualCleanDlg::OnBnClickedButton2()
 {
-	g_objAJinAXL.Clear_Scan(eVision::TC);
+	g_objAJinAXL.Clear_Scan(eTrigCh::TC);
 }
 
 
