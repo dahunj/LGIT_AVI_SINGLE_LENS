@@ -373,6 +373,10 @@ void CSequenceMain::Job_LotStart(int nMZNo, int nPos)
 	memset(gData.nGrapFailCnt[nMNo], 0x00, sizeof(int)*10);
 	memset(gData.byInspectDone[nMNo], 0x00, sizeof(BYTE)*10*ZIG_X*ZIG_Y);
 
+	memset(gData.nImageCnt[nMNo], 0x00, sizeof(int)*10*ZIG_X*ZIG_Y*4);
+
+
+
 	//ROS Clear 
 	g_objDispatcher.Reset(nMZNo);	
 	g_objLogFile.Save_EfficiencyLog(0, "Start", 903, "Lot Start");	//Lot Start 

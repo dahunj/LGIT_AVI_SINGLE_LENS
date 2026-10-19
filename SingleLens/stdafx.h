@@ -233,7 +233,7 @@ typedef struct
 
 	int		nROSInfo[7][10][ZIG_X*ZIG_Y];
 
-	int		nImageCnt[7][10][ZIG_X*ZIG_Y][5]; // 0:Top 1: Btm , 2: Marking, 3: T2, 4:Total 
+	int		nImageCnt[7][10][ZIG_X*ZIG_Y][4]; // 0:Top 1: Btm , 2: Marking, 3: T2, 4:Total 
 
 
 	//0: Rignt, 1 : Left,  판정코드 (0:Top, 1:Btm)
