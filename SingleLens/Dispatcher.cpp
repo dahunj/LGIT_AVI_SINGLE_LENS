@@ -56,7 +56,7 @@ BOOL CDispatcher::Initialize()
 
 	ROS_DATA *pRosData = g_objDataManager.Get_pRosData();
 	CString strLog;
-	strLog.Format("Initialize : Handler IP(%s), TimeOver(%d msec)", pRosData->sHandlerIp, pRosData->nJudgeTimeOver);
+	strLog.Format("Initialize : Handler IP(%s), TimeOver(%d msec)", pRosData->sHandlerIp, 0);
 	g_objLogFile.Save_DispatcherLog(strLog);
 
 	Set_ConnectRequest();
@@ -366,17 +366,17 @@ void CDispatcher::Set_StatusUpdate(int nStatus)
 	}
 }
 
-void CDispatcher::Set_LotStart(int nMZNo, int nTotalTrayCnt, int nTotalLensCnt)
+void CDispatcher::Set_LotStart(int nMZNo, CString sMzID, int nTotalTrayCnt, int nTotalLensCnt)
 {
 	ROS_DATA *pRosData = g_objDataManager.Get_pRosData();
 	if (pRosData->lstMdjIp.GetCount() < 1) return;
 
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-	CString strLotId = gLot.sLotID[nMZNo-1];
+	
 	m_nPortNo = nMZNo;
 
 	CString	strSendCmd, strIp;
-	strSendCmd.Format("LOT,START,%s,%s,%s,%d,%d,%d", pRosData->sHandlerIp, pEquipData->sModelName, strLotId, nMZNo, nTotalTrayCnt, nTotalLensCnt);
+	strSendCmd.Format("LOT,START,%s,%s,%s,%d,%d,%d", pRosData->sHandlerIp, pEquipData->sModelName, sMzID, nMZNo, nTotalTrayCnt, nTotalLensCnt);
 	POSITION pos = pRosData->lstMdjIp.GetHeadPosition();
 	while (pos) {
 		strIp = pRosData->lstMdjIp.GetNext(pos);
@@ -417,7 +417,7 @@ void CDispatcher::Set_InfoReply(CString sIp)
 	Send_Command(sIp, strSendCmd);
 }
 
-void CDispatcher::Set_JudgeRequest(int nMZNo, int nTrayNo, int nLensNo)
+void CDispatcher::Set_JudgeRequest(int nMZNo, CString sMZID, int nTrayNo, int nLensNo)
 {
 
 	if (nMZNo < 1 || nMZNo > 3 || nTrayNo < 1 || nTrayNo > 10 || nLensNo < 1 || nLensNo > 200) return;
@@ -428,7 +428,7 @@ void CDispatcher::Set_JudgeRequest(int nMZNo, int nTrayNo, int nLensNo)
 	if (pRosData->lstMdjIp.GetCount() < 1) { g_objCommon.Show_Error(9310); return; }
 
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-	CString strLotId   = gLot.sLotID[nMZNo-1];
+	
 	//CString strBarcode = gLot.sBarCode[nMZNo-1][nTrayNo-1][nCmNo-1];
 	CString strNgCode  = gData.sNGCode[nMZNo-1][nTrayNo-1][nLensNo-1][eVision::MARKING];
 	gLot.nRosJugCnt_Req[nMZNo-1]++;
@@ -448,7 +448,7 @@ void CDispatcher::Set_JudgeRequest(int nMZNo, int nTrayNo, int nLensNo)
 
 	CString	strSendCmd, strIp;
 	strSendCmd.Format("JUDGE,REQUEST,%s,%s,%s,%d,%d,%d,%s,%s,%d",
-		pRosData->sHandlerIp, pEquipData->sModelName, strLotId, nMZNo, nTrayNo, g_objCommon.ConvertToMESNo(nLensNo), "", strNgCode, ImgCntTotal);
+		pRosData->sHandlerIp, pEquipData->sModelName, sMZID, nMZNo, nTrayNo, g_objCommon.ConvertToMESNo(nLensNo), "", strNgCode, ImgCntTotal);
 		//pRosData->sHandlerIp, pEquipData->sModelName, strLotId, nMZNo, nTrayNo, nCmNo, "", strNgCode, gLot.nImageCnt[nPortNo-1][nTrayNo-1][nCmNo-1][0]);
 
 	if (m_nMdjIndex >= pRosData->lstMdjIp.GetCount()) m_nMdjIndex = 0;	// 다시 첫번째 부터...
@@ -514,10 +514,10 @@ BOOL CDispatcher::Is_JudgeDone(int nMNo, int nTrayNo, int nLensNo, int &nInfo)
 {
 	if (nMNo < 1 || nMNo > 3 || nTrayNo < 1 || nTrayNo > 10 || nLensNo < 1 || nLensNo > 200 || gData.bCycleStop) return TRUE;
 
-	/*if (!m_bJudgeReq[nMNo-1][nTrayNo-1][nLensNo-1]) 
+	if (!m_bJudgeReq[nMNo-1][nTrayNo-1][nLensNo-1]) 
 	{	
 		return TRUE;
-	}*/
+	}
 	if (m_bJudgeDone[nMNo-1][nTrayNo-1][nLensNo-1] && m_bJudgeReq[nMNo-1][nTrayNo-1][nLensNo-1])
 	{
 		//Final ROS Result OverWrite 
@@ -533,7 +533,7 @@ BOOL CDispatcher::Is_JudgeDone(int nMNo, int nTrayNo, int nLensNo, int &nInfo)
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	int nTerm = ((int)(GetTickCount() - m_dwTimeStart[nMNo-1][nTrayNo-1][nLensNo-1]));
 
-	if (nTerm > (pEquipData->nRosTimeOut*1000)) {		// Time Over
+	if (nTerm > (pEquipData->nRosTimeOut*1000) ) {		// Time Over
 		CString strLog;
 		strLog.Format("Judge Time Over (%d msec),Bar(None),PortNo(%d),TrayNo(%d),CmNo(%d)", pEquipData->nRosTimeOut, nMNo, nTrayNo, nLensNo);
 		g_objLogFile.Save_DispatcherLog(strLog);

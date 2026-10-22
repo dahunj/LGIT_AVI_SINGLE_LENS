@@ -268,7 +268,6 @@ BOOL CDataManager::Read_MarkData()
 void CDataManager::Reset_RosData()
 {
 	m_RosData.sHandlerIp = "0.0.0.0";
-	m_RosData.nJudgeTimeOver = 10000;
 	m_RosData.lstMdjIp.RemoveAll();
 }
 
@@ -279,7 +278,6 @@ BOOL CDataManager::Read_RosData()
 	if (!INI.Check_File()) { AfxMessageBox("RosData.ini File Not Found!!!"); return FALSE; }
 
 	m_RosData.sHandlerIp = INI.Get_String("DISPATCHER", "HANDLER_IP", "0.0.0.0");
-	m_RosData.nJudgeTimeOver = INI.Get_Integer("DISPATCHER", "TIME_OVER", 10000);
 
 	CString strKey, strIp;
 	for (int i = 0; i < 50; i++) {

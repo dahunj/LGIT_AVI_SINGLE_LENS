@@ -796,6 +796,7 @@ void CSetupEquipDlg::Cancel_EquipData()
 	g_objDataManager.Read_EquipData();
 	g_objDataManager.Read_MoveData();
 	g_objDataManager.Read_MarkData();
+	g_objDataManager.Read_RosData();	
 	
 	Display_EquipData();
 

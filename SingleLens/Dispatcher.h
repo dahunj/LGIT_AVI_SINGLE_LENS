@@ -54,10 +54,10 @@ public:
 	void Set_StatusRequest();
 	void Set_StatusReply(CString sIp, int nStatus);
 	void Set_StatusUpdate(int nStatus);
-	void Set_LotStart(int nMZNo, int nTotalTrayCnt, int nTotalLensCnt);
+	void Set_LotStart(int nMZNo, CString sMzID, int nTotalTrayCnt, int nTotalLensCnt);
 	void Set_LotEnd(int nPortNo);
 	void Set_InfoReply(CString sIp);
-	void Set_JudgeRequest(int nMZNo, int nTrayNo, int nLensNo);
+	void Set_JudgeRequest(int nMZNo, CString sMZID, int nTrayNo, int nLensNo);
 	void Set_TimeUpdate();
 	void Set_TimeOver(int nPortNo, int nTrayNo, int nCmNo);
 

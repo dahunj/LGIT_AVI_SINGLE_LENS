@@ -91,10 +91,10 @@
 	#pragma comment(lib, "CSUdpClientR.lib")
 #endif
 
-#define MAIN_VERSION	_T("V 1.3.0.0_S")
+#define MAIN_VERSION	_T("V 1.3.1.0_S")
 
 //---------------------------------
-//#define AJIN_BOARD_USE
+#define AJIN_BOARD_USE
 
 #define SIM_WAITTIMES	 1		//
 #define SIM_WAITTIMEM	 1		//

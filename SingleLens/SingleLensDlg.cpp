@@ -326,8 +326,7 @@ void CSingleLensDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 
 	g_objDataManager.Read_EquipData();
 	g_objDataManager.Read_MoveData();
-
-	
+	g_objDataManager.Read_RosData();	
 
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	CIniFileCS INI(gsCurrentDir + "\\System\\EquipData.ini");

@@ -130,7 +130,6 @@ typedef struct tag_MOVE_DATA
 // ROS Data
 typedef struct tag_ROS_DATA {
 	CString sHandlerIp;
-	int		nJudgeTimeOver;
 	CList<CString, CString&> lstMdjIp;
 } ROS_DATA;
 

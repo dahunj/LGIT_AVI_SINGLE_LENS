@@ -50,6 +50,7 @@ CSequenceMain::CSequenceMain(void)
 	gData.bTop2Done = FALSE;
 	gData.nCurTop2YPos = 0;
 
+
 	Reset_MainRunCase();
 }
 
@@ -1141,13 +1142,13 @@ BOOL CSequenceMain::MZElevRun()
 								
 				g_objMesAgent.Set_LotStartedReport(gMes.sHostLotID[eMZ::Load], gMes.sHostMGZID[eMZ::Load], gMes.sHostRecipe[eMZ::Load]);
 				g_objInspector.Set_LotStart(gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load], gMes.sHostRecipe[eMZ::Load]);
-				g_objDispatcher.Set_LotStart(nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load]); // 이떄 Total Cnt 들 집계가 안될텐데
+				g_objDispatcher.Set_LotStart(nMZNo, gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load]); // 이떄 Total Cnt 들 집계가 안될텐데
 			}
 			else
 			{			
 				gLot.nLensCount[nMZNo-1] = gData.nLensTotalCnt[eMZ::Load];
 				g_objInspector.Set_LotStart(gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load], m_pEquipData->sModelName);
-				g_objDispatcher.Set_LotStart(nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load]); // 이떄 Total Cnt 들 집계가 안될텐데
+				g_objDispatcher.Set_LotStart(nMZNo, gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load]); // 이떄 Total Cnt 들 집계가 안될텐데
 			}
 
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
@@ -1166,7 +1167,7 @@ BOOL CSequenceMain::MZElevRun()
 	case 9:
 		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_LotStart");
 		g_objInspector.Set_LotStart(gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load],"Model");
-		g_objDispatcher.Set_LotStart(nMZNo, gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load]); // 이떄 Total Cnt 들 집계가 안될텐데
+		g_objDispatcher.Set_LotStart(nMZNo, gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Load]-1], gData.nCtZigTotalCnt[eMZ::Load] , gData.nLensTotalCnt[eMZ::Load]); // 이떄 Total Cnt 들 집계가 안될텐데
 		m_nMZElevCase = 8;	m_nMZElevLoop.Set_LoopTime(5000);	
 		break;
 	
@@ -1381,13 +1382,13 @@ BOOL CSequenceMain::MZElevRun()
 				gData.nLensTotalCnt[eMZ::Ready] = 0;
 				g_objMesAgent.Set_LotStartedReport(gMes.sHostLotID[eMZ::Ready], gMes.sHostMGZID[eMZ::Ready], gMes.sHostRecipe[eMZ::Ready]);
 				g_objInspector.Set_LotStart(gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready] - 1], nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready],gMes.sHostRecipe[eMZ::Ready]);
-				g_objDispatcher.Set_LotStart(nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready]); // 이떄 Total Cnt 들 집계가 안될텐데
+				g_objDispatcher.Set_LotStart(nMZNo,gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Ready]-1], gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready]); // 이떄 Total Cnt 들 집계가 안될텐데
 			}
 			else
 			{				
 				gLot.nLensCount[nMZNo-1] = gData.nLensTotalCnt[eMZ::Ready];
 				g_objInspector.Set_LotStart(gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready] - 1], nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready], m_pEquipData->sModelName);
-				g_objDispatcher.Set_LotStart(nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready]); // 이떄 Total Cnt 들 집계가 안될텐데
+				g_objDispatcher.Set_LotStart(nMZNo,gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Ready]-1], gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready]); // 이떄 Total Cnt 들 집계가 안될텐데
 			}			
 
 			m_nMZElevCase++; m_nMZElevLoop.Set_LoopTime(5000);
@@ -1405,7 +1406,7 @@ BOOL CSequenceMain::MZElevRun()
 	case 17:
 		m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Set_LotStart");
 		g_objInspector.Set_LotStart(gData.sMZIDElevReady[gData.nTNoPick[eMZ::Ready] - 1], nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready],gMes.sHostRecipe[eMZ::Ready]);
-		g_objDispatcher.Set_LotStart(nMZNo, gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready]); // 이떄 Total Cnt 들 집계가 안될텐데
+		g_objDispatcher.Set_LotStart(nMZNo,gData.sMZIDElevLoad[gData.nTNoPick[eMZ::Ready]-1], gData.nCtZigTotalCnt[eMZ::Ready] , gData.nLensTotalCnt[eMZ::Ready]); // 이떄 Total Cnt 들 집계가 안될텐데
 		m_nMZElevCase = 16;	m_nMZElevLoop.Set_LoopTime(5000);	
 		break;
 
@@ -3867,7 +3868,7 @@ BOOL CSequenceMain::MarkUnitRun()
 		return TRUE;
 	}
 	//Continuous Inspection Done Check 
-	if(m_nMarkUnitCase != 0 )
+	if(m_nMarkUnitCase != 0 && m_nMarkUnitCase != 31)
 	{
 		nMNo = gData.nMZNoMainIndex[eMainIndex::Mark];
 		nTNo = gData.nSlotNoMainIndex[eMainIndex::Mark];
@@ -3908,7 +3909,7 @@ BOOL CSequenceMain::MarkUnitRun()
 				{
 					if(m_pEquipData->bUseROS) 
 					{
-						g_objDispatcher.Set_JudgeRequest(nMNo, nTNo, nLNo); //Ros판정						
+						g_objDispatcher.Set_JudgeRequest(nMNo,gData.sMZIDMainIdex[eMainIndex::Mark], nTNo, nLNo); //Ros판정						
 					}
 					else 
 					{
@@ -3927,7 +3928,7 @@ BOOL CSequenceMain::MarkUnitRun()
 				{					
 					if(m_pEquipData->bUseROS)
 					{
-						g_objDispatcher.Set_JudgeRequest(nMNo, nTNo, nLNo); //Ros판정
+						g_objDispatcher.Set_JudgeRequest(nMNo, gData.sMZIDMainIdex[eMainIndex::Mark], nTNo, nLNo); //Ros판정
 					}						
 					else
 					{
@@ -3952,10 +3953,8 @@ BOOL CSequenceMain::MarkUnitRun()
 		for(int nLNo = 1; nLNo <= 144; nLNo++)
 		{	
 			if(GetTickCount() - dwROSDoneTime < 0.1 *1000) break; // 300ms 간격 
-
-			if(!isROSDone(1) && nLNo > 70 ) continue; //1번만 늦게 되니까 보기가 안좋아서... 절반 지나기 전에 1번 결과부터 무조건 확인 
+						
 			if(isROSDone(nLNo)) continue;
-
 			/*if(nLNo == 32 || nLNo== 68 || nLNo == 113)
 			{
 				continue;
@@ -4009,7 +4008,8 @@ BOOL CSequenceMain::MarkUnitRun()
 		ClearQInspectDone();
 		ClearQROSDone();
 		bInspectAll = FALSE;
-		
+
+	
 		if(!gData.bIndexDone[eMainIndex::Top2] && !Check_IndexEmpty(eMainIndex::Top2) &&
 			g_objAJinAXL.Is_Done(AX_MARK_UNIT_X) &&
 			g_objAJinAXL.Is_Done(AX_MARK_UNIT_Y) &&
@@ -5519,16 +5519,16 @@ BOOL CSequenceMain::Check_InspectDone(const CString& sZigID, int nMZNo, int nTNo
 	DWORD dwTemp =(int)(dwTick - gData.dwInspectWait[nMNo][nSlot][nLens]);
 	if (!bDone) 
 	{
-		if (m_pEquipData->bUseInspectSkip || (dwTemp > (m_pEquipData->nInspectTimeOut*1000))) 
+		/*if (m_pEquipData->bUseInspectSkip || (dwTemp > (m_pEquipData->nInspectTimeOut*1000))) 
 		{
 			gData.nInspectInfo[nMNo][nSlot][nLens] = eLensInfo::NG;			
 			m_strLog.Format("Judge Time Over, SlotNo(%d), LensNo(%d)", nSlot+1, nLens+1);
 			g_objLogFile.Save_HandlerLog(m_strLog);						
 		}
 		else
-		{
+		{*/
 			return FALSE;
-		}
+		//}
 	}		
 
 	nInfo = gData.nInspectInfo[nMNo][nSlot][nLens];

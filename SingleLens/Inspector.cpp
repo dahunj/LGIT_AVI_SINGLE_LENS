@@ -76,7 +76,7 @@ void CInspector::Receive_Command(int nVPc, CString sCommand)
 	
 	/////////////////////////////////////////////////////////
 	CString strA[8];
-	for (int i = 0; i < 7; i++) AfxExtractSubString(strA[i], sCommand, i + 2, chSep);
+	for (int i = 0; i < 8; i++) AfxExtractSubString(strA[i], sCommand, i + 2, chSep);
 
 	if (strCmd == "STATUS") {
 		if (strOp == "REQUEST") Get_StatusRequest(nVPc);
@@ -194,11 +194,13 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 
 	if (nTNo < 0 || nTNo > 99 || nLNo < 0 || nLNo > 200) { g_objCommon.Show_Error(6101); return; }
 
-	gData.dwInspectWait[nMNo-1][nTNo-1][nLAVINo-1] = GetTickCount();
-
+	
 	int nV = (sGbn == "TC" ? eVision::TC : (sGbn == "BC" ? eVision::BC : (sGbn == "T2" ? eVision::T2 : -1)));
 	if (nV == -1) { g_objCommon.Show_Error(6102); return; }
 		
+	if(nV == eVision::T2) gData.dwInspectWait[nMNo-1][nTNo-1][nLAVINo-1] = GetTickCount();
+
+
 	if(nV == eVision::TC) //Tc
 	{
 		int nCase = g_objSequenceMain.Get_MainRunCase(AUTO_TOP_INSPECT);
@@ -256,6 +258,7 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 	int	nLNo = atoi(sLensNo);	// CM Index
 
 	int nImgCnt = atoi(sImageCnt);
+	
 
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 
@@ -270,8 +273,14 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 
 	gData.cJudgeCode[nMNo][nTNo][nLAVINo-1][nV] = *(LPSTR)(LPCTSTR)sJudge;
 	
-	gData.nImageCnt[nMNo][nTNo][nLAVINo-1][nV] = nImgCnt;
+	
+	if(sJudge == "N")
+	{
+		gData.nImageCnt[nMNo][nTNo][nLAVINo-1][nV] = nImgCnt;
+	}
+	else gData.nImageCnt[nMNo][nTNo][nLAVINo-1][nV] = 0;
 
+	
 	int nPreInfo = gData.nInspectInfo[nMNo][nTNo][nLAVINo-1];
 
 	
