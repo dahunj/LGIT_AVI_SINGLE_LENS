@@ -226,7 +226,7 @@ void CSequenceMain::Set_ClearRunData(BOOL bInit)
 	memset(gData.bIndexDone, 0x00, sizeof(BOOL) * 7);
 
 	memset(gData.ZigMap, 0x00, sizeof(BOOL)*3*10);
-	memset(gData.LensMap, 0x00, sizeof(char)*3*10*ZIG_X*ZIG_Y);
+	memset(gData.LensMap, 0x00, sizeof(gData.LensMap)*3*10*ZIG_X*ZIG_Y);
 
 	for(int i = 0; i < 10; i++)
 	{

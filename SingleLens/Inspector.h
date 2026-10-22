@@ -29,13 +29,11 @@ private:
 	CString		m_sMZID;
 
 	int		m_nStatusPC1;	// Vision PC1 ป๓ลย (0:Not Ready, 1:Ready, 2:Run)
-	int		m_nFOBStatus;
+
 	
 	BOOL	m_bLotReady1;
 
-	int		m_nBCScanReq, m_nTCScanReq;
-	int		m_nBCScanCnt, m_nTCScanCnt;
-
+	
 	void Get_StatusRequest(int nVPc);
 	void Get_StatusReply(int nVPc, CString sStatus);
 	void Get_StatusUpdate(int nVPc, CString sStatus);

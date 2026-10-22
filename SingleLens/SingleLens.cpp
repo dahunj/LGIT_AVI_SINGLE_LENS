@@ -46,11 +46,11 @@ BOOL CSingleLensApp::InitInstance()
 
 	AfxEnableControlContainer();
 
-	CString strThisProgram = _T("CME8000_Handler");
+	CString strThisProgram = _T("SingleLens_Handler");
 	HANDLE hMutex = CreateMutex(NULL, TRUE, strThisProgram);
 	if (hMutex) {
 		if (GetLastError() == ERROR_ALREADY_EXISTS) {
-			AfxMessageBox(_T("Already CME8000_Handler is Running !!!"));
+			AfxMessageBox(_T("Already SingleLens_Handler is Running !!!"));
 			return FALSE;
 		}
 	}

@@ -174,6 +174,9 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 
 	int	nLNo = atoi(sLensNo);	// CM Index
 
+	if(nMNo < 0 || nMNo > 7 || nTNo < 0 || nTNo > 10 || nLNo < 0 || nLNo > ZIG_X*ZIG_Y )  { g_objCommon.Show_Error(6100); return; }
+
+
 	int nLAVINo = g_objCommon.ConvertToAVINo(nLNo);
 
 	m_sMZID = sMZID;
@@ -192,13 +195,25 @@ void CInspector::Get_ScanComplete(int nVPc, CString sGbn, CString sMZID, CString
 		nYPos = (nLAVINo-1) % gData.nLensCntY;
 	}	
 
-	if (nTNo < 0 || nTNo > 99 || nLNo < 0 || nLNo > 200) { g_objCommon.Show_Error(6101); return; }
+	if (nTNo < 0 || nTNo > 99 || nLNo < 0 || nLNo >  ZIG_X*ZIG_Y) { g_objCommon.Show_Error(6101); return; }
 
 	
 	int nV = (sGbn == "TC" ? eVision::TC : (sGbn == "BC" ? eVision::BC : (sGbn == "T2" ? eVision::T2 : -1)));
 	if (nV == -1) { g_objCommon.Show_Error(6102); return; }
 		
-	if(nV == eVision::T2) gData.dwInspectWait[nMNo-1][nTNo-1][nLAVINo-1] = GetTickCount();
+
+	if(pEquipData->bUseTop2Vision)
+	{
+		if(nV == eVision::T2) gData.dwInspectWait[nMNo-1][nTNo-1][nLAVINo-1] = GetTickCount();
+	}
+	else if(pEquipData->bUseBtmVision)
+	{
+		if(nV == eVision::BC) gData.dwInspectWait[nMNo-1][nTNo-1][nLAVINo-1] = GetTickCount();
+	}
+	else if(pEquipData->bUseTopVision)
+	{
+		if(nV == eVision::TC) gData.dwInspectWait[nMNo-1][nTNo-1][nLAVINo-1] = GetTickCount();
+	}
 
 
 	if(nV == eVision::TC) //Tc
@@ -265,7 +280,7 @@ void CInspector::Get_InspectComplete(int nVPc, CString sGbn, CString sMZID, CStr
 	m_sMZID = sMZID;
 	int nLAVINo = g_objCommon.ConvertToAVINo(nLNo);
 
-	if (nMNo < 0 || nMNo > 3 ||nTNo < 0 || nTNo > 10 || nLNo < 0 || nLNo > ZIG_X*ZIG_Y) { g_objCommon.Show_Error(6101); return; }
+	if (nMNo < 0 || nMNo > 3 ||nTNo < 0 || nTNo >= 10 || nLNo < 0 || nLNo > ZIG_X*ZIG_Y) { g_objCommon.Show_Error(6101); return; }
 
 	int nV = (sGbn == "TC" ? eVision::TC : (sGbn == "BC" ? eVision::BC : (sGbn == "T2" ? eVision::T2 : -1)));
 	if (nV == -1) { g_objCommon.Show_Error(6102); return; }
@@ -340,7 +355,7 @@ void CInspector::Get_AMoveRequest(int nVPc, CString sGbn, CString sZ1)
 				if(sGbn == "TC") g_objInspector.Set_MoveComplete(VISION_PC1, "TC");				
 				break;
 			}
-			if(g_objAJinAXL.Is_MoveDone(AX_BTM_INSPECTOR_Z, m_pEquipData->dTopStartZ))
+			if(g_objAJinAXL.Is_MoveDone(AX_BTM_INSPECTOR_Z, m_pEquipData->dBtmStartZ))
 			{				
 				if(sGbn == "BC") g_objInspector.Set_MoveComplete(VISION_PC1, "BC");
 				break;
@@ -663,8 +678,8 @@ BOOL CInspector::Check_Connect(int nVPc)
 BOOL CInspector::Check_LotReady()
 {
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
-	if (!pEquipData->bUseBtmVision && !pEquipData->bUseTopVision) m_bLotReady1 = TRUE;
-	return (m_bLotReady1 );
+	if (!pEquipData->bUseBtmVision && !pEquipData->bUseTopVision && !pEquipData->bUseTop2Vision) m_bLotReady1 = TRUE;
+	return m_bLotReady1;
 
 	return FALSE;
 }
