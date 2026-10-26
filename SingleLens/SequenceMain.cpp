@@ -226,7 +226,7 @@ void CSequenceMain::Set_ClearRunData(BOOL bInit)
 	memset(gData.bIndexDone, 0x00, sizeof(BOOL) * 7);
 
 	memset(gData.ZigMap, 0x00, sizeof(BOOL)*3*10);
-	memset(gData.LensMap, 0x00, sizeof(gData.LensMap)*3*10*ZIG_X*ZIG_Y);
+	memset(gData.LensMap, 0x00, sizeof(int)*3*10*ZIG_X*ZIG_Y);
 
 	for(int i = 0; i < 10; i++)
 	{
@@ -3868,7 +3868,8 @@ BOOL CSequenceMain::MarkUnitRun()
 		return TRUE;
 	}
 	//Continuous Inspection Done Check 
-	if(m_nMarkUnitCase != 0 && m_nMarkUnitCase != 31)
+	if(m_nMarkUnitCase != 0 
+		&& m_nMarkUnitCase != 31 && m_nMarkUnitCase != 32)
 	{
 		nMNo = gData.nMZNoMainIndex[eMainIndex::Mark];
 		nTNo = gData.nSlotNoMainIndex[eMainIndex::Mark];
@@ -4128,6 +4129,11 @@ BOOL CSequenceMain::MarkUnitRun()
 			Init_Top2Zig();
 			nTop2XPos = 1; nTop2YPos = 1;	
 			gData.dDeltaY[eMainIndex::Top2] = 0; gData.dDeltaX[eMainIndex::Top2] = 0;
+			for(int j = 0; j <ZIG_X*ZIG_Y; j++)
+			{
+				gData.dwInspectWait[gData.nMZNoMainIndex[eMainIndex::Mark]-1][gData.nSlotNoMainIndex[eMainIndex::Mark]-1][j] = GetTickCount();
+			}	
+			
 			m_nMarkUnitCase++; m_nMarkUnitLoop.Set_LoopTime(10000);													
 		}
 		break;
@@ -5493,9 +5499,7 @@ BOOL CSequenceMain::Check_InspectDone(const CString& sZigID, int nMZNo, int nTNo
 
 	if(nMNo < 0 || nMNo > 3 || nSlot < 0 || nSlot > 10 || nLens < 0 || nLens > 200) return FALSE;
 
-
-	if (((gData.byInspectDone[nMNo][nSlot][nLens] >> 7) & 1) == 1) return TRUE;	
-	
+	if (((gData.byInspectDone[nMNo][nSlot][nLens] >> 7) & 1) == 1) return TRUE;		
 	
 	BOOL bDone = TRUE;
 	
@@ -5519,16 +5523,16 @@ BOOL CSequenceMain::Check_InspectDone(const CString& sZigID, int nMZNo, int nTNo
 	DWORD dwTemp =(int)(dwTick - gData.dwInspectWait[nMNo][nSlot][nLens]);
 	if (!bDone) 
 	{
-		/*if (m_pEquipData->bUseInspectSkip || (dwTemp > (m_pEquipData->nInspectTimeOut*1000))) 
+		if (m_pEquipData->bUseInspectSkip || (dwTemp > (m_pEquipData->nInspectTimeOut*1000))) 
 		{
 			gData.nInspectInfo[nMNo][nSlot][nLens] = eLensInfo::NG;			
 			m_strLog.Format("Judge Time Over, SlotNo(%d), LensNo(%d)", nSlot+1, nLens+1);
 			g_objLogFile.Save_HandlerLog(m_strLog);						
 		}
 		else
-		{*/
+		{
 			return FALSE;
-		//}
+		}
 	}		
 
 	nInfo = gData.nInspectInfo[nMNo][nSlot][nLens];
