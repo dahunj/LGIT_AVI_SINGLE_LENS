@@ -101,9 +101,8 @@ void CLoopTimer::Takt_Save(int nZone, int nCase, const CString &sNote, int nValu
 
 	strLog.Format("MCC,(%02d) %s,(%02d) %s,%0.3lf", nZone, strZone, nCase, strMsg, 0.000);
 	g_objLogFile.Save_MCCLog(strLog);
-
-	// 
-	//g_objLogFile.Save_StdMotionLog("X", nZone, nCase, 0, strZone, strMsg);	
+		 
+	g_objLogFile.Save_StdMotionLog("X", nZone, nCase, 0, strZone, strMsg);	
 }
 
 ///////////////////////////////////////////////////////////////////////////////

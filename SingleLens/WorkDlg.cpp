@@ -809,7 +809,7 @@ void CWorkDlg::OnBnClickedRdoWorkStart()
 	g_objLogFile.Save_HandlerLog("[Work Mode] START button push");
 	
 	pMainDlg->Set_LotErrorLog("START", 903, "Start");
-	g_objLogFile.Save_EfficiencyLog(0, "Run", 903, "Run Start");
+	//g_objLogFile.Save_EfficiencyLog(0, "Run", 903, "Run Start");
 
 	if(gLot.dwStopStart != 0)
 	{	
@@ -831,7 +831,7 @@ void CWorkDlg::OnBnClickedRdoWorkStop()
 	MachineStopLog("STOP_BUTTON_PUSH");
 	
 	pMainDlg->Set_LotErrorLog("STOP", 904, "Stop");
-	g_objLogFile.Save_EfficiencyLog(0, "Stop", 903, "Stop Button Push");
+	//g_objLogFile.Save_EfficiencyLog(0, "Stop", 903, "Stop Button Push");
 
 	for(int i = 0; i < 3; i++) 
 	{
