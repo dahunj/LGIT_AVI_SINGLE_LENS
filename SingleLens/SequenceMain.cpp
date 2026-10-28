@@ -1558,6 +1558,7 @@ BOOL CSequenceMain::MZElevRun()
 		if(m_pEquipData->bLotEndSelect)
 		{
 			m_nMZElevLoop.Takt_Save(2, m_nMZElevCase, "Lot End");
+			g_objCommon.Set_UnloadCVStop();
 			g_objCommon.Show_Alarm("Lot End");			
 			m_nMZElevCase = 38; m_nMZElevLoop.Set_LoopTime(5000);
 			return FALSE;
@@ -4002,6 +4003,7 @@ BOOL CSequenceMain::MarkUnitRun()
 	switch(m_nMarkUnitCase)
 	{
 	case 0:
+		m_pEquipData->bUseInspectTimeOut = FALSE;
 		m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);	
 		return TRUE;
 	case 31:
@@ -4009,6 +4011,7 @@ BOOL CSequenceMain::MarkUnitRun()
 		ClearQInspectDone();
 		ClearQROSDone();
 		bInspectAll = FALSE;
+		m_pEquipData->bUseInspectTimeOut = FALSE;
 
 	
 		if(!gData.bIndexDone[eMainIndex::Top2] && !Check_IndexEmpty(eMainIndex::Top2) &&
@@ -4129,6 +4132,7 @@ BOOL CSequenceMain::MarkUnitRun()
 			Init_Top2Zig();
 			nTop2XPos = 1; nTop2YPos = 1;	
 			gData.dDeltaY[eMainIndex::Top2] = 0; gData.dDeltaX[eMainIndex::Top2] = 0;
+			
 			for(int j = 0; j <ZIG_X*ZIG_Y; j++)
 			{
 				gData.dwInspectWait[gData.nMZNoMainIndex[eMainIndex::Mark]-1][gData.nSlotNoMainIndex[eMainIndex::Mark]-1][j] = GetTickCount();
@@ -4265,6 +4269,7 @@ BOOL CSequenceMain::MarkUnitRun()
 				nTop2XPos++; nTop2YPos = 1;
 			}
 		}
+		m_pEquipData->bUseInspectTimeOut = TRUE;
 		gData.nInspectCnt[eVision::T2]++;
 		g_dlgWork.PostMessage(UM_UPDATE_VISION_INFO, (int)eVision::T2, NULL);
 		m_nMarkUnitCase = 33; m_nMarkUnitLoop.Set_LoopTime(10000);
@@ -4490,6 +4495,7 @@ BOOL CSequenceMain::MarkUnitRun()
 		if(g_objCommon.Check_Position(AX_MARK_UNIT_Z, eMark_Z::Ready))
 		{			
 			gData.bIndexDone[eMainIndex::Mark] = TRUE;
+			m_pEquipData->bUseInspectTimeOut = FALSE;
 			m_nMarkUnitCase = 0; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
 			m_strLog.Format("Marking Done"); m_nMarkUnitLoop.Takt_Save(8, m_nMarkUnitCase, m_strLog);
 		}
@@ -5523,7 +5529,7 @@ BOOL CSequenceMain::Check_InspectDone(const CString& sZigID, int nMZNo, int nTNo
 	DWORD dwTemp =(int)(dwTick - gData.dwInspectWait[nMNo][nSlot][nLens]);
 	if (!bDone) 
 	{
-		if (m_pEquipData->bUseInspectSkip || (dwTemp > (m_pEquipData->nInspectTimeOut*1000))) 
+		if (m_pEquipData->bUseInspectTimeOut && (dwTemp > (m_pEquipData->nInspectTimeOut*1000))) 
 		{
 			gData.nInspectInfo[nMNo][nSlot][nLens] = eLensInfo::NG;			
 			m_strLog.Format("Judge Time Over, SlotNo(%d), LensNo(%d)", nSlot+1, nLens+1);

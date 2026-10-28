@@ -28,9 +28,9 @@ typedef struct tag_EQUIP_DATA {
 	double  dZigPitchY;
 	double	dZigPitchX;
 	
-	BOOL	bUseInspectSkip;
-
+	BOOL	bUseInspectTimeOut;
 	int		nInspectTimeOut;
+
 	int		nRosTimeOut;
 
 	CString sEquipName;
