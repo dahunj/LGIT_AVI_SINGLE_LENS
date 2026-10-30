@@ -376,6 +376,23 @@ void CSequenceMain::Job_LotStart(int nMZNo, int nPos)
 
 	memset(gData.nImageCnt[nMNo], 0x00, sizeof(int)*10*ZIG_X*ZIG_Y*4);
 
+	for(int j = 0; j < 10 ; j++) gLot.nGoodCountZig[nMNo][j] = 0;
+	for(int j = 0; j < 10 ; j++) gLot.nNgCountZig[nMNo][j] = 0;
+	for(int j = 0; j < 10 ; j++) gLot.nEmptyCountZig[nMNo][j] = 0;
+
+
+	gLot.dwStopTime[nMNo] = 0; 
+	for(int j = 0; j < 10 ; j++) gLot.dwStopTimeZig[nMNo][j] = 0;
+
+	gLot.dwErrorTime[nMNo] = 0;
+	for(int j = 0; j < 10 ; j++) gLot.dwErrorTimeZig[nMNo][j] = 0;
+
+	gLot.nErrorCount[nMNo] = 0;
+	for(int j = 0; j < 10 ; j++) gLot.nErrorCountZig[nMNo][j] = 0;
+
+	gLot.nStopCount[nMNo] = 0;
+	for(int j = 0; j < 10 ; j++) gLot.nStopCountZig[nMNo][j] = 0;
+
 
 
 	//ROS Clear 
@@ -1592,7 +1609,7 @@ BOOL CSequenceMain::MZElevRun()
 
 			g_objCommon.Set_ElevCVRunCW();
 			theApp.uSleep(5);
-			g_objCommon.Set_UnloadCVRunCW();
+			m_pThreadUnloadCV = AfxBeginThread(Thread_UnloadCV, NULL);
 
 			m_nMZElevCase++;m_nMZElevLoop.Set_LoopTime(gData.nLTime[eLT::CV]);
 		}

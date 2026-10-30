@@ -357,13 +357,9 @@ void CWorkDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		m_bmpBg.DeleteObject();
 
 		if(pEquipData->bUseDoorLock) m_bmpBg.LoadBitmap(IDB_EQUIP_WORK);
-		else m_bmpBg.LoadBitmap(IDB_EQUIP_DOOR);
+		else m_bmpBg.LoadBitmap(IDB_EQUIP_DOOR);	
 
-	
-
-		SetTimer(0, 100, NULL);
-		SetTimer(1, 5000, NULL);
-
+		SetTimer(0, 100, NULL);		
 	}
 	else 
 	{
@@ -953,8 +949,7 @@ BOOL CWorkDlg::Work_Start()
 
 	if(nZigFlag < 0 && !pEquipData->bUseMES) {g_objCommon.Show_MsgBox(1, "Please Input Coating Zig ID."); return FALSE;}
 	if(nLensFlag < 0 && !pEquipData->bUseMES) {g_objCommon.Show_MsgBox(1, "Please Input Lens Cnt."); return FALSE;}
-
-
+	
 
 	for(int i = 2; i < 6; i++)
 	{
