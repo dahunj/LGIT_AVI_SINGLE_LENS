@@ -446,6 +446,7 @@ void CManualCleanDlg::OnBnClickedBtnLensMove()
 		
 	m_Edit_LensNo.GetWindowText(sLensNo);
 	nLensNo = atoi(sLensNo);
+	nLensNo = g_objCommon.ConvertToAVINo(nLensNo);
 
 	if(nLensNo < 1) AfxMessageBox("Please Input LensNo > 1");
 

@@ -29,17 +29,22 @@ void CManualBtmDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	/*for (int i = 0; i < 16; i++) DDX_Control(pDX, IDC_GROUP_0 + i, m_Group[i]);
 	for (int i = 0; i < 10; i++) DDX_Control(pDX, IDC_LABEL_0 + i, m_Label[i]);*/
-		for (int i = 0; i < 6; i++) DDX_Control(pDX, IDC_STC_AXIS_POS_0 + i, m_stcAxisPos[i]);
+		for (int i = 0; i < 9; i++) DDX_Control(pDX, IDC_STC_AXIS_POS_0 + i, m_stcAxisPos[i]);
 	for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_BTN_BTM_INSPECT_X_0 + i, m_BtnBtmInspectX[i]);
 	for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_BTN_BTM_INSPECT_Y_0 + i, m_BtnBtmInspectY[i]);
 	for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_BTN_BTM_INSPECT_Z_0 + i, m_BtnBtmInspectZ[i]);
 	for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_BTN_MARK_UNIT_X_0 + i, m_BtnMarkUnitX[i]);
 	for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_BTN_MARK_UNIT_Y_0 + i, m_BtnMarkUnitY[i]);
 	for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_BTN_MARK_UNIT_Z_0 + i, m_BtnMarkUnitZ[i]);
+	for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_BTN_TOP2_X_0 + i, m_BtnTop2X[i]);
+	for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_BTN_TOP2_Y_0 + i, m_BtnTop2Y[i]);
+	for (int i = 0; i <  4; i++) DDX_Control(pDX, IDC_BTN_TOP2_Z_0 + i, m_BtnTop2Z[i]);
 
 	for (int i = 0; i <  2; i++) DDX_Control(pDX, IDC_BTN_MARK_UNIT_IO_0 + i, m_BtnMarkUnitIO[i]);
 	for (int i = 0; i <  3; i++) DDX_Control(pDX, IDC_LED_MARK_UNIT_IO_0 + i, m_LedMarkUnitIO[i]);
-	DDX_Control(pDX, IDC_EDIT_LENSNO, m_Edit_LensNo);
+	DDX_Control(pDX, IDC_EDIT_LENSNO, m_Edit_LensNo[0]);
+	DDX_Control(pDX, IDC_EDIT_LENSNO2, m_Edit_LensNo[1]);
+	DDX_Control(pDX, IDC_EDIT_LENSNO3, m_Edit_LensNo[2]);
 }
 
 BEGIN_MESSAGE_MAP(CManualBtmDlg, CDialogEx)
@@ -48,15 +53,20 @@ BEGIN_MESSAGE_MAP(CManualBtmDlg, CDialogEx)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_BTM_INSPECT_X_0, IDC_BTN_BTM_INSPECT_X_3, OnBtnBtmInspectXClick)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_BTM_INSPECT_Y_0, IDC_BTN_BTM_INSPECT_Y_3, OnBtnBtmInspectYClick)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_BTM_INSPECT_Z_0, IDC_BTN_BTM_INSPECT_Z_3, OnBtnBtmInspectZClick)
-	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_MARK_UNIT_X_0, IDC_BTN_MARK_UNIT_X_4, OnBtnMarkUnitXClick)
-	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_MARK_UNIT_Y_0, IDC_BTN_MARK_UNIT_Y_4, OnBtnMarkUnitYClick)
-	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_MARK_UNIT_Z_0, IDC_BTN_MARK_UNIT_Z_5, OnBtnMarkUnitZClick)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_MARK_UNIT_X_0, IDC_BTN_MARK_UNIT_X_3, OnBtnMarkUnitXClick)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_MARK_UNIT_Y_0, IDC_BTN_MARK_UNIT_Y_3, OnBtnMarkUnitYClick)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_MARK_UNIT_Z_0, IDC_BTN_MARK_UNIT_Z_3, OnBtnMarkUnitZClick)
+
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_TOP2_X_0, IDC_BTN_TOP2_X_3, OnBtnTop2XClick)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_TOP2_Y_0, IDC_BTN_TOP2_Y_3, OnBtnTop2YClick)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BTN_TOP2_Z_0, IDC_BTN_TOP2_Z_5, OnBtnTop2ZClick)
 	ON_BN_CLICKED(IDC_BUTTON1, &CManualBtmDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CManualBtmDlg::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON4, &CManualBtmDlg::OnBnClickedButton4)
 	ON_BN_CLICKED(IDC_BTN_LENS_MOVE_BTM, &CManualBtmDlg::OnBnClickedBtnLensMoveBtm)
 	ON_BN_CLICKED(IDC_BTN_LENS_MOVE_MARK, &CManualBtmDlg::OnBnClickedBtnLensMoveMark)
 	ON_BN_CLICKED(IDC_BTN_CLEAR, &CManualBtmDlg::OnBnClickedBtnClear)
+	ON_BN_CLICKED(IDC_BTN_LENS_MOVE_MARK2, &CManualBtmDlg::OnBnClickedBtnLensMoveMark2)
 END_MESSAGE_MAP()
 
 // CManualBtmDlg 메시지 처리기입니다.
@@ -148,6 +158,18 @@ void CManualBtmDlg::Display_Status()
 	dPos = g_objAJinAXL.Get_Position(AX_MARK_UNIT_Z);
 	strPos.Format("%0.3lf", dPos);
 	m_stcAxisPos[5].SetWindowText(strPos);
+
+	dPos = g_objAJinAXL.Get_Position(AX_MARK_UNIT_X);
+	strPos.Format("%0.3lf", dPos);
+	m_stcAxisPos[6].SetWindowText(strPos);
+
+	dPos = g_objAJinAXL.Get_Position(AX_MARK_UNIT_Y);
+	strPos.Format("%0.3lf", dPos);
+	m_stcAxisPos[7].SetWindowText(strPos);
+
+	dPos = g_objAJinAXL.Get_Position(AX_MARK_UNIT_Z);
+	strPos.Format("%0.3lf", dPos);
+	m_stcAxisPos[8].SetWindowText(strPos);
 		
 
 	DX_DATA_02 *pDX02 = g_objAJinAXL.Get_pDX02();
@@ -274,19 +296,19 @@ void CManualBtmDlg::OnBtnMarkUnitXClick(UINT nID)
 	}
 	if(nIndex == eMark_X::PitchP)
 	{		
-		double dPitch = g_objDataManager.Get_pMoveData()->dBtmInspectorX[eMark_X::PitchP];
+		double dPitch = pEquipData->dZigPitchX;
 		g_objAJinAXL.Move_Relative(AX_MARK_UNIT_X, dPitch);
 	}
 	if(nIndex == eMark_X::PitchM)
 	{
-		double dPitch = g_objDataManager.Get_pMoveData()->dBtmInspectorX[eMark_X::PitchP];
+		double dPitch = pEquipData->dZigPitchX;
 		g_objAJinAXL.Move_Relative(AX_MARK_UNIT_X, -dPitch);
 	}
-	if(nIndex == eMark_X::ScanStart)
-	{
-		double dPos = g_objDataManager.Get_pMoveData()->dBtmInspectorX[eMark_X::ScanStart];
-		g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_X, dPos);
-	}
+	//if(nIndex == eMark_X::ScanStart)
+	//{
+	//	double dPos = pEquipData->dTop2StartX;
+	//	g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_X, dPos);
+	//}
 
 	m_strLog.Format("[Manual Mark Unit X] X (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);
@@ -310,19 +332,19 @@ void CManualBtmDlg::OnBtnMarkUnitYClick(UINT nID)
 	}
 	if(nIndex == eMark_Y::PitchP)
 	{		
-		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorY[eMark_Y::PitchP];
+		double dPitch = pEquipData->dTop2PitchY;
 		g_objAJinAXL.Move_Relative(AX_MARK_UNIT_Y, dPitch);
 	}
 	if(nIndex == eMark_Y::PitchM)
 	{
-		double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorY[eMark_Y::PitchP];
+		double dPitch = pEquipData->dTop2PitchY;
 		g_objAJinAXL.Move_Relative(AX_MARK_UNIT_Y, -dPitch);
 	}
-	if(nIndex == eMark_Y::ScanStart)
+	/*if(nIndex == eMark_Y::ScanStart)
 	{
-		double dPos = g_objDataManager.Get_pMoveData()->dTopInspectorY[eMark_Y::ScanStart];
-		g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_Y, dPos);
-	}
+	double dPos = g_objDataManager.Get_pMoveData()->dTopInspectorY[eMark_Y::ScanStart];
+	g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_Y, dPos);
+	}*/
 
 	m_strLog.Format("[Manual Mark Unit Y] Y (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);
@@ -348,31 +370,108 @@ void CManualBtmDlg::OnBtnMarkUnitZClick(UINT nID)
 	{
 		g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::MarkDown);
 	}
+	
+	m_strLog.Format("[Manual Mark Z] Z (%d) Click", nIndex);
+	g_objLogFile.Save_HandlerLog(m_strLog);
+}
 
-	if(nIndex == eMark_Z::ScanStart)
+
+
+
+void CManualBtmDlg::OnBtnTop2XClick(UINT nID)
+{
+	if (!g_objCommon.Check_MainDoor()) return;
+	
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	int nIndex = nID - IDC_BTN_TOP2_X_0;
+
+	if(nIndex == eTop2_X::Ready)
+	{
+		g_objCommon.Move_Position(AX_MARK_UNIT_X, eBtmInspect_X::Ready);
+	}
+	if(nIndex == eTop2_X::ScanStart)
+	{
+		double dStart = pEquipData->dTop2StartX;
+		g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_X, dStart);
+	}
+	if(nIndex == eTop2_X::PitchP)
+	{		
+		double dPitch = pEquipData->dZigPitchX;
+		g_objAJinAXL.Move_Relative(AX_MARK_UNIT_X, dPitch);
+	}
+	if(nIndex == eTop2_X::PitchM)
+	{
+		double dPitch = pEquipData->dZigPitchX;
+		g_objAJinAXL.Move_Relative(AX_MARK_UNIT_X, -dPitch);
+	}
+	m_strLog.Format("[Manual Top2 Inspector X] X (%d) Click", nIndex);
+	g_objLogFile.Save_HandlerLog(m_strLog);
+
+}
+
+void CManualBtmDlg::OnBtnTop2YClick(UINT nID)
+{
+	if (!g_objCommon.Check_MainDoor()) return;
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	int nIndex = nID - IDC_BTN_TOP2_Y_0;
+
+	if(nIndex == eTop2_Y::Ready)
+	{
+		g_objCommon.Move_Position(AX_MARK_UNIT_Y, eMark_X::Ready);
+	}
+	if(nIndex == eTop2_Y::ScanStart)
+	{
+		double dStart = pEquipData->dTop2StartY;
+		g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_Y, dStart);
+	}
+	if(nIndex == eTop2_Y::PitchP)
+	{		
+		double dPitch = pEquipData->dZigPitchX;
+		g_objAJinAXL.Move_Relative(AX_MARK_UNIT_Y, dPitch);
+	}
+	if(nIndex == eTop2_Y::PitchM)
+	{
+		double dPitch = pEquipData->dZigPitchX;
+		g_objAJinAXL.Move_Relative(AX_MARK_UNIT_Y, -dPitch);
+	}
+	
+	m_strLog.Format("[Manual Top2 Unit Y] Y (%d) Click", nIndex);
+	g_objLogFile.Save_HandlerLog(m_strLog);
+}
+
+void CManualBtmDlg::OnBtnTop2ZClick(UINT nID)
+{
+	if (!g_objCommon.Check_MainDoor()) return;
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	int nIndex = nID - IDC_BTN_TOP2_Z_0;
+
+	if(nIndex == eTop2_Z::Ready)
+	{
+		g_objCommon.Move_Position(AX_MARK_UNIT_Z, eMark_Z::Ready);
+	}
+	if(nIndex == eTop2_Z::ScanStart)
 	{
 		double dStart = pEquipData->dTop2StartZ;
-		g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_Z, dStart - (pEquipData->dTop2Period/4));		
+		g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_Z, dStart - (pEquipData->dTop2Period/4));
 	}
-
-	if(nIndex == eMark_Z::Scan)
+	if(nIndex == eTop2_Z::Scan)
 	{
 		if (m_nTop2ScanCase == 0) m_nTop2ScanCase = 1;
 		m_bThreadTop2Scan = TRUE;
-		m_pThreadTop2Scan = AfxBeginThread(Thread_Top2Scan, this);		
+		m_pThreadTop2Scan = AfxBeginThread(Thread_Top2Scan, this);	
 	}
 
-	/*if(nIndex == eTopInspect_Z::Dummy1)
-	{		
-	double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorZ[eTopInspect_Z::Dummy1];
-	g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_Z, dPitch);
-	}
-	if(nIndex == eTopInspect_Z::Dummy2)
+	/*if(nIndex == eTop2_Z::ScanStart)
 	{
-	double dPitch = g_objDataManager.Get_pMoveData()->dTopInspectorZ[eTopInspect_Z::Dummy2];
-	g_objAJinAXL.Move_Relative(AX_TOP_INSPECTOR_Z, dPitch);
+			
 	}*/
-	m_strLog.Format("[Manual Mark Z] Z (%d) Click", nIndex);
+	
+	m_strLog.Format("[Manual Top2 Z] Z (%d) Click", nIndex);
 	g_objLogFile.Save_HandlerLog(m_strLog);
 }
 
@@ -556,8 +655,9 @@ void CManualBtmDlg::OnBnClickedBtnLensMoveBtm()
 	int nLensNo = 0;
 	int nLensX = 0, nLensY = 0;
 
-	m_Edit_LensNo.GetWindowText(sLensNo);
+	m_Edit_LensNo[0].GetWindowText(sLensNo);
 	nLensNo = atoi(sLensNo);
+	nLensNo = g_objCommon.ConvertToAVINo(nLensNo);
 
 	if(nLensNo < 1) AfxMessageBox("Please Input LensNo > 1");
 
@@ -592,8 +692,9 @@ void CManualBtmDlg::OnBnClickedBtnLensMoveMark()
 	int nLensNo = 0;
 	int nLensX = 0, nLensY = 0;
 
-	m_Edit_LensNo.GetWindowText(sLensNo);
+	m_Edit_LensNo[1].GetWindowText(sLensNo);
 	nLensNo = atoi(sLensNo);
+	nLensNo = g_objCommon.ConvertToAVINo(nLensNo);
 
 	if(nLensNo < 1) AfxMessageBox("Please Input LensNo > 1");
 
@@ -619,4 +720,41 @@ void CManualBtmDlg::OnBnClickedBtnLensMoveMark()
 void CManualBtmDlg::OnBnClickedBtnClear()
 {
 	g_objAJinAXL.Clear_Scan(eTrigCh::T2);
+}
+
+
+void CManualBtmDlg::OnBnClickedBtnLensMoveMark2()
+{
+	CString sLensNo;
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+
+	double dPosX = 0, dPosY = 0;
+
+	int nLensNo = 0;
+	int nLensX = 0, nLensY = 0;
+
+	m_Edit_LensNo[2].GetWindowText(sLensNo);
+	nLensNo = atoi(sLensNo);
+
+	nLensNo = g_objCommon.ConvertToAVINo(nLensNo);
+
+	if(nLensNo < 1) AfxMessageBox("Please Input LensNo > 1");
+
+	if(pEquipData->nVisionDir == eVDir::fixY)
+	{
+		nLensY = ((nLensNo-1) / gData.nLensCntX);
+		nLensX = (nLensNo-1) % gData.nLensCntX;
+	}
+	else
+	{
+		nLensX = ((nLensNo-1) / gData.nLensCntY);
+		nLensY = (nLensNo-1) % gData.nLensCntY;
+	}	
+
+	dPosX = pEquipData->dTop2StartX + pEquipData->dZigPitchX*nLensX;
+	dPosY = pEquipData->dTop2StartY - pEquipData->dZigPitchY*nLensY;
+
+	g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_Y, dPosY);	
+	g_objAJinAXL.Move_Absolute(AX_MARK_UNIT_X, dPosX);
 }

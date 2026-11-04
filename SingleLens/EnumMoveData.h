@@ -157,7 +157,7 @@ struct eMark_X
 		MarkStart = 1,
 		PitchP = 2,
 		PitchM = 3,
-		ScanStart = 4,
+		
 	};
 };
 
@@ -171,7 +171,7 @@ struct eMark_Y
 		MarkStart = 1,
 		PitchP = 2,
 		PitchM = 3,
-		ScanStart = 4, 
+		
 
 	};
 };
@@ -184,9 +184,44 @@ struct eMark_Z
 	{
 		Ready = 0,
 		MarkStart = 1,
-		MarkDown = 2,
-		ScanStart = 4,
-		Scan = 5,
+		MarkDown = 2,		
+	};
+};
+
+
+struct eTop2_X
+{
+	enum dtName
+	{
+		Ready = 0,
+		ScanStart = 1,
+		PitchP = 2,
+		PitchM = 3,
+	};
+};
+
+
+
+struct eTop2_Y
+{
+	enum dtName
+	{
+		Ready = 0,
+		ScanStart = 1,
+		PitchP = 2,
+		PitchM = 3,
+	};
+};
+
+
+struct eTop2_Z
+{
+	enum dtName
+	{
+		Ready = 0,
+		ScanStart = 1,
+		ScanEnd = 2,
+		Scan = 3,
 	};
 };
 

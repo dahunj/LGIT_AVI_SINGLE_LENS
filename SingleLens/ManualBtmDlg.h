@@ -18,7 +18,7 @@ public:
 	CGroupCS	m_Group[16];
 	CLabelCS	m_Label[10];
 
-	CStaticCS	m_stcAxisPos[6];
+	CStaticCS	m_stcAxisPos[9];
 
 	CButtonCS	m_BtnBtmInspectX[4];
 	CButtonCS	m_BtnBtmInspectY[4];
@@ -28,8 +28,15 @@ public:
 	CButtonCS	m_BtnMarkUnitY[4];
 	CButtonCS	m_BtnMarkUnitZ[4];
 
+	CButtonCS	m_BtnTop2X[4];
+	CButtonCS	m_BtnTop2Y[4];
+	CButtonCS	m_BtnTop2Z[4];
+
 	CButtonCS	m_BtnMarkUnitIO[2];
 	CLedCS		m_LedMarkUnitIO[3];
+
+	CEdit m_Edit_LensNo[3];
+	
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
@@ -46,6 +53,10 @@ protected:
 	afx_msg void OnBtnMarkUnitXClick(UINT nID);
 	afx_msg void OnBtnMarkUnitYClick(UINT nID);
 	afx_msg void OnBtnMarkUnitZClick(UINT nID);
+
+	afx_msg void OnBtnTop2XClick(UINT nID);
+	afx_msg void OnBtnTop2YClick(UINT nID);
+	afx_msg void OnBtnTop2ZClick(UINT nID);
 
 	afx_msg void OnBtnMarkUnitIOClick(UINT nID);
 
@@ -77,8 +88,9 @@ public:
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();
 	afx_msg void OnBnClickedButton4();
-	CEdit m_Edit_LensNo;
+
 	afx_msg void OnBnClickedBtnLensMoveBtm();
 	afx_msg void OnBnClickedBtnLensMoveMark();
 	afx_msg void OnBnClickedBtnClear();
+	afx_msg void OnBnClickedBtnLensMoveMark2();
 };
