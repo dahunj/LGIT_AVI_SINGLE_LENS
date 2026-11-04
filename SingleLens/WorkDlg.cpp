@@ -930,7 +930,7 @@ BOOL CWorkDlg::Work_Start()
 	if (g_objSequenceMain.Get_IsAutoRun()) return TRUE;	// If Auto Runnning, Skip 
 
 	//Input Info Exist Check  
-	if( SearchMZCVInfo() < 0 && !pEquipData->bUseMES )
+	if( SearchMZCVInfo() < 0 && !pEquipData->bUseMES && !(pEquipData->bUseBarcodeMGZ && pEquipData->bUseBarcodeCtZig))
 	{
 		g_objCommon.Show_MsgBox(1, "Please Input MZ-ID."); return FALSE;
 	}
@@ -947,8 +947,8 @@ BOOL CWorkDlg::Work_Start()
 		}
 	}
 
-	if(nZigFlag < 0 && !pEquipData->bUseMES) {g_objCommon.Show_MsgBox(1, "Please Input Coating Zig ID."); return FALSE;}
-	if(nLensFlag < 0 && !pEquipData->bUseMES) {g_objCommon.Show_MsgBox(1, "Please Input Lens Cnt."); return FALSE;}
+	if(nZigFlag < 0 && !pEquipData->bUseMES && !(pEquipData->bUseBarcodeMGZ && pEquipData->bUseBarcodeCtZig)) {g_objCommon.Show_MsgBox(1, "Please Input Coating Zig ID."); return FALSE;}
+	if(nLensFlag < 0 && !pEquipData->bUseMES && !(pEquipData->bUseBarcodeMGZ && pEquipData->bUseBarcodeCtZig)) {g_objCommon.Show_MsgBox(1, "Please Input Lens Cnt."); return FALSE;}
 	
 
 	for(int i = 2; i < 6; i++)
@@ -1040,12 +1040,14 @@ void CWorkDlg::Check_Lamp()
 
 					gData.bLdMZWait = TRUE;
 					m_bLdOpenSwOn = TRUE;m_bLdRunSwOn = FALSE;
+					gData.bLoadOpenSW = TRUE;
 
 					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = TRUE; g_objAJinAXL.Write_Output(3); }
 
 				}
 				else
 				{
+					gData.bLoadOpenSW = TRUE;
 					m_bLdOpenSwOn = FALSE;
 				}
 			
@@ -1064,9 +1066,11 @@ void CWorkDlg::Check_Lamp()
 					if (pEquipData->bUseDoorLock) { pDY03->oDoor08Unlock = FALSE; g_objAJinAXL.Write_Output(3); }
 					gData.bLdMZWait = FALSE;
 				    m_bLdRunSwOn = TRUE;m_bLdOpenSwOn = FALSE;
+					gData.bLoadOpenSW = FALSE;
 				}
 				else
 				{
+					gData.bLoadOpenSW = FALSE;
 					m_bLdRunSwOn = FALSE;
 				}
 			
@@ -1084,10 +1088,12 @@ void CWorkDlg::Check_Lamp()
 					if (pEquipData->bUseDoorLock) { pDY03->oDoor03Unlock = TRUE; g_objAJinAXL.Write_Output(3); }
 					gData.bUldMZWait = TRUE;
 					m_bUldOpenSwOn = TRUE; m_bUldRunSwOn = FALSE;
+					gData.bUnloadOpenSW = TRUE;
 				}
 				else
 				{
 					m_bUldOpenSwOn = FALSE;
+					gData.bUnloadOpenSW = TRUE;
 				}
 
 			}
@@ -1104,10 +1110,12 @@ void CWorkDlg::Check_Lamp()
 					pMainDlg->Set_LampFlicker_UldRun(TRUE);	
 					if (pEquipData->bUseDoorLock) { pDY03->oDoor03Unlock = FALSE; g_objAJinAXL.Write_Output(3); }
 					gData.bUldMZWait = FALSE;
+					gData.bUnloadOpenSW = FALSE;
 					m_bUldRunSwOn = TRUE;m_bUldOpenSwOn = FALSE;
 				}
 				else
 				{
+					gData.bUnloadOpenSW = FALSE;
 					m_bUldRunSwOn = FALSE;
 				}
 			
