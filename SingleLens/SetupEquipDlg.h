@@ -99,6 +99,13 @@ public:
 	CButtonCS	m_btnMdjDelete;
 	CButtonCS	m_btnMdjRefresh;
 
+	CGroupCS	m_grpUser;
+	CLabelCS	m_lblUser[3];
+	CEditCS		m_edtUserId;
+	CEditCS		m_edtUserName;
+	CRadioCS	m_rdoUser[2];
+	CButtonCS	m_btnSaveUser;
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
@@ -132,6 +139,7 @@ private:
 
 	void Initial_Controls();
 	void Display_EquipData();
+	void Disable_Ctrl(BOOL bDisable);	// OP Mode로 접근시 Default 옵션에 접근하지 못 하도록 수정.
 
 public:
 	void InitModelComboBox();
@@ -156,6 +164,7 @@ public:
 	afx_msg void OnStnClickedStcRosWait();
 	afx_msg void OnBnClickedBtnMdjDelete();
 	afx_msg void OnBnClickedBtnMdjRefresh();
+	afx_msg void OnBnClickedBtnSaveUser();
 };
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -18,7 +18,7 @@ IMPLEMENT_DYNAMIC(CSetupDlg, CDialogEx)
 CSetupDlg::CSetupDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CSetupDlg::IDD, pParent)
 {
-	m_nLoginUser = 0;
+	
 }
 
 CSetupDlg::~CSetupDlg()
@@ -144,27 +144,28 @@ void CSetupDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {
 	CDialogEx::OnShowWindow(bShow, nStatus);
 
-	if (bShow) 
-	{
-		if (theApp.bParamMode) 
-		{
-			m_rdoSetupMove.SetCheck(TRUE);
-			OnBnClickedRdoSetupMove();
 
-		} else {
+	if (bShow) {
+		g_objAJinAXL.Set_ReadVelocity(TRUE);
+
+		if (gData.nUserLevel == eUserLevel::Enginneer) {
 			if (m_rdoSetupEquip.GetCheck()) m_pSetupEquipDlg->ShowWindow(SW_SHOW);
 			if (m_rdoSetupMove.GetCheck()) m_pSetupMoveDlg->ShowWindow(SW_SHOW);
 			if (m_rdoSetupMotion.GetCheck()) m_pSetupMotionDlg->ShowWindow(SW_SHOW);
 			if (m_rdoSetupInOut.GetCheck()) m_pSetupInOutDlg->ShowWindow(SW_SHOW);
+
+		} else {	// OP Mode
+			Hide_Windows();
+			Disable_Ctrl(TRUE);
+			m_rdoSetupEquip.SetCheck(TRUE);
+			m_rdoSetupEquip.Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
+			m_pSetupEquipDlg->ShowWindow(SW_SHOW);
 		}
-
-		g_objAJinAXL.Set_ReadVelocity(TRUE);
-
 		SetTimer(0, 100, NULL);
 
 	} else {
 		KillTimer(0);
-
+		Disable_Ctrl(FALSE);
 		g_objAJinAXL.Set_ReadVelocity(FALSE);
 
 		if (m_rdoSetupEquip.GetCheck()) m_pSetupEquipDlg->ShowWindow(SW_HIDE);
@@ -261,5 +262,26 @@ void CSetupDlg::Hide_Windows()
 	m_rdoSetupMotion.Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
 	m_rdoSetupInOut.Set_Color(RGB(0x00, 0x00, 0x00), COLOR_DEFAULT);
 }
+
+void CSetupDlg::Disable_Ctrl(BOOL bDisable)
+{
+	if (bDisable) {
+		m_rdoSetupMove.SetCheck(FALSE);
+		m_rdoSetupInOut.SetCheck(FALSE);
+		m_rdoSetupMotion.SetCheck(FALSE);
+
+		m_rdoSetupMove.EnableWindow(FALSE);
+		m_rdoSetupInOut.EnableWindow(FALSE);
+		m_rdoSetupMotion.EnableWindow(FALSE);
+
+		m_btnSetupSave.EnableWindow(TRUE);
+		m_btnSetupCancel.EnableWindow(TRUE);
+	} else {
+		m_rdoSetupMove.EnableWindow(TRUE);
+		m_rdoSetupInOut.EnableWindow(TRUE);
+		m_rdoSetupMotion.EnableWindow(TRUE);
+	}
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////

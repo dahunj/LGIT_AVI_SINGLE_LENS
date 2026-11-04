@@ -287,3 +287,13 @@ struct eROSInfo
 	};
 };
 
+struct eUserLevel
+{
+	enum name
+	{
+		None = 0,
+		Operator = 1,
+		Maint = 2,
+		Enginneer = 3,
+	};
+};

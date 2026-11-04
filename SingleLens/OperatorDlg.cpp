@@ -346,18 +346,13 @@ void COperatorDlg::OnBnClickedBtnOperManual()
 void COperatorDlg::OnBnClickedBtnOperSetup()
 {
 	CSingleLensDlg *pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
-#ifdef DRY_RUN_TEST
-	ShowWindow(SW_HIDE);
-	g_dlgSetup.Set_LoginUser(2);	// SI
-	pMainDlg->Set_CurrentMode(MODE_SETUP);
-#else
+
 	int nUser = 0;
-	if (g_objCommon.Show_Password(nUser) != IDOK) return;
-	g_dlgSetup.Set_LoginUser(nUser);
+	if (g_objCommon.Show_Password(nUser) != IDOK) return;	
 
 	ShowWindow(SW_HIDE);
 	pMainDlg->Set_CurrentMode(MODE_SETUP);
-#endif
+
 }
 
 void COperatorDlg::OnBnClickedBtnOperMonitor()
@@ -457,6 +452,16 @@ void COperatorDlg::Display_Status()
 void COperatorDlg::Change_Model()
 {
 	//Initial_Grid(&m_grdOperShipTray, gData.STY, ST_X);
+}
+
+void COperatorDlg::Visible_OpModeButton()
+{
+	int nVisible = (gData.nUserLevel > eUserLevel::None) ? SW_SHOW : SW_HIDE;
+	m_btnOperInitial.ShowWindow(nVisible);
+	m_btnOperWork.ShowWindow(nVisible);
+	m_btnOperManual.ShowWindow(nVisible);
+	m_btnOperSetup.ShowWindow(nVisible);
+	m_btnOperMonitor.ShowWindow(nVisible);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

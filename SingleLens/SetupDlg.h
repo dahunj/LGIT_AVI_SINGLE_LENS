@@ -56,13 +56,10 @@ public:
 private:
 	void Initial_Controls();
 	void Hide_Windows();
+	void Disable_Ctrl(BOOL bDisable);
 
-private:
-	int m_nLoginUser;
 
-public:
-	void Set_LoginUser(int nUser) { m_nLoginUser = nUser; }
-	int Get_LoginUser() { return m_nLoginUser; }
+
 };
 
 extern CSetupDlg g_dlgSetup;

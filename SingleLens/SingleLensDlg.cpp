@@ -203,6 +203,9 @@ BOOL CSingleLensDlg::OnInitDialog()
 		gData.nLTime[eLT::CV] = 30000;
 	}
 	
+	m_rdoMainParm.ShowWindow(SW_HIDE);
+	m_btnMainAlarm.ShowWindow(SW_HIDE);
+
 	m_bLampOnLdOpen = FALSE;
 	m_bLampOnLdRun = FALSE;
 	m_bLampOnUldOpen = FALSE;
@@ -344,13 +347,17 @@ void CSingleLensDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	g_objInspector.Initialize();
 	g_objMesAgent.Initialize();
 	g_objDispatcher.Initialize();
-
-	gData.sOperID = "";	
-
-
+		
 	CString strVersion;
 	strVersion.Format("%s", MAIN_VERSION);
 	m_stcMainVer.SetWindowText(strVersion);
+	m_stcMainEquip.SetWindowText(pEquipData->sEquipName);
+
+	/*if (gData.bDryRunTest) {
+		m_stcMainEquip.Set_Color(RGB(0xFF, 0xFF, 0xFF), RGB(0xFF, 0x00, 0x00));
+	} else {
+		m_stcMainEquip.Set_Color(RGB(0x00, 0x00, 0x00), RGB(0xE6, 0xE6, 0xE6));
+	}*/
 
 	//g_objInspector.Set_StatusUpdate(0);
 	//g_objInspector.Set_LightOff();
@@ -360,16 +367,12 @@ void CSingleLensDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	if (!g_objBarcodeLot_Cognex.Initialize()) {
 		g_objCommon.Show_MsgBox(1, "Fail to barcode(Cognex) initialization.");
 	}
-
-
-	theApp.uSleep(10000);
+	theApp.uSleep(3000);
 
 	dlgSplash.DestroyWindow();
 
 	Set_CurrentMode(MODE_INITIAL);
-	Set_CurrentState(STATE_NONE);
-
-	
+	Set_CurrentState(STATE_NONE);		
 
 	m_dwEquipProcTime = GetTickCount();
 	Set_LotErrorLog("PROGRAM BEGIN", 900, "Program Begin");
@@ -405,16 +408,36 @@ void CSingleLensDlg::OnTimer(UINT_PTR nIDEvent)
 void CSingleLensDlg::OnBnClickedBtnMainOperator()
 {
 	int nMode = theApp.Get_MainMode();
-	if (nMode == MODE_OPERATOR) {
-#ifdef DRY_RUN_TEST
-		g_dlgSetup.Set_LoginUser(2);	// SI
-		Set_CurrentMode(MODE_WORK);
-#else
-		int nUser = 0;
-		if (g_objCommon.Show_Password(nUser) != IDOK) return;
-		g_dlgSetup.Set_LoginUser(nUser);
-		Set_CurrentMode(MODE_WORK);
-#endif
+	if (nMode == MODE_OPERATOR) 
+	{
+		if (gData.nUserLevel < (int)eUserLevel::Enginneer) 
+		{
+			CString strKey;
+			if (g_objCommon.Show_KeyPad(strKey) != IDOK) return;
+			User_Login(strKey);
+
+		}
+		else
+		{
+			if (g_objCommon.Show_MsgBox(2, "Do you want to User Log Out?\n로그아웃 하시겠습니까?") != IDOK) return;
+
+			CString strLog;
+			strLog.Format("[OP Mode] Engineer Mode Exit");
+			g_objLogFile.Save_HandlerLog(strLog);
+
+			gData.nUserLevel = eUserLevel::None;
+			gData.sUserName = "";
+			gData.sOperID = "";
+
+			m_btnMainOperator.SetWindowText("Operator");
+			m_stcMainOpEng.SetWindowText("Operator Mode");
+			if (g_dlgOperator.IsWindowVisible()) g_dlgOperator.m_stcOperOperId.SetWindowText("");
+
+			Visible_ModeButton();
+			g_dlgOperator.Visible_OpModeButton();
+
+			Set_CurrentMode(MODE_OPERATOR);
+		}
 	}
 	else Set_CurrentMode(MODE_OPERATOR);
 }
@@ -427,8 +450,7 @@ void CSingleLensDlg::OnBnClickedRdoMainParam()
 #else
 	int nUser = 0;
 	if (g_objCommon.Show_Password(nUser) == IDOK) {
-		theApp.bParamMode = TRUE;
-		g_dlgSetup.Set_LoginUser(nUser);
+		theApp.bParamMode = TRUE;	
 		Set_CurrentMode(MODE_PARAM);
 
 	} else {
@@ -457,25 +479,7 @@ void CSingleLensDlg::OnBnClickedRdoMainManual()
 
 void CSingleLensDlg::OnBnClickedRdoMainSetup()
 {
-#ifdef DRY_RUN_TEST
-	g_dlgSetup.Set_LoginUser(2);	// SI
 	Set_CurrentMode(MODE_SETUP);
-#else
-	int nUser = 0;
-	if (g_objCommon.Show_Password(nUser) == IDOK) {
-		theApp.bParamMode = FALSE;
-		g_dlgSetup.Set_LoginUser(nUser);
-		Set_CurrentMode(MODE_SETUP);
-
-	} else {
-		int nMode = theApp.Get_MainMode();
-		if (nMode == MODE_WORK) m_rdoMainWork.SetCheck(TRUE);
-		if (nMode == MODE_MANUAL) m_rdoMainManual.SetCheck(TRUE);
-		if (nMode == MODE_SETUP) m_rdoMainSetup.SetCheck(TRUE);
-		if (nMode == MODE_PROHIBIT) m_rdoMainProhibit.SetCheck(TRUE);
-		if (nMode == MODE_PARAM) m_rdoMainParm.SetCheck(TRUE);
-	}
-#endif
 }
 
 void CSingleLensDlg::OnBnClickedRdoMainProhibit()
@@ -486,7 +490,7 @@ void CSingleLensDlg::OnBnClickedRdoMainProhibit()
 void CSingleLensDlg::OnBnClickedBtnMainMonitor()
 {
 	theApp.bIoMode = FALSE;
-	theApp.bAlarmMode = FALSE;
+	theApp.bAlarmMode = TRUE;
 	if (g_dlgMonitor.IsWindowVisible()) g_dlgMonitor.ShowWindow(SW_HIDE);
 	else g_dlgMonitor.ShowWindow(SW_SHOW);	
 }
@@ -572,14 +576,15 @@ void CSingleLensDlg::Hide_ModeWindows(int nMode, int nPreMode)
 	int nShow = (nMode == MODE_OPERATOR ? SW_HIDE : SW_SHOW);
 	if (nShow == SW_SHOW) nShow = (nMode == MODE_INITIAL ? SW_HIDE : SW_SHOW);
 
-	m_rdoMainParm.ShowWindow(nShow);
+	
 	m_rdoMainWork.ShowWindow(nShow);
 	m_rdoMainManual.ShowWindow(nShow);
 	m_rdoMainSetup.ShowWindow(nShow);
 	m_rdoMainProhibit.ShowWindow(nShow);
 	m_btnMainMonitor.ShowWindow(nShow);
 	m_btnMainIO.ShowWindow(nShow);
-	m_btnMainAlarm.ShowWindow(nShow);
+	
+	
 	if (nMode == MODE_OPERATOR) m_btnMainExit.ShowWindow(FALSE);
 	else						m_btnMainExit.ShowWindow(TRUE);
 
@@ -596,25 +601,34 @@ void CSingleLensDlg::Hide_ModeWindows(int nMode, int nPreMode)
 
 void CSingleLensDlg::Set_CurrentMode(int nMode)
 {
+	int nUser = 0;
 	int nPreMode = theApp.Get_MainMode();
-	gData.nStatus = nPreMode;
 
 	//Safety Switch 조작 시점 갱신 
 	gData.dwTouched = GetTickCount();
 
+	gData.nTowerState = 0;
+
 	if (nMode == nPreMode) return;
+
+	if (nPreMode == MODE_OPERATOR) m_btnMainOperator.SetWindowText("OPERATOR");
+
+	if (nPreMode == MODE_PROHIBIT) 
+	{
+		if (g_objCommon.Show_Password(gData.nUserLevel) != IDOK)
+		{
+			m_rdoMainProhibit.SetCheck(TRUE); return;
+		} 
+	}
 
 	Hide_ModeWindows(nMode, nPreMode);
 
-	gData.nTowerState = 0;
-
-	if (nMode == MODE_OPERATOR) m_btnMainOperator.SetWindowText("Engineer");
-	else m_btnMainOperator.SetWindowText("Operator");
-
 	if (nMode == MODE_OPERATOR) {
 		g_dlgOperator.ShowWindow(SW_SHOW);
+		CString strTemp;
+		strTemp = (gData.nUserLevel < eUserLevel::Enginneer) ? "ENGINEER" : "OPERATOR";
+		m_btnMainOperator.SetWindowText(strTemp);
 		m_stcMainMode.SetWindowText("Operator");
-		m_stcMainOpEng.SetWindowText("Operator Mode");
 		g_objLogFile.Save_HandlerLog("[Main Dialog] Operator Mode start");
 
 	} else if (nMode == MODE_INITIAL) {
@@ -626,17 +640,13 @@ void CSingleLensDlg::Set_CurrentMode(int nMode)
 	} else if (nMode == MODE_WORK) {
 		g_dlgWork.ShowWindow(SW_SHOW);
 		m_stcMainMode.SetWindowText("Work");
-		m_stcMainOpEng.SetWindowText("Operator Mode");
 		m_rdoMainWork.Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
 		if (!m_rdoMainWork.GetCheck()) m_rdoMainWork.SetCheck(TRUE);
 		g_objLogFile.Save_HandlerLog("[Main Dialog] Work Mode start");
 
-	} else if (nMode == MODE_MANUAL) 
-	{
-		gData.nTowerState = 7;
+	} else if (nMode == MODE_MANUAL) {
 		g_dlgManual.ShowWindow(SW_SHOW);
 		m_stcMainMode.SetWindowText("Manual");
-		m_stcMainOpEng.SetWindowText("Engineer Mode");
 		m_rdoMainManual.Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
 		if (!m_rdoMainManual.GetCheck()) m_rdoMainManual.SetCheck(TRUE);
 		g_objLogFile.Save_HandlerLog("[Main Dialog] Manual Mode start");
@@ -644,7 +654,6 @@ void CSingleLensDlg::Set_CurrentMode(int nMode)
 	} else if (nMode == MODE_SETUP) {
 		g_dlgSetup.ShowWindow(SW_SHOW);
 		m_stcMainMode.SetWindowText("Setup");
-		m_stcMainOpEng.SetWindowText("Engineer Mode");
 		m_rdoMainSetup.Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
 		if (!m_rdoMainSetup.GetCheck()) m_rdoMainSetup.SetCheck(TRUE);
 		g_objLogFile.Save_HandlerLog("[Main Dialog] Setup Mode start");
@@ -652,17 +661,9 @@ void CSingleLensDlg::Set_CurrentMode(int nMode)
 	} else if (nMode == MODE_PROHIBIT) {
 		g_dlgProhibit.ShowWindow(SW_SHOW);
 		m_stcMainMode.SetWindowText("Prohibit");
-		m_stcMainOpEng.SetWindowText("Engineer Mode");
 		m_rdoMainProhibit.Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
 		if (!m_rdoMainProhibit.GetCheck()) m_rdoMainProhibit.SetCheck(TRUE);
 		g_objLogFile.Save_HandlerLog("[Main Dialog] Prohibit Start");
-	} else if (nMode == MODE_PARAM) {
-		g_dlgSetup.ShowWindow(SW_SHOW);
-		m_stcMainMode.SetWindowText("Setup");
-		m_stcMainOpEng.SetWindowText("Engineer Mode");
-		m_rdoMainParm.Set_Color(RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
-		if (!m_rdoMainParm.GetCheck()) m_rdoMainParm.SetCheck(TRUE);
-		g_objLogFile.Save_HandlerLog("[Main Dialog] Param Mode start");
 	}
 
 	theApp.Set_MainMode(nMode);
@@ -930,7 +931,7 @@ void CSingleLensDlg::Enable_ModeButton(BOOL bEnable)
 	m_rdoMainManual.EnableWindow(bEnable);
 	m_rdoMainSetup.EnableWindow(bEnable);
 	m_rdoMainProhibit.EnableWindow(bEnable);
-	m_rdoMainParm.EnableWindow(bEnable);
+	//m_rdoMainParm.EnableWindow(bEnable);
 }
 
 void CSingleLensDlg::Display_EquipName()
@@ -1229,4 +1230,91 @@ void CSingleLensDlg::Set_ToastMsg()
 	{
 		if(m_toast.IsWindowVisible()) m_toast.ShowWindow(SW_HIDE);
 	}
+}
+
+
+
+void CSingleLensDlg::User_Login(CString strId)
+{
+	CIniFileCS INI(gsCurrentDir + "\\System\\User.ini");
+	if (!INI.Check_File()) { AfxMessageBox("User.ini File Not Found!!!"); return; }
+
+	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
+	int nLevel = INI.Get_Integer(strId, "LEVEL", 0);
+	CString strName = INI.Get_String(strId, "NAME", "");
+
+	CString strLog, strInfo;
+
+	if (nLevel == eUserLevel::Enginneer) 
+	{
+		if (g_objCommon.Show_Password(nLevel) != IDOK) return;	// Password 추가
+
+		m_btnMainOperator.SetWindowText("OPERATOR");
+		m_stcMainOpEng.SetWindowText("Engineer Mode");
+		
+		gData.sOperID = strId;
+		gData.nUserLevel = eUserLevel::Enginneer;		
+		gData.sUserName = strName;
+		g_objMesAgent.Set_OperUpdate(gData.sOperID);
+
+		strInfo.Format("%s / %s", strName, strId);
+		g_dlgOperator.m_stcOperOperId.SetWindowText(strInfo);
+		//g_dlgWork.m_str.SetWindowText(strInfo);
+
+		strLog.Format("[OP Mode] User Log In [Engineer] - [%s]", gData.sUserName);
+		g_objLogFile.Save_HandlerLog(strLog);
+	} else {
+		m_btnMainOperator.SetWindowText("ENGINEER");
+		m_stcMainOpEng.SetWindowText("Operator Mode");
+
+		if (nLevel == eUserLevel::Operator) 
+		{
+			gData.sOperID = strId;
+			gData.nUserLevel = eUserLevel::Operator;
+			gData.sUserName = strName;
+			g_objMesAgent.Set_OperUpdate(gData.sOperID);
+			strInfo.Format("%s / %s", strName, strId);
+			//g_dlgWork.m_stcOperOperId.SetWindowText(strInfo);
+			g_dlgOperator.m_stcOperOperId.SetWindowText(strInfo);
+
+			strLog.Format("[OP Mode] User Log In [Engineer] - [%s]", gData.sUserName);
+			g_objLogFile.Save_HandlerLog(strLog);
+		} else {
+			AfxMessageBox("User not registered.\n등록되지 않은 유저입니다.");
+			gData.sOperID = "";
+			gData.nUserLevel = eUserLevel::None;
+			gData.sUserName = "";
+			//g_dlgWork.m_stcMesUserId.SetWindowText("");
+			g_dlgOperator.m_stcOperOperId.SetWindowText("");
+		}
+
+		int nPreMode = theApp.Get_MainMode();
+		if (nPreMode == MODE_SETUP || nPreMode == MODE_MANUAL) Set_CurrentMode(MODE_PROHIBIT);
+	}
+	Visible_ModeButton();
+	g_dlgOperator.Visible_OpModeButton();
+
+	//if (gData.sOperID == "SY") return;	// SY모드에서는 DoorLock 변경 안함.
+
+	//if (!gData.bDryRunTest) {
+	//	pEquipData->bUseDoorLock = TRUE;	// CSKIM(2022.12.21)
+	//	CIniFileCS INI2(gsCurrentDir + "\\System\\EquipData.ini");
+	//	INI2.Set_Bool("EQUIPMENT", "DOOR_LOCK", TRUE);
+	//}
+}
+
+
+void CSingleLensDlg::Visible_ModeButton()
+{
+	int nVisible = (gData.nUserLevel > eUserLevel::None) ? SW_SHOW : SW_HIDE;
+	m_rdoMainWork.ShowWindow(nVisible);
+	m_rdoMainManual.ShowWindow(nVisible);
+	m_rdoMainSetup.ShowWindow(nVisible);
+	m_btnMainMonitor.ShowWindow(nVisible);
+	m_btnMainIO.ShowWindow(nVisible);
+	//m_rdoMain.ShowWindow(nVisible);
+
+	nVisible = (gData.nUserLevel > eUserLevel::Operator) ? SW_SHOW : SW_HIDE;
+	m_rdoMainProhibit.ShowWindow(nVisible);
+	m_btnMainExit.ShowWindow(nVisible);
 }

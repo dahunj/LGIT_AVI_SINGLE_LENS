@@ -155,8 +155,6 @@ void CManualDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 
 	if (bShow) 
 	{
-		
-
 		if (m_rdoManualElev.GetCheck()) m_pManualElevDlg->ShowWindow(SW_SHOW);
 		if (m_rdoManualLoad.GetCheck()) m_pManualLoadDlg->ShowWindow(SW_SHOW);
 		if (m_rdoManualClean.GetCheck()) m_pManualCleanDlg->ShowWindow(SW_SHOW);

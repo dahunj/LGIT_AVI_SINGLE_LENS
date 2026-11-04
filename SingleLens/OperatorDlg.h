@@ -77,6 +77,7 @@ private:
 public:
 	
 	void Change_Model();
+	void Visible_OpModeButton();
 };
 
 extern COperatorDlg g_dlgOperator;

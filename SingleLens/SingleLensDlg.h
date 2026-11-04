@@ -151,7 +151,8 @@ public:
 
 	void Set_ToastMsg();
 
-	
+	void User_Login(CString strId);
+	void Visible_ModeButton();
 };
 
 ///////////////////////////////////////////////////////////////////////////////

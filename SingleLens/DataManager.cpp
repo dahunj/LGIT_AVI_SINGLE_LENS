@@ -75,8 +75,8 @@ BOOL CDataManager::Read_EquipData()
 	m_EquipData.sEquipName = INI.Get_String("EQUIPMENT", "NAME", "");
 	m_EquipData.sModelName = INI.Get_String("EQUIPMENT", "MODEL", "");
 
-	m_EquipData.sPasswordOp = INI.Get_String("HIDDEN", "PASSWORD_OP", "");
-	m_EquipData.sPasswordEngr = INI.Get_String("HIDDEN", "PASSWORD_ENGR", "");
+	m_EquipData.sPassword = INI.Get_String("HIDDEN", "PASSWORD", "");
+
 
 	m_EquipData.bUseDoorLock = INI.Get_Bool("EQUIPMENT", "DOOR_LOCK", TRUE);
 	gData.nDoorLockTime = INI.Get_Integer("EQUIPMENT","DOOR_LOCK_TIME", 0);

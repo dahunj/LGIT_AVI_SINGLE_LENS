@@ -122,6 +122,13 @@ void CSetupEquipDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BTN_MDJ_DELETE, m_btnMdjDelete);
 	DDX_Control(pDX, IDC_BTN_MDJ_REFRESH, m_btnMdjRefresh);
 
+	DDX_Control(pDX, IDC_GRP_USER, m_grpUser);
+	for (int i = 0; i < 3; i++) DDX_Control(pDX, IDC_LBL_USER_0 + i, m_lblUser[i]);
+	DDX_Control(pDX, IDC_EDT_USER_ID, m_edtUserId);
+	DDX_Control(pDX, IDC_EDT_USER_NAME, m_edtUserName);
+	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_RDO_USER_0 + i, m_rdoUser[i]);
+	DDX_Control(pDX, IDC_BTN_SAVE_USER, m_btnSaveUser);
+
 }
 
 BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
@@ -156,6 +163,7 @@ BEGIN_MESSAGE_MAP(CSetupEquipDlg, CDialogEx)
 	ON_STN_CLICKED(IDC_STC_ROS_WAIT, &CSetupEquipDlg::OnStnClickedStcRosWait)
 	ON_BN_CLICKED(IDC_BTN_MDJ_DELETE, &CSetupEquipDlg::OnBnClickedBtnMdjDelete)
 	ON_BN_CLICKED(IDC_BTN_MDJ_REFRESH, &CSetupEquipDlg::OnBnClickedBtnMdjRefresh)
+	ON_BN_CLICKED(IDC_BTN_SAVE_USER, &CSetupEquipDlg::OnBnClickedBtnSaveUser)
 END_MESSAGE_MAP()
 
 // CSetupEquipDlg 메시지 처리기입니다.
@@ -255,6 +263,13 @@ void CSetupEquipDlg::Initial_Controls()
 	m_lstMdjIp.Init_Ctrl("바탕", 11, TRUE, COLOR_DEFAULT, COLOR_DEFAULT);
 	m_btnMdjDelete.Init_Ctrl("바탕", 11, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, 0, 0);
 	m_btnMdjRefresh.Init_Ctrl("바탕", 11, FALSE, COLOR_DEFAULT, COLOR_DEFAULT, 0, 0);
+
+	m_grpUser.Init_Ctrl("바탕", 11, TRUE, COLOR_DEFAULT, COLOR_DEFAULT);
+	for (int i = 0; i < 3; i++) m_lblUser[i].Init_Ctrl("바탕", 11, TRUE, RGB(0xFF, 0xFF, 0xFF), RGB(0x00, 0x10, 0xC0));
+	m_edtUserId.Init_Ctrl("바탕", 11, TRUE, RGB(0xFF, 0x00, 0x00), COLOR_DEFAULT);
+	m_edtUserName.Init_Ctrl("바탕", 11, TRUE, RGB(0x00, 0x00, 0xFF), COLOR_DEFAULT);
+	for (int i = 0; i < 2; i++) m_rdoUser[i].Init_Ctrl("바탕", 11, FALSE, RGB(0x00, 0x00, 0x00), RGB(0xC0, 0xC0, 0xC0), CRadioCS::emRed, 0);	// User
+	m_btnSaveUser.Init_Ctrl("바탕", 11, TRUE, COLOR_DEFAULT, COLOR_DEFAULT, 0, 0);
 }
 
 
@@ -361,6 +376,9 @@ void CSetupEquipDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 	m_chkDelayAllTop.ShowWindow(SW_HIDE);
 	m_chkDelayAllTop2.ShowWindow(SW_HIDE);
 	m_chkDelayAllBtm.ShowWindow(SW_HIDE);
+
+	Disable_Ctrl(gData.nUserLevel != (int)eUserLevel::Enginneer);
+
 }
 
 void CSetupEquipDlg::OnStnClickedStcEquipName()
@@ -432,7 +450,8 @@ void CSetupEquipDlg::OnStnClickedStcShowHidden()
 		m_grpHidden.ShowWindow(SW_HIDE);
 		m_lblPasswordOp.ShowWindow(SW_HIDE);
 		m_stcPasswordOp.ShowWindow(SW_HIDE);
-		if (g_dlgSetup.Get_LoginUser() != 2) return;
+
+		if (gData.nUserLevel < eUserLevel::Maint) return;
 		m_lblPasswordEngr.ShowWindow(SW_HIDE);
 		m_edtPasswordEngr.ShowWindow(SW_HIDE);
 
@@ -450,7 +469,7 @@ void CSetupEquipDlg::OnStnClickedStcShowHidden()
 		m_grpHidden.ShowWindow(SW_SHOW);
 		m_lblPasswordOp.ShowWindow(SW_SHOW);
 		m_stcPasswordOp.ShowWindow(SW_SHOW);
-		if (g_dlgSetup.Get_LoginUser() != 2) return;
+		if (gData.nUserLevel < eUserLevel::Maint) return;
 		m_lblPasswordEngr.ShowWindow(SW_SHOW);
 		m_edtPasswordEngr.ShowWindow(SW_SHOW);
 
@@ -551,9 +570,8 @@ void CSetupEquipDlg::Display_EquipData()
 
 	m_chkResultTestUse.SetCheck(pEquipData->bResultTestUse);
 	strData.Format("%d", pEquipData->nResultTestNg); m_edtResultTest.SetWindowText(strData);
-
-	m_stcPasswordOp.SetWindowText(pEquipData->sPasswordOp);
-	m_edtPasswordEngr.SetWindowText(pEquipData->sPasswordEngr);
+	
+	m_edtPasswordEngr.SetWindowText(pEquipData->sPassword);
 }
 
 void CSetupEquipDlg::Save_EquipData()
@@ -668,13 +686,12 @@ void CSetupEquipDlg::Save_EquipData()
 	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) { strKey.Format("%d%d", i, j); INI.Set_Bool("TOWER", strKey, m_chkTower[i][j].GetCheck()); }
 	for (int i = 0; i < 5; i++) for (int j = 0; j < 6; j++) { strKey.Format("%d%d", i, j); INI.Set_Bool("BUZZER", strKey, m_chkBuzzer[i][j].GetCheck()); }
 	
-	m_stcPasswordOp.GetWindowText(strData); INI.Set_String("HIDDEN", "PASSWORD_OP", strData); pEquipData->sPasswordOp = strData;
-	m_edtPasswordEngr.GetWindowText(strData); INI.Set_String("HIDDEN", "PASSWORD_ENGR", strData); pEquipData->sPasswordEngr = strData;
+	
+	m_edtPasswordEngr.GetWindowText(strData); INI.Set_String("HIDDEN", "PASSWORD", strData); pEquipData->sPassword = strData;
 		
 	pEquipData->bResultTestUse = m_chkResultTestUse.GetCheck();
 	m_edtResultTest.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("RESULT_TEST", "RESULT_NG", nData);
-
-
+	
 	CString sPathSource;
 	sPathSource = gsCurrentDir + "\\System\\Model\\";
 	sPathSource += strModel;
@@ -773,10 +790,7 @@ void CSetupEquipDlg::Save_ModelEquipData(CString sPath)
 		
 	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) { strKey.Format("%d%d", i, j); INI.Set_Bool("TOWER", strKey, m_chkTower[i][j].GetCheck()); }
 	for (int i = 0; i < 5; i++) for (int j = 0; j < 6; j++) { strKey.Format("%d%d", i, j); INI.Set_Bool("BUZZER", strKey, m_chkBuzzer[i][j].GetCheck()); }
-	
-	//m_stcPasswordOp.GetWindowText(strData); INI.Set_String("HIDDEN", "PASSWORD_OP", strData); pEquipData->sPasswordOp = strData;
-	//m_edtPasswordEngr.GetWindowText(strData); INI.Set_String("HIDDEN", "PASSWORD_ENGR", strData); pEquipData->sPasswordEngr = strData;
-
+		
 	pEquipData->bResultTestUse = m_chkResultTestUse.GetCheck();
 	m_edtResultTest.GetWindowText(strData); nData = atoi(strData); INI.Set_Integer("RESULT_TEST", "RESULT_NG", nData);
 
@@ -1170,4 +1184,46 @@ void CSetupEquipDlg::OnBnClickedBtnMdjRefresh()
 		CString strIp = pRosData->lstMdjIp.GetNext(pos);
 		m_lstMdjIp.AddString(strIp);
 	}
+}
+
+
+void CSetupEquipDlg::OnBnClickedBtnSaveUser()
+{
+	CString strId, strName;
+	m_edtUserId.GetWindowText(strId);
+	m_edtUserName.GetWindowText(strName);
+
+	if (strId == "") { g_objCommon.Show_MsgBox(1, "Please enter the user id and use it.\n사용자 ID를 입력한 후 사용하세요."); return; }
+	if (strName == "") { g_objCommon.Show_MsgBox(1, "Please enter the user name and use it.\n사용자 이름을 입력한 후 사용하세요."); return; }
+
+	CIniFileCS INI(gsCurrentDir + "\\System\\User.ini");
+	INI.Set_String(strId, "NAME", strName);
+
+	if (m_rdoUser[0].GetCheck()) {
+		INI.Set_Integer(strId, "LEVEL", (int)eUserLevel::Operator);
+		m_strLog.Format("[Setup Equip] Save User Click. Id[%s], Name[%s], LEVEL[Operator]", strId, strName);
+	} else {
+		INI.Set_Integer(strId, "LEVEL", (int)eUserLevel::Enginneer);
+		m_strLog.Format("[Setup Equip] Save User Click. Id[%s], Name[%s], LEVEL[Engineer]", strId, strName);
+	}
+
+	g_objLogFile.Save_HandlerLog(m_strLog);
+	g_objCommon.Show_MsgBox(1, "User registration completed.\n사용자 등록이 완료 되었습니다.");
+}
+
+
+void CSetupEquipDlg::Disable_Ctrl(BOOL bDisable)
+{
+	m_stcEquipName.EnableWindow(!bDisable);	
+	m_stcDoorLockTime.EnableWindow(!bDisable);
+	m_stcNoWorkTime.EnableWindow(!bDisable);	
+
+	for (int i = 0; i < 6; i++) for (int j = 0; j < 4; j++) m_chkTower[i][j].EnableWindow(!bDisable);
+	for (int i = 0; i < 2; i++) for (int j = 0; j < 6; j++) m_chkBuzzer[i][j].EnableWindow(!bDisable);
+
+	m_edtUserId.EnableWindow(!bDisable);
+	m_edtUserName.EnableWindow(!bDisable);
+
+	for (int i = 0; i < 2; i++) m_rdoUser[i].EnableWindow(!bDisable);
+	m_btnSaveUser.EnableWindow(!bDisable);
 }

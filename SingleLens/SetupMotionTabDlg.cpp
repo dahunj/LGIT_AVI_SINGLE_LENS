@@ -229,7 +229,8 @@ void CSetupMotionTabDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		strText.Format("%0.1lf", pParam->dAccel);
 		m_stcAccel[i].SetWindowText(strText);
 
-		if (g_dlgSetup.Get_LoginUser() == 2) {	// SI User
+		if (gData.nUserLevel > eUserLevel::Operator)
+		{	
 			m_stcAbsDist[i].EnableWindow(TRUE);
 			m_btnAbsMove[i].EnableWindow(TRUE);
 			m_btnJogP[i].EnableWindow(TRUE);
@@ -398,10 +399,9 @@ void CSetupMotionTabDlg::OnStcRelDistClick(UINT nID)
 	m_stcRelDist[ID].GetWindowText(strOld);
 	if (g_objCommon.Show_NumPad(strOld, strNew) != IDOK) return;
 
-	if (g_dlgSetup.Get_LoginUser() != 2) {
-		double dNew = atof(strNew);
-		if (dNew > 5.0) strNew = strOld;
-	}
+	double dNew = atof(strNew);
+	if (dNew > 5.0) strNew = strOld;
+
 	m_stcRelDist[ID].SetWindowText(strNew);
 }
 
