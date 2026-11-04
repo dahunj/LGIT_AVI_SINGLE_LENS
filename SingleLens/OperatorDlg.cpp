@@ -216,7 +216,7 @@ void COperatorDlg::OnStnClickedStcOperLotId()
 
 void COperatorDlg::OnStnClickedStcOperOperId()
 {
-	CString strKey;
+	/*CString strKey;
 	if (g_objCommon.Show_KeyPad(strKey) != IDOK) return;
 
 	gData.sOperID = strKey;
@@ -226,7 +226,7 @@ void COperatorDlg::OnStnClickedStcOperOperId()
 	
 	CString sLog;
 	sLog.Format("[Operator] Operator ID Input....  OperID[%s]", gData.sOperID);
-	g_objLogFile.Save_HandlerLog(sLog);
+	g_objLogFile.Save_HandlerLog(sLog);*/
 }
 
 void COperatorDlg::OnBnClickedBtnOperStart()

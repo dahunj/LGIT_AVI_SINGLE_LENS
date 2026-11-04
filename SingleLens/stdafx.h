@@ -315,7 +315,6 @@ typedef struct
 
 	int		nGrapFailCnt[3][10];
 
-
 	int		nUserLevel;
 	CString sUserName;
 
