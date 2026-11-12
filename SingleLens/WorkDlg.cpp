@@ -367,7 +367,9 @@ void CWorkDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		m_bmpBg.DeleteObject();
 
 		if(pEquipData->bUseDoorLock) m_bmpBg.LoadBitmap(IDB_EQUIP_WORK);
-		else m_bmpBg.LoadBitmap(IDB_EQUIP_DOOR);	
+		else m_bmpBg.LoadBitmap(IDB_EQUIP_DOOR);
+
+		m_stcOperId.SetWindowText(gData.sOperID);
 
 		SetTimer(0, 100, NULL);		
 	}
@@ -2073,7 +2075,7 @@ void CWorkDlg::OnStnClickedStcOperId()
 
 void CWorkDlg::OnBnClickedBtnMesOnline()
 {
-	if (gData.sOperID.GetLength() < 4) { AfxMessageBox("Input the Operator ID....."); return; }
+	if (gData.sOperID.GetLength() < 4 || gData.sOperID != "SY") { AfxMessageBox("Input the Operator ID....."); return; }
 
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	if (!pEquipData->bUseMES) return;
@@ -2086,7 +2088,7 @@ void CWorkDlg::OnBnClickedBtnMesOnline()
 
 void CWorkDlg::OnBnClickedBtnMesOffline()
 {
-	if (gData.sOperID.GetLength() < 4) { AfxMessageBox("Input the Operator ID....."); return; }
+	if (gData.sOperID.GetLength() < 4 || gData.sOperID != "SY") { AfxMessageBox("Input the Operator ID....."); return; }
 
 	g_objMesAgent.Set_ControlState(2, gData.sOperID);
 
@@ -2098,7 +2100,7 @@ void CWorkDlg::OnBnClickedBtnMesOffline()
 
 void CWorkDlg::OnBnClickedBtnMesConnect()
 {
-	if (gData.sOperID.GetLength() < 4) { AfxMessageBox("Input the Operator ID....."); return; }
+	if (gData.sOperID.GetLength() < 4 || gData.sOperID != "SY") { AfxMessageBox("Input the Operator ID....."); return; }
 
 	g_objMesAgent.Initialize();
 	g_objLogFile.Save_HandlerLog("[Work Dialog] MES Connect Button Click.");
@@ -2107,7 +2109,7 @@ void CWorkDlg::OnBnClickedBtnMesConnect()
 
 void CWorkDlg::OnBnClickedBtnMesDisconnect()
 {
-	if (gData.sOperID.GetLength() < 4) { AfxMessageBox("Input the Operator ID....."); return; }
+	if (gData.sOperID.GetLength() < 4 || gData.sOperID != "SY") { AfxMessageBox("Input the Operator ID....."); return; }
 
 	g_objMesAgent.Terminate();
 	g_objLogFile.Save_HandlerLog("[Work Dialog] MES Disconnect Button Click.");
@@ -2116,7 +2118,7 @@ void CWorkDlg::OnBnClickedBtnMesDisconnect()
 
 void CWorkDlg::OnBnClickedBtnMesAbort()
 {
-	if (gData.sOperID.GetLength() < 4) { AfxMessageBox("Input the Operator ID....."); return; }
+	if (gData.sOperID.GetLength() < 4 || gData.sOperID != "SY") { AfxMessageBox("Input the Operator ID....."); return; }
 
 	EQUIP_DATA *pEquipData = g_objDataManager.Get_pEquipData();
 	if (!pEquipData->bUseMES) return;
@@ -2395,7 +2397,7 @@ LRESULT CWorkDlg::OnUpdateVisionResult(WPARAM wParam, LPARAM lParam)
 	sGood.Format("%d", gLot.nGoodCount[nMZNo-1]);
 	sNG[0].Format("%d", gLot.nNgCount[nMZNo-1]);
 	sNG[1].Format("%d", gLot.nEmptyCount[nMZNo-1]);
-	sRatio.Format("0.2lf",  ((double)gLot.nGoodCount[nMZNo-1]*100.0/(double)nLensTotal));
+	sRatio.Format("%0.2lf",  ((double)gLot.nGoodCount[nMZNo-1]*100.0/(double)nLensTotal));
 
 	m_stcVisionResult[eMZ::Load][eVisionResult::MZID].SetWindowText(sMZID);
 	m_stcVisionResult[eMZ::Load][eVisionResult::Total].SetWindowText(sLensTotal);

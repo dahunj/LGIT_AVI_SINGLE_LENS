@@ -413,7 +413,14 @@ void CDispatcher::Get_JudgeRequest(const std::vector<std::string>& strArg)
 {
 	if (!RosProtocol::JudgeRequest(strArg))
 	{
-		Save_DispatcherLog("Invalid JUDGE fields/index; expected MZ 1..3, Tray 1..10, Lens 1..200.");
+		CString strError;
+		if (strArg.size() != 10 && strArg.size() != 11)
+			strError.Format("Invalid JUDGE field count: received %u; expected 10 or 11 (optional image count).", (unsigned int)strArg.size());
+		else if (!RosProtocol::Number(strArg[5], 1, 3) || !RosProtocol::Number(strArg[6], 1, 10) || !RosProtocol::Number(strArg[7], 1, 200))
+			strError.Format("Invalid JUDGE index: MZ=%s, Tray=%s, Lens=%s; expected MZ 1..3, Tray 1..10, Lens 1..200.", strArg[5].c_str(), strArg[6].c_str(), strArg[7].c_str());
+		else
+			strError.Format("Invalid JUDGE image count: %s; expected integer 0..999999.", strArg[10].c_str());
+		Save_DispatcherLog(strError);
 		return;
 	}
 

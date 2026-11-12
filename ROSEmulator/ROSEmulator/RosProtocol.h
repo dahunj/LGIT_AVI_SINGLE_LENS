@@ -42,13 +42,16 @@ namespace RosProtocol
 
 	inline bool JudgeRequest(const std::vector<std::string>& v)
 	{
-		return v.size() == 10 && v[0] == "JUDGE" && v[1] == "REQUEST" && Number(v[5], 1, 3) && Number(v[6], 1, 10) && Number(v[7], 1, 200);
+		// SingleLens appends image count at index 10; older requests have 10 fields.
+		return (v.size() == 10 || v.size() == 11) && v[0] == "JUDGE" && v[1] == "REQUEST" && Number(v[5], 1, 3) && Number(v[6], 1, 10) && Number(v[7], 1, 200)
+			&& (v.size() == 10 || Number(v[10], 0, 999999));
 	}
 
 	inline std::string JudgeReply(const std::vector<std::string>& v, const std::string& ip, char judge)
 	{
 		std::string s = "@JUDGE,REPLY," + ip;
 
+		// Reply excludes request-only image count: judge must remain at index 10.
 		for (size_t i = 3; i < 10; ++i)
 			s += "," + v[i];
 		s += ",";
