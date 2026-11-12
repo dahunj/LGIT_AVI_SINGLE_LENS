@@ -26,6 +26,7 @@ private:
 	BOOL	m_bConnected;
 	int		m_nMdjIndex;
 
+	BOOL	m_bInspDone[3][10][200];	//비전은 완료 된건지
 	BOOL	m_bJudgeReq[3][10][200];		// 판정 요청
 	BOOL	m_bJudgeDone[3][10][200];	// 판정 완료
 	DWORD	m_dwReqStart[3][10][200];	// 요청 시작
@@ -47,7 +48,7 @@ public:
 	BOOL Initialize();
 	void Terminate();
 	void Reset(int nMzNo);
-
+	void Set_InspDone(int nMNo, int nTNo, int nLNo, BOOL bDone){m_bInspDone[nMNo-1][nTNo-1][nLNo-1] = bDone;}
 	void Set_ConnectRequest();
 	void Set_ConnectReply(CString sIp);
 	void Set_ConnectEnd(CString sIp);

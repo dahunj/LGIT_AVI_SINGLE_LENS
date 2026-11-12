@@ -2383,8 +2383,7 @@ LRESULT CWorkDlg::OnUpdateVisionResult(WPARAM wParam, LPARAM lParam)
 
 	int nMZNo = gData.nMZNoMainIndex[eMainIndex::Mark];
 	int nTNo = gData.nSlotNoMainIndex[eMainIndex::Mark];
-	
-	
+		
 	CString sLensTotal, sGood, sNG[4], sRatio;
 	
 	/*int nLensCnt = gData.nLensUseCnt[nMZNo-1][nTNo-1];

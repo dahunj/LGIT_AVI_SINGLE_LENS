@@ -376,6 +376,10 @@ void CSequenceMain::Job_LotStart(int nMZNo, int nPos)
 
 	memset(gData.nImageCnt[nMNo], 0x00, sizeof(int)*10*ZIG_X*ZIG_Y*4);
 
+	for(int i = 0; i < 7; i++) gLot.nGoodCount[i] = 0;
+	for(int i = 0; i < 7; i++) gLot.nNgCount[i] = 0;
+	for(int i = 0; i < 7; i++) gLot.nEmptyCount[i] = 0;
+
 	for(int j = 0; j < 10 ; j++) gLot.nGoodCountZig[nMNo][j] = 0;
 	for(int j = 0; j < 10 ; j++) gLot.nNgCountZig[nMNo][j] = 0;
 	for(int j = 0; j < 10 ; j++) gLot.nEmptyCountZig[nMNo][j] = 0;
@@ -2330,7 +2334,7 @@ BOOL CSequenceMain::FeederRun()
 
 			g_objLogFile.Save_DailyResult(m_strLog);
 			g_dlgWork.PostMessage(UM_UPDATE_DAILY_RESULT, NULL, NULL);
-			g_dlgWork.PostMessage(UM_UPDATE_VISION_RESULT, NULL, NULL);
+			
 
 			//Info Processing
 			gData.sLotIDElevUnload = gData.sLotIDFeeder; gData.sLotIDFeeder.Empty();
@@ -3901,10 +3905,10 @@ BOOL CSequenceMain::MarkUnitRun()
 
 			if(isInspectDone(nLNo)) continue;
 
-			/*if(nLNo == 32 || nLNo== 68 || nLNo == 113)
+			if(nLNo == 32 || nLNo== 68 || nLNo == 113)
 			{
 				continue;
-			}*/
+			}
 			
 			if(Check_InspectDone(gData.sZigIDMainIndex[eMainIndex::Mark], nMNo,	nTNo, nLNo, nTempInfo)) 
 			{
@@ -3923,13 +3927,15 @@ BOOL CSequenceMain::MarkUnitRun()
 
 					g_objLogFile.Save_TrackingLog(nTempInfo, gData.sZigIDMainIndex[eMainIndex::Mark], nMNo, nTNo, g_objCommon.ConvertToMESNo(nLNo));
 					Write_LotJudge(nMNo, gData.nSlotNoMainIndex[eMainIndex::Mark],nLNo, nTempInfo);
+					g_objDispatcher.Set_InspDone(nMNo, nTNo, nLNo, TRUE);
 
 				}
 				else if((nTempInfo == eLensInfo::NG ))
 				{
 					if(m_pEquipData->bUseROS) 
 					{
-						g_objDispatcher.Set_JudgeRequest(nMNo,gData.sMZIDMainIdex[eMainIndex::Mark], nTNo, nLNo); //Ros판정						
+						g_objDispatcher.Set_JudgeRequest(nMNo,gData.sMZIDMainIdex[eMainIndex::Mark], nTNo, nLNo); //Ros판정	
+						g_objDispatcher.Set_InspDone(nMNo, nTNo, nLNo, TRUE);
 					}
 					else 
 					{
@@ -3949,6 +3955,7 @@ BOOL CSequenceMain::MarkUnitRun()
 					if(m_pEquipData->bUseROS)
 					{
 						g_objDispatcher.Set_JudgeRequest(nMNo, gData.sMZIDMainIdex[eMainIndex::Mark], nTNo, nLNo); //Ros판정
+						g_objDispatcher.Set_InspDone(nMNo, nTNo, nLNo, TRUE);
 					}						
 					else
 					{
@@ -3975,10 +3982,10 @@ BOOL CSequenceMain::MarkUnitRun()
 			if(GetTickCount() - dwROSDoneTime < 0.1 *1000) break; // 300ms 간격 
 						
 			if(isROSDone(nLNo)) continue;
-			/*if(nLNo == 32 || nLNo== 68 || nLNo == 113)
+			if(nLNo == 32 || nLNo== 68 || nLNo == 113)
 			{
 				continue;
-			}*/
+			}
 			
 			if(Check_ROSDone(nMNo, nTNo, nLNo, nTempInfo)) 
 			{
@@ -4512,6 +4519,7 @@ BOOL CSequenceMain::MarkUnitRun()
 	case 15:
 		if(g_objCommon.Check_Position(AX_MARK_UNIT_Z, eMark_Z::Ready))
 		{			
+			g_dlgWork.PostMessage(UM_UPDATE_VISION_RESULT, NULL, NULL);
 			gData.bIndexDone[eMainIndex::Mark] = TRUE;
 			m_pEquipData->bUseInspectTimeOut = FALSE;
 			m_nMarkUnitCase = 0; m_nMarkUnitLoop.Set_LoopTime(gData.nLTime[eLT::Motion]);
@@ -5519,6 +5527,7 @@ BOOL CSequenceMain::Check_InspectDone(const CString& sZigID, int nMZNo, int nTNo
 	int nSlot = nTNo - 1;
 	int nLens = nLNo - 1;
 
+	
 	CString strLog;
 
 	if(nMNo < 0 || nMNo > 3 || nSlot < 0 || nSlot > 10 || nLens < 0 || nLens > 200) return FALSE;
@@ -5569,6 +5578,7 @@ BOOL CSequenceMain::Check_InspectDone(const CString& sZigID, int nMZNo, int nTNo
 	gData.nInfoMainIndex[nMNo][nSlot][nLens] = nInfo;
 
 	gData.byInspectDone[nMNo][nSlot][nLens] |= (1 << 7);
+	
 
 	return TRUE;	
 }

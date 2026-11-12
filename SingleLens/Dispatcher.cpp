@@ -85,6 +85,7 @@ void CDispatcher::Terminate()
 void CDispatcher::Reset(int nMzNo)
 {
 	if (nMzNo == 0) {
+		memset(m_bInspDone, 0x00, sizeof(BOOL) * 3 * 10 * 200);
 		memset(m_bJudgeReq, 0x00, sizeof(BOOL) * 3 * 10 * 200);
 		memset(m_dwReqStart, 0x00, sizeof(DWORD) * 3 * 10 * 200);
 		memset(m_bJudgeDone, 0x00, sizeof(BOOL) * 3 * 10 * 200);
@@ -95,6 +96,7 @@ void CDispatcher::Reset(int nMzNo)
 	} 
 	else
 	{
+		memset(m_bInspDone[nMzNo-1], 0x00, sizeof(BOOL) * 10 * 200);
 		memset(m_bJudgeReq[nMzNo-1], 0x00, sizeof(BOOL) * 10 * 200);
 		memset(m_dwReqStart[nMzNo-1], 0x00, sizeof(DWORD) * 10 * 200);
 		memset(m_bJudgeDone[nMzNo-1], 0x00, sizeof(BOOL) * 10 * 200);
@@ -514,9 +516,9 @@ BOOL CDispatcher::Is_JudgeDone(int nMNo, int nTrayNo, int nLensNo, int &nInfo)
 {
 	if (nMNo < 1 || nMNo > 3 || nTrayNo < 1 || nTrayNo > 10 || nLensNo < 1 || nLensNo > 200 || gData.bCycleStop) return TRUE;
 
-	if (!m_bJudgeReq[nMNo-1][nTrayNo-1][nLensNo-1]) 
+	if (!m_bJudgeReq[nMNo-1][nTrayNo-1][nLensNo-1] && !m_bInspDone[nMNo-1][nTrayNo-1][nLensNo-1]) 
 	{	
-		return TRUE;
+		return FALSE;
 	}
 	if (m_bJudgeDone[nMNo-1][nTrayNo-1][nLensNo-1] && m_bJudgeReq[nMNo-1][nTrayNo-1][nLensNo-1])
 	{
