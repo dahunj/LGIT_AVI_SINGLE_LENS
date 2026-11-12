@@ -63,15 +63,10 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Control(pDX, IDC_GRD_LOAD_MZ, m_grdLoadMZ);
 	DDX_Control(pDX, IDC_GRD_UNLOAD_MZ, m_grdRdyMZ);
-
-	DDX_Control(pDX, IDC_GRD_TOP_VISION, m_grdTopVision);
-	DDX_Control(pDX, IDC_GRD_BTM_VISION, m_grdBtmVision);
-	DDX_Control(pDX, IDC_GRD_MARKING, m_grdMarking);
-
+		
 	DDX_Control(pDX, IDC_STC_BARCODE_MGZ, m_stcBarcodeMGZ);	
 	DDX_Control(pDX, IDC_STC_BARCODE_CTZIG, m_stcBarcodeCtZig);
-
-
+	
 	for (int i = 0; i < 7; i++) DDX_Control(pDX, IDC_STC_TRAY_NO_0 + i, m_stcTrayNo[i]);
 
 	for (int i = 0; i < 4; i++) DDX_Control(pDX, IDC_STC_TAKT_0 + i, m_stcTakt[i]);
@@ -170,10 +165,6 @@ void CWorkDlg::Initial_Controls()
 	
 	Initial_Grid(&m_grdLoadMZ, SLOT_NO_MAX, 1);
 	Initial_Grid(&m_grdRdyMZ, SLOT_NO_MAX, 1);
-
-	Initial_Grid(&m_grdTopVision, gData.nLensCntY, gData.nLensCntX);
-	Initial_Grid(&m_grdBtmVision, gData.nLensCntY, gData.nLensCntX);
-	Initial_Grid(&m_grdMarking, gData.nLensCntY, gData.nLensCntX);
 		
 	for (int i = 0; i < 7; i++) m_stcTrayNo[i].Init_Ctrl("¹ÙÅÁ", 12, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));
 	m_stcBarcodeMGZ.Init_Ctrl("¹ÙÅÁ", 12, TRUE, RGB(0x00, 0xFF, 0x00), RGB(0x00, 0x00, 0x00));

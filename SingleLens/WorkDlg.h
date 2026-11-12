@@ -102,9 +102,7 @@ public:
 	CGridWindow		m_wndBtmGrid;
 	CGridWindow		m_wndMarkGrid;
 
-	CGridCS			m_grdTopVision;
-	CGridCS			m_grdBtmVision;
-	CGridCS			m_grdMarking;
+	
 
 	CRadioCS		m_rdoSwitchUI[2];
 	CGridCS			m_grdLog;
