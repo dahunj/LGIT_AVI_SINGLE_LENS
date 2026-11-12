@@ -126,6 +126,7 @@ BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
 	ON_MESSAGE(UM_LOT_START_END, &CWorkDlg::OnLotStartEnd)
 	ON_MESSAGE(UM_UPDATE_UPH, &CWorkDlg::OnUpdateUph)
 	ON_MESSAGE(UM_UPDATE_DAILY_RESULT, &CWorkDlg::OnUpdateDailyResult)
+	ON_MESSAGE(UM_UPDATE_VISION_RESULT, &CWorkDlg::OnUpdateVisionResult)
 
 	ON_MESSAGE(UM_INDEX_TACK, &CWorkDlg::OnIndexTack)
 	ON_MESSAGE(UM_SHOW_MSG, &CWorkDlg::OnShowMsg)
@@ -2373,6 +2374,38 @@ void CWorkDlg::Set_ChangeRdo(int nSel)
 	}
 }
 
+LRESULT CWorkDlg::OnUpdateVisionResult(WPARAM wParam, LPARAM lParam)
+{
+	CString sMZID; sMZID.Empty();
+	sMZID = gData.sMZIDMainIdex[eMainIndex::Mark];
+
+	int nMZNo = gData.nMZNoMainIndex[eMainIndex::Mark];
+	int nTNo = gData.nSlotNoMainIndex[eMainIndex::Mark];
+	
+	
+	CString sLensTotal, sGood, sNG[4], sRatio;
+	
+	/*int nLensCnt = gData.nLensUseCnt[nMZNo-1][nTNo-1];
+	nLensTotal += nLensCnt;
+	sLensTotal.Format("%d", nLensTotal);*/
+	int nLensTotal = 0;
+	nLensTotal = gLot.nGoodCount[nMZNo-1] + gLot.nNgCount[nMZNo-1] + gLot.nEmptyCount[nMZNo-1];
+	sLensTotal.Format("%d", nLensTotal);
+
+	sGood.Format("%d", gLot.nGoodCount[nMZNo-1]);
+	sNG[0].Format("%d", gLot.nNgCount[nMZNo-1]);
+	sNG[1].Format("%d", gLot.nEmptyCount[nMZNo-1]);
+	sRatio.Format("0.2lf",  ((double)gLot.nGoodCount[nMZNo-1]*100.0/(double)nLensTotal));
+
+	m_stcVisionResult[eMZ::Load][eVisionResult::MZID].SetWindowText(sMZID);
+	m_stcVisionResult[eMZ::Load][eVisionResult::Total].SetWindowText(sLensTotal);
+	m_stcVisionResult[eMZ::Load][eVisionResult::Good].SetWindowText(sGood);
+	m_stcVisionResult[eMZ::Load][eVisionResult::NG1].SetWindowText(sNG[0]);
+	m_stcVisionResult[eMZ::Load][eVisionResult::NG2].SetWindowText(sNG[1]);
+	m_stcVisionResult[eMZ::Load][eVisionResult::Ratio].SetWindowText(sRatio);
+
+	return 0;
+}
 
 
 LRESULT CWorkDlg::OnUpdateDailyResult(WPARAM wParam, LPARAM lParam)

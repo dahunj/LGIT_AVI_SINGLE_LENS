@@ -21,6 +21,7 @@
 #define UM_UPDATE_LOADCELL		WM_USER+10
 #define UM_UPDATE_VISION_INFO	WM_USER+11
 #define UM_UPDATE_DAILY_RESULT	WM_USER+12
+#define UM_UPDATE_VISION_RESULT WM_USER+13
 
 // CWorkDlg 대화 상자입니다.
 
@@ -107,9 +108,7 @@ public:
 
 	CGridWindow		m_wndTopGrid;
 	CGridWindow		m_wndBtmGrid;
-	CGridWindow		m_wndMarkGrid;
-
-	
+	CGridWindow		m_wndMarkGrid;	
 
 	CRadioCS		m_rdoSwitchUI[2];
 	CGridCS			m_grdLog;
@@ -155,6 +154,8 @@ protected:
 	afx_msg LRESULT OnShowMsg(WPARAM wParam, LPARAM lParam);
 
 	afx_msg LRESULT OnUpdateDailyResult(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT	OnUpdateVisionResult(WPARAM wParam, LPARAM lParam);
+
 	
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);

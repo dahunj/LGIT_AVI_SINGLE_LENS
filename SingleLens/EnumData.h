@@ -297,3 +297,20 @@ struct eUserLevel
 		Enginneer = 3,
 	};
 };
+
+
+
+struct eVisionResult
+{
+	enum name
+	{
+		MZID = 0,
+		Total = 1,
+		Good= 2,
+		NG1 = 3,
+		NG2 = 4,
+		NG3 = 5,
+		NG4 = 6,
+		Ratio = 7,
+	};
+};

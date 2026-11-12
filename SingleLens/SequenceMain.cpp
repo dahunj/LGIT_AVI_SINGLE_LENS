@@ -2330,6 +2330,7 @@ BOOL CSequenceMain::FeederRun()
 
 			g_objLogFile.Save_DailyResult(m_strLog);
 			g_dlgWork.PostMessage(UM_UPDATE_DAILY_RESULT, NULL, NULL);
+			g_dlgWork.PostMessage(UM_UPDATE_VISION_RESULT, NULL, NULL);
 
 			//Info Processing
 			gData.sLotIDElevUnload = gData.sLotIDFeeder; gData.sLotIDFeeder.Empty();
