@@ -91,6 +91,13 @@ void CWorkDlg::DoDataExchange(CDataExchange* pDX)
 
 	for (int i = 0; i < _countof(m_rdoSwitchUI); i++) DDX_Control(pDX, IDC_RDO_SWITCH_UI_0 + i, m_rdoSwitchUI[i]);
 	DDX_Control(pDX, IDC_GRD_LOG, m_grdLog);
+
+	DDX_Control(pDX, IDC_GRP_VISION_RESULT, m_grpVisionResult);
+	for (int i = 0; i < 8; i++) DDX_Control(pDX, IDC_STC_VR_HEADER_0 + i, m_stcVisionHeader[i]);
+	for (int i = 0; i < 2; i++) DDX_Control(pDX, IDC_STC_VR_ROW_0 + i, m_stcVisionRow[i]);
+	for (int row = 0; row < 2; row++)
+		for (int col = 0; col < 8; col++)
+			DDX_Control(pDX, IDC_STC_VR_LOAD_LOT_ID + row * 8 + col, m_stcVisionResult[row][col]);
 }
 
 BEGIN_MESSAGE_MAP(CWorkDlg, CDialogEx)
@@ -151,6 +158,17 @@ END_MESSAGE_MAP()
 
 void CWorkDlg::Initial_Controls() 
 {
+	// Visible with the Log view; hidden with the MZ view.
+	m_grpVisionResult.Init_Ctrl("Arial", 9, FALSE, COLOR_DEFAULT, COLOR_DEFAULT);
+	for (int i = 0; i < 8; i++)
+		m_stcVisionHeader[i].Init_Ctrl("Arial", 9, FALSE, COLOR_DEFAULT, COLOR_DEFAULT);
+	for (int row = 0; row < 2; row++)
+	{
+		m_stcVisionRow[row].Init_Ctrl("Arial", 9, FALSE, COLOR_DEFAULT, COLOR_DEFAULT);
+		for (int col = 0; col < 8; col++)
+			m_stcVisionResult[row][col].Init_Ctrl("Arial", 9, FALSE, RGB(255, 255, 255), RGB(0, 0, 0));
+	}
+
 	pMainDlg = (CSingleLensDlg*)AfxGetApp()->GetMainWnd();
 
 	CString strText;
@@ -2317,6 +2335,17 @@ void CWorkDlg::OnBnClickedRdoSwitchUi1()
 
 void CWorkDlg::Set_ChangeRdo(int nSel)
 {
+	// Share the upper strip with MZ 1..4; show only in Log mode.
+	const int nVisionVisible = (nSel == 1) ? SW_SHOW : SW_HIDE;
+	m_grpVisionResult.ShowWindow(nVisionVisible);
+	for (int i = 0; i < 8; i++) m_stcVisionHeader[i].ShowWindow(nVisionVisible);
+	for (int row = 0; row < 2; row++)
+	{
+		m_stcVisionRow[row].ShowWindow(nVisionVisible);
+		for (int col = 0; col < 8; col++)
+			m_stcVisionResult[row][col].ShowWindow(nVisionVisible);
+	}
+
 	int nVisible = nSel == 0 ? SW_SHOW : SW_HIDE;
 	if(nSel == 0)
 	{

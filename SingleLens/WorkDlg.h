@@ -41,6 +41,13 @@ public:
 	CBitmap			m_bmpBg;
 	CRect			m_rcBgArea;   // IDC_STATIC_BG의 위치/크기 저장
 	
+	// Vision Result: row 0 = Load, row 1 = Ready.
+	// Columns: Lot ID, Total, Good, NG 1..4, Ratio(%).
+	CGroupCS		m_grpVisionResult;
+	CStaticCS		m_stcVisionHeader[8];
+	CStaticCS		m_stcVisionRow[2];
+	CStaticCS		m_stcVisionResult[2][8];
+
 	CGroupCS		m_grpMZ[6];
 	CRadioCS		m_rdoMZID[6];
 	CRadioCS		m_rdoSelectNo[40]; // 20 ~ 59 
